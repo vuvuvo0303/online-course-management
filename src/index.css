@@ -1,3 +1,65 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+body {
+    font-family: Inter;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 12px;
+}
+
+.flexCenter {
+    @apply flex justify-center items-center;
+}
+
+.flexBetween {
+    @apply flex justify-between items-center;
+}
+
+.flexStart {
+    @apply flex items-center justify-start;
+}
+
+.text-small {
+    @apply text-sm font-medium;
+}
+
+.paddings {
+    @apply lg:px-20 py-6 px-5;
+}
+
+/* Navbar */
+.navbar {
+    @apply py-5 px-8 border-b border-nav-border gap-4;
+}
+
+/* Footer */
+.footer {
+    @apply flex-col paddings w-full gap-20 bg-light-white;
+}
+
+.footer_copyright {
+    @apply max-sm:flex-col w-full text-sm font-normal;
+}
+
+.footer_column {
+    @apply flex-1 flex flex-col gap-3 text-sm min-w-max;
+}
