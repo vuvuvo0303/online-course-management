@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import LoginPage from './pages/login';
 import About from './pages/about';
 import RegisterPage from './pages/register';
+import Terms from './pages/terms';
 
 function App() {
   const location = useLocation();
@@ -20,6 +21,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/about" element={<About />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/terms" element={<Terms />} />
       </Routes>
       {!isAdminPath && <Footer />}
     </>
