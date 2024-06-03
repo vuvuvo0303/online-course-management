@@ -1,4 +1,3 @@
-export const API_BASE_URL = "";
 export const API_STUDENT_URL = "https://665b3286003609eda4602205.mockapi.io/students";
 export const API_INSTRUCTOR_URL = "https://665b3286003609eda4602205.mockapi.io/instructors";
 export const API_ADMIN_URL = "https://665b3286003609eda4602205.mockapi.io/admin";

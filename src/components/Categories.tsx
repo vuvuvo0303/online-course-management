@@ -10,7 +10,7 @@ const Categories = () => {
                     <button
                         key={filter}
                         type="button"
-
+                        className="px-4 py-3 rounded-lg capitalize whitespace-nowrap"
                     >
                         {filter}
                     </button>

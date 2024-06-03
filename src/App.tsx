@@ -1,7 +1,10 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
-import Home from './pages/main/Home';
+import Home from './pages/home';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import LoginPage from './pages/login';
+import About from './pages/about';
+import RegisterPage from './pages/register';
 
 function App() {
   const location = useLocation();
@@ -14,6 +17,9 @@ function App() {
       {!isAdminPath && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
       {!isAdminPath && <Footer />}
     </>
