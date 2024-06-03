@@ -114,3 +114,19 @@ export const InstructorLinks = [
     },
   ];
   
+
+  export const terms = [
+    { name: "1. Account", link: "#section1" },
+    { name: "2. Content Subscription and Lifetime Access", link: "#section2" },
+    { name: "3. Payments, Offers and Refunds", link: "#section3" },
+    { name: "4. Content and behavior rules", link: "#section4" },
+    { name: "5. FLearn's rights to the content you post", link: "#section5" },
+    { name: "6. Use FLearn at your own risk", link: "#section6" },
+    { name: "7. FLearn Permissions", link: "#section7" },
+    { name: "8. Subscription package terms", link: "#section8" },
+    { name: "9. Other legal terms", link: "#section9" },
+    { name: "10. Dispute resolution", link: "#section10" },
+    { name: "11. Update these terms", link: "#section11" },
+    { name: "12. How to contact us", link: "#section12" }
+  ];
+  
