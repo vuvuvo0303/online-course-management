@@ -1,20 +1,19 @@
-// import React from 'react';
 import { Menu, Dropdown } from 'antd';
 import { Link } from 'react-router-dom';
-import { NavLinks, categoryFilters } from '../consts/index';
+import { NavLinks, categoryFilters, categorySubmenu } from '../consts/index';
 import SearchTool from '../components/SearchTool';
 
 const Navbar = () => {
-    // Create a menu from the categoryFilters
-    const menu = (
-        <Menu>
-            {categoryFilters.map((filter, index) => (
-                <Menu.Item key={index}>
-                    <Link to={`/filter/${filter}`}>{filter}</Link>
+    // Create a submenu for each categoryFilter
+    const submenus = categoryFilters.map((filter, index) => (
+        <Menu.SubMenu key={index} title={filter}>
+            {categorySubmenu.map((submenu, subIndex) => (
+                <Menu.Item key={subIndex}>
+                    <Link to={`/submenu/${submenu}`}>{submenu}</Link>
                 </Menu.Item>
             ))}
-        </Menu>
-    );
+        </Menu.SubMenu>
+    ));
 
     return (
         <nav className='flexBetween navbar'>
@@ -23,7 +22,7 @@ const Navbar = () => {
                     <h1>FLearn</h1>
                 </Link>
                 {/* Render Categories link as dropdown */}
-                <Dropdown overlay={menu} placement="bottomLeft">
+                <Dropdown overlay={<Menu>{submenus}</Menu>} placement="bottomLeft">
                     <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
                         Categories
                     </a>
