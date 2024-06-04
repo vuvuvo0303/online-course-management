@@ -11,6 +11,7 @@ export class Course {
     level: string = "";
     courseImgUrl: string = "";
     instructorId: string = "";
+    status: string = "";
 }
 
 

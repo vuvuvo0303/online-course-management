@@ -20,7 +20,7 @@ const Navbar = () => {
         <nav className='flexBetween navbar'>
             <div className='flex-1 flexStart gap-10'>
                 <Link to="/">
-                    <h1>Home</h1>
+                    <h1>FLearn</h1>
                 </Link>
                 {/* Render Categories link as dropdown */}
                 <Dropdown overlay={menu} placement="bottomLeft">

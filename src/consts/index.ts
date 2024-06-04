@@ -41,6 +41,39 @@ export const categoryFilters = [
   "Chatbots"
 ]
 
+export const categorySubmenu = [
+  "Frontend",
+  "Backend",
+  "Full-Stack",
+  "Mobile",
+  "UI/UX",
+  "Game Dev",
+  "DevOps",
+  "Data Science",
+  "Machine Learning",
+  "Cybersecurity",
+  "Blockchain",
+  "E-commerce",
+  "Chatbots"
+]
+
+export const teacherCategories = [
+  "Mr. Johnson",
+  "Ms. Rodriguez",
+  "Mr. Thompson",
+  "Mrs. Smith",
+  "Ms. Garcia",
+  "Mr. Davis",
+  "Mrs. Martinez",
+  "Mr. Wilson",
+  "Mrs. Anderson",
+  "Mr. Taylor",
+  "Ms. Thomas",
+  "Mrs. Clark",
+  "Mr. Lewis"
+];
+
+
 export const footerLinks = [
   {
     title: 'For developers',
