@@ -1,13 +1,12 @@
-import { Route, Routes, useLocation } from "react-router-dom";
-import Home from "./pages/home";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import LoginPage from "./pages/login";
-import About from "./pages/about";
-import RegisterPage from "./pages/register";
-import Terms from "./pages/terms";
-import Contact from "./pages/contact";
-import Categories from "./components/Categories";
+import { Route, Routes, useLocation } from 'react-router-dom';
+import Home from './pages/home';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import LoginPage from './pages/login';
+import About from './pages/about';
+import RegisterPage from './pages/register';
+import Terms from './pages/terms';
+import InstructorPage from './pages/instructor';
 
 function App() {
   const location = useLocation();
@@ -24,8 +23,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/terms" element={<Terms />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/category" element={<Categories />} />
+        <Route path="/instructor" element={<InstructorPage />} />
       </Routes>
       {!isAdminPath && <Footer />}
     </>

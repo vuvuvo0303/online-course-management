@@ -1,7 +1,7 @@
 export class Enrollment{
     enrollmentId: string = "";
-    createDate: string = "";
+    createdDate: string = "";
     totalPrice: number = 0;
-    studentId: string = "";
+    userId: string = "";
     courseId: string = ""
 }
