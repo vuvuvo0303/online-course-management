@@ -4,5 +4,4 @@ const InstructorRegister = () => {
         <div>InstructorRegister</div>
     )
 }
-
 export default InstructorRegister
