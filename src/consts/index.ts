@@ -53,7 +53,7 @@ export const footerLinks = [
   {
     title: "For instructors",
     links: [
-      { name: "Teach on FLearn", url: "/register" },
+      { name: "Teach on FLearn", url: "/" },
       { name: "About us", url: "/about" },
       { name: "Contact us", url: "/contact" },
     ],
@@ -62,7 +62,7 @@ export const footerLinks = [
   {
     title: "Policy and terms",
     links: [
-      { name: "Our policy & terms", url: "/policy" },
+      { name: "Our policy & terms", url: "/terms" },
       { name: "Help & Support", url: "/help" },
       { name: "Send feedback", url: "/feedback" },
     ],
