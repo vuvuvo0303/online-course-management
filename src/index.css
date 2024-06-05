@@ -30,12 +30,20 @@ body {
     border-radius: 12px;
 }
 
+.custom-btn {
+    @apply flex flex-row relative justify-center items-center py-3 px-6 outline-none;
+}
+
 .flexCenter {
     @apply flex justify-center items-center;
 }
 
 .flexBetween {
     @apply flex justify-between items-center;
+}
+
+.flexEvenly {
+    @apply flex justify-evenly items-center;
 }
 
 .flexStart {
@@ -66,4 +74,75 @@ body {
 
 .footer_column {
     @apply flex-1 flex flex-col gap-3 text-sm min-w-max;
+}
+
+.instructor_title {
+    font-size: 3rem;
+    background: linear-gradient(to bottom, rgb(9, 124, 224), #bbb);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.instructor_desc {
+    font-size: 1.25rem;
+    font-weight: 300;
+}
+
+.storyteller_desc {
+    font-size: 1.25rem;
+    font-weight: 300;
+    text-align: justify;
+
+}
+
+.heading_xxl {
+    font-weight: 700;
+    font-size: 3rem;
+    max-width: 36rem;
+    letter-spacing: 0;
+    line-height: 1.2;
+}
+
+.text_xl {
+    font-weight: 400;
+    line-height: 1.4;
+    font-size: 2.4rem;
+}
+
+.vertical_line {
+    margin: 0 24px;
+    width: 1px;
+    background-color: #bbb;
+}
+
+.custom_hr {
+    border: 0;
+    height: 1px;
+    background-color: #bbb;
+    margin: 1.5rem 0;
+}
+
+.ud_h {
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0;
+    font-size: 1.9rem;
+    max-width: 36em;
+    color: #3e4143;
+    margin: 40px auto;
+}
+
+.faq_container {
+    display: flex;
+    justify-content: center;
+    margin: 2.4rem 0 1.2rem;
+}
+
+.faq_h5 {
+    color: #3e4143;
+    margin: 0 0 .8rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0;
+    font-size: 1.6rem;
 }
