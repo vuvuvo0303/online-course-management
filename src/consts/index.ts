@@ -1,15 +1,13 @@
-export const API_STUDENT_URL =
-  "https://665b3286003609eda4602205.mockapi.io/students";
-export const API_INSTRUCTOR_URL =
-  "https://665b3286003609eda4602205.mockapi.io/instructors";
-export const API_ADMIN_URL =
-  "https://665b3286003609eda4602205.mockapi.io/admin";
-export const API_COURSES_URL = "";
-export const API_COMMENT_URL = "";
-export const API_ENROLLMENT_URL = "";
-export const API_LECTURE_URL = "";
-export const API_PAYMENT_URL = "";
-export const API_REVIEW_URL = "";
+const BASE_URL = "https://665fbf245425580055b0b23d.mockapi.io";
+export const API_STUDENT_URL = `${BASE_URL}/students`;
+export const API_INSTRUCTOR_URL = `${BASE_URL}/instructors`;
+export const API_ADMIN_URL = `${BASE_URL}/admins`;
+export const API_COURSES_URL = `${BASE_URL}/courses`;
+export const API_COMMENT_URL = `${BASE_URL}/comments`;
+export const API_ENROLLMENT_URL = `${BASE_URL}/enrollments`;
+export const API_LECTURE_URL = `${BASE_URL}/lectures`;
+export const API_PAYMENT_URL = `${BASE_URL}/payments`;
+export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 
 export const NavLinks = [
   { href: "/", key: "Categories", text: "Categories" },
@@ -30,7 +28,7 @@ export const categoryFilters = [
   "Development",
   "Business",
   "Finance & Accounting",
-  "IT & Solfware",
+  "IT & Software",
   "Office Productivity",
   "Personal Development",
   "Design",
@@ -62,7 +60,7 @@ export const footerLinks = [
   {
     title: "Policy and terms",
     links: [
-      { name: "Our policy & terms", url: "/policy" },
+      { name: "Our terms & policy", url: "/terms" },
       { name: "Help & Support", url: "/help" },
       { name: "Send feedback", url: "/feedback" },
     ],

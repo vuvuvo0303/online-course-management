@@ -49,7 +49,7 @@ const InstructorPage = () => {
                 <div className="md:ml-24 md:mr-24">
                     <div className="flex gap-24">
                         <div className="flex-1 flex mt-12 flex-col gap-7">
-                            <h1 className="">Who Are We?</h1>
+                            <h1 className="font-bold">Who Are We?</h1>
                             <p className="storyteller_desc">
                                 We are a global educational platform committed to empowering individuals through knowledge. Our mission is to provide accessible and high-quality education to learners all over the world. With a strong community of passionate educators, we strive to make learning an enriching and enjoyable experience.
                             </p>
@@ -59,7 +59,7 @@ const InstructorPage = () => {
                         </div>
                         <div className="vertical_line"></div>
                         <div className="flex-1 flex mt-12 flex-col gap-7">
-                            <h1 className="">Become an Instructor</h1>
+                            <h1 className="font-bold">Become an Instructor</h1>
                             <p className="storyteller_desc">
                                 Are you passionate about sharing your knowledge and expertise with a global audience? Join our community of instructors and make a difference in the lives of millions of students worldwide. As an instructor, you'll have the opportunity to:
                                 <br /><br />

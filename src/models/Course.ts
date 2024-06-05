@@ -10,7 +10,7 @@ export class Course {
     category: string = "";
     level: string = "";
     courseImgUrl: string = "";
-    instructorId: string = "";
+    userId: string = "";
 }
 
 
