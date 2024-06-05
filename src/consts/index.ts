@@ -10,7 +10,7 @@ export const API_PAYMENT_URL = `${BASE_URL}/payments`;
 export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 
 export const NavLinks = [
-  { href: "/", key: "Categories", text: "Categories" },
+  // { href: "/", key: "Categories", text: "Categories" },
   { href: "/", key: "Saved Courses", text: "Saved Courses" },
   { href: "/", key: "All Instructors", text: "All Instructors" },
   { href: "/", key: "FAQ", text: "FAQ" },
@@ -38,6 +38,38 @@ export const categoryFilters = [
   "Health & Fitness",
   "Music",
   "Teaching & Academics",
+];
+
+export const categorySubmenu = [
+  "Frontend",
+  "Backend",
+  "Full-Stack",
+  "Mobile",
+  "UI/UX",
+  "Game Dev",
+  "DevOps",
+  "Data Science",
+  "Machine Learning",
+  "Cybersecurity",
+  "Blockchain",
+  "E-commerce",
+  "Chatbots"
+]
+
+export const teacherCategories = [
+  "Mr. Johnson",
+  "Ms. Rodriguez",
+  "Mr. Thompson",
+  "Mrs. Smith",
+  "Ms. Garcia",
+  "Mr. Davis",
+  "Mrs. Martinez",
+  "Mr. Wilson",
+  "Mrs. Anderson",
+  "Mr. Taylor",
+  "Ms. Thomas",
+  "Mrs. Clark",
+  "Mr. Lewis"
 ];
 
 export const footerLinks = [

@@ -1,13 +1,13 @@
 import React from 'react';
-import { Card, Avatar } from 'antd';
+import { Card } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { categoryFilters } from "../consts/index";
+import { teacherCategories } from "../consts/index";
 
 const { Meta } = Card;
 
-const Categories: React.FC = () => {
+const TeacherCategories: React.FC = () => {
     const responsive = {
         superLargeDesktop: {
             breakpoint: { max: 4000, min: 3000 },
@@ -39,16 +39,10 @@ const Categories: React.FC = () => {
                 centerMode={false} // Disable center mode
                 infinite={true} // Enable infinite loop
             >
-                {categoryFilters.map((filter) => (
-                    <div key={filter}>
+                {teacherCategories.map((teacher) => (
+                    <div key={teacher}>
                         <Card
                             style={{ margin: '10px' }} // Add margin to create gap
-                            cover={
-                                <img
-                                    alt="example"
-                                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                                />
-                            }
                             actions={[
                                 <SettingOutlined key="setting" />,
                                 <EditOutlined key="edit" />,
@@ -56,8 +50,8 @@ const Categories: React.FC = () => {
                             ]}
                         >
                             <Meta
-                                avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />}
-                                title={filter}
+                                avatar={<img src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" alt="avatar" style={{ borderRadius: '50%', width: '100px', height: '100px' }} />}
+                                title={teacher}
                                 description="This is the description"
                             />
                         </Card>
@@ -68,4 +62,4 @@ const Categories: React.FC = () => {
     );
 };
 
-export default Categories;
+export default TeacherCategories;
