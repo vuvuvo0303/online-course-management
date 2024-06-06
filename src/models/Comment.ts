@@ -3,6 +3,6 @@ export class Comment{
     content: string = "";
     createdDate: string = "";
     updatedDate: string = "";
-    studentId: string = "";
+    userId: string = "";
     lectureId: string = ""
 }

@@ -4,6 +4,6 @@ export class Payment{
     createdDate: string = "";
     paymentMethod: string = "";
     status: string = "";
-    studentId: string = "";
+    userId: string = "";
     enrollmentId: string = "";
 }

@@ -4,7 +4,6 @@ export class Review {
     message: string = "";
     createdDate: string = "";
     updatedDate: string = "";
-    studentId: string = "";
+    userId: string = "";
     courseId: string = "";
-    comment: string = "";    
 }
