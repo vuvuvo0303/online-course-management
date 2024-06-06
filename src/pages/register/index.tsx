@@ -19,10 +19,12 @@ const RegisterPage = () => {
   const handleOk = () => {
     setIsModalOpen(false);
   };
-  const openModal = ()=>{
-    setIsModalOpen(true)
-  }
- 
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleCacncle = () => {
+    setIsModalOpen(false);
+  };
 
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log("Success:", values);
@@ -62,13 +64,14 @@ const RegisterPage = () => {
   return (
     <div className="flex min-h-screen">
       <div className="w-1/2 flex items-center justify-center">
-        <img className="shadow-xl shadow-pink-300 rounded-xl"
+        <img
+          className="shadow-xl shadow-pink-300 rounded-xl"
           src="https://th.bing.com/th/id/OIG1.AGaZbxlA_0MPJqC3KzeN?w=270&h=270&c=6&r=0&o=5&pid=ImgGn&fbclid=IwZXh0bgNhZW0CMTAAAR2mjW6RtojaN9vEo4rqlabcTxGB8SgLyPDBFuYQkrjrtV6Y-grTpfAFNfU_aem_AeDCUfxM5_fs-2v7HvGAmbOqmKCoSm3yqxolCEq2L3VhfsTEpP6R4EchWpg36dMdIMwS0hSCc_V3GDRIrdhhWCxz"
           alt="logo"
           width={300}
         />
       </div>
-      <div className="w-1/2 flex flex-col justify-center p-8 bg-white rounded-l-lg shadow-left">
+      <div className="w-1/2 flex flex-col justify-center p-8 bg-white rounded-l-lg ">
         <h1 className="flex justify-center  mt-6 text-5xl ">Register</h1>
 
         <div className="mt-6 flex justify-center ">
@@ -146,8 +149,10 @@ const RegisterPage = () => {
               wrapperCol={{ span: 24 }}
             >
               <Checkbox>Agree to Terms and Conditions</Checkbox>
-              <span onClick={openModal} className="hover:cursor-pointer font-bold hover:text-red-400 ">(See Policy)</span>
-              <Modal title="Policy" open={isModalOpen} onOk={handleOk} ></Modal>
+              <span onClick={openModal} className="hover:cursor-pointer font-bold hover:text-red-400 ">
+                (See Policy)
+              </span>
+              <Modal title="Policy" open={isModalOpen} onCancel={handleCacncle} onOk={handleOk}></Modal>
             </Form.Item>
             <Form.Item wrapperCol={{ span: 24 }}>
               <Button type="primary" htmlType="submit" className="w-full shadow-xl hover:shadow-sky-600 ">
@@ -159,7 +164,9 @@ const RegisterPage = () => {
         <span className="mt-4 block text-center">
           Have An Account?{" "}
           <strong>
-            <Link to={"/login"} className="hover:cursor-pointer hover:text-red-400">Sign In here</Link>
+            <Link to={"/login"} className="hover:cursor-pointer hover:text-red-400">
+              Sign In here
+            </Link>
           </strong>
         </span>
       </div>
