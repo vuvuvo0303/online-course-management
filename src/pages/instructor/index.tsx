@@ -24,7 +24,7 @@ const InstructorPage = () => {
             </section>
 
             <section>
-                <h1 className="heading_xxl text-center pt-10">There are so many reasons to start</h1>
+                <h1 className="main_h1 text-center pt-10">There are so many reasons to start</h1>
                 <div className="w-full max-w-[134rem] mx-auto px-4">
                     <div className="flex flex-col sm:flex-row my-10 mx-0 pb-10 px-0 gap-8">
                         <div className="flex-1">
@@ -95,27 +95,27 @@ const InstructorPage = () => {
                 <div className="bg-blue-400 text-white ">
                     <div className="flexEvenly flex-wrap p-0 w-full max-w-[134rem] mr-auto ml-auto">
                         <div className="max-w-[27.8rem] py-6 px-10 text-center">
-                            <div className="heading_xxl">62 million</div>
+                            <div className="main_h1">62 million</div>
                             <p>Students</p>
                         </div>
 
                         <div className="max-w-[27.8rem] py-6 px-10 text-center">
-                            <div className="heading_xxl">Over 75</div>
+                            <div className="main_h1">Over 75</div>
                             <p>Languages</p>
                         </div>
 
                         <div className="max-w-[27.8rem] py-6 px-10 text-center">
-                            <div className="heading_xxl">830 million</div>
+                            <div className="main_h1">830 million</div>
                             <p>Enrollments</p>
                         </div>
 
                         <div className="max-w-[27.8rem] py-6 px-10 text-center">
-                            <div className="heading_xxl">Over 150</div>
+                            <div className="main_h1">Over 150</div>
                             <p>Countries</p>
                         </div>
 
                         <div className="max-w-[27.8rem] py-6 px-10 text-center">
-                            <div className="heading_xxl">Over 15,000</div>
+                            <div className="main_h1">Over 15,000</div>
                             <p>Companies</p>
                         </div>
                     </div>
@@ -163,8 +163,8 @@ const InstructorPage = () => {
 
             <section className="bg-white-transparent">
                 <div className="w-full max-w-[134rem] mx-auto py-20 px-4 sm:px-10 flex flex-col justify-center items-center">
-                    <h2 className="heading_xxl mx-auto">Become an instructor today</h2>
-                    <p className="mt-6 mx-auto mb-10 text_xl">Join one of the world's largest online learning marketplaces.</p>
+                    <h2 className="main_h1 mx-auto">Become an instructor today</h2>
+                    <p className="mt-6 mx-auto mb-10 main_p">Join one of the world's largest online learning marketplaces.</p>
                     <CustomButton title="Be an instructor" containerStyles="bg-blue-400" handleClick={handleStart} />
                 </div>
             </section>

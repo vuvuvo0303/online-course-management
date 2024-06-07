@@ -7,6 +7,7 @@ import About from './pages/about';
 import RegisterPage from './pages/register';
 import Terms from './pages/terms';
 import InstructorPage from './pages/instructor';
+import Policy from './pages/policy';
 
 function App() {
   const location = useLocation();
@@ -22,7 +23,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/about" element={<About />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/terms" element={<Terms />} />
+        <Route path="/terms/*" element={<Terms />} />
+        <Route path="/terms/policy" element={<Policy />} />
         <Route path="/instructor" element={<InstructorPage />} />
       </Routes>
       {!isAdminPath && <Footer />}
