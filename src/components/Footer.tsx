@@ -1,25 +1,25 @@
 import FooterColumn from "./FooterColumn";
 import { footerLinks } from "../consts/index";
-import "./Footer.css";
 
 const Footer = () => (
-  <section className="flexStart footer bg-gray-100 p-8">
-    <div className="flex flex-col gap-12 w-full">
-      <div className="flex flex-wrap gap-12 justify-between">
-        <div className="flex items-start flex-col max-w-[300px]">
-          <p className="text-start text-md font-normal mt-5">
-            "FLearn: Unleash Your Expertise, Elevate Learning, and Inspire
-            Success."
+  <section className="flexStart footer">
+    <div className="flex flex-col w-full gap-12">
+      <div className="flex justify-between w-full items-start">
+        <div className="flex items-start flex-col">
+          <p className="text-start text-md font-normal mt-5 max-w-xs">
+            "FLearn: Unleash Your Expertise, Elevate Learning, and Inspire Success."
           </p>
         </div>
 
-        {footerLinks.map((column, index) => (
-          <FooterColumn key={index} title={column.title} links={column.links} />
-        ))}
+        <div className="flex gap-x-24">
+          {footerLinks.map((column, index) => (
+            <FooterColumn key={index} title={column.title} links={column.links} />
+          ))}
+        </div>
       </div>
     </div>
 
-    <div className="flexCenter footer_copyright mt-1">
+    <div className="flexCenter footer_copyright">
       <p>&copy; 2024 FLearn. All rights reserved</p>
     </div>
   </section>
