@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card } from 'antd';
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { teacherCategories } from "../consts/index";
@@ -15,7 +14,7 @@ const TeacherCategories: React.FC = () => {
         },
         desktop: {
             breakpoint: { max: 3000, min: 1024 },
-            items: 3
+            items: 5
         },
         tablet: {
             breakpoint: { max: 1024, min: 464 },
@@ -42,15 +41,10 @@ const TeacherCategories: React.FC = () => {
                 {teacherCategories.map((teacher) => (
                     <div key={teacher}>
                         <Card
-                            style={{ margin: '10px' }} // Add margin to create gap
-                            actions={[
-                                <SettingOutlined key="setting" />,
-                                <EditOutlined key="edit" />,
-                                <EllipsisOutlined key="ellipsis" />,
-                            ]}
+                            style={{ margin: '10px', backgroundColor: 'lightgoldenrodyellow' }} // Add margin to create gap
                         >
                             <Meta
-                                avatar={<img src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" alt="avatar" style={{ borderRadius: '50%', width: '100px', height: '100px' }} />}
+                                avatar={<img src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" alt="avatar" style={{ borderRadius: '50%', width: '70px', height: '70px' }} />}
                                 title={teacher}
                                 description="This is the description"
                             />

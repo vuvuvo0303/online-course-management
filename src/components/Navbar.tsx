@@ -1,4 +1,4 @@
-import { Menu, Dropdown } from 'antd';
+import { Menu, Dropdown, Badge } from 'antd';
 import { Link } from 'react-router-dom';
 import { NavLinks, categoryFilters, categorySubmenu } from '../consts/index';
 import SearchTool from '../components/SearchTool';
@@ -44,7 +44,10 @@ const Navbar = () => {
 
       <div className="flexCenter gap-10 mr-5">
         <SearchTool />
-        <ShoppingCartOutlined className="text-gray-400 text-3xl" />
+        {/* Add Badge component to display badge count */}
+        <Badge count={5}>
+          <ShoppingCartOutlined className="text-gray-400 text-3xl" />
+        </Badge>
         <UserOutlined className="text-gray-400 text-3xl" />
       </div>
     </nav>

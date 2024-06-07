@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import img1 from "../../public/t1.jpg";
 import img2 from "../../public/t2.jpg";
 import img3 from "../../public/t3.jpg";
@@ -18,13 +18,15 @@ const testimonials = [
 const ClientCarousel: React.FC = () => {
     const [current, setCurrent] = useState(0);
 
-    const nextSlide = () => {
-        setCurrent((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
-    };
+    // Automatically switch to the next slide every 3 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrent((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+        }, 5000); // Change the duration as needed
 
-    const prevSlide = () => {
-        setCurrent((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
-    };
+        // Clean up the interval on component unmount
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <div className="testimonial bg-cover bg-center min-h-[200px]">
@@ -37,10 +39,6 @@ const ClientCarousel: React.FC = () => {
                             </div>
                         </div>
                     ))}
-                </div>
-                <div className="flex justify-between relative">
-                    <button onClick={prevSlide} className="absolute left-4 text-2xl bg-white rounded-full p-2 top-[200px]">&#10094;</button>
-                    <button onClick={nextSlide} className="absolute text-2xl bg-white rounded-full p-2 left-[1480px] top-[200px]">&#10095;</button>
                 </div>
             </div>
         </div>
