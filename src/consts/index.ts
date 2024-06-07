@@ -46,7 +46,7 @@ export const categoryFilters = [
 export const sidebarPolicies = [
   { id: 1, name: "Terms of Use", link: "/terms" },
   { id: 2, name: "Privacy Policy", link: "/terms/policy" },
-  { id: 3, name: "FAQ", link: "/faq" },
+  { id: 3, name: "Rules and Guidelines", link: "/terms/guidelines" },
   { id: 4, name: "Help & Support", link: "/support" },
 ];
 

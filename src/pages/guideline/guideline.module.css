@@ -1,0 +1,30 @@
+.title {
+    margin: 3.2rem 0 1.6rem;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.link_to {
+    color: #0073e6;
+    text-decoration: none;
+}
+
+.link_to:hover {
+    text-decoration: underline;
+}
+
+.guideline_li {
+    line-height: 1.5rem;
+    margin-top: 1.3rem;
+}
+
+.icon {
+    background: #cbcecf;
+    width: 44px;
+    height: 44px;
+    border-radius: 2px;
+    margin-right: 5px;
+    display: inline-block;
+    padding-top: 0.8rem;
+}
