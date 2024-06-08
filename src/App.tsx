@@ -9,6 +9,8 @@ import Terms from './pages/terms';
 import InstructorPage from './pages/instructor';
 import BlogList from './pages/blog/BlogList';
 import BlogDetail from './pages/blog/BlogDetail';
+import Policy from './pages/policy';
+import Guidelines from './pages/guideline';
 
 function App() {
   const location = useLocation();

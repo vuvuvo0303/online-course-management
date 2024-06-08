@@ -108,28 +108,8 @@ const About = () => {
                     <Col className='storyteller_desc'>Flearn responds to the needs of the business in an agile and global manner. It’s truly the best solution for our employees and their careers.</Col>
                 </Row>
             </div>
-            <div className='dev-container'>
-                <Row className=' container mx-auto'>
-                    <Col className='dev-name' span={8}>TanHuynh68</Col>
-                    <Col className='dev-name' span={8}>Duc-dev-starter</Col>
-                    <Col className='dev-name' span={8}>vuvuvo0303</Col>
-                </Row>
-                <Row className=' container mx-auto'>
-                    <Col className='dev-name' span={12}>CocaIsMee</Col>
-                    <Col className='dev-name' span={12}>duongtoan106</Col>
-                </Row>
-            </div>
-            {/* <div className='map container mx-auto'>
-                <Row>
-                    <Col span={12}></Col>
-                    <Col span={24}>
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3080.2532598487546!2d106.7888885354281!3d10.85577860091569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317527692dcbc14b%3A0xb6aada118566b9c5!2sOneHub%20Saigon!5e0!3m2!1svi!2s!4v1717499320271!5m2!1svi!2s" width="100%" height="900"
-                            style={{ border: "0;" }} loading="lazy"
-                        ></iframe></Col>
-                </Row>
-
-            </div> */}
+            
+           
         </>
     );
 };
