@@ -12,7 +12,7 @@ import Guidelines from "./pages/guideline";
 import Support from "./pages/support";
 import BlogList from "./pages/blog/BlogList";
 import BlogDetail from "./pages/blog/BlogDetail";
-import Contact from "./pages/contact";
+// import Contact from "./pages/contact";
 import Dashboard from "./components/dashboard";
 import ManageLectures from "./pages/instructor/manage-lectures";
 import ManageStudent from "./pages/admin/manage-students";
@@ -20,6 +20,7 @@ import ManageInstructor from "./pages/admin/manage-instructors";
 import ManageCourses from "./pages/admin/manage-courses";
 import ManageBlogs from "./pages/admin/manage-blogs";
 import ManageFeedbacks from "./pages/admin/manage-feedbacks";
+import CoursePage from "./pages/course";
 
 function App() {
   const location = useLocation();
@@ -44,9 +45,10 @@ function App() {
         <Route path="/terms/guidelines" element={<Guidelines />} />
         <Route path="/support" element={<Support />} />
         <Route path="/instructor" element={<InstructorPage />} />
+        <Route path="/course" element={<CoursePage />} />
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blogs/:id" element={<BlogDetail />} />
-        <Route path="/contact" element={<Contact />} />
+        {/* <Route path="/contact" element={<Contact />} /> */}
         <Route path="/terms" element={<Terms />} />
         <Route path="/dashboard/instructor" element={<Dashboard role="Instructor" />}>
           <Route path="manage-lectures" element={<ManageLectures />} />

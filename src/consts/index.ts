@@ -12,10 +12,10 @@ export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 
 /* Navbar */
 export const NavLinks = [
-  { href: "/", key: "Categories", text: "Categories" },
+  // { href: "/", key: "Categories", text: "Categories" },
   { href: "/", key: "Saved Courses", text: "Saved Courses" },
-  { href: "/", key: "All Instructors", text: "All Instructors" },
-  { href: "/", key: "FAQ", text: "FAQ" },
+  { href: "/instructor", key: "Be an Instructors", text: "Be an Instructors" },
+  { href: "/support", key: "Support", text: "Support" },
 ];
 
 // export const InstructorLinks = [
@@ -42,14 +42,46 @@ export const categoryFilters = [
   "Teaching & Academics",
 ];
 
+export const categorySubmenu = [
+  "Frontend",
+  "Backend",
+  "Full-Stack",
+  "Mobile",
+  "UI/UX",
+  "Game Dev",
+  "DevOps",
+  "Data Science",
+  "Machine Learning",
+  "Cybersecurity",
+  "Blockchain",
+  "E-commerce",
+  "Chatbots"
+]
+
+export const teacherCategories = [
+  "Mr. Johnson",
+  "Ms. Rodriguez",
+  "Mr. Thompson",
+  "Mrs. Smith",
+  "Ms. Garcia",
+  "Mr. Davis",
+  "Mrs. Martinez",
+  "Mr. Wilson",
+  "Mrs. Anderson",
+  "Mr. Taylor",
+  "Ms. Thomas",
+  "Mrs. Clark",
+  "Mr. Lewis"
+];
+
 /* Sidebar Policies */
 export const sidebarPolicies = [
   { id: 1, name: "Terms of Use", link: "/terms" },
   { id: 2, name: "Privacy Policy", link: "/terms/policy" },
   { id: 3, name: "Rules and Guidelines", link: "/terms/guidelines" },
   { id: 4, name: "Intellectual Property Policy", link: "/terms/intellectual" },
-  { id: 5, name: "Master Services Agreement", link: "/terms/guidelines" },
-  { id: 6, name: "Launch Services", link: "/terms/guidelines" },
+  { id: 5, name: "Master Services Agreement", link: "/terms/agreement" },
+  { id: 6, name: "Launch Services", link: "/terms/launch" },
   { id: 7, name: "Help & Support", link: "/support" },
 ];
 
@@ -105,20 +137,20 @@ export const faq_instructor = [
 
 /* topic */
 export const topic_student = [
-  { id: 1, name: "Account/Profile",description: "Manage your account settings.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJ75XEBMHTVM355A2ATG" ,link: "#section1" },
-  { id: 2, name: "Troubleshooting",description: "Experiencing a technical issue? Check here.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FM9JPEPTW2N7HD3XSSST" ,link: "#section1" },
-  { id: 3, name: "Learning Experience",description: "Everything about the FLearn learning", img: "https://support.udemy.com/hc/theming_assets/01HZP8FDKGE7PT2EXYKDQZ8BD6" ,link: "#section1" },
-  { id: 4, name: "Purchase/Refunds",description: "Learn about purchasing courses, how to send gifts, and refunds", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJB5Y47293NZF0220ZKY" ,link: "#section1" },
-  { id: 5, name: "Mobile",description: "On the go? Learn about our mobile app", img: "https://support.udemy.com/hc/theming_assets/01HZP8FGTNPB2Z3MC5WWRWTSAZ" ,link: "#section1" }, 
-  { id: 6, name: "Trust & Safety",description: "Trust & Safety information and reporting", img: "https://support.udemy.com/hc/theming_assets/01HZP8FMD53E72SM31SP8RT0MM" ,link: "#section1" },
+  { id: 1, name: "Account/Profile", description: "Manage your account settings.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJ75XEBMHTVM355A2ATG", link: "#section1" },
+  { id: 2, name: "Troubleshooting", description: "Experiencing a technical issue? Check here.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FM9JPEPTW2N7HD3XSSST", link: "#section1" },
+  { id: 3, name: "Learning Experience", description: "Everything about the FLearn learning", img: "https://support.udemy.com/hc/theming_assets/01HZP8FDKGE7PT2EXYKDQZ8BD6", link: "#section1" },
+  { id: 4, name: "Purchase/Refunds", description: "Learn about purchasing courses, how to send gifts, and refunds", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJB5Y47293NZF0220ZKY", link: "#section1" },
+  { id: 5, name: "Mobile", description: "On the go? Learn about our mobile app", img: "https://support.udemy.com/hc/theming_assets/01HZP8FGTNPB2Z3MC5WWRWTSAZ", link: "#section1" },
+  { id: 6, name: "Trust & Safety", description: "Trust & Safety information and reporting", img: "https://support.udemy.com/hc/theming_assets/01HZP8FMD53E72SM31SP8RT0MM", link: "#section1" },
 ]
 
 export const topic_instructor = [
-  { id: 1, name: "Instructor Payments",description: "Understand the revenue share and how to receive payments.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJ3P0VC64QMBMBXKSDMQ" ,link: "#section1" },
-  { id: 2, name: "Selling & Promotion",description: "Learn about the announcement.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FKSFR8QFBH1N595WYPTM" ,link: "#section1" },
-  { id: 3, name: "Course Building",description: "Build your course curriculum and landing page.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FDKGE7PT2EXYKDQZ8BD6" ,link: "#section1" },
-  { id: 4, name: "Course Management",description: "Maintain your course and engage with students.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FM2TN5216VEXR1GY2RMS" ,link: "#section1" },
-  { id: 5, name: "Trust & Safety",description: "Policy and copyright questions and guidance.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FMD53E72SM31SP8RT0MM" ,link: "#section1" },
+  { id: 1, name: "Instructor Payments", description: "Understand the revenue share and how to receive payments.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJ3P0VC64QMBMBXKSDMQ", link: "#section1" },
+  { id: 2, name: "Selling & Promotion", description: "Learn about the announcement.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FKSFR8QFBH1N595WYPTM", link: "#section1" },
+  { id: 3, name: "Course Building", description: "Build your course curriculum and landing page.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FDKGE7PT2EXYKDQZ8BD6", link: "#section1" },
+  { id: 4, name: "Course Management", description: "Maintain your course and engage with students.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FM2TN5216VEXR1GY2RMS", link: "#section1" },
+  { id: 5, name: "Trust & Safety", description: "Policy and copyright questions and guidance.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FMD53E72SM31SP8RT0MM", link: "#section1" },
 ]
 
 /* Footer */
@@ -133,7 +165,7 @@ export const footerLinks = [
   {
     title: "For instructors",
     links: [
-      { name: "Teach on FLearn", url: "/" },
+      { name: "Teach on FLearn", url: "/instructor" },
       { name: "About us", url: "/about" },
       { name: "Contact us", url: "/contact" },
     ],
