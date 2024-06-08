@@ -7,6 +7,9 @@ import About from './pages/about/About';
 import RegisterPage from './pages/register';
 import Terms from './pages/terms';
 import InstructorPage from './pages/instructor';
+import Policy from './pages/policy';
+import Guidelines from './pages/guideline';
+import Support from './pages/support';
 import BlogList from './pages/blog/BlogList';
 import BlogDetail from './pages/blog/BlogDetail';
 
@@ -27,6 +30,7 @@ function App() {
         <Route path="/terms/*" element={<Terms />} />
         <Route path="/terms/policy" element={<Policy />} />
         <Route path="/terms/guidelines" element={<Guidelines />} />
+        <Route path="/support" element={<Support />} />
         <Route path="/instructor" element={<InstructorPage />} />
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blogs/:id" element={<BlogDetail />} />
