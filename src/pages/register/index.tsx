@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
+import Vector from "../../assets/Vector.png";
+import Ractangle from "../../assets/Rectangle .jpg";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type FieldType = {
@@ -62,17 +64,16 @@ const RegisterPage = () => {
     </button>
   );
   return (
-    <div className="flex min-h-screen">
-      <div className="w-1/2 flex items-center justify-center">
-        <img
-          className="shadow-xl shadow-pink-300 rounded-xl"
-          src="https://th.bing.com/th/id/OIG1.AGaZbxlA_0MPJqC3KzeN?w=270&h=270&c=6&r=0&o=5&pid=ImgGn&fbclid=IwZXh0bgNhZW0CMTAAAR2mjW6RtojaN9vEo4rqlabcTxGB8SgLyPDBFuYQkrjrtV6Y-grTpfAFNfU_aem_AeDCUfxM5_fs-2v7HvGAmbOqmKCoSm3yqxolCEq2L3VhfsTEpP6R4EchWpg36dMdIMwS0hSCc_V3GDRIrdhhWCxz"
-          alt="logo"
-          width={300}
-        />
+  
+    <div className="flex min-h-screen relative">
+    <img src={Vector} alt="" className="absolute bottom-8" />
+
+    <div className="w-full md:w-1/2 flex flex-col justify-center  pt-5 bg-white rounded-l-lg">
+      <div className="mr-4">
+        {" "}
+        <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Register </h1>
+        <span className="flex justify-center mb-4">Learn from top experts . Sign up for FLearn now!</span>
       </div>
-      <div className="w-1/2 flex flex-col justify-center p-8 bg-white rounded-l-lg ">
-        <h1 className="flex justify-center  mt-6 text-5xl ">Register</h1>
 
         <div className="mt-6 flex justify-center ">
           <Form
@@ -155,21 +156,28 @@ const RegisterPage = () => {
               <Modal title="Policy" open={isModalOpen} onCancel={handleCacncle} onOk={handleOk}></Modal>
             </Form.Item>
             <Form.Item wrapperCol={{ span: 24 }}>
-              <Button type="primary" htmlType="submit" className="w-full shadow-xl hover:shadow-sky-600 ">
-                Register
+              <Button type="primary" htmlType="submit" className="w-full shadow-xl hover:shadow-sky-600 bg-black ">
+                Create Account
               </Button>
             </Form.Item>
           </Form>
-        </div>
+          </div>
         <span className="mt-4 block text-center">
-          Have An Account?{" "}
+          Do you have an account?{" "}
           <strong>
             <Link to={"/login"} className="hover:cursor-pointer hover:text-red-400">
               Sign In here
             </Link>
           </strong>
         </span>
+        
       </div>
+      <div className="hidden md:flex w-1/2 pb-12 items-center justify-center">
+        <div className="rounded-lg overflow-hidden w-[80%] shadow-pink-300">
+          <img className="shadow-xl rounded-xl w-full" src={Ractangle} alt="logo" />
+        </div>
+      </div>
+    
       {previewImage && (
         <Image
           wrapperStyle={{ display: "none" }}
@@ -184,5 +192,4 @@ const RegisterPage = () => {
     </div>
   );
 };
-
 export default RegisterPage;

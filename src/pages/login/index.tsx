@@ -1,5 +1,8 @@
 import { Button, Form, FormProps, Input } from "antd";
 import { Link } from "react-router-dom";
+import Vector from "../../assets/Vector.png";
+import Ractangle from "../../assets/Rectangle .jpg";
+
 type FieldType = {
   username?: string;
   password?: string;
@@ -15,32 +18,19 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <div className="w-1/2 flex items-center justify-center">
-        <img
-          className="shadow-xl shadow-pink-300 rounded-xl"
-          src="https://th.bing.com/th/id/OIG1.AGaZbxlA_0MPJqC3KzeN?w=270&h=270&c=6&r=0&o=5&pid=ImgGn&fbclid=IwZXh0bgNhZW0CMTAAAR2mjW6RtojaN9vEo4rqlabcTxGB8SgLyPDBFuYQkrjrtV6Y-grTpfAFNfU_aem_AeDCUfxM5_fs-2v7HvGAmbOqmKCoSm3yqxolCEq2L3VhfsTEpP6R4EchWpg36dMdIMwS0hSCc_V3GDRIrdhhWCxz"
-          alt="logo"
-          width={300}
-        />
-      </div>
-      <div className="w-1/2 flex flex-col justify-center p-20 bg-white rounded-l-lg shadow-left">
-        <h1 className="flex justify-center mb-10 text-6xl">Login</h1>
-        <div className="flex justify-center"><button className="flex justify-center items-center gap-4 bg-zinc-100 rounded-md px-12 py-3 shadow-xl hover:shadow-orange-200 w-1/2">
-          <img
-            src="https://p1.hiclipart.com/preview/209/923/667/google-logo-background-g-suite-google-pay-google-doodle-text-circle-line-area-png-clipart.jpg"
-            alt="Google Logo"
-            width={25}
-          />
-          <span>Login with Google</span>
-        </button></div>
-        
-        <hr className="my-8 border-gray-300" />
-        <div className="mt-6 flex justify-center">
-          <Form 
+    <div className="flex min-h-screen relative">
+      <img src={Vector} alt="" className="absolute bottom-8" />
+
+      <div className="w-full md:w-1/2 flex flex-col justify-center a p-4 md:p-20 bg-white rounded-l-lg">
+        <div className="mr-6 ">
+          <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Welcome</h1>
+          <span className="flex justify-center mb-4">Log in to become a part of FLearn</span>
+        </div>
+
+        <div className="mt-6 flex justify-end">
+          <Form
             name="basic"
-            className="space-y-6"
-            style={{ maxWidth: 600 }}
+            className="space-y-6 w-full md:w-[80%]"
             initialValues={{ remember: true }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
@@ -53,7 +43,7 @@ const LoginPage = () => {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
-              <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+              <Input className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
             </Form.Item>
 
             <Form.Item
@@ -63,15 +53,21 @@ const LoginPage = () => {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
-              <Input.Password className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+              <Input.Password className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
             </Form.Item>
+            <div className="flex justify-center">
+              <Link className="md:mr-40 hover:text-green-600" to={""}>
+                Forget Password
+              </Link>
+            </div>
 
-            <Link className="flex justify-center hover:text-green-600" to={""}>
-              Forget Password
-            </Link>
-
-            <Form.Item wrapperCol={{ span: 24 }}>
-              <Button type="primary" htmlType="submit" className="w-full shadow-xl hover:shadow-sky-600">
+            <Form.Item>
+              <Button
+                type="primary"
+                size="large"
+                htmlType="submit"
+                className="w-full md:w-2/3 shadow-xl hover:shadow-sky-600 bg-black"
+              >
                 Login
               </Button>
             </Form.Item>
@@ -85,6 +81,24 @@ const LoginPage = () => {
             </Link>
           </strong>
         </span>
+        <div className="flex justify-center items-center mr-10">
+          <hr className="my-8 border-gray-50 w-36" />
+          <span className="text-center">
+            <strong>Login</strong> with others
+          </span>
+          <hr className="my-8 border-gray-50 w-36" />
+        </div>
+        <div className="flex justify-center mr-10">
+          <button className="flex justify-center items-center gap-4 border border-black rounded-md px-12 py-3 shadow-xl hover:shadow-orange-200 w-full md:w-2/3 bg-transparent">
+            <img src="https://www.pngall.com/wp-content/uploads/13/Google-Logo.png" alt="Google Logo" width={25} />
+            <span>Login with Google</span>
+          </button>
+        </div>
+      </div>
+      <div className="hidden md:flex w-1/2 items-center justify-center">
+        <div className="rounded-lg overflow-hidden w-[80%] shadow-pink-300">
+          <img className="shadow-xl rounded-xl w-full" src={Ractangle} alt="logo" />
+        </div>
       </div>
     </div>
   );
