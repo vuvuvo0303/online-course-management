@@ -14,8 +14,8 @@ export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 export const NavLinks = [
   // { href: "/", key: "Categories", text: "Categories" },
   { href: "/", key: "Saved Courses", text: "Saved Courses" },
-  { href: "/", key: "All Instructors", text: "All Instructors" },
-  { href: "/", key: "FAQ", text: "FAQ" },
+  { href: "/instructor", key: "Be an Instructors", text: "Be an Instructors" },
+  { href: "/support", key: "Support", text: "Support" },
 ];
 
 // export const InstructorLinks = [
@@ -80,8 +80,8 @@ export const sidebarPolicies = [
   { id: 2, name: "Privacy Policy", link: "/terms/policy" },
   { id: 3, name: "Rules and Guidelines", link: "/terms/guidelines" },
   { id: 4, name: "Intellectual Property Policy", link: "/terms/intellectual" },
-  { id: 5, name: "Master Services Agreement", link: "/terms/guidelines" },
-  { id: 6, name: "Launch Services", link: "/terms/guidelines" },
+  { id: 5, name: "Master Services Agreement", link: "/terms/agreement" },
+  { id: 6, name: "Launch Services", link: "/terms/launch" },
   { id: 7, name: "Help & Support", link: "/support" },
 ];
 
@@ -165,7 +165,7 @@ export const footerLinks = [
   {
     title: "For instructors",
     links: [
-      { name: "Teach on FLearn", url: "/" },
+      { name: "Teach on FLearn", url: "/instructor" },
       { name: "About us", url: "/about" },
       { name: "Contact us", url: "/contact" },
     ],

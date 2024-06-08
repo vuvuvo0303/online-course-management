@@ -7,7 +7,7 @@ const Guidelines = () => {
 
     return (
         <TermsLayout>
-            <div className='px-0 mx-10 sm:px-10 relative'>
+            <div className='md:px-0 md:mx-10 px-6 relative'>
                 <div className='w-full'>
                     <h1 className={`${styles.title} text-2xl sm:text-4xl`}>Q&A: Rules and Guidelines</h1>
                     <p className='p_line_height mt-3'>
