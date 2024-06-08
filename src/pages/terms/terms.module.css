@@ -30,7 +30,8 @@
 
 .list_categories {
     list-style-type: disc;
-    margin-left: 3.5rem;
+    margin-left: 2.5rem;
+    line-height: 1.8rem;
 }
 
 .category_color {
