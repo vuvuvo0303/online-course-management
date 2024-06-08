@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import  { ReactNode } from 'react';
 import { sidebarPolicies } from '../../consts/index';
 import styles from './terms.module.css';
 import { useLocation } from 'react-router-dom';

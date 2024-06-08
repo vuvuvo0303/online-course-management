@@ -13,12 +13,23 @@ import Support from "./pages/support";
 import BlogList from "./pages/blog/BlogList";
 import BlogDetail from "./pages/blog/BlogDetail";
 import Contact from "./pages/contact";
+import Dashboard from "./components/dashboard";
+import ManageLectures from "./pages/instructor/manage-lectures";
+import ManageStudent from "./pages/admin/manage-students";
+import ManageInstructor from "./pages/admin/manage-instructors";
+import ManageCourses from "./pages/admin/manage-courses";
+import ManageBlogs from "./pages/admin/manage-blogs";
+import ManageFeedbacks from "./pages/admin/manage-feedbacks";
 
 function App() {
   const location = useLocation();
 
-  // Kiểm tra nếu đường dẫn chứa /admin
-  const isAdminPath = location.pathname.includes("/admin");
+  // Kiểm tra nếu đường dẫn chứa /admin hoặc /dashboard
+  const isAdminPath =
+    location.pathname.includes("/admin") ||
+    location.pathname.includes("/dashboard") ||
+    location.pathname.includes("/login") ||
+    location.pathname.includes("/register");
 
   return (
     <>
@@ -36,6 +47,17 @@ function App() {
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blogs/:id" element={<BlogDetail />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/dashboard/instructor" element={<Dashboard role="Instructor" />}>
+          <Route path="manage-lectures" element={<ManageLectures />} />
+        </Route>
+        <Route path="/dashboard/admin" element={<Dashboard role="Admin" />}>
+          <Route path="manage-students" element={<ManageStudent />} />
+          <Route path="manage-instructors" element={<ManageInstructor />} />
+          <Route path="manage-courses" element={<ManageCourses />} />
+          <Route path="manage-blogs" element={<ManageBlogs />} />
+          <Route path="manage-feedbacks" element={<ManageFeedbacks />} />
+        </Route>
       </Routes>
       {!isAdminPath && <Footer />}
     </>

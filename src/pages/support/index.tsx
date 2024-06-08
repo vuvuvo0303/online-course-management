@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styles from './support.module.css';
 import { faq_student, faq_instructor, topic_student, topic_instructor } from '../../consts/index';
 
