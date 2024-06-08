@@ -35,19 +35,23 @@ const Categories: React.FC = () => {
         window.location.href = "http://localhost:5174/instructor";
     };
 
-    const renderPopoverContent = (filter: string) => (
-        <div>
-            <Meta
-                title={filter}
-                description="This is the description"
-            />
-            <a href="https://example.com" target="_blank" rel="noopener noreferrer" style={{ marginTop: '10px' }}>
-                <Button type="primary">
+    const renderPopoverContent = (filter: string) => {
+        const handleGoToCourse = () => {
+            window.location.href = "http://localhost:5174/course";
+        };
+
+        return (
+            <div>
+                <Meta
+                    title={filter}
+                    description="This is the description"
+                />
+                <Button type="primary" onClick={handleGoToCourse} style={{ marginTop: '10px' }}>
                     Go to Course
                 </Button>
-            </a>
-        </div>
-    );
+            </div>
+        );
+    };
 
     return (
         <div className="categories-container">
