@@ -107,4 +107,8 @@
     .content-frame {
         display: none;
     }
+
+    .categories-content {
+        width: 100%;
+    }
 }
