@@ -1,18 +1,3 @@
-<<<<<<< HEAD
-import { Route, Routes, useLocation } from 'react-router-dom';
-import Home from './pages/home';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import LoginPage from './pages/login';
-import About from './pages/about/About';
-import RegisterPage from './pages/register';
-import Terms from './pages/terms';
-import InstructorPage from './pages/instructor';
-import BlogList from './pages/blog/BlogList';
-import BlogDetail from './pages/blog/BlogDetail';
-import Policy from './pages/policy';
-import Guidelines from './pages/guideline';
-=======
 import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/home";
 import Navbar from "./components/Navbar";
@@ -35,7 +20,7 @@ import ManageInstructor from "./pages/admin/manage-instructors";
 import ManageCourses from "./pages/admin/manage-courses";
 import ManageBlogs from "./pages/admin/manage-blogs";
 import ManageFeedbacks from "./pages/admin/manage-feedbacks";
->>>>>>> 72fb2be9b7b46a2fb92ad63bd924cc8cfb19de3b
+import CoursePage from "./pages/course";
 
 function App() {
   const location = useLocation();
@@ -60,6 +45,7 @@ function App() {
         <Route path="/terms/guidelines" element={<Guidelines />} />
         <Route path="/support" element={<Support />} />
         <Route path="/instructor" element={<InstructorPage />} />
+        <Route path="/course" element={<CoursePage />} />
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blogs/:id" element={<BlogDetail />} />
         {/* <Route path="/contact" element={<Contact />} /> */}
