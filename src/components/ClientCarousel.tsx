@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import img1 from "../../public/t1.jpg";
 import img2 from "../../public/t2.jpg";
 import img3 from "../../public/t3.jpg";
+import clsx from 'clsx';
 
 const testimonials = [
     {
@@ -29,13 +30,13 @@ const ClientCarousel: React.FC = () => {
     }, []);
 
     return (
-        <div className="testimonial bg-cover bg-center min-h-[200px]">
+        <div className="testimonial bg-cover bg-center min-h-[200px] hidden md:block"> {/* Ẩn khi ở màn hình mobile */}
             <div className="container shadow-lg">
                 <div className="relative">
                     {testimonials.map((testimonial, index) => (
-                        <div key={index} className={`absolute inset-0 transition-opacity duration-1000 ${index === current ? 'opacity-100' : 'opacity-0'}`}>
+                        <div key={index} className={clsx("absolute inset-0 transition-opacity duration-1000", index === current ? 'opacity-100' : 'opacity-0')}>
                             <div className="relative pb-1 text-center w-max">
-                                <img alt="" src={testimonial.img} className="img-fluid pl-1 max-w-screen-2xl max-h-[800px]" />
+                                <img alt="" src={testimonial.img} className={clsx("img-fluid pl-1 max-w-screen-2xl max-h-[800px] transform transition-transform hover:scale-110")} />
                             </div>
                         </div>
                     ))}

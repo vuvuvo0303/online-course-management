@@ -48,7 +48,10 @@ const Navbar = () => {
         <Badge count={5}>
           <ShoppingCartOutlined className="text-gray-400 text-3xl" />
         </Badge>
-        <UserOutlined className="text-gray-400 text-3xl" />
+        {/* Redirect to "/login" */}
+        <Link to="/login">
+          <UserOutlined className="text-gray-400 text-3xl cursor-pointer" />
+        </Link>
       </div>
     </nav>
   );
