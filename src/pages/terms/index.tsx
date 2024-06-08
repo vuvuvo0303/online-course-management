@@ -28,7 +28,7 @@ const Terms = () => {
                         <h2 className={`${styles.categories} text-xl sm:text-2xl mb-5`}>Categories</h2>
                         <ul className={styles.text_without_underline}>
                             {terms.map(term => (
-                                <li className={`${styles.list_categories} li_line_height`} key={term.id}>
+                                <li className={`${styles.list_categories} text-xl`} key={term.id}>
                                     <a className={styles.category_color} href={term.link}>{term.name}</a>
                                 </li>
                             ))}

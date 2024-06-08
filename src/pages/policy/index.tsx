@@ -34,7 +34,7 @@ const Policy = () => {
                         <h2 className={`${styles.content} text-xl sm:text-2xl mb-5`}>Table of content</h2>
                         <ul className={styles.text_without_underline}>
                             {policies.map(policy => (
-                                <li className={`${styles.list_content} li_line_height`} key={policy.id}>
+                                <li className={`${styles.list_content} text-xl`} key={policy.id}>
                                     <a className={styles.link_to} href={policy.link}>{policy.name}</a>
                                 </li>
                             ))}
