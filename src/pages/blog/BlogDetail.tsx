@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Blog } from '../../models'; // Assuming you have a Blog model
 import { Spin, Alert } from 'antd'; // Import Ant Design components
-import "./Blog.css"; // Ensure you have necessary styles here
+import "./blog.module.css"; // Ensure you have necessary styles here
 
-const BlogDetail: React.FC = () => {
+const BlogDetail = () => {
     const { id } = useParams<{ id: string }>();
     const [blog, setBlog] = useState<Blog | null>(null);
     const [loading, setLoading] = useState<boolean>(true);

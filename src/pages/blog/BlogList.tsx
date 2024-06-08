@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
-import "./Blog.css";
+import{ useEffect, useState } from 'react';
 import { Blog } from '../../models';
 import { Col, Row, Pagination } from 'antd';
 import { Link } from 'react-router-dom';
-
-const BlogList: React.FC = () => {
+import styles from './blog.module.css';
+const BlogList = () => {
     const [blogs, setBlogs] = useState<Blog[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -32,7 +30,7 @@ const BlogList: React.FC = () => {
     }, []);
 
     if (loading) {
-        return <p className='loading'>Loading...</p>;
+        return <p className={styles.loading}>Loading...</p>; // Use CSS module class
     }
 
     if (error) {
@@ -57,27 +55,25 @@ const BlogList: React.FC = () => {
 
     return (
         <>
-            <div className='box1 pt-12 pb-12'>
-                <div className='container mx-auto grid grid-cols-2 gap-20 content-center'>
-                    <div className=''>
-                        <h1 className=''>Where possibilities begin</h1>
-                        <p className='storyteller_desc '>We’re a leading marketplace platform for learning and teaching online. Explore some of our most popular content and learn something new.</p>
+            <div className={styles.box1}>
+                <div className={`container mx-auto grid grid-cols-2 gap-20 ${styles.contentCenter}`}>
+                    <div>
+                        <h1>Where possibilities begin</h1>
+                        <p className={styles.storytellerDesc}>We’re a leading marketplace platform for learning and teaching online. Explore some of our most popular content and learn something new.</p>
                     </div>
                     <div>
                         <img src="https://blog.udemy.com/wp-content/uploads/2021/07/reading-girl-2.png" alt="picture" />
                     </div>
                 </div>
             </div>
-            <div className='category-bar'>
-                
-            </div>
-            <div className='popular container mx-auto mt-10'>
-                <h1 className='mb-10'>Popular Blog</h1>
-                <Row className='grid grid-cols-3 gap-20'>
+            <div className={styles.categoryBar}></div>
+            <div className={`${styles.popular} container mx-auto mt-10`}>
+                <h1 className="mb-10">Popular Blog</h1>
+                <Row className="grid grid-cols-3 gap-20">
                     {popularBlogs.map(blog => (
-                        <Col className='blog-container' key={blog.id}>
+                        <Col className={styles.blogContainer} key={blog.id}>
                             <Link to={`/blogs/${blog.id}`}>
-                                <p className='title'>{blog.title}</p>
+                                <p className={styles.title}>{blog.title}</p>
                             </Link>
                             <div>
                                 <p>{blog.category}</p>
@@ -90,7 +86,7 @@ const BlogList: React.FC = () => {
             </div>
             <div className="container mx-auto pt-10 pb-10">
                 <div>
-                    <h1 className='blog-page text-center'>Blog</h1>
+                    <h1 className={`${styles.blogPage} text-center`}>Blog</h1>
                 </div>
 
                 {categories.map(category => {
@@ -100,14 +96,14 @@ const BlogList: React.FC = () => {
                     const currentBlogs = groupedBlogs[category]?.slice(indexOfFirstBlog, indexOfLastBlog);
 
                     return (
-                        <div className='category-box' key={category}>
-                            <h1 className='category-title'>{category}</h1>
-                            <Row className='grid grid-cols-3 gap-20'>
+                        <div className={styles.categoryBox} key={category}>
+                            <h1 className={styles.categoryTitle}>{category}</h1>
+                            <Row className="grid grid-cols-3 gap-20">
                                 {currentBlogs?.map(blog => (
                                     <Col key={blog.id}>
-                                        <div className='blog-container'>
+                                        <div className={styles.blogContainer}>
                                             <Link to={`/blogs/${blog.id}`}>
-                                                <p className='title'>{blog.title}</p>
+                                                <p className={styles.title}>{blog.title}</p>
                                             </Link>
                                             <div>
                                                 <p>{blog.category}</p>
@@ -123,7 +119,7 @@ const BlogList: React.FC = () => {
                                 total={groupedBlogs[category]?.length || 0}
                                 pageSize={blogsPerPage}
                                 onChange={page => handlePageChange(category, page)}
-                                className='pagination text-center'
+                                className={`${styles.pagination} text-center`}
                             />
                         </div>
                     );
