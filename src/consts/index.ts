@@ -48,8 +48,8 @@ export const sidebarPolicies = [
   { id: 2, name: "Privacy Policy", link: "/terms/policy" },
   { id: 3, name: "Rules and Guidelines", link: "/terms/guidelines" },
   { id: 4, name: "Intellectual Property Policy", link: "/terms/intellectual" },
-  { id: 5, name: "Master Services Agreement", link: "/terms/guidelines" },
-  { id: 6, name: "Launch Services", link: "/terms/guidelines" },
+  { id: 5, name: "Master Services Agreement", link: "/terms/agreement" },
+  { id: 6, name: "Launch Services", link: "/terms/launch" },
   { id: 7, name: "Help & Support", link: "/support" },
 ];
 
