@@ -1,0 +1,114 @@
+.container h1{
+    font-weight: bold;
+}
+.info{
+        background-color: #5624d0;
+        padding-top: 30px;
+        color: white;
+        margin-top: 96px;
+        margin-bottom: 96px;
+}
+
+
+.info p{
+
+    padding-left: 15%;
+    padding-right: 15%;
+    padding-top: 15px;
+    padding-bottom: 25px;
+}
+
+.info .infoRow{
+    /* padding-left: 15%;
+    padding-right: 15%; */
+    font-size: 100px;
+}
+.info .infoRow .text-lg .col{
+    font-size: 25px;
+}
+
+
+
+.checkNews{
+    height: 50px;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.skill{
+    padding-top: 96px;
+    padding-bottom: 96px;
+}
+
+.join{
+    font-size: 25px;
+}
+
+.join .work{
+    
+    border-top: 9px solid red;
+}
+
+.join .research{
+    border-top: 9px solid blue;
+}
+.join .blog{
+    border-top: 9px solid purple;
+}
+
+.ColorLink{
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.ColorLink #red{
+    color: red;
+}
+
+.ColorLink #blue{
+    color: blue;
+}
+
+.ColorLink #purple{
+    color: purple;
+}
+
+.row2{
+    font-size: 12px;
+    text-align: center;
+
+}
+
+.row1{
+    font-weight: bold;
+    text-align: center;
+}
+
+.info-organizations{
+   padding-bottom: 96px;
+    text-align: center;
+  
+}
+
+
+
+
+.dev-name{
+    font-size: 25px;
+    text-align: center;
+    font-weight: bold;
+    color: #abb8c3;
+}
+
+.dev-container{
+    padding: 96px 0px 96px 0;
+    margin-top: 96px;
+    margin-bottom: 96px;
+    background-color: #f0f3f5;
+}
+
+.map{
+    padding-bottom: 96px;
+}

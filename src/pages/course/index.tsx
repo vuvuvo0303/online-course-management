@@ -1,4 +1,3 @@
-import React from 'react';
 import { Rate, Tabs } from 'antd';
 import './index.css';
 

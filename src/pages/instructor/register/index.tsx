@@ -1,7 +1,7 @@
 
 const InstructorRegister = () => {
     return (
-        <div>InstructorRegister</div>
+        <div></div>
     )
 }
 export default InstructorRegister

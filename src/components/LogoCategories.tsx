@@ -1,4 +1,3 @@
-import React from 'react';
 import './LogoCaterogies.css';
 
 const LogoCategories: React.FC = () => {

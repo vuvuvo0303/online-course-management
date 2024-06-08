@@ -3,8 +3,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 * {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -12,17 +16,42 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 1.5rem;
 }
 
 h1 {
   font-size: 2rem;
+  font-size: 2rem;
+  
+}
+
+.p_line_height {
+  line-height: 1.8rem;
+  letter-spacing: 0.005rem;
+}
+
+.li_line_height {
+  line-height: 2rem;
+}
+
+.p_line_height {
+  line-height: 1.8rem;
+  letter-spacing: 0.005rem;
+}
+
+.li_line_height {
+  line-height: 2rem;
+  font-size: 2rem;
 }
 
 body {
-  font-family: "Merriweather", serif;
+  font-family: Inter;
+
 }
 
 ::-webkit-scrollbar {
+  width: 5px;
+  height: 4px;
   width: 5px;
   height: 4px;
 }
@@ -30,6 +59,28 @@ body {
 ::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 12px;
+  background: #888;
+  border-radius: 12px;
+}
+
+.main_h1 {
+  font-weight: 700;
+  font-size: 2.5rem;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.main_p {
+  font-weight: 400;
+  line-height: 1.4;
+  font-size: 1.4rem;
+}
+
+.main_h3 {
+  margin: 3.2rem 0 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+  font-size: 1.3rem;
 }
 
 .custom-btn {
@@ -38,10 +89,12 @@ body {
 
 .flexCenter {
   @apply flex justify-center items-center;
+
 }
 
 .flexBetween {
   @apply flex justify-between items-center;
+
 }
 
 .flexEvenly {
@@ -50,102 +103,147 @@ body {
 
 .flexStart {
   @apply flex items-center justify-start;
+  
 }
 
 .text-small {
   @apply text-sm font-medium;
+  
 }
 
 .paddings {
   @apply lg:px-20 py-6 px-5;
+
 }
 
 /* Navbar */
 .navbar {
   @apply py-5 px-8 border-b border-nav-border gap-4;
+
 }
 
 /* Footer */
 .footer {
   @apply flex-col paddings w-full gap-20 bg-light-white;
+  
+}
+
+.footer>.flex:first-child {
+  @apply flex-row justify-between;
+}
+
+.footer>.flex:first-child>.flex {
+  @apply gap-8;
 }
 
 .footer_copyright {
-  @apply max-sm:flex-col w-full text-sm font-normal;
+  @apply flex justify-center items-center w-full text-sm font-normal;
 }
 
+
 .footer_column {
-    @apply flex-1 flex flex-col gap-3 text-sm min-w-max;
+  @apply flex-1 flex flex-col gap-3 text-sm min-w-max;
+
 }
 
 .instructor_title {
-    font-size: 3rem;
-    background: linear-gradient(to bottom, rgb(9, 124, 224), #bbb);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+  font-size: 3rem;
+  background: linear-gradient(to bottom, rgb(9, 124, 224), #bbb);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
 }
 
 .instructor_desc {
-    font-size: 1.25rem;
-    font-weight: 300;
+  font-size: 1.25rem;
+  font-weight: 300;
+  line-height: 1.5;
 }
 
 .storyteller_desc {
-    font-size: 1.25rem;
-    font-weight: 100;
-    text-align: justify;
-
+  font-size: 1.25rem;
+  font-weight: 100;
+  line-height: 1.6;
 }
 
-.heading_xxl {
-    font-weight: 700;
-    font-size: 2.5rem;
-    max-width: 36rem;
-    letter-spacing: 0;
-    line-height: 1.2;
+.icon_size {
+  font-size: 2.3rem;
 }
 
-.text_xl {
-    font-weight: 400;
-    line-height: 1.4;
-    font-size: 1.4rem;
-}
 
 .vertical_line {
-    margin: 0 24px;
-    width: 1px;
-    background-color: #bbb;
+  margin: 0 24px;
+  width: 1px;
+  background-color: #bbb;
 }
 
 .custom_hr {
-    border: 0;
-    height: 1px;
-    background-color: #bbb;
-    margin: 1.5rem 0;
+  border: 0;
+  height: 1px;
+  background-color: #bbb;
+  margin: 1.5rem 0;
 }
 
 .ud_h {
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: 0;
-    font-size: 1.9rem;
-    max-width: 36em;
-    color: #3e4143;
-    margin: 40px auto;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-size: 1.9rem;
+  max-width: 36em;
+  color: #3e4143;
+  margin: 40px auto;
+}
+
+.ud_h4 {
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-size: 1.4rem;
+  max-width: 36em;
+  text-align: center;
 }
 
 .faq_container {
-    display: flex;
-    justify-content: center;
-    margin: 2.4rem 0 1.2rem;
+  display: flex;
+  justify-content: center;
+  margin: 2.4rem 0 1.2rem;
 }
 
 .faq_h5 {
-    color: #3e4143;
-    margin: 0 0 .8rem;
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: 0;
-    font-size: 1.6rem;
+  color: #3e4143;
+  margin: 0 0 .8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-size: 1.6rem;
 }
 
+@media (max-width: 1024px) {
+  .instructor_title {
+    font-size: 1.5rem;
+  }
+
+  .instructor_desc {
+    font-size: 0.875rem;
+  }
+
+  .flexEvenly>div {
+    max-width: 100%;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .flex {
+    flex-direction: column;
+  }
+
+  .flexEvenly {
+    flex-direction: column;
+  }
+}
+
+/*Login*/
+.shadow-left {
+  box-shadow: -10px 0px 20px -5px rgba(214, 232, 77, 0.4);
+}

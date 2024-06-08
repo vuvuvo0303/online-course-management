@@ -1,62 +1,176 @@
-import { Form, Input, Button, message } from "antd";
+// <<<<<<< HEAD
+// import { Form, Input, Button, message } from "antd";
 
-const { TextArea } = Input;
+// const { TextArea } = Input;
+// =======
+// import {
+//   QuestionCircleOutlined,
+//   BookOutlined,
+//   FileDoneOutlined,
+//   EnvironmentOutlined,
+//   MailOutlined,
+//   PhoneOutlined,
+//   FacebookOutlined,
+//   YoutubeOutlined,
+//   TwitterOutlined,
+// } from "@ant-design/icons";
+// import "./index.css";
+// >>>>>>> 13bc5609117d0984e91cc6a498f6b7ea36b603e3
 
-const Contact: React.FC = () => {
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-    message.success("Form submitted successfully!");
-  };
+// const Contact: React.FC = () => {
+//   return (
+//     <div>
+//       <div className="contact-image-container">
+//         <img
+//           src="https://www.soho2019.com/wp-content/uploads/2021/11/contact-banner-2.jpg"
+//           alt="Contact Us"
+//           className="contact-image"
+//         />
+//       </div>
+//       <div className="contact-container">
+//         <section
+//           className="contact-section"
+//           onClick={() => (window.location.href = "/faq")}
+//         >
+//           <div className="contact-link">
+//             <QuestionCircleOutlined className="contact-icon" />
+//             <h2>
+//               <strong>FAQs</strong>
+//             </h2>
+//           </div>
+//         </section>
+//         <section
+//           className="contact-section"
+//           onClick={() => (window.location.href = "/blogs")}
+//         >
+//           <div className="contact-link">
+//             <BookOutlined className="contact-icon" />
+//             <h2>
+//               <strong>Blogs</strong>
+//             </h2>
+//           </div>
+//         </section>
+//         <section
+//           className="contact-section"
+//           onClick={() => (window.location.href = "/terms")}
+//         >
+//           <div className="contact-link">
+//             <FileDoneOutlined className="contact-icon" />
+//             <h2>
+//               <strong>Policy & Terms</strong>
+//             </h2>
+//           </div>
+//         </section>
+//       </div>
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-    message.error("Failed to submit the form!");
-  };
+//       <div className="contact-container-outer">
+//         <div className="map-container">
+//           <iframe
+//             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3080.2532598487546!2d106.7888885354281!3d10.85577860091569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317527692dcbc14b%3A0xb6aada118566b9c5!2sOneHub%20Saigon!5e0!3m2!1svi!2s!4v1717499320271!5m2!1svi!2s"
+//             width="100%"
+//             height="400"
+//             style={{ border: "0" }}
+//           ></iframe>
+//         </div>
 
-  return (
-    <div style={{ maxWidth: 600, margin: "0 auto", padding: "1rem" }}>
-      <h1>Contact Us</h1>
-      <Form
-        name="contact"
-        layout="vertical"
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
-        <Form.Item
-          label="Name"
-          name="name"
-          rules={[{ required: true, message: "Please input your name!" }]}
-        >
-          <Input placeholder="Enter your name" />
-        </Form.Item>
+//         <div className="contact-container-2">
+//           <div className="contact-info">
+//             <h1>
+//               {" "}
+//               <strong>Contact Information</strong>
+//             </h1>
+//             <hr style={{ width: "250px" }} />
+//             <p>
+//               <EnvironmentOutlined className="contact-icon" />
+//               <strong> Main Address:</strong> D1 Street, Tan Phu Ward, Thu Duc
+//               City, Ho Chi Minh City, Vietnam
+//             </p>
+//             <p>
+//               <MailOutlined className="contact-icon" />
+//               <strong> Email Address:</strong> flearncontact@gmail.com
+//             </p>
+//             <p>
+//               <PhoneOutlined className="contact-icon" />
+//               <strong> Phone Number:</strong> (+84) 766710603
+//             </p>
+//             <div className="social-icons-container">
+//               <div
+//                 onClick={() =>
+//                   (window.location.href = "https://www.facebook.com")
+//                 }
+//               >
+//                 <FacebookOutlined className="social-icon" />
+//               </div>
+//               <div
+//                 onClick={() =>
+//                   (window.location.href = "https://www.youtube.com")
+//                 }
+//               >
+//                 <YoutubeOutlined className="social-icon" />
+//               </div>
+//               <div
+//                 onClick={() => (window.location.href = "https://twitter.com")}
+//               >
+//                 <TwitterOutlined className="social-icon" />
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//       <div className="office">
+//         <h1>
+//           <strong>Our Offices</strong>
+//         </h1>
+//         <div className="office-images">
+//           <div className="office-image">
+//             <img
+//               src="https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+//               alt="Office 1"
+//             />
+//             <p>
+//               Tan Thuan, Tan Thuan Dong Ward, District 7, Ho Chi Minh City,
+//               Vietnam
+//             </p>
+//           </div>
+//           <div className="office-image">
+//             <img
+//               src="https://images.unsplash.com/photo-1525230071276-4a87f42f469e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+//               alt="Office 2"
+//             />
+//             <p>Shibakoen 1-7-6, Minato-ku, Tokyo-to, 105-0011 Japan</p>
+//           </div>
+//           <div className="office-image">
+//             <img
+//               src="https://images.unsplash.com/photo-1578495959700-a617c3600026?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+//               alt="Office 3"
+//             />
+//             <p>Liangqing District, Nanning City, Guangxi Province, China</p>
+//           </div>
+//           <div className="office-image">
+//             <img
+//               src="https://images.unsplash.com/photo-1568449024472-6782aed72e75?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+//               alt="Office 4"
+//             />
+//             <p>Yeongdeungpogu, Seoul, Korea</p>
+//           </div>
+//           <div className="office-image">
+//             <img
+//               src="https://plus.unsplash.com/premium_photo-1716968595140-b65cb93997e8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+//               alt="Office 5"
+//             />
+//             <p>PCCW Tower 979 King’s Road, Quarry Bay HongKong</p>
+//           </div>
+//           <div className="office-image">
+//             <img
+//               src="https://plus.unsplash.com/premium_photo-1661955975506-04d3812be312?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+//               alt="Office 6"
+//             />
+//             <p>Xinyi District, Taipei City, Taiwan</p>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            { required: true, message: "Please input your email!" },
-            { type: "email", message: "The input is not valid E-mail!" },
-          ]}
-        >
-          <Input placeholder="Enter your email" />
-        </Form.Item>
-
-        <Form.Item
-          label="Message"
-          name="message"
-          rules={[{ required: true, message: "Please input your message!" }]}
-        >
-          <TextArea rows={4} placeholder="Your message" />
-        </Form.Item>
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
-};
-
-export default Contact;
+// export default Contact;
