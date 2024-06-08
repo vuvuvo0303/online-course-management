@@ -133,7 +133,7 @@ export const footerLinks = [
   {
     title: "For instructors",
     links: [
-      { name: "Teach on FLearn", url: "/register" },
+      { name: "Teach on FLearn", url: "/" },
       { name: "About us", url: "/about" },
       { name: "Contact us", url: "/contact" },
     ],
