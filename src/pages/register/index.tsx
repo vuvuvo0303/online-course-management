@@ -64,120 +64,121 @@ const RegisterPage = () => {
     </button>
   );
   return (
-  
     <div className="flex min-h-screen relative">
-    <img src={Vector} alt="" className="absolute bottom-8" />
+      <img src={Vector} alt="" className="absolute bottom-8" />
 
-    <div className="w-full md:w-1/2 flex flex-col justify-center  pt-5 bg-white rounded-l-lg">
-      <div className="mr-4">
-        {" "}
-        <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Register </h1>
-        <span className="flex justify-center mb-4">Learn from top experts . Sign up for FLearn now!</span>
-      </div>
-
-        <div className="mt-6 flex justify-center ">
-          <Form
-            name="basic"
-            className="space-y-6"
-            style={{ maxWidth: 600 }}
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-          >
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[{ required: true, message: "Please input your email!" }]}
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
+      <div className="w-full md:w-1/2 flex flex-col justify-center  pt-5 bg-white rounded-l-lg">
+        <div className="mr-4">
+          {" "}
+          <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Register </h1>
+          <span className="flex justify-center mb-4">Learn from top experts . Sign up for FLearn now!</span>
+        </div>
+        <div className="mb-6">
+          <div className="mt- flex justify-center ">
+            <Form
+              name="basic"
+              className="space-y-0 "
+              style={{ maxWidth: 600 }}
+              initialValues={{ remember: true }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
             >
-              <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-            </Form.Item>
-            <Form.Item
-              label="Username"
-              name="username"
-              rules={[{ required: true, message: "Please input your username!" }]}
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-            >
-              <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-            </Form.Item>
-
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[{ required: true, message: "Please input your password!" }]}
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-            >
-              <Input.Password className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-            </Form.Item>
-            <Form.Item
-              label="Phone Number"
-              name="phonenumber"
-              rules={[{ required: true, message: "Please input your Phone Number!" }]}
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-            >
-              <Input
-                type="Number"
-                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              />
-            </Form.Item>
-            <Form.Item<FieldType>
-              label="Avatar"
-              name="avatar"
-              rules={[{ required: true, message: "Please upload your Avatar!" }]}
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-            >
-              <Upload
-                action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={handlePreview}
-                onChange={handleChange}
+              <Form.Item
+                label="Email"
+                name="email"
+                rules={[{ required: true, message: "Please input your email!" }]}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                className="mb-1"
               >
-                {fileList.length >= 1 ? null : uploadButton}
-              </Upload>
-            </Form.Item>
-            <Form.Item<FieldType>
-              name="policy"
-              valuePropName="checked"
-              rules={[{ required: true, message: "Please accept Policy!" }]}
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-            >
-              <Checkbox>Agree to Terms and Conditions</Checkbox>
-              <span onClick={openModal} className="hover:cursor-pointer font-bold hover:text-red-400 ">
-                (See Policy)
-              </span>
-              <Modal title="Policy" open={isModalOpen} onCancel={handleCacncle} onOk={handleOk}></Modal>
-            </Form.Item>
-            <Form.Item wrapperCol={{ span: 24 }}>
-              <Button type="primary" htmlType="submit" className="w-full shadow-xl hover:shadow-sky-600 bg-black ">
-                Create Account
-              </Button>
-            </Form.Item>
-          </Form>
+                <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+              </Form.Item>
+              <Form.Item
+                label="Username"
+                name="username"
+                rules={[{ required: true, message: "Please input your username!" }]}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                
+              >
+                <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+              </Form.Item>
+
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={[{ required: true, message: "Please input your password!" }]}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+              >
+                <Input.Password className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+              </Form.Item>
+              <Form.Item
+                label="Phone Number"
+                name="phonenumber"
+                rules={[{ required: true, message: "Please input your Phone Number!" }]}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+              >
+                <Input
+                  type="Number"
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
+              </Form.Item>
+              <Form.Item<FieldType>
+                label="Avatar"
+                name="avatar"
+                rules={[{ required: true, message: "Please upload your Avatar!" }]}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+              >
+                <Upload
+                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                  listType="picture-card"
+                  fileList={fileList}
+                  onPreview={handlePreview}
+                  onChange={handleChange}
+                >
+                  {fileList.length >= 1 ? null : uploadButton}
+                </Upload>
+              </Form.Item>
+              <Form.Item<FieldType>
+                name="policy"
+                valuePropName="checked"
+                rules={[{ required: true, message: "Please accept Policy!" }]}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+              >
+                <Checkbox>Agree to Terms and Conditions</Checkbox>
+                <span onClick={openModal} className="hover:cursor-pointer font-bold hover:text-red-400 ">
+                  (See Policy)
+                </span>
+                <Modal title="Policy" open={isModalOpen} onCancel={handleCacncle} onOk={handleOk}></Modal>
+              </Form.Item>
+              <Form.Item wrapperCol={{ span: 24 }}>
+                <Button type="primary" htmlType="submit" className="w-full shadow-xl hover:shadow-sky-600 bg-black ">
+                  Create Account
+                </Button>
+              </Form.Item>
+            </Form>
           </div>
-        <span className="mt-4 block text-center">
-          Do you have an account?{" "}
-          <strong>
-            <Link to={"/login"} className="hover:cursor-pointer hover:text-red-400">
-              Sign In here
-            </Link>
-          </strong>
-        </span>
-        
+          <span className="mt-4 block text-center">
+            Do you have an account?{" "}
+            <strong>
+              <Link to={"/login"} className="hover:cursor-pointer hover:text-red-400">
+                Sign In here
+              </Link>
+            </strong>
+          </span>
+        </div>
       </div>
       <div className="hidden md:flex w-1/2 pb-12 items-center justify-center">
-        <div className="rounded-lg overflow-hidden w-[80%] shadow-pink-300">
+        <div className="rounded-lg overflow-hidden w-[80%] shadow-pink-300 mt-20">
           <img className="shadow-xl rounded-xl w-full" src={Ractangle} alt="logo" />
         </div>
       </div>
-    
+
       {previewImage && (
         <Image
           wrapperStyle={{ display: "none" }}

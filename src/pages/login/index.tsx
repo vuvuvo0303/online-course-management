@@ -30,31 +30,36 @@ const LoginPage = () => {
         <div className="mt-6 flex justify-end">
           <Form
             name="basic"
-            className="space-y-6 w-full md:w-[80%]"
+            className="space-y-2 w-full md:w-[80%]"
             initialValues={{ remember: true }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
           >
-            <Form.Item
-              label="Username"
-              name="username"
-              rules={[{ required: true, message: "Please input your username!" }]}
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-            >
-              <Input className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-            </Form.Item>
+            <div className="pb-2">
+              {" "}
+              <Form.Item
+                label="Username"
+                name="username"
+                rules={[{ required: true, message: "Please input your username!" }]}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                className="mb-1"
+              >
+                <Input className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+              </Form.Item>
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={[{ required: true, message: "Please input your password!" }]}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                className="mb-1"
+              >
+                <Input.Password className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+              </Form.Item>
+            </div>
 
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[{ required: true, message: "Please input your password!" }]}
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-            >
-              <Input.Password className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-            </Form.Item>
             <div className="flex justify-center">
               <Link className="md:mr-40 hover:text-green-600" to={""}>
                 Forget Password
