@@ -2,7 +2,7 @@
 
 import { Row, Col } from 'antd';
 import { Link } from 'react-router-dom'
-import "./index.css"
+import "./About.css"
 
 
 const About = () => {
@@ -21,26 +21,26 @@ const About = () => {
                     <Link to={"/"}>Check out our latest company news!</Link>
                 </div>
                 <div className='skill'>
-                    <strong><h1 className='text-center'>Skills are the key to unlocking potential</h1></strong>
-                    <h1 className='text-center'>Whether you want to learn a new skill, train your teams, or share what you know with the world, you’re in the right place. As a leader in online learning, we’re here to help you achieve your goals and transform your life.</h1>
+                <h1 className='text-center'>Skills are the key to unlocking potential</h1>
+                    <p className='text-center storyteller_desc'>Whether you want to learn a new skill, train your teams, or share what you know with the world, you’re in the right place. As a leader in online learning, we’re here to help you achieve your goals and transform your life.</p>
                 </div>
                 <div>
                     <Row className="join grid grid-cols-3 gap-24">
 
                         <div className='work'>
-                            <strong><h1>Work with us</h1></strong>
-                            <p >At Flearn, we’re all learners and instructors. We live out our values every day to create a culture that is diverse, inclusive, and committed to helping employees thrive.</p>
+                        <h1>Work with us</h1>
+                            <p className='storyteller_desc'>At Flearn, we’re all learners and instructors. We live out our values every day to create a culture that is diverse, inclusive, and committed to helping employees thrive.</p>
 
 
                         </div>
                         <div className='research'>
-                            <strong><h1>See our research</h1></strong>
-                            <p >We’re committed to improving lives through learning. Dig into our original research to learn about the forces that are shaping the modern workplace.</p>
+                        <h1>See our research</h1>
+                            <p className='storyteller_desc'>We’re committed to improving lives through learning. Dig into our original research to learn about the forces that are shaping the modern workplace.</p>
 
                         </div>
                         <div className='blog'>
-                            <strong><h1>Read our blog</h1></strong>
-                            <p >Want to know what we’ve been up to lately? Check out the Flearn blog to get the scoop on the latest news, ideas and projects, and more.</p>
+                        <h1>Read our blog</h1>
+                            <p className='storyteller_desc'>Want to know what we’ve been up to lately? Check out the Flearn blog to get the scoop on the latest news, ideas and projects, and more.</p>
 
                         </div>
                     </Row>
@@ -57,7 +57,7 @@ const About = () => {
                         </Col>
                         <Col>
                             <div className='ColorLink purple'>
-                                <Link id='purple' to={"/"} >Read now</Link>
+                                <Link id='purple' to={"/blog"} >Read now</Link>
                             </div>
                         </Col>
                     </Row>
@@ -66,7 +66,7 @@ const About = () => {
             </div>
             <div className='info'>
                 <strong><h1 className='text-center'>Creating impact around the world</h1></strong>
-                <p className='text-center'>With our global catalog spanning the latest skills and topics, people and organizations everywhere are able to adapt to change and thrive.</p>
+                <p className='text-center storyteller_desc'>With our global catalog spanning the latest skills and topics, people and organizations everywhere are able to adapt to change and thrive.</p>
                 <div className='infoRow'>
                     <Row className='container mx-auto text-lg'>
                         <Col span={6} className='col  grid-rows-2 gap' >
@@ -98,14 +98,14 @@ const About = () => {
                     </Row>
                 </div>
             </div>
-            <div className='container mx-auto info-organizations '>
+            <div className='container mx-auto info-organizations storyteller_desc'>
                 <p>We help organizations of all types and sizes prepare for the path ahead — wherever it leads. Our curated collection of business and technical courses help companies, governments, and nonprofits go further by placing learning at the center of their strategies.</p>
             </div>
             <div className=' container mx-auto'>
                 <Row className='grid grid-cols-3 gap-10'>
-                    <Col className='intro'>Flearn fit us like a glove. Their team curates fresh, up-to-date courses from their marketplace and makes them available to customers.</Col>
-                    <Col className='intro'>In total, it was a big success, I would get emails about what a fantastic resource it was.</Col>
-                    <Col className='intro'>Flearn responds to the needs of the business in an agile and global manner. It’s truly the best solution for our employees and their careers.</Col>
+                    <Col className='storyteller_desc'>Flearn fit us like a glove. Their team curates fresh, up-to-date courses from their marketplace and makes them available to customers.</Col>
+                    <Col className='storyteller_desc'>In total, it was a big success, I would get emails about what a fantastic resource it was.</Col>
+                    <Col className='storyteller_desc'>Flearn responds to the needs of the business in an agile and global manner. It’s truly the best solution for our employees and their careers.</Col>
                 </Row>
             </div>
             <div className='dev-container'>
@@ -119,9 +119,9 @@ const About = () => {
                     <Col className='dev-name' span={12}>duongtoan106</Col>
                 </Row>
             </div>
-            <div className='map container mx-auto'>
+            {/* <div className='map container mx-auto'>
                 <Row>
-                    {/* <Col span={12}></Col> */}
+                    <Col span={12}></Col>
                     <Col span={24}>
                         <iframe
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3080.2532598487546!2d106.7888885354281!3d10.85577860091569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317527692dcbc14b%3A0xb6aada118566b9c5!2sOneHub%20Saigon!5e0!3m2!1svi!2s!4v1717499320271!5m2!1svi!2s" width="100%" height="900"
@@ -129,8 +129,7 @@ const About = () => {
                         ></iframe></Col>
                 </Row>
 
-
-            </div>
+            </div> */}
         </>
     );
 };
