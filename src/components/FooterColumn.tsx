@@ -1,5 +1,5 @@
 
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 type FooterLink = {
     name: string;
@@ -11,19 +11,19 @@ type FooterColumnProps = {
     links: Array<FooterLink>;
 };
 
-const FooterColumn: React.FC<FooterColumnProps> = ({ title, links }) => {
-    return (
-        <div className='footer-column'>
-            <h4 className='font-semibold'>{title}</h4>
-            <ul className='flex flex-col gap-2 font-normal'>
-                {links.map(link => (
-                    <li key={link.name}>
-                        <Link to={link.url}>{link.name}</Link>
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
-};
+const FooterColumn: React.FC<FooterColumnProps> = ({ title, links }) => (
+  <div className="flex flex-col">
+    <h4 className="font-bold">{title}</h4>
+    <ul className="list-none mt-4">
+      {links.map((link, index) => (
+        <li key={index} className="mb-2">
+          <a href={link.url} className="text-sm text-gray-600 hover:underline">
+            {link.name}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 
 export default FooterColumn;

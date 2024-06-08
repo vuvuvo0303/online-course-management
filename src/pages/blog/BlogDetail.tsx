@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Blog } from '../../models'; // Assuming you have a Blog model
 import { Spin, Alert } from 'antd'; // Import Ant Design components
