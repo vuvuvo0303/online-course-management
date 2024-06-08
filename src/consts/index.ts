@@ -47,7 +47,10 @@ export const sidebarPolicies = [
   { id: 1, name: "Terms of Use", link: "/terms" },
   { id: 2, name: "Privacy Policy", link: "/terms/policy" },
   { id: 3, name: "Rules and Guidelines", link: "/terms/guidelines" },
-  { id: 4, name: "Help & Support", link: "/support" },
+  { id: 4, name: "Intellectual Property Policy", link: "/terms/intellectual" },
+  { id: 5, name: "Master Services Agreement", link: "/terms/guidelines" },
+  { id: 6, name: "Launch Services", link: "/terms/guidelines" },
+  { id: 7, name: "Help & Support", link: "/support" },
 ];
 
 /* Polices */
@@ -77,6 +80,46 @@ export const terms = [
   { id: 11, name: "11. Update these terms", link: "#section11" },
   { id: 12, name: "12. How to contact us", link: "#section12" },
 ];
+
+/* faq */
+export const faq_student = [
+  { id: 1, name: "Refund Status: Common Questions", link: "#section1" },
+  { id: 2, name: "Payment Methods on FLearn", link: "#section2" },
+  { id: 3, name: "Lifetime Access", link: "#section3" },
+  { id: 4, name: "How to Find Your Missing Course", link: "#section4" },
+  { id: 5, name: "How to Download Your Certificate of Completion", link: "#section5" },
+  { id: 6, name: "How to Refund a Course", link: "#section6" },
+  { id: 7, name: "Downloading Course Resources", link: "#section7" },
+  { id: 8, name: "Learning With FLearn: Frequently Asked Questions", link: "#section8" },
+  { id: 9, name: "Troubleshooting Payment Failures", link: "#section9" },
+];
+
+export const faq_instructor = [
+  { id: 1, name: "FLearn Course Quality Checklist", link: "#section1" },
+  { id: 2, name: "How to Become a Premium Instructor", link: "#section2" },
+  { id: 3, name: "Promote Your Course With Coupons and Referral Links", link: "#section3" },
+  { id: 4, name: "Instructor Revenue Share", link: "#section4" },
+  { id: 5, name: "Instructor Promotional Agreements and FLearn Deals", link: "#section5" },
+  { id: 6, name: "Teaching on FLearn: Frequently Asked Questions", link: "#section6" },
+];
+
+/* topic */
+export const topic_student = [
+  { id: 1, name: "Account/Profile",description: "Manage your account settings.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJ75XEBMHTVM355A2ATG" ,link: "#section1" },
+  { id: 2, name: "Troubleshooting",description: "Experiencing a technical issue? Check here.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FM9JPEPTW2N7HD3XSSST" ,link: "#section1" },
+  { id: 3, name: "Learning Experience",description: "Everything about the FLearn learning", img: "https://support.udemy.com/hc/theming_assets/01HZP8FDKGE7PT2EXYKDQZ8BD6" ,link: "#section1" },
+  { id: 4, name: "Purchase/Refunds",description: "Learn about purchasing courses, how to send gifts, and refunds", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJB5Y47293NZF0220ZKY" ,link: "#section1" },
+  { id: 5, name: "Mobile",description: "On the go? Learn about our mobile app", img: "https://support.udemy.com/hc/theming_assets/01HZP8FGTNPB2Z3MC5WWRWTSAZ" ,link: "#section1" }, 
+  { id: 6, name: "Trust & Safety",description: "Trust & Safety information and reporting", img: "https://support.udemy.com/hc/theming_assets/01HZP8FMD53E72SM31SP8RT0MM" ,link: "#section1" },
+]
+
+export const topic_instructor = [
+  { id: 1, name: "Instructor Payments",description: "Understand the revenue share and how to receive payments.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJ3P0VC64QMBMBXKSDMQ" ,link: "#section1" },
+  { id: 2, name: "Selling & Promotion",description: "Learn about the announcement.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FKSFR8QFBH1N595WYPTM" ,link: "#section1" },
+  { id: 3, name: "Course Building",description: "Build your course curriculum and landing page.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FDKGE7PT2EXYKDQZ8BD6" ,link: "#section1" },
+  { id: 4, name: "Course Management",description: "Maintain your course and engage with students.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FM2TN5216VEXR1GY2RMS" ,link: "#section1" },
+  { id: 5, name: "Trust & Safety",description: "Policy and copyright questions and guidance.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FMD53E72SM31SP8RT0MM" ,link: "#section1" },
+]
 
 /* Footer */
 export const footerLinks = [
