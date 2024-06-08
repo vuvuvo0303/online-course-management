@@ -1,9 +1,15 @@
-import React from "react";
 
-interface FooterColumnProps {
-  title: string;
-  links: { name: string; url: string }[];
-}
+import { Link } from 'react-router-dom';
+
+type FooterLink = {
+    name: string;
+    url: string;
+};
+
+type FooterColumnProps = {
+    title: string;
+    links: Array<FooterLink>;
+};
 
 const FooterColumn: React.FC<FooterColumnProps> = ({ title, links }) => (
   <div className="flex flex-col">
