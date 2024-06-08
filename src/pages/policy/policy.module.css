@@ -1,0 +1,85 @@
+.title {
+    margin: 3.2rem 0 1.6rem;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.content {
+    margin-top: 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.alertBanner {
+    background-color: #f9f9f9;
+    border-left: 4px solid #ffcc00;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.text_without_underline {
+    list-style-type: none;
+    padding: 0;
+}
+
+.list_content {
+    list-style-type: disc;
+    margin-left: 3.5rem;
+}
+
+.link_to {
+    color: #0073e6;
+    text-decoration: none;
+}
+
+.link_to:hover {
+    text-decoration: underline;
+}
+
+.table_container {
+    margin: .8rem 0 1.6rem;
+    overflow: auto;
+}
+
+.policy_table {
+    border: 1px solid #d1d7dc;
+    border-collapse: collapse;
+    min-width: 60rem;
+    border-spacing: 0;
+    margin-top: .8rem;
+    width: 100%;
+}
+
+.policy_tr {
+    background: #fff;
+}
+
+.table_description_main {
+    background: #f7f9fa;
+    text-align: right;
+    width: 20%;
+    border: 1px solid #d1d7dc;
+    vertical-align: top;
+    padding-top: 0.7rem;
+    padding-right: 0.7rem;
+}
+
+.table_description {
+    border: 1px solid #d1d7dc;
+    vertical-align: top;
+    padding: 0.5rem 1.3rem 1.3rem 0.8rem;
+    line-height: 2rem;
+}
+
+.policy_u {
+    text-decoration: underline;
+    text-underline-offset: .4rem;
+    text-decoration-color: #8072e6;
+    line-height: 1.2rem;
+}
+
+.policy_li {
+    line-height: 1.8rem;
+    margin-top: 1.3rem;
+}
