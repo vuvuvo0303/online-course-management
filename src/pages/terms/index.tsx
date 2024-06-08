@@ -6,9 +6,9 @@ const Terms = () => {
 
     return (
         <TermsLayout>
-            <div className='px-0 mx-10 sm:px-10 relative'>
+            <div className='md:px-0 md:mx-10 px-6 relative'>
                 <div className='w-full'>
-                    <h1 className={`${styles.title} text-2xl sm:text-4xl`}>Terms of Use</h1>
+                    <h1 className={`${styles.title} text-2xl md:text-4xl`}>Terms of Use</h1>
                     <p className='p_line_height mt-3'>
                         <i>These Terms of Use (<strong>"Term"</strong>) were last updated on June 6 , 2024.</i>
                     </p>
@@ -28,7 +28,7 @@ const Terms = () => {
                         <h2 className={`${styles.categories} text-xl sm:text-2xl mb-5`}>Categories</h2>
                         <ul className={styles.text_without_underline}>
                             {terms.map(term => (
-                                <li className={`${styles.list_categories} text-xl`} key={term.id}>
+                                <li className={`${styles.list_categories} md:text-xl text-sm`} key={term.id}>
                                     <a className={styles.category_color} href={term.link}>{term.name}</a>
                                 </li>
                             ))}
@@ -70,7 +70,7 @@ const Terms = () => {
 
                         <p className='p_line_height mt-3'>If the content you purchased is not what you expected, within 30 days of purchasing the content, you can request a refund from FLearn to your account. This refund option does not apply to Subscription purchases, which are covered in Section 8.4 (Payment and Billing) below. We may, at our sole discretion, issue you a refund as a refund offer or a refund to your original payment method, subject to the capabilities of our payment service providers, the platform you purchased the content on (website, mobile app or TV) and other factors. You will not receive a refund if you submit a request after the 30-day guarantee period has expired. However, if content you previously purchased is disabled for legal or policy reasons, you are entitled to a refund after this 30-day limit. FLearn also reserves the right to refund students after the 30-day period in the event of suspected or confirmed account fraud.</p>
 
-                        <p>FLearn or our partners may offer promotional codes and gifts to students. Some codes can be redeemed for gifts or promotional offers applicable to your FLearn account, which can then be used to eligible purchase content on our platform, subject to our terms and conditions. clause that acccompanies that code. Other codes can be redeemed directly for specific content. You cannot use gift and promotional offers to make purchases in our mobile or TV apps.</p>
+                        <p className='p_line_height mt-3'>FLearn or our partners may offer promotional codes and gifts to students. Some codes can be redeemed for gifts or promotional offers applicable to your FLearn account, which can then be used to eligible purchase content on our platform, subject to our terms and conditions. clause that acccompanies that code. Other codes can be redeemed directly for specific content. You cannot use gift and promotional offers to make purchases in our mobile or TV apps.</p>
 
                         <h2 id='section4' className={`${styles.categories} text-xl sm:text-2xl`}>4. Content and behavior rules</h2>
                         <div className={styles.alertBanner}>
@@ -159,7 +159,7 @@ const Terms = () => {
 
                         <h2 id='section12' className={`${styles.categories} text-xl sm:text-2xl`}>12. How to contact us</h2>
                         <p className='p_line_height mt-3'>The best way to contact us is to contact our support team</p>
-                        <p className='p_line_height mt-3 mb-10'>Thank you for teaching and learning with us!</p>
+                        <p className='p_line_height mt-1 mb-8'>Thank you for teaching and learning with us!</p>
                     </div>
                 </div>
                 <ScrollToTopButton />

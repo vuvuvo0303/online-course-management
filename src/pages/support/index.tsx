@@ -56,7 +56,7 @@ const Support = () => {
                             <h2 className='mb-7 text-2xl font-bold mt-10'>Select a Topic to Search for Help</h2>
                             <ul className={styles.faq_grid}>
                                 {topic_student.map(topic => (
-                                    <a href={topic.link}>
+                                    <a key={topic.id} href={topic.link}>
                                         <div className={styles.topic_wrap}>
                                             <img className='m-auto' src={topic.img} alt="" />
                                             <p className={styles.reg}>{topic.name}</p>
@@ -86,7 +86,7 @@ const Support = () => {
                             <h2 className='mb-7 text-2xl font-bold mt-10'>Select a Topic to Search for Help</h2>
                             <ul className={styles.faq_grid}>
                                 {topic_instructor.map(topic => (
-                                    <a href={topic.link}>
+                                    <a key={topic.id} href={topic.link}>
                                         <div className={styles.topic_wrap}>
                                             <img className='m-auto' src={topic.img} alt="" />
                                             <p className={styles.reg}>{topic.name}</p>
