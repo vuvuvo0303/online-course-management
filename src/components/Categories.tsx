@@ -125,18 +125,20 @@ const Categories: React.FC = () => {
                     ))}
                 </Carousel>
             </div>
-            <div className="content-frame">
-                <h2>Become an Instructor</h2>
-                <img
-                    src="https://png.pngtree.com/png-vector/20190115/ourlarge/pngtree-teachers-day-cartoon-female-teacher-teacher-png-image_370554.jpg"
-                    alt="Instructor"
-                    className="instructor-image"
-                />
-                <p>Top instructors from around the world teach millions of students on Cursus. We provide the tools and skills to teach what you love.</p>
-                <Button type="primary" onClick={handleStartTeaching} style={{ backgroundColor: 'gray', marginTop: '50px' }}>
-                    Start Teaching
-                </Button>
-            </div>
+            {window.innerWidth > 464 && (
+                <div className="content-frame">
+                    <h2>Become an Instructor</h2>
+                    <img
+                        src="https://png.pngtree.com/png-vector/20190115/ourlarge/pngtree-teachers-day-cartoon-female-teacher-teacher-png-image_370554.jpg"
+                        alt="Instructor"
+                        className="instructor-image"
+                    />
+                    <p>Top instructors from around the world teach millions of students on Cursus. We provide the tools and skills to teach what you love.</p>
+                    <Button type="primary" onClick={handleStartTeaching} style={{ backgroundColor: 'gray', marginTop: '50px' }}>
+                        Start Teaching
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };
