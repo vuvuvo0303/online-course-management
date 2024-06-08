@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Card } from 'antd';
 import "react-multi-carousel/lib/styles.css";
 import Carousel from 'react-multi-carousel';
