@@ -1,14 +1,15 @@
-import { Route, Routes, useLocation } from 'react-router-dom';
-import Home from './pages/home';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import LoginPage from './pages/login';
-import About from './pages/about';
-import RegisterPage from './pages/register';
-import Terms from './pages/terms';
-import InstructorPage from './pages/instructor';
-import Policy from './pages/policy';
-import Guidelines from './pages/guideline';
+import { Route, Routes, useLocation } from "react-router-dom";
+import Home from "./pages/home";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import LoginPage from "./pages/login";
+import About from "./pages/about";
+import RegisterPage from "./pages/register";
+import Terms from "./pages/terms";
+import InstructorPage from "./pages/instructor";
+import Policy from "./pages/policy";
+import Guidelines from "./pages/guideline";
+import Contact from "./pages/contact";
 
 function App() {
   const location = useLocation();
@@ -28,6 +29,7 @@ function App() {
         <Route path="/terms/policy" element={<Policy />} />
         <Route path="/terms/guidelines" element={<Guidelines />} />
         <Route path="/instructor" element={<InstructorPage />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
       {!isAdminPath && <Footer />}
     </>
