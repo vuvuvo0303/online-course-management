@@ -1,3 +1,4 @@
+// services/auth.ts
 import { fetchStudents, fetchInstructors, fetchAdmins } from './get';
 import { Student, Instructor, Admin } from '../models/User';
 

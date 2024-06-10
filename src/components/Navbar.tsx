@@ -16,10 +16,6 @@ const Navbar = () => {
     </Menu.SubMenu>
   ));
 
-  // Get user data from sessionStorage
-  const userData = JSON.parse(sessionStorage.getItem('user') || '{}');
-  const { avatarUrl } = userData;
-
   return (
     <nav className="flexBetween navbar">
       <div className="flex-1 flexStart gap-10">
@@ -52,18 +48,10 @@ const Navbar = () => {
         <Badge count={5}>
           <ShoppingCartOutlined className="text-gray-400 text-3xl" />
         </Badge>
-        {/* Render User Avatar */}
-        {avatarUrl ? (
-          <img
-            src={avatarUrl}
-            alt="User Avatar"
-            className="w-8 h-8 rounded-full object-cover cursor-pointer"
-          />
-        ) : (
-          <Link to="/login">
-            <UserOutlined className="text-gray-400 text-3xl cursor-pointer" />
-          </Link>
-        )}
+        {/* Redirect to "/login" */}
+        <Link to="/login">
+          <UserOutlined className="text-gray-400 text-3xl cursor-pointer" />
+        </Link>
       </div>
     </nav>
   );
