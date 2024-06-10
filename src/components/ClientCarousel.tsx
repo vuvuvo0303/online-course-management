@@ -30,7 +30,7 @@ const ClientCarousel: React.FC = () => {
     }, []);
 
     return (
-        <div className="testimonial bg-cover bg-center min-h-[200px] hidden lg:block">
+        <div className="testimonial bg-cover bg-center min-h-[200px] lg:max-w-none max-w-[400px] hidden lg:block">
             <div className="container shadow-lg">
                 <div className="relative">
                     {testimonials.map((testimonial, index) => (

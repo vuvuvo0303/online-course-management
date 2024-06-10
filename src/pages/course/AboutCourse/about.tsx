@@ -1,6 +1,6 @@
 import { Row, Col } from 'antd';
 import { Link } from 'react-router-dom'
-import "./about.css"
+import "./aboutcourse.css"
 
 
 const About = () => {

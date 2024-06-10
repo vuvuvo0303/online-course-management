@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Rate, Tabs } from 'antd';
 import { HeartOutlined, FlagOutlined, EyeOutlined, LikeOutlined, DislikeOutlined, ShareAltOutlined, CopyrightOutlined, MessageOutlined } from '@ant-design/icons';
-import About from '../about/About'; // Import the About component
+import About from '../course/AboutCourse/about'; // Import the About component
 import './index.css';
 
 const { TabPane } = Tabs;
