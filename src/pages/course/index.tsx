@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Rate, Tabs } from 'antd';
 import { HeartOutlined, FlagOutlined, EyeOutlined, LikeOutlined, DislikeOutlined, ShareAltOutlined, CopyrightOutlined, MessageOutlined } from '@ant-design/icons';
-import About from '../course/AboutCourse/about'; // Import the About component
+import About from './about/about'; // Import the About component
+import Content from './content/content';
 import './index.css';
 
 const { TabPane } = Tabs;
@@ -105,7 +106,7 @@ const Course: React.FC = () => {
             </div>
             <div className="course-content">
                 {activeTabKey === '1' && <About />}
-                {activeTabKey === '2' && <div>Content of Tab Pane 2</div>}
+                {activeTabKey === '2' && <Content />}
                 {activeTabKey === '3' && <div>Content of Tab Pane 3</div>}
             </div>
         </div>

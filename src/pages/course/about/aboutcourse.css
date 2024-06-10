@@ -1,11 +1,15 @@
+.about-course {
+    padding: 5px;
+}
+
 .container h1 {
     font-weight: bold;
 }
 
 .info {
-    background-color: #5624d0;
+    background-color: lightblue;
     padding-top: 30px;
-    color: white;
+    color: rgba(0, 0, 0, 0.758);
     margin-top: 96px;
     margin-bottom: 96px;
 }
@@ -78,37 +82,21 @@
     color: purple;
 }
 
-.row2 {
-    font-size: 12px;
+.infoRow .col {
+    flex: 1 1 auto;
     text-align: center;
-
+    margin: 2px;
+    /* 2px spacing between columns */
+    padding: 10px;
 }
 
-.row1 {
-    font-weight: bold;
-    text-align: center;
+.infoRow .row1 {
+    margin-top: 10px;
 }
 
-.info-organizations {
-    padding-bottom: 96px;
-    text-align: center;
 
-}
-
-.dev-name {
-    font-size: 25px;
-    text-align: center;
-    font-weight: bold;
-    color: #abb8c3;
-}
-
-.dev-container {
-    padding: 96px 0px 96px 0;
-    margin-top: 96px;
-    margin-bottom: 96px;
-    background-color: #f0f3f5;
-}
-
-.map {
-    padding-bottom: 96px;
+@media only screen and (max-width: 768px) {
+    .about-course {
+        max-width: 400px;
+    }
 }

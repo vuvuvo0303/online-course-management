@@ -217,6 +217,10 @@
         max-width: 400px;
     }
 
+    .course-tabs {
+        right: 600px;
+    }
+
     .course-card {
         max-width: 400px;
         flex-direction: column;
