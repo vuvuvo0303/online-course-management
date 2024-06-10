@@ -6,7 +6,7 @@ import './New.css';
 
 const { Meta } = Card;
 
-interface BlogPost {
+interface NewPost {
     title: string;
     link: string;
     imgSrc: string;
@@ -15,17 +15,17 @@ interface BlogPost {
     author: string;
 }
 
-interface BlogSectionProps { }
+interface NewSectionProps { }
 
-interface BlogSectionState {
-    blogPosts: BlogPost[];
+interface NewSectionState {
+    newPosts: NewPost[];
 }
 
-class BlogSection extends Component<BlogSectionProps, BlogSectionState> {
-    constructor(props: BlogSectionProps) {
+class NewSection extends Component<NewSectionProps, NewSectionState> {
+    constructor(props: NewSectionProps) {
         super(props);
         this.state = {
-            blogPosts: [
+            newPosts: [
                 {
                     title: "FPT Software Japan develops IT for the Japanese airline...",
                     link: "https://vnexpress.net/fpt-software-japan-phat-trien-cntt-cho-tap-doan-hang-khong-nhat-4747733.html",
@@ -124,7 +124,7 @@ class BlogSection extends Component<BlogSectionProps, BlogSectionState> {
                     <div className="block-content">
                         <div className="margin-am">
                             <Carousel responsive={responsive}>
-                                {this.state.blogPosts.map((post, index) => (
+                                {this.state.newPosts.map((post, index) => (
                                     <div key={index}>
                                         <a href={post.link} target="_blank" rel="noopener noreferrer">
                                             <Card
@@ -149,4 +149,4 @@ class BlogSection extends Component<BlogSectionProps, BlogSectionState> {
     }
 }
 
-export default BlogSection;
+export default NewSection;

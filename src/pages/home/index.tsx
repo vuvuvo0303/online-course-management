@@ -2,7 +2,7 @@ import Categories from "../../components/Categories";
 import TeacherCategories from "../../components/TeacherCategories";
 import ClientCarousel from "../../components/ClientCarousel";
 import LogoCategories from "../../components/LogoCategories";
-import BlogSection from "../../components/New/BlogSection";
+import NewSection from "../../components/news/NewSection";
 
 const Home = () => {
     return (
@@ -20,7 +20,7 @@ const Home = () => {
             <section className='flexStart paddings mb-16'>
                 <TeacherCategories />
             </section>
-            <BlogSection />
+            <NewSection />
         </div>
     );
 };

@@ -5,7 +5,7 @@
     margin: 0 auto;
     background-color: rgb(250, 238, 221);
     color: black;
-    padding: 0px;
+    padding: 2px;
     position: relative;
 }
 
@@ -97,6 +97,11 @@
     border-radius: 5px;
     font-size: 14px;
     cursor: pointer;
+}
+
+.button:hover {
+    background-color: #000000;
+    color: #ffc107;
 }
 
 .course-actions {
@@ -207,8 +212,33 @@
     gap: 10px;
 }
 
-.course-tabs {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+@media only screen and (max-width: 768px) {
+    .course-container {
+        max-width: 400px;
+    }
+
+    .course-card {
+        max-width: 400px;
+        flex-direction: column;
+    }
+
+    .course-info {
+        margin-top: 1rem;
+    }
+
+    .course-actions {
+        margin-top: 1rem;
+    }
+
+    .course-stats {
+        display: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    .course-container {
+        /* Adjust layout for tablet screens */
+    }
+
+    /* Add more styles as needed */
 }

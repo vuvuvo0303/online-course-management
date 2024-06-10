@@ -30,13 +30,13 @@ const ClientCarousel: React.FC = () => {
     }, []);
 
     return (
-        <div className="testimonial bg-cover bg-center min-h-[200px] hidden md:block"> {/* Ẩn khi ở màn hình mobile */}
+        <div className="testimonial bg-cover bg-center min-h-[200px] hidden lg:block">
             <div className="container shadow-lg">
                 <div className="relative">
                     {testimonials.map((testimonial, index) => (
                         <div key={index} className={clsx("absolute inset-0 transition-opacity duration-1000", index === current ? 'opacity-100' : 'opacity-0')}>
                             <div className="relative pb-1 text-center w-max">
-                                <img alt="" src={testimonial.img} className={clsx("img-fluid pl-1 max-w-screen-2xl max-h-[800px] transform transition-transform hover:scale-110")} />
+                                <img alt="" src={testimonial.img} className={clsx("img-fluid pl-1 max-w-screen-2xl max-h-[800px] transform transition-transform")} />
                             </div>
                         </div>
                     ))}
@@ -47,3 +47,4 @@ const ClientCarousel: React.FC = () => {
 };
 
 export default ClientCarousel;
+
