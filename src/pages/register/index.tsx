@@ -16,7 +16,7 @@ type FieldType = {
   policy?: string;
 };
 
-const RegisterPage = () => {
+const RegisterPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOk = () => {
     setIsModalOpen(false);
@@ -100,7 +100,7 @@ const RegisterPage = () => {
                 rules={[{ required: true, message: "Please input your username!" }]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                
+
               >
                 <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
               </Form.Item>

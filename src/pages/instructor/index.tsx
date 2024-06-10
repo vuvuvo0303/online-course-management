@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/CustomButton";
 import { DollarOutlined, ExpandAltOutlined, GlobalOutlined } from "@ant-design/icons";
 
-const InstructorPage = () => {
+const InstructorPage: React.FC = () => {
     const navigate = useNavigate();
 
     const handleStart = () => {

@@ -16,12 +16,12 @@ export async function fetchData<T>(url: string): Promise<T[]> {
 
 
 // Sử dụng hàm fetch tổng quát cho từng loại dữ liệu
-export const fetchStudent = () => fetchData<Student>(API_STUDENT_URL);
-export const fetchInstructor = () => fetchData<Instructor>(API_INSTRUCTOR_URL);
-export const fetchAdmin = () => fetchData<Admin>(API_ADMIN_URL);
-export const fetchComment = () => fetchData<Comment>(API_COURSES_URL);
-export const fetchReview = () => fetchData<Review>(API_REVIEW_URL);
-export const fetchEnrollment = () => fetchData<Enrollment>(API_ENROLLMENT_URL);
-export const fetchLecture = () => fetchData<Lecture>(API_LECTURE_URL);
-export const fetchPayment = () => fetchData<Payment>(API_PAYMENT_URL);
-export const fetchCourse = () => fetchData<Course>(API_COURSES_URL);
+export const fetchStudents = () => fetchData<Student>(API_STUDENT_URL);
+export const fetchInstructors = () => fetchData<Instructor>(API_INSTRUCTOR_URL);
+export const fetchAdmins = () => fetchData<Admin>(API_ADMIN_URL);
+export const fetchComments = () => fetchData<Comment>(API_COURSES_URL);
+export const fetchReviews = () => fetchData<Review>(API_REVIEW_URL);
+export const fetchEnrollments = () => fetchData<Enrollment>(API_ENROLLMENT_URL);
+export const fetchLectures = () => fetchData<Lecture>(API_LECTURE_URL);
+export const fetchPayments = () => fetchData<Payment>(API_PAYMENT_URL);
+export const fetchCourses = () => fetchData<Course>(API_COURSES_URL);

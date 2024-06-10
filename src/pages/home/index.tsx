@@ -4,7 +4,7 @@ import ClientCarousel from "../../components/ClientCarousel";
 import LogoCategories from "../../components/LogoCategories";
 import NewSection from "../../components/news/NewSection";
 
-const Home = () => {
+const Home: React.FC = () => {
     return (
         <div>
             <ClientCarousel />
