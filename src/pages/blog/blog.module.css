@@ -1,19 +1,17 @@
+/* blog.module.css */
+
 .box1 {
     background-color: #f7f9fa;
 }
-.content-center {
+
+.contentCenter {
     display: flex;
     justify-content: center;
-    /* Căn giữa theo chiều ngang */
     align-items: center;
-    /* Căn giữa theo chiều dọc */
     height: 100%;
-    /* Chiều cao của container, có thể điều chỉnh tùy ý */
-
-    /* Để dễ nhìn thấy container */
 }
 
-.blog-page {
+.blogPage {
     margin-bottom: 30px;
 }
 
@@ -24,13 +22,11 @@
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 3;
-    /* Số dòng tối đa */
     -webkit-box-orient: vertical;
     height: 4.5em;
-    /* Điều chỉnh chiều cao theo số dòng */
 }
 
-.blog-container {
+.blogContainer {
     border: 1px solid rgb(234, 224, 224);
     padding: 25px;
 }
@@ -39,20 +35,19 @@
     margin-top: 49px;
 }
 
-.category-title {
+.categoryTitle {
     margin-top: 10px;
     margin-bottom: 10px;
     font-weight: bold;
 }
 
-.category-bar {
+.categoryBar {
     background-color: black;
     color: white;
 }
 
-.category-bar button {
+.categoryBar button {
     margin-right: 25px;
-
 }
 
 .loading {
@@ -60,7 +55,8 @@
     margin-top: 15%;
     margin-bottom: 15%;
 }
-.category-box{
+
+.categoryBox {
     padding-bottom: 20px;
     border-bottom: 1px solid rgb(234, 224, 224);
 }
