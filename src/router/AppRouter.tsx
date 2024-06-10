@@ -23,7 +23,7 @@ const AppRouter: React.FC = () => {
             <Route path="/instructor" element={<InstructorPage />} />
             <Route path="/course" element={<CoursePage />} />
             <Route path="/blog" element={<BlogList />} />
-            <Route path="/blogs/:id" element={<BlogDetail />} />
+            <Route path="/blog/:id" element={<BlogDetail />} />
             <Route path="/contact" element={<Contact />} />
 
             {/* <ProtectedRoute path="/my-cart" element={<YourCartComponent />} />
