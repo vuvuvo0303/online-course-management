@@ -12,6 +12,7 @@ const BlogList = () => {
 
     useEffect(() => {
         const fetchBlogs = async () => {
+            
             try {
                 const response = await fetch('https://665fbf245425580055b0b23d.mockapi.io/blogs');
                 if (!response.ok) {
@@ -72,11 +73,12 @@ const BlogList = () => {
                 <Row className="grid grid-cols-3 gap-20">
                     {popularBlogs.map(blog => (
                         <Col className={styles.blogContainer} key={blog.id}>
+                            <p>{blog.category}</p>
                             <Link to={`/blogs/${blog.id}`}>
                                 <p className={styles.title}>{blog.title}</p>
                             </Link>
                             <div>
-                                <p>{blog.category}</p>
+                                
                                 <p>{new Date(blog.time).toLocaleDateString()}</p>
                                 <p>Name: {blog.name_user}</p>
                             </div>

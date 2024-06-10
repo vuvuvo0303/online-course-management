@@ -26,36 +26,31 @@ const About = () => {
                     <p className='text-center storyteller_desc'>Whether you want to learn a new skill, train your teams, or share what you know with the world, you’re in the right place. As a leader in online learning, we’re here to help you achieve your goals and transform your life.</p>
                 </div>
                 <div>
-                    <Row className={`${styles.join} grid grid-cols-3 gap-24`}>
-                        <div className={styles.work}>
+                    <Row className={`${styles.join} grid grid-cols-1   md:grid-cols-3 gap-24`}>
+                        <div className={`${styles.work} flex flex-col`}>
                             <h1>Work with us</h1>
                             <p className='storyteller_desc'>At Flearn, we’re all learners and instructors. We live out our values every day to create a culture that is diverse, inclusive, and committed to helping employees thrive.</p>
-                        </div>
-                        <div className={styles.research}>
-                            <h1>See our research</h1>
-                            <p className='storyteller_desc'>We’re committed to improving lives through learning. Dig into our original research to learn about the forces that are shaping the modern workplace.</p>
-                        </div>
-                        <div className={styles.blog}>
-                            <h1>Read our blog</h1>
-                            <p className='storyteller_desc'>Want to know what we’ve been up to lately? Check out the Flearn blog to get the scoop on the latest news, ideas and projects, and more.</p>
-                        </div>
-                    </Row>
-                    <Row className='grid grid-cols-3 gap-24'>
-                        <Col>
+                            <div className='flex-grow'></div>
                             <div className={`${styles.ColorLink} ${styles.red}`}>
                                 <Link id='red' to={"/"}>Join our team</Link>
                             </div>
-                        </Col>
-                        <Col>
+                        </div>
+                        <div className={`${styles.research} flex flex-col`}>
+                            <h1>See our research</h1>
+                            <p className='storyteller_desc'>We’re committed to improving lives through learning. Dig into our original research to learn about the forces that are shaping the modern workplace.</p>
+                            <div className='flex-grow'></div>
                             <div className={`${styles.ColorLink} ${styles.blue}`}>
                                 <Link id='blue' to={"/"}>Learn more</Link>
                             </div>
-                        </Col>
-                        <Col>
+                        </div>
+                        <div className={`${styles.blog} flex flex-col`}>
+                            <h1>Read our blog</h1>
+                            <p className='storyteller_desc'>Want to know what we’ve been up to lately? Check out the Flearn blog to get the scoop on the latest news, ideas and projects, and more.</p>
+                            <div className='flex-grow'></div>
                             <div className={`${styles.ColorLink} ${styles.purple}`}>
                                 <Link id='purple' to={"/blog"}>Read now</Link>
                             </div>
-                        </Col>
+                        </div>
                     </Row>
                 </div>
             </div>
@@ -97,11 +92,11 @@ const About = () => {
                 <p>We help organizations of all types and sizes prepare for the path ahead — wherever it leads. Our curated collection of business and technical courses help companies, governments, and nonprofits go further by placing learning at the center of their strategies.</p>
             </div>
             <div className='container mx-auto'>
-                <Row className='grid grid-cols-3 gap-10'>
-                    <Col className='storyteller_desc'>Flearn fit us like a glove. Their team curates fresh, up-to-date courses from their marketplace and makes them available to customers.</Col>
-                    <Col className='storyteller_desc'>In total, it was a big success, I would get emails about what a fantastic resource it was.</Col>
-                    <Col className='storyteller_desc'>Flearn responds to the needs of the business in an agile and global manner. It’s truly the best solution for our employees and their careers.</Col>
-                </Row>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-10'>
+                    <div className='storyteller_desc'>Flearn fit us like a glove. Their team curates fresh, up-to-date courses from their marketplace and makes them available to customers.</div>
+                    <div className='storyteller_desc'>In total, it was a big success, I would get emails about what a fantastic resource it was.</div>
+                    <div className='storyteller_desc'>Flearn responds to the needs of the business in an agile and global manner. It’s truly the best solution for our employees and their careers.</div>
+                </div>
             </div>
         </>
     );
