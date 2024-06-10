@@ -32,12 +32,12 @@ const Categories: React.FC = () => {
     };
 
     const handleStartTeaching = () => {
-        window.location.href = "http://localhost:5174/instructor";
+        window.location.href = "/instructor";
     };
 
     const renderPopoverContent = (filter: string) => {
         const handleGoToCourse = () => {
-            window.location.href = "http://localhost:5174/course";
+            window.location.href = "/course";
         };
 
         return (
