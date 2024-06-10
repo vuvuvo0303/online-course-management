@@ -9,3 +9,11 @@ function isValidPhoneNumber(phoneNumber : string) : boolean{
     const phoneRegex = /^(0|\+84)(\d{9})$/;
     return phoneRegex.test(phoneNumber);
 }
+
+// utils/removePassword.ts
+
+export function removePassword(user: any) {
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
+  

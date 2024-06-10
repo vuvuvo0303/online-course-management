@@ -6,6 +6,7 @@ export class User {
     avatarUrl: string;
     createdDate: string;
     updatedDate: string;
+    role: string;
 
     constructor(
         userId: string = "",
@@ -14,7 +15,8 @@ export class User {
         password: string = "",
         avatarUrl: string = "",
         createdDate: string = "",
-        updatedDate: string = ""
+        updatedDate: string = "",
+        role: string = "",
     ) {
         this.userId = userId;
         this.fullName = fullName;
@@ -23,6 +25,7 @@ export class User {
         this.avatarUrl = avatarUrl;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
+        this.role = role
     }
 }
 
@@ -42,6 +45,7 @@ export class Student extends User {
         super(userId, fullName, email, password, avatarUrl, createdDate, updatedDate);
         this.isActive = isActive;
     }
+
 }
 
 export class Admin extends User {
