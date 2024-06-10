@@ -1,8 +1,8 @@
-import{ useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Blog } from '../../models';
-import { Col, Row, Pagination } from 'antd';
 import { Link } from 'react-router-dom';
 import styles from './blog.module.css';
+import { Pagination } from 'antd';
 const BlogList = () => {
     const [blogs, setBlogs] = useState<Blog[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -12,7 +12,7 @@ const BlogList = () => {
 
     useEffect(() => {
         const fetchBlogs = async () => {
-            
+
             try {
                 const response = await fetch('https://665fbf245425580055b0b23d.mockapi.io/blogs');
                 if (!response.ok) {
@@ -57,39 +57,39 @@ const BlogList = () => {
     return (
         <>
             <div className={styles.box1}>
-                <div className={`container mx-auto grid grid-cols-2 gap-20 ${styles.contentCenter}`}>
+                <div className={`container mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 ${styles.contentCenter}`}>
                     <div>
                         <h1>Where possibilities begin</h1>
                         <p className={styles.storytellerDesc}>We’re a leading marketplace platform for learning and teaching online. Explore some of our most popular content and learn something new.</p>
                     </div>
-                    <div>
+                    <div >
                         <img src="https://blog.udemy.com/wp-content/uploads/2021/07/reading-girl-2.png" alt="picture" />
                     </div>
                 </div>
             </div>
             <div className={styles.categoryBar}></div>
             <div className={`${styles.popular} container mx-auto mt-10`}>
-                <h1 className="mb-10">Popular Blog</h1>
-                <Row className="grid grid-cols-3 gap-20">
+                <h1 className={`${styles.popular} mb-10 font-bold`}>Popular Blog</h1>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
                     {popularBlogs.map(blog => (
-                        <Col className={styles.blogContainer} key={blog.id}>
+                        <div className={styles.blogContainer} key={blog.id}>
                             <p>{blog.category}</p>
                             <Link to={`/blogs/${blog.id}`}>
                                 <p className={styles.title}>{blog.title}</p>
                             </Link>
                             <div>
-                                
+
                                 <p>{new Date(blog.time).toLocaleDateString()}</p>
                                 <p>Name: {blog.name_user}</p>
                             </div>
-                        </Col>
+                        </div>
                     ))}
-                </Row>
+                </div>
             </div>
             <div className="container mx-auto pt-10 pb-10">
-                <div>
+                {/* <div>
                     <h1 className={`${styles.blogPage} text-center`}>Blog</h1>
-                </div>
+                </div> */}
 
                 {categories.map(category => {
                     const categoryCurrentPage = currentPage[category] || 1;
@@ -100,22 +100,22 @@ const BlogList = () => {
                     return (
                         <div className={styles.categoryBox} key={category}>
                             <h1 className={styles.categoryTitle}>{category}</h1>
-                            <Row className="grid grid-cols-3 gap-20">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
                                 {currentBlogs?.map(blog => (
-                                    <Col key={blog.id}>
+                                    <div key={blog.id}>
                                         <div className={styles.blogContainer}>
                                             <Link to={`/blogs/${blog.id}`}>
                                                 <p className={styles.title}>{blog.title}</p>
                                             </Link>
                                             <div>
-                                                <p>{blog.category}</p>
+
                                                 <p>{new Date(blog.time).toLocaleDateString()}</p>
                                                 <p>Name: {blog.name_user}</p>
                                             </div>
                                         </div>
-                                    </Col>
+                                    </div>
                                 ))}
-                            </Row>
+                            </div>
                             <Pagination
                                 current={categoryCurrentPage}
                                 total={groupedBlogs[category]?.length || 0}
