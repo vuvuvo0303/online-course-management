@@ -3,22 +3,16 @@ import Home from "./pages/home";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import LoginPage from "./pages/login";
-import About from "./pages/about/About";
+import About from "./pages/about";
 import RegisterPage from "./pages/register";
 import Terms from "./pages/terms";
 import InstructorPage from "./pages/instructor";
 import Policy from "./pages/policy";
 import Guidelines from "./pages/guideline";
 import Support from "./pages/support";
-<<<<<<< HEAD
-import BlogList from "./pages/blog/blogList";
+import BlogList from "./pages/blog";
 import BlogDetail from "./pages/blog/blogDetail";
 // import Contact from "./pages/contact";
-=======
-import BlogList from "./pages/blog/BlogList";
-import BlogDetail from "./pages/blog/BlogDetail";
-import Contact from "./pages/contact";
->>>>>>> a446284942379dba7b5b4cc336929b7babddf99b
 import Dashboard from "./components/dashboard";
 import ManageLectures from "./pages/instructor/manage-lectures";
 import ManageStudent from "./pages/admin/manage-students";
@@ -27,6 +21,7 @@ import ManageCourses from "./pages/admin/manage-courses";
 import ManageBlogs from "./pages/admin/manage-blogs";
 import ManageFeedbacks from "./pages/admin/manage-feedbacks";
 import CoursePage from "./pages/course";
+import Contact from "./pages/contact";
 
 function App() {
   const location = useLocation();
@@ -44,7 +39,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/about" element={<About/>} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/terms/*" element={<Terms />} />
         <Route path="/terms/policy" element={<Policy />} />
