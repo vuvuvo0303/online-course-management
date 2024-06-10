@@ -10,9 +10,15 @@ import InstructorPage from "./pages/instructor";
 import Policy from "./pages/policy";
 import Guidelines from "./pages/guideline";
 import Support from "./pages/support";
+<<<<<<< HEAD
 import BlogList from "./pages/blog/blogList";
 import BlogDetail from "./pages/blog/blogDetail";
 // import Contact from "./pages/contact";
+=======
+import BlogList from "./pages/blog/BlogList";
+import BlogDetail from "./pages/blog/BlogDetail";
+import Contact from "./pages/contact";
+>>>>>>> a446284942379dba7b5b4cc336929b7babddf99b
 import Dashboard from "./components/dashboard";
 import ManageLectures from "./pages/instructor/manage-lectures";
 import ManageStudent from "./pages/admin/manage-students";
@@ -48,9 +54,12 @@ function App() {
         <Route path="/course" element={<CoursePage />} />
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blogs/:id" element={<BlogDetail />} />
-        {/* <Route path="/contact" element={<Contact />} /> */}
+        <Route path="/contact" element={<Contact />} />
         <Route path="/terms" element={<Terms />} />
-        <Route path="/dashboard/instructor" element={<Dashboard role="Instructor" />}>
+        <Route
+          path="/dashboard/instructor"
+          element={<Dashboard role="Instructor" />}
+        >
           <Route path="manage-lectures" element={<ManageLectures />} />
         </Route>
         <Route path="/dashboard/admin" element={<Dashboard role="Admin" />}>
