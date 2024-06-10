@@ -1,5 +1,5 @@
 // routes/ProtectedRoute.tsx
-import React from 'react';
+
 import { Route, RouteProps } from 'react-router-dom';
 import useAuthorization from '../hooks/useAuthorization';
 
