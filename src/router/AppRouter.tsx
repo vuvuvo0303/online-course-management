@@ -6,6 +6,7 @@ import { Dashboard, Guidelines, Home, InstructorPage, LoginPage, ManageBlogs, Ma
 import About from '../pages/about';
 import BlogList from '../pages/blog';
 import BlogDetail from '../pages/blog/blogDetail';
+import PaymentHistory from '../pages/payment/paymentHistory';
 
 const AppRouter: React.FC = () => {
 
@@ -25,7 +26,7 @@ const AppRouter: React.FC = () => {
             <Route path="/blog" element={<BlogList />} />
             <Route path="/blog/:id" element={<BlogDetail />} />
             <Route path="/contact" element={<Contact />} />
-
+            <Route path="/payment-history" element={<PaymentHistory />} />
             {/* <ProtectedRoute path="/my-cart" element={<YourCartComponent />} />
             <ProtectedRoute path="/my-courses" element={<YourCoursesComponent />} /> */}
 

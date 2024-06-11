@@ -70,4 +70,29 @@
     border-bottom: 1px solid rgb(234, 224, 224);
 }
 
+.searchBox{
+    border: 1px solid black;
 
+}
+
+.searchBox div{
+    width: 100%;
+   height: auto;
+   padding: 5px;
+   /* border-bottom: 1px solid black; */
+}
+.searchContainer{
+    border-bottom: 1px solid black;
+}
+.socialNetwork{
+color: white;
+}
+
+.facebook{
+    background-color: #0866ff;
+
+}
+
+.x{
+    background-color: #518ff2;
+}
