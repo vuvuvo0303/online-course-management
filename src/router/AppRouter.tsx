@@ -1,4 +1,10 @@
-import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import {
   Home,
   LoginPage,
@@ -17,6 +23,7 @@ import {
   ManageLectures,
   BecomeInstructorPage,
   Cart,
+  Profile,
 } from "../pages";
 import BlogList from "../pages/blog";
 import BlogDetail from "../pages/blog/blogDetail";
@@ -80,16 +87,21 @@ const AppRouter: React.FC = () => {
       <Route path="/blog/:id" element={<BlogDetail />} />
       <Route path="/teaching" element={<BecomeInstructorPage />} />
       <Route path="/cart" element={<Cart />} />
+      <Route path="/profile" element={<Profile />} />
 
       {/* Instructor routes */}
 
       <Route
         path="/instructor/dashboard/*"
-        element={canAccess(["Instructor"]) ? <Dashboard /> : <Navigate to="/" />}
+        element={
+          canAccess(["Instructor"]) ? <Dashboard /> : <Navigate to="/" />
+        }
       >
         <Route
           path="manage-lectures"
-          element={canAccess(["Instructor"]) ? <ManageLectures /> : <Navigate to="/" />}
+          element={
+            canAccess(["Instructor"]) ? <ManageLectures /> : <Navigate to="/" />
+          }
         />
       </Route>
 
@@ -100,11 +112,15 @@ const AppRouter: React.FC = () => {
       >
         <Route
           path="manage-students"
-          element={canAccess(["Admin"]) ? <ManageStudent /> : <Navigate to="/" />}
+          element={
+            canAccess(["Admin"]) ? <ManageStudent /> : <Navigate to="/" />
+          }
         />
         <Route
           path="manage-instructors"
-          element={canAccess(["Admin"]) ? <ManageInstructor /> : <Navigate to="/" />}
+          element={
+            canAccess(["Admin"]) ? <ManageInstructor /> : <Navigate to="/" />
+          }
         />
         <Route
           path="manage-blogs"
@@ -112,11 +128,15 @@ const AppRouter: React.FC = () => {
         />
         <Route
           path="manage-courses"
-          element={canAccess(["Admin"]) ? <ManageCourses /> : <Navigate to="/" />}
+          element={
+            canAccess(["Admin"]) ? <ManageCourses /> : <Navigate to="/" />
+          }
         />
         <Route
           path="manage-feedbacks"
-          element={canAccess(["Admin"]) ? <ManageFeedbacks /> : <Navigate to="/" />}
+          element={
+            canAccess(["Admin"]) ? <ManageFeedbacks /> : <Navigate to="/" />
+          }
         />
       </Route>
 
