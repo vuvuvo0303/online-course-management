@@ -5,6 +5,7 @@ import Vector from '../../assets/Vector.png';
 import Rectangle from '../../assets/Rectangle .jpg';
 import { login } from '../../services/auth';
 import { removePassword } from '../../utils';
+import { toast } from 'react-toastify';
 
 type FieldType = {
   email: string;
@@ -31,15 +32,18 @@ const LoginPage: React.FC = () => {
           navigate('/instructor/dashboard');
           break;
         case 'Admin':
-          navigate('/terms');
+          navigate('/admin/dashboard');
           break;
         default:
           navigate('/');
           break;
       }
+      toast.success("Login successfully");
+      
     } else {
       // Xử lý thông báo lỗi đăng nhập thất bại
       console.log('Login failed');
+      toast.error("Login fail")
     }
   };
 

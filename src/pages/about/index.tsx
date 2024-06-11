@@ -4,7 +4,7 @@ import styles from './about.module.css'; // Import CSS module
 
 const About = () => {
     return (
-        <>
+        <div className={styles.aboutContainer}>
             <div className='container mx-auto'>
                 <div className='bg-indigo-300'>
                     <Row>
@@ -83,22 +83,22 @@ const About = () => {
                         </Col>
                         <Col span={12} className={`${styles.col} grid-rows-2`}>
                             <div className={styles.row1}>16K+</div>
-                        <div className={styles.row2}>Enterprise customers</div>
-                    </Col>
-                </Row>
-            </div>
-        </div >
+                            <div className={styles.row2}>Enterprise customers</div>
+                        </Col>
+                    </Row>
+                </div>
+            </div >
             <div className={`container mx-auto ${styles.infoOrganizations} storyteller_desc`}>
                 <p>We help organizations of all types and sizes prepare for the path ahead — wherever it leads. Our curated collection of business and technical courses help companies, governments, and nonprofits go further by placing learning at the center of their strategies.</p>
             </div>
-            <div className='container mx-auto'>
+            <div className='container mx-auto mb-10'>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-10'>
                     <div className='storyteller_desc'>Flearn fit us like a glove. Their team curates fresh, up-to-date courses from their marketplace and makes them available to customers.</div>
                     <div className='storyteller_desc'>In total, it was a big success, I would get emails about what a fantastic resource it was.</div>
                     <div className='storyteller_desc'>Flearn responds to the needs of the business in an agile and global manner. It’s truly the best solution for our employees and their careers.</div>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

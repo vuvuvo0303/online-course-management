@@ -7,9 +7,10 @@ export {default as Support} from "./support";
 export {default as Policy} from "./policy";
 export {default as Terms} from "./terms";
 export {default as Guidelines} from "./guideline";
+export {default as Cart} from "./cart";
 
 /* Instructor Page */
-export {default as InstructorPage} from "./instructor";
+export {default as BecomeInstructorPage} from "./teaching";
 export {default as ManageLectures} from "./instructor/manage-lectures";
 
 /* Admin Page */

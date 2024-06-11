@@ -19,8 +19,12 @@ const BlogDetail = () => {
                 }
                 const data = await response.json();
                 setBlog(data);
-            } catch (error: any) {
-                setError(error.message);
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    setError(error.message);
+                } else {
+                    setError("An unknown error occurred");
+                }
             } finally {
                 setLoading(false);
             }
@@ -28,6 +32,7 @@ const BlogDetail = () => {
 
         fetchBlog();
     }, [id]);
+
 
     if (loading) {
         return (
@@ -54,7 +59,7 @@ const BlogDetail = () => {
     }
 
     return (
-        <div className={`${styles.blogDetailContainer} container mx-auto mt-10`}>
+        <div className={`${styles.blogDetailContainer} mb-10 container mx-auto mt-10`}>
             <p>{blog.category}</p>
             <h1 className='text-3xl font-bold mb-4'>{blog.title}</h1>
             <div className='text-gray-600 mb-4'>
@@ -67,11 +72,11 @@ const BlogDetail = () => {
                     {desc.content.map((contentItem, contentIndex) => (
                         <div key={contentIndex} className='mb-2'>
                             <p className='text-lg'>{contentItem.text}</p>
-                           <div className='grid grid-cols-1 md:grid-cols-3 gap-20'>
-                           {contentItem.images && contentItem.images.map((image, imgIndex) => (
-                                <img key={imgIndex} src={image} alt={`content image ${contentIndex}-${imgIndex}`} className='mt-2' />
-                            ))}
-                           </div>
+                            <div className='grid grid-cols-1 md:grid-cols-3 gap-20'>
+                                {contentItem.images && contentItem.images.map((image, imgIndex) => (
+                                    <img key={imgIndex} src={image} alt={`content image ${contentIndex}-${imgIndex}`} className='mt-2' />
+                                ))}
+                            </div>
                         </div>
                     ))}
                 </div>

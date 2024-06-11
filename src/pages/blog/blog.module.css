@@ -1,4 +1,8 @@
 /* blog.module.css */
+.blogPageContainer{
+    padding-left: 15px;
+    padding-right: 15px;
+}
 
 .box1 {
     background-color: #f7f9fa;
