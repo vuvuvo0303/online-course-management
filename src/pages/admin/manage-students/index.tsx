@@ -104,6 +104,7 @@ const ManageStudent = () => {
       },
     ]}
   />
+  
     <Table columns={columns} dataSource={data} />
   </div>;
 };
