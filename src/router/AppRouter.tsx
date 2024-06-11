@@ -1,5 +1,3 @@
-// src/routes/AppRouter.tsx
-
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import {
   Home,
@@ -77,9 +75,9 @@ const AppRouter: React.FC = () => {
       <Route path="/terms/policy" element={<Policy />} />
       <Route path="/terms/guidelines" element={<Guidelines />} />
       <Route path="/support" element={<Support />} />
+      <Route path="/contact" element={<Contact />} />
       <Route path="/blog" element={<BlogList />} />
       <Route path="/blog/:id" element={<BlogDetail />} />
-      <Route path="/contact" element={<Contact />} />
       <Route path="/teaching" element={<BecomeInstructorPage />} />
       <Route path="/cart" element={<Cart />} />
 
@@ -89,16 +87,37 @@ const AppRouter: React.FC = () => {
         path="/instructor/dashboard/*"
         element={canAccess(["Instructor"]) ? <Dashboard /> : <Navigate to="/" />}
       >
-        <Route path="manage-lectures" element={canAccess(["Instructor"]) ? <ManageLectures/> : <Navigate to="/"/> }/>
+        <Route
+          path="manage-lectures"
+          element={canAccess(["Instructor"]) ? <ManageLectures /> : <Navigate to="/" />}
+        />
       </Route>
 
       {/* Admin routes */}
-      <Route path="/admin/dashboard/*" element={canAccess(["Admin"]) ? <Dashboard /> : <Navigate to="/" />}>
-        <Route path="manage-students" element={canAccess(["Admin"]) ? <ManageStudent /> : <Navigate to="/" />} />
-        <Route path="manage-instructors" element={canAccess(["Admin"]) ? <ManageInstructor /> : <Navigate to="/" />} />
-        <Route path="manage-blogs" element={canAccess(["Admin"]) ? <ManageBlogs /> : <Navigate to="/" />} />
-        <Route path="manage-courses" element={canAccess(["Admin"]) ? <ManageCourses /> : <Navigate to="/" />} />
-        <Route path="manage-feedbacks" element={canAccess(["Admin"]) ? <ManageFeedbacks /> : <Navigate to="/" />} />
+      <Route
+        path="/admin/dashboard/*"
+        element={canAccess(["Admin"]) ? <Dashboard /> : <Navigate to="/" />}
+      >
+        <Route
+          path="manage-students"
+          element={canAccess(["Admin"]) ? <ManageStudent /> : <Navigate to="/" />}
+        />
+        <Route
+          path="manage-instructors"
+          element={canAccess(["Admin"]) ? <ManageInstructor /> : <Navigate to="/" />}
+        />
+        <Route
+          path="manage-blogs"
+          element={canAccess(["Admin"]) ? <ManageBlogs /> : <Navigate to="/" />}
+        />
+        <Route
+          path="manage-courses"
+          element={canAccess(["Admin"]) ? <ManageCourses /> : <Navigate to="/" />}
+        />
+        <Route
+          path="manage-feedbacks"
+          element={canAccess(["Admin"]) ? <ManageFeedbacks /> : <Navigate to="/" />}
+        />
       </Route>
 
       {/* Other routes */}
