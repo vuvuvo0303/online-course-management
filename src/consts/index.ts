@@ -14,7 +14,7 @@ export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 export const NavLinks = [
   // { href: "/", key: "Categories", text: "Categories" },
   { href: "/", key: "Saved Courses", text: "Saved Courses" },
-  { href: "/instructor", key: "Be an Instructors", text: "Be an Instructors" },
+  { href: "/teaching", key: "Be an Instructors", text: "Be an Instructors" },
   { href: "/support", key: "Support", text: "Support" },
 ];
 

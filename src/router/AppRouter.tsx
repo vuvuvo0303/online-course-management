@@ -1,33 +1,42 @@
 // src/routes/AppRouter.tsx
 
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { Home, LoginPage, RegisterPage, Terms, Policy, Guidelines, Support, InstructorPage, Contact, ManageStudent, ManageInstructor, ManageBlogs, ManageCourses, ManageFeedbacks, Dashboard, ManageLectures } from '../pages';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { Home, LoginPage, RegisterPage, Terms, Policy, Guidelines, Support, Contact, ManageStudent, ManageInstructor, ManageBlogs, ManageCourses, ManageFeedbacks, Dashboard, ManageLectures, BecomeInstructorPage, Cart } from '../pages';
 import BlogList from '../pages/blog';
 import BlogDetail from '../pages/blog/blogDetail';
 import About from '../pages/about';
 import { useEffect } from 'react';
 
 const AppRouter: React.FC = () => {
-
     const userRole = sessionStorage.getItem('role');
     const navigate = useNavigate();
+    const location = useLocation();
 
-    // Hàm kiểm tra quyền truy cập của người dùng
-    const canAccess = (allowedRoles: string[]) => {
-        return userRole && allowedRoles.includes(userRole);
-    };
+    useEffect(() => {
+        if (userRole) {
+            redirectBasedOnRole();
+        }
+    }, [userRole, location.pathname]);
 
     // Hàm điều hướng dựa trên vai trò của người dùng
     const redirectBasedOnRole = () => {
+        const path = location.pathname;
+
         switch (userRole) {
             case 'Student':
-                navigate('/');
+                if (path.includes('/instructor') || path.includes('/admin')) {
+                    navigate('/');
+                }
                 break;
             case 'Admin':
-                navigate('/admin/dashboard');
+                if (!path.includes('/admin')) {
+                    navigate('/admin/dashboard');
+                }
                 break;
             case 'Instructor':
-                navigate('/instructor/dashboard');
+                if (!path.includes('/instructor')) {
+                    navigate('/instructor/dashboard');
+                }
                 break;
             default:
                 navigate('/');
@@ -35,34 +44,11 @@ const AppRouter: React.FC = () => {
         }
     };
 
-    // useEffect để điều hướng khi trang được load
-    useEffect(() => {
-        if (!userRole) {
-            navigate('/');
-        } else {
-            redirectBasedOnRole();
-        }
-    }, [userRole, navigate]);
-
-    // Hàm điều hướng theo route cụ thể cho Admin
-    const redirectAdminRoutes = (path: string) => {
-        // Danh sách các route admin
-        const adminRoutes = [
-            '/admin/dashboard',
-            '/admin/manage-students',
-            '/admin/manage-instructors',
-            '/admin/manage-blogs',
-            '/admin/manage-courses',
-            '/admin/manage-feedbacks',
-        ];
-
-        // Kiểm tra nếu đường dẫn nằm trong adminRoutes
-        if (userRole === 'Admin' && !adminRoutes.includes(path)) {
-            return <Navigate to="/admin/dashboard" />;
-        }
-
-        return null;
+    // Hàm kiểm tra quyền truy cập của người dùng
+    const canAccess = (allowedRoles: string[]) => {
+        return userRole && allowedRoles.includes(userRole);
     };
+
     return (
         <Routes>
             <Route path="/" element={<Home />} />
@@ -73,45 +59,45 @@ const AppRouter: React.FC = () => {
             <Route path="/terms/policy" element={<Policy />} />
             <Route path="/terms/guidelines" element={<Guidelines />} />
             <Route path="/support" element={<Support />} />
-            <Route path="/instructor" element={<InstructorPage />} />
             <Route path="/blog" element={<BlogList />} />
             <Route path="/blog/:id" element={<BlogDetail />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/teaching" element={<BecomeInstructorPage />} />
+            <Route path="/cart" element={<Cart />} />
+
+
 
             {/* Instructor routes */}
-            <Route
-                path="/instructor"
-                element={canAccess(['Instructor']) ? <InstructorPage /> : redirectBasedOnRole()}
-            />
+
             <Route
                 path="/instructor/dashboard/*"
-                element={canAccess(['Instructor']) ? <Dashboard /> : redirectBasedOnRole()}
+                element={canAccess(['Instructor']) ? <Dashboard /> : <Navigate to="/" />}
             />
 
             {/* Admin routes */}
             <Route
                 path="/admin/dashboard/*"
-                element={canAccess(['Admin']) ? <Dashboard /> : redirectBasedOnRole()}
+                element={canAccess(['Admin']) ? <Dashboard /> : <Navigate to="/" />}
             />
             <Route
                 path="/admin/manage-students"
-                element={canAccess(['Admin']) ? <ManageStudent /> : redirectAdminRoutes('/admin/manage-student')}
+                element={canAccess(['Admin']) ? <ManageStudent /> : <Navigate to="/" />}
             />
             <Route
-                path="/admin/manage-instructors"
-                element={canAccess(['Admin']) ? <ManageInstructor /> : redirectAdminRoutes('/admin/manage-instructor')}
+                path="/admin/manage-instructs"
+                element={canAccess(['Admin']) ? <ManageInstructor /> : <Navigate to="/" />}
             />
             <Route
                 path="/admin/manage-blogs"
-                element={canAccess(['Admin']) ? <ManageBlogs /> : redirectAdminRoutes('/admin/manage-blogs')}
+                element={canAccess(['Admin']) ? <ManageBlogs /> : <Navigate to="/" />}
             />
             <Route
                 path="/admin/manage-courses"
-                element={canAccess(['Admin']) ? <ManageCourses /> : redirectAdminRoutes('/admin/manage-courses')}
+                element={canAccess(['Admin']) ? <ManageCourses /> : <Navigate to="/" />}
             />
             <Route
                 path="/admin/manage-feedbacks"
-                element={canAccess(['Admin']) ? <ManageFeedbacks /> : redirectAdminRoutes('/admin/manage-feedbacks')}
+                element={canAccess(['Admin']) ? <ManageFeedbacks /> : <Navigate to="/" />}
             />
 
             {/* Other routes */}

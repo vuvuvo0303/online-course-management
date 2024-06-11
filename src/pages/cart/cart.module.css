@@ -1,0 +1,17 @@
+.image_wrapper {
+    margin-right: 1.6rem;
+    background-color: #2d2f31;
+    border: 1px solid #d1d7dc;
+    overflow: hidden;
+    position: relative;
+}
+
+.item_container {
+    display: grid;
+    position: relative;
+    grid: 'image  header  header  actions price' auto 'image  badges  rating  actions price' auto 'image  meta    meta    actions subs-badge' auto/auto auto 1fr auto auto;
+}
+
+.image_area {
+    grid-area: image;
+}
