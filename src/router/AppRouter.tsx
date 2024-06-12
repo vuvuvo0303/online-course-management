@@ -9,6 +9,8 @@ import {
   Home,
   LoginPage,
   RegisterPage,
+  Course,
+  CourseDetail,
   Terms,
   Policy,
   Guidelines,
@@ -86,6 +88,8 @@ const AppRouter: React.FC = () => {
       <Route path="/blog" element={<BlogList />} />
       <Route path="/blog/:id" element={<BlogDetail />} />
       <Route path="/teaching" element={<BecomeInstructorPage />} />
+      <Route path="/course" element={<Course />} />
+      <Route path="/course/:id" element={<CourseDetail />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/profile" element={<Profile />} />
 

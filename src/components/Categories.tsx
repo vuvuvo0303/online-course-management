@@ -1,15 +1,29 @@
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Card, Popover, Button, Rate } from 'antd';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { categoryFilters, categorySubmenu } from "../consts/index";
+import { CheckCircleOutlined } from '@ant-design/icons'; // Importing the icon
 import './Categories.css';
 
 const { Meta } = Card;
 
 const Categories: React.FC = () => {
-    const [rating, setRating] = useState(3);
     const [selectedCategory, setSelectedCategory] = useState('IT & Software');
+    const [isDesktop, setIsDesktop] = useState(window.innerWidth > 464);
+    const [ratings, setRatings] = useState(Array(categorySubmenu.length).fill(3));
+
+    const handleResize = useCallback(() => {
+        setIsDesktop(window.innerWidth > 464);
+    }, []);
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [handleResize]);
+
     const price = "$99.99"; // Example price, you can modify it as needed
 
     const responsive = {
@@ -31,26 +45,49 @@ const Categories: React.FC = () => {
         }
     };
 
-    const handleStartTeaching = () => {
-        window.location.href = "/instructor";
-    };
+    const handleStartTeaching = useCallback(() => {
+        window.location.href = "/teaching";
+    }, []);
 
-    const renderPopoverContent = (filter: string) => {
+    const renderPopoverContent = useCallback((filter: string) => {
         const handleGoToCourse = () => {
             window.location.href = "/course";
         };
 
         return (
-            <div>
+            <div className="popover-content">
                 <Meta
                     title={filter}
-                    description="This is the description"
+                    description={
+                        <div className="max-w-[250px] max-h-[350px] flex flex-col justify-between p-4 text-left">
+                            <div>
+                                <h3 className="text-green-600 text-sm">The Complete Python Bootcamp From Zero to Hero in Python</h3>
+                                <p className="text-black text-[0.6rem]">Updated at 7/2023</p>
+                            </div>
+                            <div>
+                                <p className="text-black text-xs">Learn Python like a Professional Start from the basics and go all the way to creating your own applications and games</p>
+                            </div>
+                            <div>
+                                <ul className="list-none p-0 mr-[0.8rem]">
+                                    <li className="text-black text-xs ml-[1rem]"><CheckCircleOutlined /> You will learn how to leverage the power of Python to solve tasks.</li>
+                                    <li className="text-black text-xs ml-[1rem]"><CheckCircleOutlined /> You will build games and programs that use Python libraries.</li>
+                                    <li className="text-black text-xs ml-[1rem]"><CheckCircleOutlined /> You will be able to use Python for your own work problems or personal projects.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    }
                 />
                 <Button type="primary" onClick={handleGoToCourse} style={{ marginTop: '10px' }}>
                     Go to Course
                 </Button>
             </div>
         );
+    }, []);
+
+    const handleRatingChange = (index: number, value: number) => {
+        const newRatings = [...ratings];
+        newRatings[index] = value;
+        setRatings(newRatings);
     };
 
     return (
@@ -85,7 +122,7 @@ const Categories: React.FC = () => {
                     infinite={true}
                     className="categories-carousel"
                 >
-                    {categorySubmenu.map((filter) => (
+                    {categorySubmenu.map((filter, index) => (
                         <div key={filter} className="category-card">
                             <Popover
                                 content={renderPopoverContent(filter)}
@@ -113,8 +150,8 @@ const Categories: React.FC = () => {
                                         description="This is the description"
                                     />
                                     <div className="rating-container card-meta">
-                                        <span className="rating-number">{rating}</span>
-                                        <Rate value={rating} onChange={setRating} />
+                                        <span className="rating-number">{ratings[index]}</span>
+                                        <Rate value={ratings[index]} onChange={(value) => handleRatingChange(index, value)} />
                                     </div>
                                     <div className="card-meta price" style={{ marginTop: '10px' }}>
                                         {price}
@@ -125,7 +162,7 @@ const Categories: React.FC = () => {
                     ))}
                 </Carousel>
             </div>
-            {window.innerWidth > 464 && (
+            {isDesktop && (
                 <div className="content-frame">
                     <h2>Become an Instructor</h2>
                     <img

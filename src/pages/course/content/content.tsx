@@ -19,7 +19,7 @@ const Courses: React.FC = () => {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '5px 0',
-        color: 'black',
+        color: 'lightgray',
     };
 
     const contentStyle = {

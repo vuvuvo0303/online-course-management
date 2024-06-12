@@ -54,10 +54,11 @@ const Navbar = () => {
         <Badge count={3}>
           <BellOutlined className="text-gray-400 text-3xl" />
         </Badge>
-        <Badge count={5}>
-          <ShoppingCartOutlined className="text-gray-400 text-3xl" />
-        </Badge>
-        {/* Render User Avatar */}
+        <Link to="/cart">
+          <Badge count={2}>
+            <ShoppingCartOutlined className="text-gray-400 text-3xl" />
+          </Badge>
+        </Link>
         {avatarUrl ? (
           <img
             src={avatarUrl}
