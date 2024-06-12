@@ -97,7 +97,7 @@ const AppRouter: React.FC = () => {
         <Route path="manage-students" element={canAccess(["Admin"]) ? <ManageStudent /> : <Navigate to="/" />} />
         <Route path="manage-instructors" element={canAccess(["Admin"]) ? <ManageInstructor /> : <Navigate to="/" />} />
         <Route path="manage-blogs" element={canAccess(["Admin"]) ? <ManageBlogs /> : <Navigate to="/" />} />
-        <Route path="manage-courses" element={canAccess(["Admin"]) ? <ManageCourses /> : <Navigate to="/" />} />
+        <Route path="manage-courses" element={canAccess(["Admin"]) ? <ManageCourses/>: <Navigate to="/" />} />
         <Route path="manage-feedbacks" element={canAccess(["Admin"]) ? <ManageFeedbacks /> : <Navigate to="/" />} />
       </Route>
 

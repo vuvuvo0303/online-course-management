@@ -1,112 +1,130 @@
-
-import { HomeOutlined, UserOutlined } from '@ant-design/icons';
-import { Breadcrumb, Space, Table, Tag } from 'antd';
-import type { TableProps } from 'antd';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Breadcrumb, Button, Image, Table, Tag } from "antd";
+import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { format } from "date-fns";
 
 interface DataType {
   key: string;
-  name: string;
-  age: number;
-  address: string;
-  tags: string[];
+  fullName: string;
+  email: string;
+  createdDate: string;
+  updatedDate: string;
+  isActive: boolean;
+  avatarUrl: string;
+  userId: string;
+  
 }
+
 const ManageStudent = () => {
-  const columns: TableProps<DataType>['columns'] = [
+  const [data, setData] = useState<DataType[]>([]);
+
+  const handleDelete = async (userId: string) => {
+    const response = await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/students/${userId}`);
+    console.log(response);
+    const listAfterDelete = data.filter((student) => student.userId !== userId);
+    setData(listAfterDelete);
+  };
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get("https://665fbf245425580055b0b23d.mockapi.io/students");
+        console.log(response.data);
+
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+  const formatDate = (dateString: string) => {
+    return format(new Date(dateString), "dd/MM/yyyy");
+  };
+  const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text) => <a>{text}</a>,
+      title: "UserID",
+      dataIndex: "userId",
+      key: "userId",
+      render: (text: string) => <a>{text}</a>,
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Name",
+      dataIndex: "fullName",
+      key: "fullName",
+      render: (text: string) => <a>{text}</a>,
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
     },
     {
-      title: 'Status',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: (_, { tags }) => (
+      title: "Created Date",
+      dataIndex: "createdDate",
+      render: (createdDate: string) => formatDate(createdDate),
+    },
+    {
+      title: "Updated Date",
+      dataIndex: "updatedDate",
+      render: (updatedDate: string) => formatDate(updatedDate),
+    },
+    {
+      title: "Image",
+      dataIndex: "avatarUrl",
+      key: "avatarUrl",
+      render: (avatarUrl: string) => <Image src={avatarUrl} />,
+    },
+    {
+      title: "Status",
+      key: "isActive",
+      dataIndex: "isActive",
+      render: (isActive: boolean) => (
         <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
+          <Tag color={isActive ? "green" : "volcano"}>{isActive ? "Active" : "Inactive"}</Tag>
         </>
       ),
     },
+
     {
-      title: 'Action',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a>Invite {record.name}</a>
-          <a>Delete</a>
-        </Space>
+      title: "Action",
+      key: "userId",
+      render: (userId: string) => (
+        <Button type="primary" onClick={() => handleDelete(userId)} className="bg-orange-500">
+          Ban
+        </Button>
       ),
     },
   ];
-  
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sydney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-  ];
-  return <div>
-     <Breadcrumb className='py-2'
-    items={[
-      {
-        href: '/',
-        title: <HomeOutlined />,
-      },
-      {
-        href: '/dashboard/admin',
-        title: (
-          <>
-            <UserOutlined />
-            <span>Admin</span>
-          </>
-        ),
-      },
-      {
-        title: 'Manage Students',
-      },
-    ]}
-  />
-  
-    <Table columns={columns} dataSource={data} />
-  </div>;
+
+  return (
+    <div>
+      <Breadcrumb
+        className="py-2"
+        items={[
+          {
+            href: "/",
+            title: <HomeOutlined />,
+          },
+          {
+            href: "/dashboard/admin",
+            title: (
+              <>
+                <UserOutlined />
+                <span>Admin</span>
+              </>
+            ),
+          },
+          {
+            title: "Manage Students",
+          },
+        ]}
+      />
+      <Table columns={columns} dataSource={data} />
+    </div>
+  );
 };
 
 export default ManageStudent;
