@@ -19,9 +19,9 @@ const ManageStudent = () => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
     },
     {
       title: 'Address',
@@ -29,7 +29,7 @@ const ManageStudent = () => {
       key: 'address',
     },
     {
-      title: 'Tags',
+      title: 'Status',
       key: 'tags',
       dataIndex: 'tags',
       render: (_, { tags }) => (
@@ -104,6 +104,7 @@ const ManageStudent = () => {
       },
     ]}
   />
+  
     <Table columns={columns} dataSource={data} />
   </div>;
 };

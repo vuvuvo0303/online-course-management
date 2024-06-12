@@ -1,20 +1,54 @@
-import { Button, Form, FormProps, Input } from "antd";
-import { Link } from "react-router-dom";
-import Vector from "../../assets/Vector.png";
-import Ractangle from "../../assets/Rectangle .jpg";
+// pages/LoginPage.tsx
+import { Button, Form, FormProps, Input } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
+import Vector from '../../assets/Vector.png';
+import Rectangle from '../../assets/Rectangle .jpg';
+import { login } from '../../services/auth';
+import { removePassword } from '../../utils';
+import { toast } from 'react-toastify';
 
 type FieldType = {
-  username?: string;
-  password?: string;
+  email: string;
+  password: string;
 };
 
-const LoginPage = () => {
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
+const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+    const { email, password } = values;
+    const authResult = await login(email, password);
+    if (authResult && 'user' in authResult) {
+      const { user, role } = authResult;
+      const userWithoutPassword = removePassword(user); // Loại bỏ mật khẩu
+      sessionStorage.setItem('user', JSON.stringify(userWithoutPassword));
+      sessionStorage.setItem('role', role);
+
+      switch (role) {
+        case 'Student':
+          navigate('/');
+          break;
+        case 'Instructor':
+          navigate('/instructor/dashboard');
+          break;
+        case 'Admin':
+          navigate('/admin/dashboard');
+          break;
+        default:
+          navigate('/');
+          break;
+      }
+      toast.success("Login successfully");
+      
+    } else {
+      // Xử lý thông báo lỗi đăng nhập thất bại
+      console.log('Login failed');
+      toast.error("Login fail")
+    }
   };
 
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
+    console.log('Failed:', errorInfo);
   };
 
   return (
@@ -37,11 +71,10 @@ const LoginPage = () => {
             autoComplete="off"
           >
             <div className="pb-2">
-              {" "}
               <Form.Item
-                label="Username"
-                name="username"
-                rules={[{ required: true, message: "Please input your username!" }]}
+                label="Email"
+                name="email"
+                rules={[{ required: true, message: 'Please input your email!' }]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 className="mb-1"
@@ -51,7 +84,7 @@ const LoginPage = () => {
               <Form.Item
                 label="Password"
                 name="password"
-                rules={[{ required: true, message: "Please input your password!" }]}
+                rules={[{ required: true, message: 'Please input your password!' }]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 className="mb-1"
@@ -61,7 +94,7 @@ const LoginPage = () => {
             </div>
 
             <div className="flex justify-center">
-              <Link className="md:mr-40 hover:text-green-600" to={""}>
+              <Link className="md:mr-40 hover:text-green-600" to="">
                 Forget Password
               </Link>
             </div>
@@ -79,9 +112,9 @@ const LoginPage = () => {
           </Form>
         </div>
         <span className="mt-4 block text-center">
-          Do you have an account?{" "}
+          Do you have an account?{' '}
           <strong>
-            <Link to={"/register"} className="hover:cursor-pointer hover:text-red-400">
+            <Link to="/register" className="hover:cursor-pointer hover:text-red-400">
               Sign up here
             </Link>
           </strong>
@@ -95,14 +128,18 @@ const LoginPage = () => {
         </div>
         <div className="flex justify-center mr-10">
           <button className="flex justify-center items-center gap-4 border border-black rounded-md px-12 py-3 shadow-xl hover:shadow-orange-200 w-full md:w-2/3 bg-transparent">
-            <img src="https://www.pngall.com/wp-content/uploads/13/Google-Logo.png" alt="Google Logo" width={25} />
+            <img
+              src="https://www.pngall.com/wp-content/uploads/13/Google-Logo.png"
+              alt="Google Logo"
+              width={25}
+            />
             <span>Login with Google</span>
           </button>
         </div>
       </div>
       <div className="hidden md:flex w-1/2 items-center justify-center">
         <div className="rounded-lg overflow-hidden w-[80%] shadow-pink-300">
-          <img className="shadow-xl rounded-xl w-full" src={Ractangle} alt="logo" />
+          <img className="shadow-xl rounded-xl w-full" src={Rectangle} alt="logo" />
         </div>
       </div>
     </div>

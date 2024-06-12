@@ -3,7 +3,7 @@ import styles from './guideline.module.css'
 import ScrollToTopButton from '../../components/ScrollToTopButton'
 import TermsLayout from '../../layout/terms/TermsLayout'
 import { DislikeOutlined, LikeOutlined } from '@ant-design/icons'
-const Guidelines = () => {
+const Guidelines: React.FC = () => {
 
     return (
         <TermsLayout>

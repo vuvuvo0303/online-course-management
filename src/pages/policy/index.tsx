@@ -2,7 +2,7 @@ import { policies } from '../../consts'
 import styles from './policy.module.css'
 import ScrollToTopButton from '../../components/ScrollToTopButton'
 import TermsLayout from '../../layout/terms/TermsLayout'
-const Policy = () => {
+const Policy: React.FC = () => {
 
     return (
         <TermsLayout>

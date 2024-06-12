@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Blog } from '../../../models'; // Assuming you have a Blog model
+import { Blog } from '../../../models/Blog'; // Ensure this path is correct
 import { Spin, Alert } from 'antd'; // Import Ant Design components
-import "../blog.module.css"; // Ensure you have necessary styles here
+import styles from "./blogDetail.module.css"
 
 const BlogDetail = () => {
     const { id } = useParams<{ id: string }>();
@@ -20,8 +19,12 @@ const BlogDetail = () => {
                 }
                 const data = await response.json();
                 setBlog(data);
-            } catch (error: any) {
-                setError(error.message);
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    setError(error.message);
+                } else {
+                    setError("An unknown error occurred");
+                }
             } finally {
                 setLoading(false);
             }
@@ -30,35 +33,54 @@ const BlogDetail = () => {
         fetchBlog();
     }, [id]);
 
+
     if (loading) {
-        return <div className="flex justify-center items-center h-screen">
-            <Spin tip="Loading..." />
-        </div>;
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Spin tip="Loading..." />
+            </div>
+        );
     }
 
     if (error) {
-        return <div className="container mx-auto mt-10">
-            <Alert message="Error" description={error} type="error" showIcon />
-        </div>;
+        return (
+            <div className="container mx-auto mt-10">
+                <Alert message="Error" description={error} type="error" showIcon />
+            </div>
+        );
     }
 
     if (!blog) {
-        return <div className="container mx-auto mt-10">
-            <Alert message="No blog found" type="warning" showIcon />
-        </div>;
+        return (
+            <div className="container mx-auto mt-10">
+                <Alert message="No blog found" type="warning" showIcon />
+            </div>
+        );
     }
 
     return (
-        <div className='container mx-auto mt-10'>
+        <div className={`${styles.blogDetailContainer} mb-10 container mx-auto mt-10`}>
+            <p>{blog.category}</p>
             <h1 className='text-3xl font-bold mb-4'>{blog.title}</h1>
             <div className='text-gray-600 mb-4'>
-                <p>Category: {blog.category}</p>
-                <p>Author: {blog.name_user}</p>
-                <p>Published on: {new Date(blog.time).toLocaleDateString()}</p>
-                <p>Views: {blog.view}</p>
+                <p>{blog.name_user}</p>
             </div>
-            <img src={blog.blog_image} alt={blog.title} className='w-full h-auto mb-6' />
-            <p className='text-lg'>{blog.description}</p>
+            <p className='text-lg mb-4'>{blog.introduce}</p>
+            {blog.description.map((desc, index) => (
+                <div key={index} className='mb-4'>
+                    <h2 className='text-xl font-semibold'>{desc.title}</h2>
+                    {desc.content.map((contentItem, contentIndex) => (
+                        <div key={contentIndex} className='mb-2'>
+                            <p className='text-lg'>{contentItem.text}</p>
+                            <div className='grid grid-cols-1 md:grid-cols-3 gap-20'>
+                                {contentItem.images && contentItem.images.map((image, imgIndex) => (
+                                    <img key={imgIndex} src={image} alt={`content image ${contentIndex}-${imgIndex}`} className='mt-2' />
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ))}
         </div>
     );
 };

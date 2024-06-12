@@ -1,9 +1,16 @@
 /* blog.module.css */
+.blogPageContainer{
+    padding-left: 15px;
+    padding-right: 15px;
+}
 
 .box1 {
     background-color: #f7f9fa;
 }
 
+.textRight {
+    text-align: right !important;
+}
 .contentCenter {
     display: flex;
     justify-content: center;
@@ -40,7 +47,9 @@
     margin-bottom: 10px;
     font-weight: bold;
 }
-
+.poppular{
+    font-weight: bold;
+}
 .categoryBar {
     background-color: black;
     color: white;
@@ -60,3 +69,5 @@
     padding-bottom: 20px;
     border-bottom: 1px solid rgb(234, 224, 224);
 }
+
+

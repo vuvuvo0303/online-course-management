@@ -2,7 +2,7 @@ import { terms } from '../../consts'
 import styles from './terms.module.css'
 import ScrollToTopButton from '../../components/ScrollToTopButton'
 import TermsLayout from '../../layout/terms/TermsLayout'
-const Terms = () => {
+const Terms: React.FC = () => {
 
     return (
         <TermsLayout>

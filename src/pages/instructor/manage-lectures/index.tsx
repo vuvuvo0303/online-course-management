@@ -1,6 +1,6 @@
 
 
-const ManageLectures = () => {
+const ManageLectures: React.FC = () => {
   return (
     <div>ManageLectures</div>
   )
