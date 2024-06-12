@@ -19,11 +19,13 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState<MenuItem[]>([]);
   const [role, setRole] = useState<string | null>(null);
-
+  const [fullName, setFullName] = useState<string | null>(null);
   useEffect(() => {
     const userRole = sessionStorage.getItem('role');
-    if (userRole) {
+    const user = sessionStorage.getItem('user');
+    if (userRole && user) {
       setRole(userRole);
+      setFullName(JSON.parse(user).fullName);
     } else {
       navigate('/login'); // Redirect to login if role is not found
     }
@@ -40,14 +42,14 @@ const Dashboard: React.FC = () => {
 
   function loadItems() {
     if (role === 'Instructor') {
-      setItems([getItem('Manage Lectures', '/dashboard/instructor/manage-lectures', <DesktopOutlined />)]);
+      setItems([getItem('Manage Lectures', '/instructor/dashboard/manage-lectures', <DesktopOutlined />)]);
     } else if (role === 'Admin') {
       setItems([
-        getItem('Manage Students', '/dashboard/admin/manage-students', <TeamOutlined />),
-        getItem('Manage Instructors', '/dashboard/admin/manage-instructors', <TeamOutlined />),
-        getItem('Manage Courses', '/dashboard/admin/manage-courses', <FundProjectionScreenOutlined />),
-        getItem('Manage Blogs', '/dashboard/admin/manage-blogs', <ProfileOutlined />),
-        getItem('Manage Feedbacks', '/dashboard/admin/manage-feedbacks', <CommentOutlined />),
+        getItem('Manage Students', '/admin/dashboard/manage-students', <TeamOutlined />),
+        getItem('Manage Instructors', '/admin/dashboard/manage-instructors', <TeamOutlined />),
+        getItem('Manage Courses', '/admin/dashboard/manage-courses', <FundProjectionScreenOutlined />),
+        getItem('Manage Blogs', '/admin/dashboard/manage-blogs', <ProfileOutlined />),
+        getItem('Manage Feedbacks', '/admin/dashboard/manage-feedbacks', <CommentOutlined />),
       ]);
     }
   }
@@ -60,7 +62,7 @@ const Dashboard: React.FC = () => {
   } = theme.useToken();
   const dropdownItems: MenuProps['items'] = [
     {
-      label: <p className="text-sm">Welcome: {sessionStorage.getItem('user')}</p>,
+      label: <p className="text-sm">Welcome: {fullName}</p>,
       key: '1',
     },
     {

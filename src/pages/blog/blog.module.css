@@ -36,6 +36,8 @@
 .blogContainer {
     border: 1px solid rgb(234, 224, 224);
     padding: 25px;
+    max-width: 900px;
+
 }
 
 .pagination {
@@ -84,15 +86,16 @@
 .searchContainer{
     border-bottom: 1px solid black;
 }
+
 .socialNetwork{
 color: white;
 }
 
 .facebook{
     background-color: #0866ff;
-
 }
 
 .x{
     background-color: #518ff2;
 }
+

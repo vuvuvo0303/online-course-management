@@ -94,7 +94,7 @@ const BlogList: React.FC = () => {
 
     return (
         <div className={styles.blogPageContainer}>
-            <div className='container mx-auto grid grid-cols-1 md:grid-cols-6 gap-20'>
+            <div className='container mx-auto grid grid-cols-1 md:grid-cols-6 gap-10'>
                 <div className="md:col-span-2 mt-10">
                     <div className={styles.searchBox}>
                         <div className={styles.searchContainer}>
@@ -117,26 +117,32 @@ const BlogList: React.FC = () => {
                     </div>
                 </div>
                 <div className="md:col-span-4 mt-10 pb-10">
-                    <div className="grid gap-20">
+                    <div className="grid gap-10">
                         {currentBlogs.map(blog => (
                             <Link to={`/blog/${blog.id}`} onClick={() => handleViewUpdate(blog.id)}>
-                            <div key={blog.id} className={`${styles.blogContainer} grid gird-cols-1 md:grid-cols-2 gap-20`}>
-                                <div>
-                                    <img src={blog.blog_image} alt="Blog image" />
-                                </div>
-                                <div>
-                                    <p>{blog.category}</p>
-                                    <p className={styles.title}>{blog.title}</p>
-                                   
+                                <div key={blog.id} className={`${styles.blogContainer} grid gird-cols-1 md:grid-cols-2 gap-5 `}>
+                                    <div className={`${styles.imgContainer}`}>
+                                        <img className='xs:h-48 w-96' src={blog.blog_image} alt="Blog image" />
+                                    </div>
                                     <div>
-                                        <p>{new Date(blog.time).toLocaleDateString()}</p>
-                                        <p>Name: {blog.name_user}</p>
-                                        <p>Views: {blog.view}</p>
+                                        <div >
+                                        <p>{blog.category}</p>
+                                       
+                                        </div>
+                                        <div className='grid grid-cols-2 gap-0'>
+                                            <p >{blog.view === 1 ? `${blog.view} view` : `${blog.view} views`}  </p>
+                                            <p>{new Date(blog.time).toLocaleDateString()}</p>
+                                            
+                                        </div>
+                                        <p className={styles.title}>{blog.title}</p>
+
+                                        <div>
+                                        <p> {blog.name_user}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </Link>
-                            
+
                         ))}
                     </div>
                     <Pagination
