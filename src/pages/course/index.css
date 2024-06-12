@@ -1,7 +1,7 @@
 .course-container {
     display: flex;
     flex-direction: column;
-    width: 2000px;
+    width: 1500px;
     margin: 0 auto;
     background-color: rgb(250, 238, 221);
     color: black;
@@ -176,6 +176,9 @@
     position: absolute;
     bottom: 0;
     width: calc(100% - 10px);
+    right: 0px;
+    left: 0px;
+    width: 0px;
 }
 
 .stat {
@@ -217,10 +220,6 @@
         max-width: 400px;
     }
 
-    .course-tabs {
-        right: 600px;
-    }
-
     .course-card {
         max-width: 400px;
         flex-direction: column;
@@ -241,8 +240,23 @@
 
 @media (max-width: 1024px) {
     .course-container {
-        /* Adjust layout for tablet screens */
+        max-width: 400px;
     }
 
-    /* Add more styles as needed */
+    .course-card {
+        max-width: 400px;
+        flex-direction: column;
+    }
+
+    .course-info {
+        margin-top: 1rem;
+    }
+
+    .course-actions {
+        margin-top: 1rem;
+    }
+
+    .course-stats {
+        display: none;
+    }
 }
