@@ -16,8 +16,8 @@ const Navbar = () => {
     </Menu.SubMenu>
   ));
 
-  // Get user data from sessionStorage
-  const userData = JSON.parse(sessionStorage.getItem('user') || '{}');
+  // Get user data from localStorage
+  const userData = JSON.parse(localStorage.getItem('user') || '{}');
   const { avatarUrl } = userData;
 
   return (
@@ -49,9 +49,12 @@ const Navbar = () => {
       <div className="flexCenter gap-10 mr-5">
         <SearchTool />
         {/* Add Badge component to display badge count */}
-        <Badge count={5}>
-          <ShoppingCartOutlined className="text-gray-400 text-3xl" />
-        </Badge>
+        <Link to="/cart">
+          <Badge count={3}>
+            <ShoppingCartOutlined className="text-gray-400 text-3xl" />
+          </Badge>
+        </Link>
+
         {/* Render User Avatar */}
         {avatarUrl ? (
           <img

@@ -21,8 +21,8 @@ const LoginPage: React.FC = () => {
     if (authResult && 'user' in authResult) {
       const { user, role } = authResult;
       const userWithoutPassword = removePassword(user); // Loại bỏ mật khẩu
-      sessionStorage.setItem('user', JSON.stringify(userWithoutPassword));
-      sessionStorage.setItem('role', role);
+      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
+      localStorage.setItem('role', role);
 
       switch (role) {
         case 'Student':

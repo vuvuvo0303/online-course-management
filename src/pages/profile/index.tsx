@@ -31,7 +31,7 @@ const Profile = () => {
         updatedUser.avatarUrl = formValues.avatarUrl;
       }
 
-      sessionStorage.setItem("user", JSON.stringify(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
 
       setIsModalVisible(false);
 
@@ -42,16 +42,16 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    const storedRole = sessionStorage.getItem("role");
+    const storedRole = localStorage.getItem("role");
     if (!storedRole) {
-      console.error("Role not found in sessionStorage");
+      console.error("Role not found in localStorage");
       return;
     }
 
-    const storedUser = sessionStorage.getItem("user");
+    const storedUser = localStorage.getItem("user");
 
     if (!storedUser) {
-      console.error("User data not found in sessionStorage");
+      console.error("User data not found in localStorage");
       return;
     }
 
