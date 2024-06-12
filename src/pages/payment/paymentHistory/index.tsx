@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import styles from './paymentHistory.module.css';
 import PaymentCourses from './courses';
 import PaymentSubscriptions from './Subscriptions';
 import PaymentRefunds from './refunds';
 import { Payment } from '../../../models';
-import { Space, Table, Tag } from 'antd';
+import {  Table, Tag } from 'antd';
 
 const columns = [
     {
@@ -17,7 +16,7 @@ const columns = [
       title: 'Created Date',
       dataIndex: 'createdDate',
       key: 'createdDate',
-      render: (date) => new Date(date).toLocaleDateString(),
+      render: (date:string) => new Date(date).toLocaleDateString(),
     },
     {
       title: 'Payment Method',
@@ -28,7 +27,7 @@ const columns = [
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status) => (
+      render: (status:string) => (
         <Tag color={status === 'completed' ? 'green' : 'volcano'}>
           {status.toUpperCase()}
         </Tag>

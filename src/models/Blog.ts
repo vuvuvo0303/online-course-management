@@ -12,7 +12,7 @@ export class Blog {
     name_user: string = "";
     blog_image: string = "";
     view = 0;
-
+    position: string = ""
     constructor(
         id: string = "",
         category: string = "",
@@ -26,7 +26,8 @@ export class Blog {
         avatar_user: string = "",
         name_user: string = "",
         blog_image: string = "",
-        view: number = 0
+        view: number = 0,
+        position: string = ""
     ) {
         this.id = id;
         this.category = category;
@@ -38,5 +39,6 @@ export class Blog {
         this.name_user = name_user;
         this.blog_image = blog_image;
         this.view = view;
+        this.position = position;
     }
 }

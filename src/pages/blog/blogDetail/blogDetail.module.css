@@ -2,3 +2,16 @@
     padding-left: 10px;
     padding-right: 10px;
 }
+
+.blogHeaderContainer{
+    background-color: #f7f9fa;
+}
+
+.in4{
+    border-bottom: 1px solid rgb(240, 234, 234);
+    padding-bottom: 30px;
+}
+
+.Link{
+    color: #5624d0;
+}

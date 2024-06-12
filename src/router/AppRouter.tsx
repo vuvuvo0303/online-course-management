@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import { Route, Routes, Navigate } from 'react-router-dom';
-import Contact from '../pages/contact';
-import CoursePage from '../pages/course';
-import ProtectedRoute from './ProtectedRoute';
-import { Dashboard, Guidelines, Home, InstructorPage, LoginPage, ManageBlogs, ManageCourses, ManageFeedbacks, ManageInstructor, ManageLectures, ManageStudent, Policy, RegisterPage, Support, Terms } from '../pages';
-import About from '../pages/about';
-import BlogList from '../pages/blog';
-import BlogDetail from '../pages/blog/blogDetail';
-import PaymentHistory from '../pages/payment/paymentHistory';
-=======
 import {
   Routes,
   Route,
@@ -20,6 +9,7 @@ import {
   Home,
   LoginPage,
   RegisterPage,
+  // Course,
   Terms,
   Policy,
   Guidelines,
@@ -35,39 +25,18 @@ import {
   BecomeInstructorPage,
   Cart,
   Profile,
+  BlogDetail,
+  BlogList,
+  About,
+  PaymentHistory
 } from "../pages";
-import BlogList from "../pages/blog";
-import BlogDetail from "../pages/blog/blogDetail";
-import About from "../pages/about";
-import { useEffect } from "react";
->>>>>>> 8267835016fa2932d6bc65406080d8db8ac27e56
 
+import { useEffect } from "react";
 const AppRouter: React.FC = () => {
   const userRole = sessionStorage.getItem("role");
   const navigate = useNavigate();
   const location = useLocation();
 
-<<<<<<< HEAD
-    return (
-        <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/terms" element={<Terms />}>
-                <Route path="policy" element={<Policy />} />
-                <Route path="guidelines" element={<Guidelines />} />
-            </Route>
-            <Route path="/support" element={<Support />} />
-            <Route path="/instructor" element={<InstructorPage />} />
-            <Route path="/course" element={<CoursePage />} />
-            <Route path="/blog" element={<BlogList />} />
-            <Route path="/blog/:id" element={<BlogDetail />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/payment-history" element={<PaymentHistory />} />
-            {/* <ProtectedRoute path="/my-cart" element={<YourCartComponent />} />
-            <ProtectedRoute path="/my-courses" element={<YourCoursesComponent />} /> */}
-=======
   useEffect(() => {
     if (userRole) {
       redirectBasedOnRole();
@@ -77,7 +46,6 @@ const AppRouter: React.FC = () => {
   // Hàm điều hướng dựa trên vai trò của người dùng
   const redirectBasedOnRole = () => {
     const path = location.pathname;
->>>>>>> 8267835016fa2932d6bc65406080d8db8ac27e56
 
     switch (userRole) {
       case "Student":
@@ -120,9 +88,10 @@ const AppRouter: React.FC = () => {
       <Route path="/blog" element={<BlogList />} />
       <Route path="/blog/:id" element={<BlogDetail />} />
       <Route path="/teaching" element={<BecomeInstructorPage />} />
+      {/* <Route path="/course" element={<Course />} /> */}
       <Route path="/cart" element={<Cart />} />
       <Route path="/profile" element={<Profile />} />
-
+      <Route path="/payment-history" element={<PaymentHistory />} />
       {/* Instructor routes */}
 
       <Route
