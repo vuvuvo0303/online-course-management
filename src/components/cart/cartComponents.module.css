@@ -1,0 +1,241 @@
+.shopping_wrapper {
+    padding: 1.6rem 0;
+    border-top: 1px solid #d1d7dc;
+    margin-top: 10px;
+}
+
+.item_container {
+    display: grid;
+    position: relative;
+    grid-template-areas: 'image header header actions price'
+        'image badges rating actions price'
+        'image meta meta actions subs-badge';
+    grid-template-columns: auto auto 1fr auto auto;
+}
+
+.image_area {
+    grid-area: image;
+}
+
+.image_wrapper {
+    margin-right: 1.6rem;
+    background-color: #2d2f31;
+    border: 1px solid #d1d7dc;
+    overflow: hidden;
+    position: relative;
+}
+
+.item_image {
+    width: 12rem;
+    height: 6.8rem;
+    display: block;
+    object-fit: cover;
+    max-width: 100%;
+}
+
+.item_header {
+    grid-area: header;
+    min-width: 1px;
+}
+
+.h3_cart_title {
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0;
+    font-size: 1.2rem;
+    overflow: hidden;
+}
+
+.course_instructor {
+    font-weight: 400;
+    line-height: 1.4;
+    font-size: 0.8rem;
+}
+
+.instructor_list {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: .4rem;
+}
+
+.item_rating {
+    grid-area: rating;
+    margin-top: .8rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.star_rating {
+    display: inline-flex;
+    align-items: center;
+}
+
+.point {
+    margin-right: .4rem;
+    color: #4d3105;
+    font-weight: 700;
+    line-height: 1.2;
+    font-size: 0.8rem;
+}
+
+.rating_quantity {
+    color: #6a6f73;
+    margin-left: .4rem;
+    font-weight: 400;
+    font-size: 0.8rem;
+}
+
+.item_meta {
+    grid-area: meta;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    flex-wrap: wrap;
+    margin-top: .8rem;
+    color: #6a6f73;
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+.bullet {
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 8px;
+    height: 8px;
+    background-color: #6a6f73;
+    border-radius: 50%;
+}
+
+.item_vertical {
+    margin-top: 0;
+    padding-left: 2.4rem;
+    padding-bottom: 1.6rem;
+    grid-area: actions;
+    gap: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+}
+
+.button {
+    color: rgb(0, 136, 255);
+    background-color: transparent;
+    min-width: auto;
+    padding: 0;
+    height: 2.8rem;
+    position: relative;
+    align-items: center;
+    cursor: pointer;
+    display: inline-flex;
+    border: none;
+    justify-content: center;
+}
+
+.price_container {
+    grid-area: price;
+    padding-left: 4.8rem;
+    justify-self: end;
+    display: flex;
+}
+
+.all_price {
+    color: #0073e6;
+    display: flex;
+    align-items: flex-end;
+    flex-flow: row wrap;
+    font-weight: 700;
+    flex-direction: column;
+}
+
+.base_price {
+    margin-right: 0;
+    line-height: 1;
+    padding: .4rem 0;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.discount_price {
+    margin-right: 0;
+    color: #6a6f73;
+    padding: .4rem 0;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 1024px) {
+    .item_container {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 'image header'
+            'image badges'
+            'rating rating'
+            'meta meta'
+            'actions actions'
+            'price price';
+    }
+
+    .image_wrapper {
+        width: 70%;
+    }
+}
+
+@media (max-width: 768px) {
+    .image_wrapper {
+        width: 30%;
+        background-color: #fff;
+        margin-bottom: 10px;
+    }
+
+    .item_container {
+        grid-template-columns: 1fr;
+        grid-template-areas: 'image'
+            'header'
+            'badges'
+            'rating'
+            'meta'
+            'actions'
+            'price';
+    }
+
+    .image_wrapper {
+        margin-right: 0;
+    }
+
+    .price_container {
+        padding-left: 0;
+        justify-content: flex-start;
+    }
+
+    .item_vertical {
+        padding-left: 0;
+        align-items: flex-start;
+        padding-bottom: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .item_image {
+        width: 100%;
+        height: auto;
+    }
+
+    .base_price {
+        font-size: 1rem;
+    }
+
+    .button {
+        height: 2rem;
+    }
+
+    .h3_cart_title {
+        font-size: 0.95rem;
+    }
+
+    .discount_price {
+        font-size: 1rem;
+    }
+
+}

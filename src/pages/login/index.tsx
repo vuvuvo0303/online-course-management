@@ -4,8 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import Vector from '../../assets/Vector.png';
 import Rectangle from '../../assets/Rectangle .jpg';
 import { login } from '../../services/auth';
-import { removePassword } from '../../utils';
 import { toast } from 'react-toastify';
+import { removePassword } from '../../utils/validHelper';
 
 type FieldType = {
   email: string;
@@ -39,7 +39,7 @@ const LoginPage: React.FC = () => {
           break;
       }
       toast.success("Login successfully");
-      
+
     } else {
       // Xử lý thông báo lỗi đăng nhập thất bại
       console.log('Login failed');
