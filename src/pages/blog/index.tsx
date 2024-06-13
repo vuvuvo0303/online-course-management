@@ -2,14 +2,16 @@ import { useEffect, useState } from 'react';
 import { Blog } from '../../models';
 import { Link } from 'react-router-dom';
 import styles from './blog.module.css';
-import { Input, Pagination, Row } from 'antd';
+import { Breadcrumb, Input, Pagination, Checkbox, Tag } from 'antd';
+import { ArrowRightOutlined } from '@ant-design/icons';
 
 const BlogList: React.FC = () => {
     const [blogs, setBlogs] = useState<Blog[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [searchTerm, setSearchTerm] = useState<string>(""); // Thêm trạng thái cho giá trị tìm kiếm
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const blogsPerPage = 3;
 
     useEffect(() => {
@@ -50,7 +52,7 @@ const BlogList: React.FC = () => {
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
-        setCurrentPage(1); // Đặt lại trang hiện tại về 1 khi thay đổi giá trị tìm kiếm
+        setCurrentPage(1);
     };
 
     const handleViewUpdate = async (blogId: string) => {
@@ -76,16 +78,26 @@ const BlogList: React.FC = () => {
         }
     };
 
+    const uniqueCategories = [...new Set(blogs.map(blog => blog.category))];
+
+    const handleCategoryChange = (category: string, checked: boolean) => {
+        setSelectedCategories(prevCategories =>
+            checked ? [...prevCategories, category] : prevCategories.filter(cat => cat !== category)
+        );
+        setCurrentPage(1);
+    };
+
     const filteredBlogs = blogs.filter(blog =>
-        blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        blog.name_user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        blog.introduce.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        blog.description.some(desc =>
-            desc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            desc.content.some(content =>
-                content.text.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-        )
+        (blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            blog.name_user.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            blog.introduce.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            blog.description.some(desc =>
+                desc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                desc.content.some(content =>
+                    content.text.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+            )) &&
+        (selectedCategories.length === 0 || selectedCategories.includes(blog.category))
     );
 
     const indexOfLastBlog = currentPage * blogsPerPage;
@@ -94,8 +106,18 @@ const BlogList: React.FC = () => {
 
     return (
         <div className={styles.blogPageContainer}>
+            <Breadcrumb className='container mx-auto mt-10'
+                items={[
+                    {
+                        title: <Link style={{ color: " #5624d0", fontWeight: "700" }} to={"/"}>Home</Link>,
+                    },
+                    {
+                        title: <div >Blog</div>,
+                    },
+                ]}
+            />
             <div className='container mx-auto grid grid-cols-1 md:grid-cols-6 gap-10'>
-                <div className="md:col-span-2 mt-10">
+                <div className="md:col-span-1 mt-10">
                     <div className={styles.searchBox}>
                         <div className={styles.searchContainer}>
                             <Input
@@ -103,8 +125,20 @@ const BlogList: React.FC = () => {
                                 type="text"
                                 placeholder='Search'
                                 value={searchTerm}
-                                onChange={handleSearchChange} // Gắn hàm xử lý thay đổi giá trị tìm kiếm
+                                onChange={handleSearchChange}
                             />
+                        </div>
+                        <div className={styles.categoryFilter}>
+                            {uniqueCategories.map(category => (
+                                <div key={category}>
+                                    <Checkbox
+                                        checked={selectedCategories.includes(category)}
+                                        onChange={e => handleCategoryChange(category, e.target.checked)}
+                                    >
+                                        {category}
+                                    </Checkbox>
+                                </div>
+                            ))}
                         </div>
                         <div className={styles.socialNetwork}>
                             <div className={`${styles.x} text-center mb-2`}>
@@ -116,33 +150,43 @@ const BlogList: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="md:col-span-4 mt-10 pb-10">
-                    <div className="grid gap-10">
+                <div className="md:col-span-5 mt-10 pb-10">
+                    <div className="grid gap-5">
                         {currentBlogs.map(blog => (
-                            <Link to={`/blog/${blog.id}`} onClick={() => handleViewUpdate(blog.id)}>
-                                <div key={blog.id} className={`${styles.blogContainer} grid gird-cols-1 md:grid-cols-2 gap-5 `}>
-                                    <div className={`${styles.imgContainer}`}>
+                            <Link to={`/blog/${blog.id}`} onClick={() => handleViewUpdate(blog.id)} key={blog.id}>
+                                <div className={`${styles.blogContainer} grid gird-cols-1 md:grid-cols-6  gap-10 `}>
+                                    <div className={`${styles.imgContainer} md:col-span-2 `}>
                                         <img className='xs:h-48 w-96' src={blog.blog_image} alt="Blog image" />
                                     </div>
-                                    <div>
-                                        <div >
-                                        <p>{blog.category}</p>
-                                       
-                                        </div>
-                                        <div className='grid grid-cols-2 gap-0'>
-                                            <p >{blog.view === 1 ? `${blog.view} view` : `${blog.view} views`}  </p>
-                                            <p>{new Date(blog.time).toLocaleDateString()}</p>
-                                            
+                                    <div className='md:col-span-4'>
+                                        <Tag bordered={false} color="orange" className='float-right px-10 '>
+                                            <p className=''>{blog.category}</p>
+                                        </Tag>
+
+                                        <div className=' grid grid-cols-2 md:grid-cols-6 gap-0'>
+                                            <p className='md:col-span-1'>{blog.view === 1 ? `${blog.view} view` : `${blog.view} views`}  </p>
+                                            <p className='md:col-span-1'>{new Date(blog.time).toLocaleDateString()}</p>
                                         </div>
                                         <p className={styles.title}>{blog.title}</p>
-
+                                        <p className={styles.introduce}>{blog.introduce}</p>
                                         <div>
-                                        <p> {blog.name_user}</p>
+                                            <p> {blog.name_user}</p>
                                         </div>
+
+
+                                        <button className={styles.readMore}>
+                                            <div className={` font-bold`}>
+                                                Read More
+                                                <ArrowRightOutlined className={styles.arrowIcon} />
+                                            </div>
+                                            
+                                        </button>
+
+
+
                                     </div>
                                 </div>
                             </Link>
-
                         ))}
                     </div>
                     <Pagination
@@ -154,7 +198,7 @@ const BlogList: React.FC = () => {
                     />
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
