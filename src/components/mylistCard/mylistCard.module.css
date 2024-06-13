@@ -1,21 +1,20 @@
 .course_card {
-    min-width: 25%;
-    width: 25%;
-    padding-left: .8rem;
-    padding-right: .8rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .course_card_medium {
-    gap: .8rem;
-    grid-template-rows: auto 1fr;
-    max-width: 37.5rem;
-    min-width: 17.3rem;
     display: grid;
+    gap: 0.8rem;
+    grid-template-rows: auto 1fr;
     position: relative;
+    max-width: 100%;
 }
 
 .image_container {
-    aspect-ratio: calc(1/ 0.5625);
+    aspect-ratio: calc(1 / 0.5625);
     width: 100%;
     background-color: #2d2f31;
     border: 1px solid #d1d7dc;
@@ -33,7 +32,7 @@
 
 .img_overlay {
     opacity: 0;
-    background: rgba(45, 47, 49, .6);
+    background: rgba(45, 47, 49, 0.6);
     position: absolute;
     top: 0;
     left: 0;
@@ -64,7 +63,7 @@
 }
 
 .course_card_author {
-    margin-bottom: .4rem;
+    margin-bottom: 0.4rem;
     font-weight: 400;
     line-height: 1.4;
     font-size: 1rem;
@@ -81,7 +80,7 @@
 }
 
 .point {
-    margin-right: .4rem;
+    margin-right: 0.4rem;
     color: #4d3105;
     font-weight: 700;
     line-height: 1.2;
@@ -90,7 +89,7 @@
 
 .enrollment_quantity {
     color: #6a6f73;
-    margin-left: .4rem;
+    margin-left: 0.4rem;
     font-weight: 400;
     line-height: 1.4;
     font-size: 1rem;
@@ -112,5 +111,18 @@
     height: 4px;
     background-color: #6a6f73;
     border-radius: 50%;
-    margin-top: 7px;
+    margin-top: 8px;
+}
+
+.grid_container {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(1, 1fr);
+}
+
+@media (max-width: 460px) {
+
+    .description_container {
+        margin-right: 10px;
+    }
 }

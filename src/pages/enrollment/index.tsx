@@ -9,7 +9,7 @@ const Enrollment: React.FC = () => {
       <div className="w-[85%] mx-auto">
         <h1 className={styles.heading}>My Learning</h1>
         <Tabs
-          defaultActiveKey="1"
+          defaultActiveKey="2"
           centered
           items={[
             {
