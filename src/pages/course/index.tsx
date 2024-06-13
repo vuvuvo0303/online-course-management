@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { Rate, Tabs } from 'antd';
-import { HeartOutlined, FlagOutlined, EyeOutlined, LikeOutlined, DislikeOutlined, ShareAltOutlined, CopyrightOutlined, MessageOutlined } from '@ant-design/icons';
-import About from '../course/AboutCourse/about'; // Import the About component
+import { HeartOutlined, FlagOutlined, EyeOutlined, LikeOutlined, DislikeOutlined, ShareAltOutlined, CopyrightOutlined, MessageOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import About from './about/about'; // Import the About component
+import Content from './content/content';
+import ReviewPage from './reviews/review';
+import { Link } from 'react-router-dom';
 import './index.css';
+import Instructor from './instructor/info';
 
 const { TabPane } = Tabs;
 
@@ -30,7 +34,7 @@ const Course: React.FC = () => {
                         </div>
                         <div className="course-rating">
                             <Rate allowHalf defaultValue={5} />
-                            <span className="rating-count">(81,665 ratings)</span>
+                            <span className="rating-count ml-[1rem]">(81,665 ratings)</span>
                         </div>
                         <div className="course-enrollment">
                             <p>114,521 students enrolled</p>
@@ -45,12 +49,21 @@ const Course: React.FC = () => {
                             <p>Last updated 1/2024</p>
                         </div>
                         <div className="course-buttons">
-                            <button className="button add-to-cart">Add to Cart</button>
-                            <button className="button buy-now">Buy Now</button>
+                            {/* <Link to="/cart"> */}
+                            <button className="button add-to-cart">
+                                <ShoppingCartOutlined className='mr-[0.5rem]' /> Add to Cart
+                            </button>
+                            {/* </Link> */}
+                            <Link to="/checkout">
+                                <button className="button buy-now">Buy Now</button>
+                            </Link>
+                            <Link to="/course/id">
+                                <button className="button buy-now">Go to course</button>
+                            </Link>
                         </div>
                     </div>
                 </div>
-                <div className="course-actions">
+                <div className="course-actions mb-[0.1rem]">
                     <button className="button save">
                         <HeartOutlined />
                         Save
@@ -59,54 +72,50 @@ const Course: React.FC = () => {
                         <FlagOutlined />
                         Report abuse
                     </button>
-                </div>
-                <div className='info-instructor'>
-                    <div className="instructor">
-                        <img src="https://cdn1.iconfinder.com/data/icons/user-pictures/100/male3-512.png" alt="Instructor" />
-                        <div className="instructor-info">
-                            <h3>Johnson Smith</h3>
-                            <button className="button subscribe">Subscribe</button>
-                        </div>
-                    </div>
-                    <div className="course-stats ml-[76rem] mb-[5rem]">
-                        <div className="stat">
-                            <button className="stat-button ml-[-0.1rem] mt-[0.1rem]">
-                                <EyeOutlined />
-                                <span>1452</span>
-                            </button>
-                        </div>
-                        <div className="stat">
-                            <button className="stat-button ml-[0.2rem] mt-[0.1rem]">
-                                <LikeOutlined />
-                                <span>100</span>
-                            </button>
-                        </div>
-                        <div className="stat">
-                            <button className="stat-button ml-[0.5rem] mt-[0.1rem]">
-                                <DislikeOutlined />
-                                <span>20</span>
-                            </button>
-                        </div>
-                        <div className="stat">
-                            <button className="stat-button ml-[0.6rem] mt-[0.1rem]">
-                                <ShareAltOutlined />
-                                <span>9</span>
-                            </button>
+                    <div className='info-instructor'>
+                        <div className="course-stats ml-[76rem] mb-[0.1rem]">
+                            <div className="stat">
+                                <button className="stat-button ml-[-0.2rem] mt-[0.1rem]">
+                                    <EyeOutlined className='mr-[0.2rem]' />
+                                    <span>1452</span>
+                                </button>
+                            </div>
+                            <div className="stat">
+                                <button className="stat-button ml-[0.1rem] mt-[0.1rem]">
+                                    <LikeOutlined className='mr-[0.3rem]' />
+                                    <span>100</span>
+                                </button>
+                            </div>
+                            <div className="stat">
+                                <button className="stat-button ml-[0.1rem] mt-[0.1rem]">
+                                    <DislikeOutlined className='mr-[0.3rem]' />
+                                    <span>20</span>
+                                </button>
+                            </div>
+                            <div className="stat">
+                                <button className="stat-button ml-[0.1rem] mt-[0.1rem]">
+                                    <ShareAltOutlined className='mr-[0.3rem]' />
+                                    <span>9</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
-            <div className="course-tabs ml-[40rem]">
+            <div className="course-tabs ml-[1rem] lg:ml-[36rem]">
                 <Tabs defaultActiveKey="1" onChange={onChange}>
                     <TabPane tab="About" key="1" />
                     <TabPane tab="Course Content" key="2" />
                     <TabPane tab="Reviews" key="3" />
+                    <TabPane tab="Instructor" key="4" />
                 </Tabs>
             </div>
             <div className="course-content">
                 {activeTabKey === '1' && <About />}
-                {activeTabKey === '2' && <div>Content of Tab Pane 2</div>}
-                {activeTabKey === '3' && <div>Content of Tab Pane 3</div>}
+                {activeTabKey === '2' && <Content />}
+                {activeTabKey === '3' && <ReviewPage />}
+                {activeTabKey === '4' && <Instructor />}
             </div>
         </div>
     );
