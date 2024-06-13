@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Student, Admin, Instructor } from "../../models";
-import { Modal, Button, Form, Input } from "antd";
+import { Modal, Button, Form, Input, Tabs, Empty } from "antd";
 import styles from "./profile.module.css";
 
-const Profile = () => {
+const { TabPane } = Tabs;
+
+const Profile: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -11,6 +13,10 @@ const Profile = () => {
 
   const showEditModal = () => {
     setIsModalVisible(true);
+    form.setFieldsValue({
+      fullName: user.fullName,
+      avatarUrl: user.avatarUrl,
+    });
   };
 
   const handleCancel = () => {
@@ -62,7 +68,6 @@ const Profile = () => {
     const storedEmail = userObj.email;
     const storedAvatarUrl = userObj.avatarUrl;
     const storedCreatedDate = new Date(userObj.createdDate).toUTCString();
-    const storedUpdatedDate = new Date(userObj.updatedDate).toUTCString();
 
     let newUser: any = null;
     if (storedRole === "Student") {
@@ -72,8 +77,7 @@ const Profile = () => {
         storedEmail,
         "",
         storedAvatarUrl,
-        storedCreatedDate,
-        storedUpdatedDate
+        storedCreatedDate
       );
     } else if (storedRole === "Admin") {
       newUser = new Admin(
@@ -82,8 +86,7 @@ const Profile = () => {
         storedEmail,
         "",
         storedAvatarUrl,
-        storedCreatedDate,
-        storedUpdatedDate
+        storedCreatedDate
       );
     } else if (storedRole === "Instructor") {
       newUser = new Instructor(
@@ -92,8 +95,7 @@ const Profile = () => {
         storedEmail,
         "",
         storedAvatarUrl,
-        storedCreatedDate,
-        storedUpdatedDate
+        storedCreatedDate
       );
     }
 
@@ -119,55 +121,78 @@ const Profile = () => {
             className={styles.profileAvatar}
           />
         </div>
-        <div className={styles.profileDetails}>
-          <h1 className={styles.profileHeader}>Profile</h1>
-          <Button
-            type="primary"
-            onClick={showEditModal}
-            className={styles.editButton}
-          >
-            Edit Profile
-          </Button>
-          <p className={styles.profileDetailItem}>
-            <strong>Full Name: </strong>
-            {user.fullName}
-          </p>
-          <p className={styles.profileDetailItem}>
-            <strong>Email: </strong>
-            {user.email}
-          </p>
-          <p className={styles.profileDetailItem}>
-            <strong>Created Date: </strong>
-            {user.createdDate}
-          </p>
-          <p className={styles.profileDetailItem}>
-            <strong>Updated Date: </strong>
-            {user.updatedDate}
-          </p>
-          {user instanceof Student && (
-            <div>
-              <p className={styles.profileDetailItem}>
-                <strong>Status: </strong>
-                {user.isActive ? "Active" : "Inactive"}
-              </p>
-            </div>
-          )}
-          {user instanceof Admin && (
-            <div>
-              <p className={styles.profileDetailItem}>
-                Last Login: {user.lastLogin}
-              </p>
-            </div>
-          )}
-          {user instanceof Instructor && (
-            <div>
-              <p className={styles.profileDetailItem}>
-                Description: {user.description}
-              </p>
-              <p className={styles.profileDetailItem}>Degree: {user.degree}</p>
-              <p className={styles.profileDetailItem}>Status: {user.status}</p>
-            </div>
-          )}
+        <div className={styles.tab}>
+          <Tabs defaultActiveKey="1" centered>
+            <TabPane tab="About Me" key="1">
+              <div className={styles.profileDetails}>
+                <h1 className={styles.profileHeader}>Profile</h1>
+                <Button
+                  type="primary"
+                  onClick={showEditModal}
+                  className={styles.editButton}
+                >
+                  Edit Profile
+                </Button>
+                <p className={styles.profileDetailItem}>
+                  <strong>Full Name: </strong>
+                  {user.fullName}
+                </p>
+                <p className={styles.profileDetailItem}>
+                  <strong>Email: </strong>
+                  {user.email}
+                </p>
+                <p className={styles.profileDetailItem}>
+                  <strong>Created Date: </strong>
+                  {user.createdDate}
+                </p>
+
+                {user instanceof Student && (
+                  <div>
+                    <p className={styles.profileDetailItem}>
+                      <strong>Status: </strong>
+                      {user.isActive ? "Active" : "Inactive"}
+                    </p>
+                  </div>
+                )}
+                {user instanceof Admin && (
+                  <div>
+                    <p className={styles.profileDetailItem}>
+                      Last Login: {user.lastLogin}
+                    </p>
+                  </div>
+                )}
+                {user instanceof Instructor && (
+                  <div>
+                    <p className={styles.profileDetailItem}>
+                      Description: {user.description}
+                    </p>
+                    <p className={styles.profileDetailItem}>
+                      Degree: {user.degree}
+                    </p>
+                    <p className={styles.profileDetailItem}>
+                      Status: {user.status}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </TabPane>
+            <TabPane tab="Purchased Courses" key="2">
+              <div className={styles.coursesContainer}>
+                <h1 className={styles.coursesHeader}>My Courses</h1>
+                {user.courses && user.courses.length > 0 ? (
+                  <ul className={styles.coursesList}>
+                    {user.courses.map((course: any, index: number) => (
+                      <li key={index} className={styles.courseItem}>
+                        {course.name}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <Empty description="No courses purchased" />
+                )}
+              </div>
+            </TabPane>
+          </Tabs>
         </div>
       </div>
 
@@ -184,7 +209,7 @@ const Profile = () => {
           </Button>,
         ]}
       >
-        <Form form={form} name="editProfile" initialValues={{ remember: true }}>
+        <Form form={form} name="editProfile">
           <Form.Item label="Full Name" name="fullName">
             <Input />
           </Form.Item>

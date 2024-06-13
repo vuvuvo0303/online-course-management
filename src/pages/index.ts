@@ -9,6 +9,7 @@ export { default as Terms } from "./terms";
 export { default as Guidelines } from "./guideline";
 export { default as Cart } from "./cart";
 export { default as Profile } from "./profile";
+export { default as Checkout } from "./checkout";
 
 /* Instructor Page */
 export { default as BecomeInstructorPage } from "./teaching";

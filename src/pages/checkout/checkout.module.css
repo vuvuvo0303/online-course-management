@@ -1,0 +1,52 @@
+/* checkout.module.css */
+.checkoutContainer {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.detailsContainer {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 24px;
+  text-align: center;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.paymentDetailsContent {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.courseImage {
+  text-align: center;
+  margin-bottom: 20px;
+  max-width: 300px;
+  height: auto;
+}
+
+.paymentForm {
+  margin-top: 20px;
+}
+
+.payButton {
+  width: 20%;
+  margin: 0 auto;
+  display: block;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+.courseDetails {
+  margin-top: 20px;
+}
