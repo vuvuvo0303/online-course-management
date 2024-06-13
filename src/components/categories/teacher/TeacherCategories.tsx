@@ -1,7 +1,7 @@
 import { Card } from 'antd';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { teacherCategories } from "../consts/index";
+import { teacherCategories } from "../../../consts/index";
 
 const { Meta } = Card;
 

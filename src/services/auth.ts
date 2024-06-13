@@ -31,3 +31,8 @@ export async function login(email: string, password: string): Promise<{ user: St
     return null;
   }
 }
+
+export function logout() {
+  localStorage.removeItem("user");
+  localStorage.removeItem("role");
+}

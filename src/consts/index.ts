@@ -12,12 +12,45 @@ export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 export const API_BLOGS_URL = `${BASE_URL}/blogs`;
 
 
+// consts/paths.ts
+
+export const paths = {
+  HOME: "/",
+  LOGIN: "/login",
+  ABOUT: "/about",
+  REGISTER: "/register",
+  TERMS: "/terms",
+  POLICY: "/terms/policy",
+  GUIDELINES: "/terms/guidelines",
+  SUPPORT: "/support",
+  BLOG: "/blog",
+  BLOG_DETAIL: "/blog/:id",
+  CONTACT: "/contact",
+  TEACHING: "/teaching",
+  CART: "/cart",
+  INSTRUCTOR_DASHBOARD: "/instructor/dashboard",
+  ADMIN_DASHBOARD: "/admin/dashboard",
+  MANAGE_LECTURES: "/instructor/dashboard/manage-lectures",
+  MANAGE_STUDENTS: "/admin/dashboard/manage-students",
+  MANAGE_INSTRUCTORS: "/admin/dashboard/manage-instructors",
+  MANAGE_BLOGS: "/admin/dashboard/manage-blogs",
+  MANAGE_COURSES: "/admin/dashboard/manage-courses",
+  MANAGE_FEEDBACKS: "/admin/dashboard/manage-feedbacks",
+};
+
+
+// consts/roles.ts
+
+export const roles = {
+  STUDENT: "Student",
+  INSTRUCTOR: "Instructor",
+  ADMIN: "Admin",
+};
+
 /* Navbar */
 export const NavLinks = [
-  // { href: "/", key: "Categories", text: "Categories" },
   { href: "/", key: "Saved Courses", text: "Saved Courses" },
   { href: "/teaching", key: "Be an Instructors", text: "Be an Instructors" },
-  { href: "/support", key: "Support", text: "Support" },
 ];
 
 // export const InstructorLinks = [

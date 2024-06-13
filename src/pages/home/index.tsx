@@ -1,7 +1,7 @@
-import Categories from "../../components/Categories";
-import TeacherCategories from "../../components/TeacherCategories";
+import Categories from "../../components/categories/main/Categories";
+import TeacherCategories from "../../components/categories/teacher/TeacherCategories";
 import ClientCarousel from "../../components/ClientCarousel";
-import LogoCategories from "../../components/LogoCategories";
+import LogoCategories from "../../components/categories/logo/LogoCategories";
 import NewSection from "../../components/news/NewSection";
 
 const Home: React.FC = () => {

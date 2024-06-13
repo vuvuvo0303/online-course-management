@@ -2,24 +2,28 @@ import { useEffect, useState } from 'react';
 import { Blog } from '../../models';
 import { Link } from 'react-router-dom';
 import styles from './blog.module.css';
-import { Pagination } from 'antd';
-const BlogList = () => {
+import { Breadcrumb, Input, Pagination, Checkbox, Tag } from 'antd';
+import { ArrowRightOutlined } from '@ant-design/icons';
+
+const BlogList: React.FC = () => {
     const [blogs, setBlogs] = useState<Blog[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState<{ [key: string]: number }>({});
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const blogsPerPage = 3;
 
     useEffect(() => {
         const fetchBlogs = async () => {
-
             try {
                 const response = await fetch('https://665fbf245425580055b0b23d.mockapi.io/blogs');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                setBlogs(data);
+                const sortedBlogs = data.sort((a: Blog, b: Blog) => new Date(b.time).getTime() - new Date(a.time).getTime());
+                setBlogs(sortedBlogs);
             } catch (error: unknown) {
                 if (error instanceof Error) {
                     setError(error.message);
@@ -42,138 +46,159 @@ const BlogList = () => {
         return <p>Error: {error}</p>;
     }
 
-    const groupedBlogs = blogs.reduce((acc: { [key: string]: Blog[] }, blog) => {
-        if (!acc[blog.category]) {
-            acc[blog.category] = [];
-        }
-        acc[blog.category].push(blog);
-        return acc;
-    }, {});
-
-    const categories = Object.keys(groupedBlogs);
-
-    const handlePageChange = (category: string, page: number) => {
-        setCurrentPage(prev => ({ ...prev, [category]: page }));
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
     };
 
-    const popularBlogs = [...blogs].sort((a, b) => b.view - a.view).slice(0, 3);
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(event.target.value);
+        setCurrentPage(1);
+    };
+
+    const handleViewUpdate = async (blogId: string) => {
+        const updatedBlogs = blogs.map(blog => {
+            if (blog.id === blogId) {
+                return { ...blog, view: blog.view + 1 };
+            }
+            return blog;
+        });
+
+        setBlogs(updatedBlogs);
+
+        try {
+            await fetch(`https://665fbf245425580055b0b23d.mockapi.io/blogs/${blogId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ view: updatedBlogs.find(blog => blog.id === blogId)?.view }),
+            });
+        } catch (error) {
+            console.error('Failed to update view count:', error);
+        }
+    };
+
+    const uniqueCategories = [...new Set(blogs.map(blog => blog.category))];
+
+    const handleCategoryChange = (category: string, checked: boolean) => {
+        setSelectedCategories(prevCategories =>
+            checked ? [...prevCategories, category] : prevCategories.filter(cat => cat !== category)
+        );
+        setCurrentPage(1);
+    };
+
+    const filteredBlogs = blogs.filter(blog =>
+        (blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            blog.name_user.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            blog.introduce.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            blog.description.some(desc =>
+                desc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                desc.content.some(content =>
+                    content.text.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+            )) &&
+        (selectedCategories.length === 0 || selectedCategories.includes(blog.category))
+    );
+
+    const indexOfLastBlog = currentPage * blogsPerPage;
+    const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
+    const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
 
     return (
         <div className={styles.blogPageContainer}>
-            <div id="animation-carousel" className="relative w-full" data-carousel="static">
-
-                <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
-                 
-                    <div className="hidden duration-200 ease-linear" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-1.svg" className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..."/>
-                    </div>
-                   
-                    <div className="hidden duration-200 ease-linear" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-2.svg" className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..."/>
-                    </div>
-                   
-                    <div className="hidden duration-200 ease-linear" data-carousel-item="active">
-                        <img src="/docs/images/carousel/carousel-3.svg" className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..."/>
-                    </div>
-               
-                    <div className="hidden duration-200 ease-linear" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-4.svg" className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..."/>
-                    </div>
-                 
-                    <div className="hidden duration-200 ease-linear" data-carousel-item>
-                        <img src="/docs/images/carousel/carousel-5.svg" className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..."/>
-                    </div>
-                </div>
-           
-                <button type="button" className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                        <svg className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
-                        </svg>
-                        <span className="sr-only">Previous</span>
-                    </span>
-                </button>
-                <button type="button" className="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                        <svg className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
-                        </svg>
-                        <span className="sr-only">Next</span>
-                    </span>
-                </button>
-            </div>
-            <div className={styles.box1}>
-                <div className={`container mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 ${styles.contentCenter}`}>
-                    <div>
-                        <h1>Where possibilities begin</h1>
-                        <p className={styles.storytellerDesc}>We’re a leading marketplace platform for learning and teaching online. Explore some of our most popular content and learn something new.</p>
-                    </div>
-                    <div >
-                        <img src="https://blog.udemy.com/wp-content/uploads/2021/07/reading-girl-2.png" alt="picture" />
-                    </div>
-                </div>
-            </div>
-            <div className={styles.categoryBar}></div>
-            <div className={`${styles.popular} container mx-auto mt-10`}>
-                <h1 className={`${styles.popular} mb-10 font-bold`}>Popular Blog</h1>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
-                    {popularBlogs.map(blog => (
-                        <div className={styles.blogContainer} key={blog.id}>
-                            <p>{blog.category}</p>
-                            <Link to={`/blogs/${blog.id}`}>
-                                <p className={styles.title}>{blog.title}</p>
-                            </Link>
-                            <div>
-
-                                <p>{new Date(blog.time).toLocaleDateString()}</p>
-                                <p>Name: {blog.name_user}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            <div className="container mx-auto pt-10 pb-10">
-                {/* <div>
-                    <h1 className={`${styles.blogPage} text-center`}>Blog</h1>
-                </div> */}
-
-                {categories.map(category => {
-                    const categoryCurrentPage = currentPage[category] || 1;
-                    const indexOfLastBlog = categoryCurrentPage * blogsPerPage;
-                    const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
-                    const currentBlogs = groupedBlogs[category]?.slice(indexOfFirstBlog, indexOfLastBlog);
-
-                    return (
-                        <div className={styles.categoryBox} key={category}>
-                            <h1 className={styles.categoryTitle}>{category}</h1>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
-                                {currentBlogs?.map(blog => (
-                                    <div key={blog.id}>
-                                        <div className={styles.blogContainer}>
-                                            <Link to={`/blogs/${blog.id}`}>
-                                                <p className={styles.title}>{blog.title}</p>
-                                            </Link>
-                                            <div>
-
-                                                <p>{new Date(blog.time).toLocaleDateString()}</p>
-                                                <p>Name: {blog.name_user}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <Pagination
-                                current={categoryCurrentPage}
-                                total={groupedBlogs[category]?.length || 0}
-                                pageSize={blogsPerPage}
-                                onChange={page => handlePageChange(category, page)}
-                                className={`${styles.pagination} text-center`}
+            <Breadcrumb className='container mx-auto mt-10'
+                items={[
+                    {
+                        title: <Link style={{ color: " #5624d0", fontWeight: "700" }} to={"/"}>Home</Link>,
+                    },
+                    {
+                        title: <div >Blog</div>,
+                    },
+                ]}
+            />
+            <div className='container mx-auto grid grid-cols-1 md:grid-cols-6 gap-10'>
+                <div className="md:col-span-1 mt-10">
+                    <div className={styles.searchBox}>
+                        <div className={styles.searchContainer}>
+                            <Input
+                                className='inputSearch'
+                                type="text"
+                                placeholder='Search'
+                                value={searchTerm}
+                                onChange={handleSearchChange}
                             />
                         </div>
-                    );
-                })}
+                        <div className={styles.categoryFilter}>
+                            {uniqueCategories.map(category => (
+                                <div key={category}>
+                                    <Checkbox
+                                        checked={selectedCategories.includes(category)}
+                                        onChange={e => handleCategoryChange(category, e.target.checked)}
+                                    >
+                                        {category}
+                                    </Checkbox>
+                                </div>
+                            ))}
+                        </div>
+                        <div className={styles.socialNetwork}>
+                            <div className={`${styles.x} text-center mb-2`}>
+                                <Link to={"https://www.facebook.com/gao.leminh"} className=''>Follow</Link>
+                            </div>
+                            <div className={`${styles.facebook} text-center`}>
+                                <Link to={"https://www.facebook.com/gao.leminh"}>Follow</Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="md:col-span-5 mt-10 pb-10">
+                    <div className="grid gap-5">
+                        {currentBlogs.map(blog => (
+                            <Link to={`/blog/${blog.id}`} onClick={() => handleViewUpdate(blog.id)} key={blog.id}>
+                                <div className={`${styles.blogContainer} grid gird-cols-1 md:grid-cols-6  gap-10 `}>
+                                    <div className={`${styles.imgContainer} md:col-span-2 `}>
+                                        <img className='xs:h-48 w-96' src={blog.blog_image} alt="Blog image" />
+                                    </div>
+                                    <div className='md:col-span-4'>
+                                        <Tag bordered={false} color="orange" className='float-right px-10 '>
+                                            <p className=''>{blog.category}</p>
+                                        </Tag>
+
+                                        <div className=' grid grid-cols-2 md:grid-cols-6 gap-0'>
+                                            <p className='md:col-span-1'>{blog.view === 1 ? `${blog.view} view` : `${blog.view} views`}  </p>
+                                            <p className='md:col-span-1'>{new Date(blog.time).toLocaleDateString()}</p>
+                                        </div>
+                                        <p className={styles.title}>{blog.title}</p>
+                                        <p className={styles.introduce}>{blog.introduce}</p>
+                                        <div>
+                                            <p> {blog.name_user}</p>
+                                        </div>
+
+
+                                        <button className={styles.readMore}>
+                                            <div className={` font-bold`}>
+                                                Read More
+                                                <ArrowRightOutlined className={styles.arrowIcon} />
+                                            </div>
+                                            
+                                        </button>
+
+
+
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                    <Pagination
+                        current={currentPage}
+                        total={filteredBlogs.length}
+                        pageSize={blogsPerPage}
+                        onChange={handlePageChange}
+                        className={`${styles.pagination} text-center`}
+                    />
+                </div>
             </div>
-        </div>
+        </div >
     );
 };
 

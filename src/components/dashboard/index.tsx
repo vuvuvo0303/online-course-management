@@ -22,8 +22,9 @@ const Dashboard: React.FC = () => {
   const [role, setRole] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
   useEffect(() => {
-    const userRole = sessionStorage.getItem("role");
-    const user = sessionStorage.getItem("user");
+  
+    const userRole = localStorage.getItem('role');
+    const user = localStorage.getItem('user');
     if (userRole && user) {
       setRole(userRole);
       setFullName(JSON.parse(user).fullName);

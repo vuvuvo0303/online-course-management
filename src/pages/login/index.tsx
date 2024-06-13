@@ -4,7 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Vector from "../../assets/Vector.png";
 import Rectangle from "../../assets/Rectangle .jpg";
 import { login } from "../../services/auth";
-import { removePassword } from "../../utils";
+import { removePassword } from '../../utils/validHelper';
+
 import { toast } from "react-toastify";
 
 type FieldType = {
@@ -21,8 +22,8 @@ const LoginPage: React.FC = () => {
     if (authResult && "user" in authResult) {
       const { user, role } = authResult;
       const userWithoutPassword = removePassword(user); // Loại bỏ mật khẩu
-      sessionStorage.setItem("user", JSON.stringify(userWithoutPassword));
-      sessionStorage.setItem("role", role);
+      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
+      localStorage.setItem('role', role);
 
       switch (role) {
         case "Student":

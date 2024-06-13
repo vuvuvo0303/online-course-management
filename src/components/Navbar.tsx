@@ -1,8 +1,8 @@
 import { Menu, Dropdown, Badge } from 'antd';
 import { Link } from 'react-router-dom';
 import { NavLinks, categoryFilters, categorySubmenu } from '../consts/index';
-import SearchTool from '../components/SearchTool';
-import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import SearchTool from './SearchTool';
+import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined } from '@ant-design/icons';
 
 const Navbar = () => {
   // Create a submenu for each categoryFilter
@@ -16,8 +16,8 @@ const Navbar = () => {
     </Menu.SubMenu>
   ));
 
-  // Get user data from sessionStorage
-  const userData = JSON.parse(sessionStorage.getItem('user') || '{}');
+  // Get user data from localStorage
+  const userData = JSON.parse(localStorage.getItem('user') || '{}');
   const { avatarUrl } = userData;
 
   return (
@@ -48,11 +48,22 @@ const Navbar = () => {
 
       <div className="flexCenter gap-10 mr-5">
         <SearchTool />
-        {/* Add Badge component to display badge count */}
-        <Badge count={5}>
-          <ShoppingCartOutlined className="text-gray-400 text-3xl" />
+        <Link to="/enrollment">
+          <Badge count={4}>
+            <HeartOutlined className="text-gray-400 text-3xl" />
+          </Badge>
+        </Link>
+        <Badge count={2}>
+          <MailOutlined className="text-gray-400 text-3xl" />
         </Badge>
-        {/* Render User Avatar */}
+        <Badge count={3}>
+          <BellOutlined className="text-gray-400 text-3xl" />
+        </Badge>
+        <Link to="/cart">
+          <Badge count={2}>
+            <ShoppingCartOutlined className="text-gray-400 text-3xl" />
+          </Badge>
+        </Link>
         {avatarUrl ? (
           <img
             src={avatarUrl}
