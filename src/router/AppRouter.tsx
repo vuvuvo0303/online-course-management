@@ -22,7 +22,7 @@ import {
   BecomeInstructorPage,
   Cart,
   Profile,
-
+  Enrollment,
 } from "../pages";
 import BlogList from "../pages/blog";
 import BlogDetail from "../pages/blog/blogDetail";
@@ -53,6 +53,7 @@ const AppRouter: React.FC = () => {
       <Route path="/course/:id" element={<CourseDetail />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/enrollment" element={<Enrollment />} />
 
       {/* Instructor routes */}
       <Route
