@@ -1,4 +1,3 @@
-import React from 'react';
 import { Collapse, Button } from 'antd';
 import { VideoCameraOutlined, PlayCircleOutlined, FileWordOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
