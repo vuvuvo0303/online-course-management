@@ -9,6 +9,8 @@ export const API_ENROLLMENT_URL = `${BASE_URL}/enrollments`;
 export const API_LECTURE_URL = `${BASE_URL}/lectures`;
 export const API_PAYMENT_URL = `${BASE_URL}/payments`;
 export const API_REVIEW_URL = `${BASE_URL}/reviews`;
+export const API_BLOGS_URL = `${BASE_URL}/blogs`;
+
 
 /* Navbar */
 export const NavLinks = [

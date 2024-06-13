@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   CommentOutlined,
   DesktopOutlined,
+  FundOutlined,
   FundProjectionScreenOutlined,
   ProfileOutlined,
   TeamOutlined,
@@ -45,6 +46,7 @@ const Dashboard: React.FC = () => {
       setItems([getItem("Manage Lectures", "/instructor/dashboard/manage-lectures", <DesktopOutlined />)]);
     } else if (role === "Admin") {
       setItems([
+        getItem("DashBoard", "/admin/dashboard/statics", <FundOutlined />),
         getItem("Manage Students", "/admin/dashboard/manage-students", <TeamOutlined />),
         getItem("Manage Instructors", "/admin/dashboard/manage-instructors", <TeamOutlined />),
         getItem("Manage Courses", "/admin/dashboard/manage-courses", <FundProjectionScreenOutlined />),
@@ -77,9 +79,9 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value) }>
           <div className="demo-logo-vertical" />
-          <Menu className="py-4 bg-white-50 h-full  " defaultSelectedKeys={["1"]} mode="vertical" items={items} />
+          <Menu className="py-4 bg-white-50 h-full   " defaultSelectedKeys={["1"]} mode="vertical" items={items} />
         </Sider>
         <Layout className="bg-stone-100">
           <Header className="flex justify-between items-center drop-shadow-xl bg-white ">

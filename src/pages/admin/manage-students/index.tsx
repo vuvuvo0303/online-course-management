@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Breadcrumb, Button, Image, Table, Tag } from "antd";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Image, Switch, Table, Tag } from "antd";
+import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 
 interface DataType {
@@ -13,12 +13,13 @@ interface DataType {
   isActive: boolean;
   avatarUrl: string;
   userId: string;
-  
 }
 
 const ManageStudent = () => {
   const [data, setData] = useState<DataType[]>([]);
-
+  const onChange = (isActive: boolean) => {
+    console.log(`switch to ${isActive}`);
+  };
   const handleDelete = async (userId: string) => {
     const response = await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/students/${userId}`);
     console.log(response);
@@ -49,41 +50,49 @@ const ManageStudent = () => {
       dataIndex: "userId",
       key: "userId",
       render: (text: string) => <a>{text}</a>,
+      width: "5%",
     },
     {
       title: "Name",
       dataIndex: "fullName",
       key: "fullName",
       render: (text: string) => <a>{text}</a>,
+      width: "20%",
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      width: "20%",
     },
     {
       title: "Created Date",
       dataIndex: "createdDate",
       render: (createdDate: string) => formatDate(createdDate),
+      width: "10%",
     },
     {
       title: "Updated Date",
       dataIndex: "updatedDate",
       render: (updatedDate: string) => formatDate(updatedDate),
+      width: "10%",
     },
     {
       title: "Image",
       dataIndex: "avatarUrl",
       key: "avatarUrl",
-      render: (avatarUrl: string) => <Image src={avatarUrl} />,
+      render: (avatarUrl: string) => <Image src={avatarUrl} width={50}/>,
+      
     },
     {
       title: "Status",
       key: "isActive",
       dataIndex: "isActive",
+      width: "10%",
+
       render: (isActive: boolean) => (
         <>
-          <Tag color={isActive ? "green" : "volcano"}>{isActive ? "Active" : "Inactive"}</Tag>
+          <Switch defaultChecked onChange={onChange} />
         </>
       ),
     },
@@ -92,9 +101,10 @@ const ManageStudent = () => {
       title: "Action",
       key: "userId",
       render: (userId: string) => (
-        <Button type="primary" onClick={() => handleDelete(userId)} className="bg-orange-500">
-          Ban
-        </Button>
+        <div>
+          <EditOutlined className="hover:cursor-pointer text-blue-400 hover:opacity-60" style={{fontSize:"20px"}}/>
+          <DeleteOutlined className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60 "style={{fontSize:"20px"}} />
+        </div>
       ),
     },
   ];

@@ -3,7 +3,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import { Button, Image, Input, Space, Table } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
-import Highlighter from 'react-highlight-words';
+import Highlighter from "react-highlight-words";
 import axios from "axios";
 
 interface DataType {
@@ -118,29 +118,27 @@ const ManageBlogs = () => {
       title: "Catagory",
       dataIndex: "category",
       key: "category",
-      width: "10%",
+      width: "30%",
       ...getColumnSearchProps("category"),
     },
     {
       title: "Time",
       dataIndex: "time",
       key: "time",
-      width: "10%",
+      width: "20%",
       sorter: (a, b) => a.time.length - b.time.length,
       sortDirections: ["descend", "ascend"],
-      
     },
     {
       title: "Title",
       dataIndex: "title",
       key: "title",
-      width:"40%",
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
-      width:"40%",
+      render: (description) => <span>{description.title}: {description.content}</span>, 
     },
     {
       title: "View",
@@ -151,7 +149,7 @@ const ManageBlogs = () => {
       title: "Blog Image",
       dataIndex: "blog_image",
       key: "blog_image",
-      render: (blog_image: string) => <Image src={blog_image} width={100} />,
+      render: (blog_image: string) => <Image src={blog_image} />,
     },
   ];
   return (

@@ -26,20 +26,18 @@ const ManageCourses = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
-   const [dataSource, setDataSource] = useState([]);
+  const [dataSource, setDataSource] = useState([]);
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
   };
   useEffect(() => {
-    const fetchData = async () => {
-    
-        const response = await fetchCourses();
-        setDataSource(response);
-        console.log(response);
-      
+    const fetchcourses = async () => {
+      const response = await fetchCourses();
+      setDataSource(response);
+      console.log(response);
     };
-  
-    fetchData();
+
+    fetchcourses();
   }, []);
 
   const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
@@ -167,10 +165,10 @@ const ManageCourses = () => {
       title: "Image",
       dataIndex: "courseImgUrl",
       key: "courseImgUrl",
-      render: (courseImgUrl: string) => <Image src={courseImgUrl}  width={100}/>,
+      render: (courseImgUrl: string) => <Image src={courseImgUrl} width={100} />,
     },
   ];
-  return <div>{ <Table columns={columns} dataSource={dataSource} /> }</div>;
+  return <div>{<Table columns={columns} dataSource={dataSource} />}</div>;
 };
 
 export default ManageCourses;

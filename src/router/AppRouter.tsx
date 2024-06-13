@@ -24,6 +24,7 @@ import BlogList from "../pages/blog";
 import BlogDetail from "../pages/blog/blogDetail";
 import About from "../pages/about";
 import { useEffect } from "react";
+import Statics from "../pages/admin/dashboard-admin";
 
 const AppRouter: React.FC = () => {
   const userRole = sessionStorage.getItem("role");
@@ -99,6 +100,7 @@ const AppRouter: React.FC = () => {
         <Route path="manage-blogs" element={canAccess(["Admin"]) ? <ManageBlogs /> : <Navigate to="/" />} />
         <Route path="manage-courses" element={canAccess(["Admin"]) ? <ManageCourses/>: <Navigate to="/" />} />
         <Route path="manage-feedbacks" element={canAccess(["Admin"]) ? <ManageFeedbacks /> : <Navigate to="/" />} />
+        <Route path="statics" element={canAccess(["Admin"]) ? <Statics /> : <Navigate to="/" />} />
       </Route>
 
       {/* Other routes */}
