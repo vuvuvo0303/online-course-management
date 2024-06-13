@@ -101,9 +101,10 @@
     /* border-bottom: 1px solid black; */
 }
 
-img{
+/* img{
     width: 100%;
-}
+    height: auto;
+} */
 .searchContainer {
     border-bottom: 1px solid black;
 }

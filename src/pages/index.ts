@@ -13,7 +13,7 @@ export { default as About } from "./about";
 export { default as BlogDetail } from "./blog/blogDetail";
 export { default as BlogList } from "./blog";
 export { default as PaymentHistory } from "./payment/paymentHistory";
-
+export { default as CreateCourse } from "./course/createCourse";
 /* Instructor Page */
 export { default as BecomeInstructorPage } from "./teaching";
 export { default as ManageLectures } from "./instructor/manage-lectures";

@@ -3,6 +3,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 * {
   font-family: "Roboto", sans-serif;
   margin: 0;
@@ -22,7 +23,7 @@ html {
 h1 {
   font-size: 2rem;
   font-size: 2rem;
-  
+
 }
 
 .p_line_height {
@@ -103,12 +104,12 @@ body {
 
 .flexStart {
   @apply flex items-center justify-start;
-  
+
 }
 
 .text-small {
   @apply text-sm font-medium;
-  
+
 }
 
 .paddings {
@@ -125,7 +126,7 @@ body {
 /* Footer */
 .footer {
   @apply flex-col paddings w-full gap-20 bg-light-white;
-  
+
 }
 
 .footer>.flex:first-child {
@@ -241,6 +242,13 @@ body {
   .flexEvenly {
     flex-direction: column;
   }
+}
+
+@media (max-width: 480px) {
+  .ud_h {
+    font-size: 1.5rem;
+  }
+
 }
 
 /*Login*/

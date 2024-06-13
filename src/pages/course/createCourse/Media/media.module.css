@@ -1,0 +1,22 @@
+.Border {
+    border-color: rgb(220, 227, 234);
+    /* background-color: white; */
+}
+
+.icon {
+    font-size: 35px;
+
+}
+
+.ant-upload{
+    width: 200r;
+}
+
+.custom-btn-primary {
+    background-color: var(--secondary-color);
+}
+
+.custom-btn-primary:hover {
+    background-color: var(--secondary-hover-color) !important;
+    border-color: var(--secondary-hover-color) !important;
+}

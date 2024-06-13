@@ -28,10 +28,12 @@ import {
   BlogDetail,
   BlogList,
   About,
-  PaymentHistory
+  PaymentHistory, 
+  CreateCourse
 } from "../pages";
 
 import { useEffect } from "react";
+import { paths, roles } from "../consts";
 const AppRouter: React.FC = () => {
   const userRole = sessionStorage.getItem("role");
   const navigate = useNavigate();
@@ -76,71 +78,38 @@ const AppRouter: React.FC = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/terms/policy" element={<Policy />} />
-      <Route path="/terms/guidelines" element={<Guidelines />} />
-      <Route path="/support" element={<Support />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/blog" element={<BlogList />} />
+      <Route path={paths.HOME} element={<Home />} />
+      <Route path={paths.CONTACT} element={<Contact />} />
+      <Route path={paths.LOGIN} element={<LoginPage />} />
+      <Route path={paths.ABOUT} element={<About />} />
+      <Route path={paths.REGISTER} element={<RegisterPage />} />
+      <Route path={paths.TERMS} element={<Terms />} />
+      <Route path={paths.POLICY} element={<Policy />} />
+      <Route path={paths.GUIDELINES} element={<Guidelines />} />
+      <Route path={paths.SUPPORT} element={<Support />} />
+      <Route path={paths.BLOG} element={<BlogList />} />
       <Route path="/blog/:id" element={<BlogDetail />} />
       <Route path="/teaching" element={<BecomeInstructorPage />} />
+      <Route path="/create-course" element={<CreateCourse />} />
       {/* <Route path="/course" element={<Course />} /> */}
       <Route path="/cart" element={<Cart />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/payment-history" element={<PaymentHistory />} />
       {/* Instructor routes */}
-
       <Route
         path="/instructor/dashboard/*"
-        element={
-          canAccess(["Instructor"]) ? <Dashboard /> : <Navigate to="/" />
-        }
+        element={canAccess(["Instructor"]) ? <Dashboard /> : <Navigate to="/" />}
       >
-        <Route
-          path="manage-lectures"
-          element={
-            canAccess(["Instructor"]) ? <ManageLectures /> : <Navigate to="/" />
-          }
-        />
+        <Route path="manage-lectures" element={canAccess([roles.INSTRUCTOR]) ? <ManageLectures /> : <Navigate to="/" />} />
       </Route>
 
       {/* Admin routes */}
-      <Route
-        path="/admin/dashboard/*"
-        element={canAccess(["Admin"]) ? <Dashboard /> : <Navigate to="/" />}
-      >
-        <Route
-          path="manage-students"
-          element={
-            canAccess(["Admin"]) ? <ManageStudent /> : <Navigate to="/" />
-          }
-        />
-        <Route
-          path="manage-instructors"
-          element={
-            canAccess(["Admin"]) ? <ManageInstructor /> : <Navigate to="/" />
-          }
-        />
-        <Route
-          path="manage-blogs"
-          element={canAccess(["Admin"]) ? <ManageBlogs /> : <Navigate to="/" />}
-        />
-        <Route
-          path="manage-courses"
-          element={
-            canAccess(["Admin"]) ? <ManageCourses /> : <Navigate to="/" />
-          }
-        />
-        <Route
-          path="manage-feedbacks"
-          element={
-            canAccess(["Admin"]) ? <ManageFeedbacks /> : <Navigate to="/" />
-          }
-        />
+      <Route path="/admin/dashboard/*" element={canAccess([roles.ADMIN]) ? <Dashboard /> : <Navigate to="/" />}>
+        <Route path="manage-students" element={canAccess([roles.ADMIN]) ? <ManageStudent /> : <Navigate to="/" />} />
+        <Route path="manage-instructors" element={canAccess([roles.ADMIN]) ? <ManageInstructor /> : <Navigate to="/" />} />
+        <Route path="manage-blogs" element={canAccess([roles.ADMIN]) ? <ManageBlogs /> : <Navigate to="/" />} />
+        <Route path="manage-courses" element={canAccess([roles.ADMIN]) ? <ManageCourses /> : <Navigate to="/" />} />
+        <Route path="manage-feedbacks" element={canAccess([roles.ADMIN]) ? <ManageFeedbacks /> : <Navigate to="/" />} />
       </Route>
 
       {/* Other routes */}

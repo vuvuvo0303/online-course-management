@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/CustomButton";
 import { DollarOutlined, ExpandAltOutlined, GlobalOutlined } from "@ant-design/icons";
+import './teaching.css'
 
 const BecomeInstructorPage: React.FC = () => {
     const navigate = useNavigate();
 
     const handleStart = () => {
-        navigate("/createCourse");
+        navigate("/create-course");
     };
 
     return (
@@ -58,7 +59,7 @@ const BecomeInstructorPage: React.FC = () => {
                 <div className="md:ml-24 md:mr-24 px-4 sm:px-0">
                     <div className="flex flex-col md:flex-row gap-24">
                         <div className="flex-1 flex mt-12 flex-col gap-7">
-                            <h1 className="font-bold">Who Are We?</h1>
+                            <h1 className="font-bold text-2xl">Who Are We?</h1>
                             <p className="storyteller_desc">
                                 We are a global educational platform committed to empowering individuals through knowledge. Our mission is to provide accessible and high-quality education to learners all over the world. With a strong community of passionate educators, we strive to make learning an enriching and enjoyable experience.
                             </p>
@@ -68,7 +69,7 @@ const BecomeInstructorPage: React.FC = () => {
                         </div>
                         <div className="vertical_line hidden md:block"></div>
                         <div className="flex-1 flex mt-12 flex-col gap-7">
-                            <h1 className="font-bold">Become an Instructor</h1>
+                            <h1 className="font-bold text-2xl">Become an Instructor</h1>
                             <p className="storyteller_desc">
                                 Are you passionate about sharing your knowledge and expertise with a global audience? Join our community of instructors and make a difference in the lives of millions of students worldwide. As an instructor, you'll have the opportunity to:
                                 <br /><br />
