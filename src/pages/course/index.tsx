@@ -57,6 +57,9 @@ const Course: React.FC = () => {
                             <Link to="/checkout">
                                 <button className="button buy-now">Buy Now</button>
                             </Link>
+                            <Link to="/course/id">
+                                <button className="button buy-now">Go to course</button>
+                            </Link>
                         </div>
                     </div>
                 </div>

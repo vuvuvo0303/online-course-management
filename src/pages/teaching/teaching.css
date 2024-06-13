@@ -1,0 +1,102 @@
+/* General responsive styles */
+@media (max-width: 1024px) {
+    .instructor_title {
+        font-size: 2.5rem;
+    }
+
+    .instructor_desc {
+        font-size: 1rem;
+    }
+
+    .main_h1 {
+        font-size: 2rem;
+    }
+
+    .ud_h4 {
+        font-size: 1.25rem;
+    }
+
+    .faq_h5 {
+        font-size: 1.125rem;
+    }
+
+    .storyteller_desc {
+        font-size: 1rem;
+    }
+
+    .icon_size {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .instructor_title {
+        font-size: 2rem;
+    }
+
+    .instructor_desc {
+        font-size: 0.875rem;
+    }
+
+    .main_h1 {
+        font-size: 1.75rem;
+    }
+
+    .ud_h4 {
+        font-size: 1.125rem;
+    }
+
+    .faq_h5 {
+        font-size: 1rem;
+    }
+
+    .storyteller_desc {
+        font-size: 0.875rem;
+    }
+
+    .icon_size {
+        font-size: 1.75rem;
+    }
+
+    .gap-24 {
+        gap: 12px;
+    }
+
+    .vertical_line {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .instructor_title {
+        font-size: 1.3rem;
+    }
+
+    .instructor_desc {
+        font-size: 0.75rem;
+    }
+
+    .main_h1 {
+        font-size: 1.5rem;
+    }
+
+    .ud_h4 {
+        font-size: 1rem;
+    }
+
+    .faq_h5 {
+        font-size: 1rem;
+    }
+
+    .storyteller_desc {
+        font-size: 0.85rem;
+    }
+
+    .icon_size {
+        font-size: 1.5rem;
+    }
+
+    .gap-24 {
+        gap: 8px;
+    }
+}

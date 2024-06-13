@@ -1,7 +1,7 @@
 import { Menu, Dropdown, Badge } from 'antd';
 import { Link } from 'react-router-dom';
 import { NavLinks, categoryFilters, categorySubmenu } from '../consts/index';
-import SearchTool from '../components/SearchTool';
+import SearchTool from './SearchTool';
 import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined } from '@ant-design/icons';
 
 const Navbar = () => {
@@ -16,8 +16,8 @@ const Navbar = () => {
     </Menu.SubMenu>
   ));
 
-  // Get user data from sessionStorage
-  const userData = JSON.parse(sessionStorage.getItem('user') || '{}');
+  // Get user data from localStorage
+  const userData = JSON.parse(localStorage.getItem('user') || '{}');
   const { avatarUrl } = userData;
 
   return (

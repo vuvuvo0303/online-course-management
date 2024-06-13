@@ -2,8 +2,8 @@ import { useState, useCallback, useEffect } from 'react';
 import { Card, Popover, Button, Rate } from 'antd';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { categoryFilters, categorySubmenu } from "../consts/index";
-import { CheckCircleOutlined } from '@ant-design/icons'; // Importing the icon
+import { categoryFilters, categorySubmenu } from "../../../consts/index";
+import { CheckOutlined } from '@ant-design/icons'; // Importing the icon
 import './Categories.css';
 
 const { Meta } = Card;
@@ -59,19 +59,19 @@ const Categories: React.FC = () => {
                 <Meta
                     title={filter}
                     description={
-                        <div className="max-w-[250px] max-h-[350px] flex flex-col justify-between p-4 text-left">
+                        <div className="max-w-[350px] max-h-[400px] flex flex-col justify-between p-4 text-left">
                             <div>
-                                <h3 className="text-green-600 text-sm">The Complete Python Bootcamp From Zero to Hero in Python</h3>
-                                <p className="text-black text-[0.6rem]">Updated at 7/2023</p>
+                                <h3 className="text-green-600 text-[1rem] mb-2">The Complete Python Bootcamp From Zero to Hero in Python</h3>
+                                <p className="text-black text-[0.6rem] mb-2">Updated at 7/2023</p>
                             </div>
                             <div>
-                                <p className="text-black text-xs">Learn Python like a Professional Start from the basics and go all the way to creating your own applications and games</p>
+                                <p className="text-black text-[1rem] mb-2">Learn Python like a Professional Start from the basics and go all the way to creating your own applications and games</p>
                             </div>
                             <div>
-                                <ul className="list-none p-0 mr-[0.8rem]">
-                                    <li className="text-black text-xs ml-[1rem]"><CheckCircleOutlined /> You will learn how to leverage the power of Python to solve tasks.</li>
-                                    <li className="text-black text-xs ml-[1rem]"><CheckCircleOutlined /> You will build games and programs that use Python libraries.</li>
-                                    <li className="text-black text-xs ml-[1rem]"><CheckCircleOutlined /> You will be able to use Python for your own work problems or personal projects.</li>
+                                <ul className="list-none">
+                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />You will learn how to leverage the power of Python to solve tasks.</li>
+                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />You will build games and programs that use Python libraries.</li>
+                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />You will be able to use Python for your own work problems or personal projects.</li>
                                 </ul>
                             </div>
                         </div>
