@@ -1,0 +1,8 @@
+.base_price {
+    line-height: 1;
+    padding: .4rem 0;
+    margin-right: .8rem;
+    white-space: nowrap;
+    font-weight: 700;
+    font-size: 1.3rem;
+}

@@ -11,6 +11,7 @@ export { default as Cart } from "./cart";
 export { default as Profile } from "./profile";
 export { default as Course } from "./course";
 export { default as CourseDetail } from "./coursedetail/coursedetail";
+export { default as Enrollment } from "./enrollment";
 
 /* Instructor Page */
 export { default as BecomeInstructorPage } from "./teaching";

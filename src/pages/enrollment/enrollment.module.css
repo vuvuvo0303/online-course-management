@@ -1,0 +1,90 @@
+.heading {
+    margin-bottom: 1.4rem;
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1.2;
+}
+
+.body_my_course {
+    background: #fff;
+    color: #2d2f31;
+    overflow: visible;
+    visibility: visible;
+    position: relative;
+}
+
+.course_container {
+    padding-top: 0.6rem;
+    padding-bottom: 4.8rem;
+    min-height: 32.4rem;
+    width: 100%;
+    margin-bottom: auto;
+    margin-right: auto;
+    padding-left: 1.4rem;
+    padding-right: 1.4rem;
+}
+
+.search_course {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .8rem 3.2rem;
+    margin: 0 0 2.2rem;
+}
+
+.search_course_right {
+    flex: 1;
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    gap: 0 1.6rem;
+}
+
+.form_label {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding-bottom: .8rem;
+    min-height: 2.8rem;
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+    font-weight: 700;
+    line-height: 1.2;
+    font-size: 1.4rem;
+}
+
+.input_search {
+    border-right: 0;
+    height: 3rem;
+    border: 1px solid #2d2f31;
+    border-radius: 0;
+    display: block;
+    padding: 0 1.6rem;
+    width: 100%;
+}
+
+.search_button {
+    padding: 0 1rem;
+    width: 3rem;
+    min-width: auto;
+    background: #2d2f31;
+    color: #fff;
+    height: 3rem;
+    position: relative;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+}
+
+.my_course_grid {
+    gap: 2.4rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -.8rem;
+    margin-right: -.8rem;
+}
