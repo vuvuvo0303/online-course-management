@@ -36,7 +36,7 @@ const ClientCarousel: React.FC = () => {
                     {testimonials.map((testimonial, index) => (
                         <div key={index} className={clsx("absolute inset-0 transition-opacity duration-1000", index === current ? 'opacity-100' : 'opacity-0')}>
                             <div className="relative pb-1 text-center w-max">
-                                <img alt="" src={testimonial.img} className={clsx("img-fluid pl-1 max-w-screen-2xl max-h-[800px] transform transition-transform")} />
+                                <img alt="" src={testimonial.img} className={clsx("img-fluid pl-1 max-w-[1360px] max-h-[800px] transform transition-transform")} />
                             </div>
                         </div>
                     ))}
