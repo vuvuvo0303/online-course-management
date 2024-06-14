@@ -30,13 +30,13 @@
 
 .paymentDetailsContent {
   max-width: 800px;
-  margin: 0 auto;
+  margin-left: 40px;
 }
 
 .courseImage {
   text-align: center;
   margin-bottom: 20px;
-  max-width: 150px;
+  max-width: 200px;
   height: auto;
 }
 
@@ -52,10 +52,6 @@
   margin-bottom: 50px;
 }
 
-.courseDetails {
-  margin-top: 20px;
-}
-
 .confirm {
   display: flex;
   flex-direction: column;
@@ -67,4 +63,12 @@
 .terms {
   font-size: 12px;
   color: rgb(131, 127, 127);
+}
+
+.paymentDetails {
+  display: flex;
+}
+
+.courseDetails {
+  margin-left: 150px;
 }

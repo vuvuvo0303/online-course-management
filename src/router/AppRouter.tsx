@@ -69,6 +69,12 @@ const AppRouter: React.FC = () => {
             canAccess(["Instructor"]) ? <Profile /> : <Navigate to="/" />
           }
         />
+        <Route
+          path="profile"
+          element={
+            canAccess(["Instructor"]) ? <Profile /> : <Navigate to="/" />
+          }
+        />
       </Route>
 
       {/* Admin routes */}

@@ -257,52 +257,53 @@ const Checkout: React.FC = () => {
                 )}
               </Form>
             )}
-            {course && (
-              <div className={styles.courseDetails}>
-                <h2 className={styles.sectionTitle}>
-                  <strong>Order Details</strong>
-                </h2>
-                <div className={styles.courseImage}>
-                  <img src={courseImage} alt={course.title} />
-                </div>
-                <div className={styles.description}>
-                  <p>
-                    <strong>Course Name:</strong> {course.title}
-                  </p>
-                  <p>
-                    <strong>Description:</strong> {course.description}
-                  </p>
-                  <p>
-                    <strong>Price: </strong> ${course.price}
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
+
+          {course && (
+            <div className={styles.courseDetails}>
+              <h2 className={styles.sectionTitle}>
+                <strong>Order Details</strong>
+              </h2>
+              <div className={styles.courseImage}>
+                <img src={courseImage} alt={course.title} />
+              </div>
+              <div className={styles.description}>
+                <p>
+                  <strong>Course Name:</strong> {course.title}
+                </p>
+                <p>
+                  <strong>Description:</strong> {course.description}
+                </p>
+                <p>
+                  <strong>Price: </strong> ${course.price}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
-        <div className={styles.confirm}>
-          <p className={styles.terms}>
-            By completing your purchase you agree to these{" "}
-            <a
-              href="/terms"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 underline"
-            >
-              Terms of Service
-            </a>
-            .
-          </p>
-          <Button
-            type="primary"
-            className={styles.payButton}
-            onClick={handlePayment}
-            loading={loading}
-            disabled={loading}
+      </div>
+      <div className={styles.confirm}>
+        <p className={styles.terms}>
+          By completing your purchase you agree to these{" "}
+          <a
+            href="/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 underline"
           >
-            {loading ? "Processing..." : "Complete Checkout"}
-          </Button>
-        </div>
+            Terms of Service
+          </a>
+          .
+        </p>
+        <Button
+          type="primary"
+          className={styles.payButton}
+          onClick={handlePayment}
+          loading={loading}
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "Complete Checkout"}
+        </Button>
       </div>
     </div>
   );
