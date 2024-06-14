@@ -11,14 +11,20 @@ export { default as Cart } from "./cart";
 export { default as Profile } from "./profile";
 export { default as Checkout } from "./checkout";
 export { default as About } from "./about";
+export { default as Course } from "./course";
 export { default as BlogDetail } from "./blog/blogDetail";
 export { default as BlogList } from "./blog";
 export { default as StudentPaymentHistory } from "./payment/StudentPaymentHistory";
+export { default as Enrollment } from "./enrollment/index";
+export { default as SiteMap } from "./sitemap";
+export { default as NotFound } from "./notfound";
 /* Instructor Page */
 export { default as BecomeInstructorPage } from "./teaching";
 export { default as ManageLectures } from "./instructor/manage-lectures";
+export { default as ManageFeedback } from "./instructor/manage-feedback";
 export { default as PaymentHistory } from "./payment/paymentHistory";
 export { default as CreateCourse } from "./course/createCourse";
+
 /* Admin Page */
 export { default as ManageStudent } from "./admin/manage-students";
 export { default as ManageInstructor } from "./admin/manage-instructors";
