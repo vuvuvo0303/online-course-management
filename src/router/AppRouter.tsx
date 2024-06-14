@@ -42,8 +42,8 @@ import ManageBlogsInstructor from "../pages/instructor/manage-blogs";
 import InstrutorDashboard from "../pages/instructor/instructor-dashbaord";
 import CourseDetail from "../pages/coursedetail/coursedetail";
 
-
 const AppRouter: React.FC = () => {
+  const { canAccess } = useRoleRedirect();
   const userRole = localStorage.getItem("role");
   const navigate = useNavigate();
   const location = useLocation();
@@ -88,7 +88,7 @@ const AppRouter: React.FC = () => {
 
   return (
     <Routes>
-       <Route path={paths.HOME} element={<Home />} />
+      <Route path={paths.HOME} element={<Home />} />
       <Route path={paths.LOGIN} element={<LoginPage />} />
       <Route path={paths.ABOUT} element={<About />} />
       <Route path={paths.REGISTER} element={<RegisterPage />} />
@@ -104,7 +104,6 @@ const AppRouter: React.FC = () => {
       <Route path={paths.TEACHING} element={<BecomeInstructorPage />} />
       <Route path={paths.CART} element={<Cart />} />
       <Route path={paths.NOTFOUND} element={<NotFound />} />
-
       {/* Profile route for all users */}
       <Route path="/profile" element={<Profile />} />
       <Route path="/checkout" element={<Checkout />} />
@@ -114,18 +113,26 @@ const AppRouter: React.FC = () => {
       <Route path="/course/:id" element={<CourseDetail />} />
       <Route path={paths.ENROLLMENT} element={<Enrollment />} />
       <Route path={paths.SITEMAP} element={<SiteMap />} />
-
       {/* instructor setup router in here please  (just for dashboard instructor) */}
       <Route
         path="/instructor/dashboard/*"
         element={canAccessRoute(["Instructor"]) ? <Dashboard /> : <Navigate to="/" />}
       >
-        <Route path="manage-feedbacks" element={<ManageFeedbacks />} />
-        <Route path="manage-courses" element={<ManageCourse />} />
-        <Route path="manage-students" element={<ManageStudentInstructor />} />
-        <Route path="manage-blogs" element={<ManageBlogsInstructor />} />
-        <Route path="statics" element={<InstrutorDashboard />} />
-        
+        <Route
+          path="manage-feedbacks"
+          element={canAccess(["Instructor"]) ? <ManageFeedbacks /> : <Navigate to="/" />}
+        />
+        <Route path="manage-courses" element={canAccess(["Instructor"]) ? <ManageCourse /> : <Navigate to="/" />} />
+        <Route
+          path="manage-students"
+          element={canAccess(["Instructor"]) ? <ManageStudentInstructor /> : <Navigate to="/" />}
+        />
+        <Route
+          path="manage-blogs"
+          element={canAccess(["Instructor"]) ? <ManageBlogsInstructor /> : <Navigate to="/" />}
+        />
+        <Route path="statics" element={canAccess(["Instructor"]) ? <InstrutorDashboard /> : <Navigate to="/" />} />
+
         {/* <Route
           path="manage-lectures"
           element={
@@ -133,62 +140,14 @@ const AppRouter: React.FC = () => {
           }
         /> */}
 
-        <Route
-          path="payment-history"
-          element={
-            canAccess(["Instructor"]) ? <PaymentHistory /> : <Navigate to="/" />
-          }
-        />
-        <Route
-          path="create-course"
-          element={
-            canAccess(["Instructor"]) ? <CreateCourse /> : <Navigate to="/" />
-          }
-        />
+        <Route path="payment-history" element={canAccess(["Instructor"]) ? <PaymentHistory /> : <Navigate to="/" />} />
+        <Route path="create-course" element={canAccess(["Instructor"]) ? <CreateCourse /> : <Navigate to="/" />} />
       </Route>
-      {/* Admin routes */}
-      <Route
-        path="/admin/dashboard/*"
-        element={canAccess(["Admin"]) ? <Dashboard /> : <Navigate to="/" />}
-      >
-        <Route
-          path="manage-students"
-          element={
-            canAccess(["Admin"]) ? <ManageStudent /> : <Navigate to="/" />
-          }
-        />
-        <Route
-          path="manage-instructors"
-          element={
-            canAccess(["Admin"]) ? <ManageInstructor /> : <Navigate to="/" />
-          }
-        />
-        <Route
-          path="manage-blogs"
-          element={canAccess(["Admin"]) ? <ManageBlogs /> : <Navigate to="/" />}
-        />
-        <Route
-          path="manage-category"
-          element={
-            canAccess(["Admin"]) ? <ManageCategory /> : <Navigate to="/" />
-          }
-        />
-        <Route
-          path="manage-courses"
-          element={
-            canAccess(["Admin"]) ? <ManageCourses /> : <Navigate to="/" />
-          }
-        />
-        <Route
-          path="manage-feedbacks"
-          element={
-            canAccess(["Admin"]) ? <ManageFeedbacks /> : <Navigate to="/" />
-          }
-        />
       {/* admin setup router in here please (just for dashboard admin) */}
       <Route path="/admin/dashboard/*" element={canAccessRoute(["Admin"]) ? <Dashboard /> : <Navigate to="/" />}>
         <Route path="manage-students" element={<ManageStudent />} />
         <Route path="manage-instructors" element={<ManageInstructor />} />
+        <Route path="manage-category" element={canAccess(["Admin"]) ? <ManageCategory /> : <Navigate to="/" />} />
         <Route path="manage-blogs" element={<ManageBlogs />} />
         <Route path="manage-courses" element={<ManageCourses />} />
         <Route path="manage-rate" element={<ManageFeedback />} />
@@ -196,7 +155,6 @@ const AppRouter: React.FC = () => {
         <Route path="profile" element={<Profile />} />
         <Route path="create-course" element={<CreateCourse />} />
         <Route path="payments-history" element={<PaymentHistory />} />
-
 
         <Route path="statics" element={<Statics />} />
       </Route>

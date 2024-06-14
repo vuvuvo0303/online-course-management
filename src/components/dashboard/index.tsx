@@ -52,48 +52,23 @@ const Dashboard: React.FC = () => {
         getItem("Manage Feedbacks", "/instructor/dashboard/manage-feedbacks", <CommentOutlined />),
         getItem("Manage Courses", "/instructor/dashboard/manage-courses", <FundProjectionScreenOutlined />),
         getItem("Manage Students", "/instructor/dashboard/manage-students", <TeamOutlined />),
-        getItem("Manage Blogs", "/instructor/dashboard/manage-blogs", <CopyOutlined /> ),
+        getItem("Manage Blogs", "/instructor/dashboard/manage-blogs", <CopyOutlined />),
 
         getItem("My Profile", "/instructor/dashboard/profile", <UserOutlined />),
         // getItem("Manage Lectures", "/instructor/dashboard/manage-lectures", <DesktopOutlined />),
         getItem("Create New Course", "/instructor/dashboard/create-course", <DesktopOutlined />),
         getItem("Payment History", "/instructor/dashboard/payments-history", <DesktopOutlined />),
       ]);
-      
     } else if (role === "Admin") {
       setItems([
         getItem("DashBoard", "/admin/dashboard/statics", <FundOutlined />),
         getItem("My Profile", "/admin/dashboard/profile", <UserOutlined />),
-        getItem(
-          "Manage Students",
-          "/admin/dashboard/manage-students",
-          <TeamOutlined />
-        ),
-        getItem(
-          "Manage Instructors",
-          "/admin/dashboard/manage-instructors",
-          <TeamOutlined />
-        ),
-        getItem(
-          "Manage Categories",
-          "/admin/dashboard/manage-category",
-          <TeamOutlined />
-        ),
-        getItem(
-          "Manage Courses",
-          "/admin/dashboard/manage-courses",
-          <FundProjectionScreenOutlined />
-        ),
-        getItem(
-          "Manage Blogs",
-          "/admin/dashboard/manage-blogs",
-          <ProfileOutlined />
-        ),
-        getItem(
-          "Manage Feedbacks",
-          "/admin/dashboard/manage-feedbacks",
-          <CommentOutlined />
-        ),
+        getItem("Manage Students", "/admin/dashboard/manage-students", <TeamOutlined />),
+        getItem("Manage Instructors", "/admin/dashboard/manage-instructors", <TeamOutlined />),
+        getItem("Manage Categories", "/admin/dashboard/manage-category", <TeamOutlined />),
+        getItem("Manage Courses", "/admin/dashboard/manage-courses", <FundProjectionScreenOutlined />),
+        getItem("Manage Blogs", "/admin/dashboard/manage-blogs", <ProfileOutlined />),
+        getItem("Manage Feedbacks", "/admin/dashboard/manage-feedbacks", <CommentOutlined />),
       ]);
     }
   }
