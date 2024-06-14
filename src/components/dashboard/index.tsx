@@ -87,7 +87,7 @@ const Dashboard: React.FC = () => {
         getItem(
           "Manage Categories",
           "/admin/dashboard/manage-category",
-          <TeamOutlined />
+          <ProfileOutlined />
         ),
         getItem(
           "Manage Courses",
