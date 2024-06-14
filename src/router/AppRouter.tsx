@@ -43,7 +43,11 @@ const AppRouter: React.FC = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/teaching" element={<BecomeInstructorPage />} />
       <Route path="/cart" element={<Cart />} />
+
+      {/* Profile route for all users */}
       <Route path="/profile" element={<Profile />} />
+
+      {/* Checkout route */}
       <Route path="/checkout" element={<Checkout />} />
 
       {/* Instructor routes */}
@@ -57,6 +61,12 @@ const AppRouter: React.FC = () => {
           path="manage-lectures"
           element={
             canAccess(["Instructor"]) ? <ManageLectures /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            canAccess(["Instructor"]) ? <Profile /> : <Navigate to="/" />
           }
         />
       </Route>
@@ -96,7 +106,7 @@ const AppRouter: React.FC = () => {
         />
       </Route>
 
-      {/* Other routes */}
+      {/* Catch all other routes */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

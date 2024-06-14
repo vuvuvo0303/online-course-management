@@ -116,12 +116,14 @@ const Checkout: React.FC = () => {
     <div className={styles.checkoutContainer}>
       <div className={styles.detailsContainer}>
         <h1 className={styles.title}>
-          <strong>CHECKOUT</strong>
+          <strong>Checkout</strong>
         </h1>
         <div className={styles.paymentDetails}>
           <div className={styles.paymentDetailsContent}>
             <div className={styles.description}>
-              <h2 className={styles.sectionTitle}>Billing Details</h2>
+              <h2 className={styles.sectionTitle}>
+                <strong>Billing Details</strong>
+              </h2>
               {user && (
                 <p>
                   <strong>Student Name:</strong> {user.fullName}
@@ -136,30 +138,17 @@ const Checkout: React.FC = () => {
             {payment && (
               <div className={styles.description}>
                 <p>
-                  <strong>Amount:</strong> ${payment.amount}
-                </p>
-                <p>
                   <strong>Date:</strong> {payment.createdDate}
                 </p>
+                <p>
+                  <strong>Total Price:</strong> ${course.price}
+                </p>
               </div>
             )}
-            {course && (
-              <div className={styles.courseDetails}>
-                <h2 className={styles.sectionTitle}>Course Details</h2>
-                <div className={styles.courseImage}>
-                  <img src={courseImage} alt={course.title} />
-                </div>
-                <div className={styles.description}>
-                  <p>
-                    <strong>Course Name:</strong> {course.title}
-                  </p>
-                  <p>
-                    <strong>Description:</strong> {course.description}
-                  </p>
-                </div>
-              </div>
-            )}
-            <h2 className={styles.sectionTitle}>Payment Method</h2>
+
+            <h2 className={styles.sectionTitle}>
+              <strong>Payment Method</strong>
+            </h2>
             <Radio.Group
               options={paymentMethods}
               onChange={(e) => setPaymentMethod(e.target.value)}
@@ -268,17 +257,52 @@ const Checkout: React.FC = () => {
                 )}
               </Form>
             )}
+            {course && (
+              <div className={styles.courseDetails}>
+                <h2 className={styles.sectionTitle}>
+                  <strong>Order Details</strong>
+                </h2>
+                <div className={styles.courseImage}>
+                  <img src={courseImage} alt={course.title} />
+                </div>
+                <div className={styles.description}>
+                  <p>
+                    <strong>Course Name:</strong> {course.title}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {course.description}
+                  </p>
+                  <p>
+                    <strong>Price: </strong> ${course.price}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-        <Button
-          type="primary"
-          className={styles.payButton}
-          onClick={handlePayment}
-          loading={loading}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Confirm Checkout"}
-        </Button>
+        <div className={styles.confirm}>
+          <p className={styles.terms}>
+            By completing your purchase you agree to these{" "}
+            <a
+              href="/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline"
+            >
+              Terms of Service
+            </a>
+            .
+          </p>
+          <Button
+            type="primary"
+            className={styles.payButton}
+            onClick={handlePayment}
+            loading={loading}
+            disabled={loading}
+          >
+            {loading ? "Processing..." : "Complete Checkout"}
+          </Button>
+        </div>
       </div>
     </div>
   );

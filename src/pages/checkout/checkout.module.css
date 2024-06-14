@@ -6,32 +6,37 @@
 }
 
 .detailsContainer {
-  background-color: #f5f5f5;
-  padding: 20px;
+  background-color: #f7f9fa;
+  padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  font-size: 24px;
-  text-align: center;
+  font-size: 30px;
+  text-align: left;
+  color: #b4daa7;
+  letter-spacing: 1px;
+  font-weight: bold;
+  margin-left: 10px;
 }
 
 .sectionTitle {
   font-size: 20px;
   margin-bottom: 10px;
   margin-top: 20px;
+  font-weight: bold;
+  color: #4a5a55;
 }
 
 .paymentDetailsContent {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
 .courseImage {
   text-align: center;
   margin-bottom: 20px;
-  max-width: 300px;
+  max-width: 150px;
   height: auto;
 }
 
@@ -43,10 +48,23 @@
   width: 20%;
   margin: 0 auto;
   display: block;
-  margin-top: 30px;
+  margin-top: 5px;
   margin-bottom: 50px;
 }
 
 .courseDetails {
   margin-top: 20px;
+}
+
+.confirm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.terms {
+  font-size: 12px;
+  color: rgb(131, 127, 127);
 }
