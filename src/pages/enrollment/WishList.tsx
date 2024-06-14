@@ -1,6 +1,6 @@
 import { SearchOutlined } from '@ant-design/icons';
 import styles from './enrollment.module.css';
-import WishListCard from '../../components/mylistCard/MyListCard';
+import WishListCard from '../../components/wishlistCard/WishlistCard';
 
 const WishList = () => {
     return (

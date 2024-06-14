@@ -30,6 +30,11 @@ export const paths = {
   CART: "/cart",
   CREATE_COURSE: "/create-course",
   STUDENT_PAYMENT_HISTORY: "/payment-history",
+  ENROLLMENT: "/enrollment",
+  PAYMENT_HISTORY: "/payment-history",
+  COURSE: "/course",
+  SITEMAP: "/sitemap",
+  NOTFOUND: "/notfound",
   INSTRUCTOR_DASHBOARD: "/instructor/dashboard",
   ADMIN_DASHBOARD: "/admin/dashboard",
   MANAGE_LECTURES: "/instructor/dashboard/manage-lectures",
@@ -54,14 +59,6 @@ export const NavLinks = [
   { href: "/", key: "Saved Courses", text: "Saved Courses" },
   { href: "/teaching", key: "Be an Instructors", text: "Be an Instructors" },
 ];
-
-// export const InstructorLinks = [
-//   { href: "/", key: "Inspiration", text: "Inspiration" },
-//   { href: "/", key: "Find Projects", text: "Find Projects" },
-//   { href: "/", key: "Learn Development", text: "Learn Development" },
-//   { href: "/", key: "Career Advancement", text: "Career Advancement" },
-//   { href: "/", key: "Hire Developers", text: "Hire Developers" },
-// ];
 
 export const categoryFilters = [
   "Development",
@@ -193,27 +190,24 @@ export const topic_instructor = [
 /* Footer */
 export const footerLinks = [
   {
-    title: "For students",
     links: [
-      { name: "Explore more courses", url: "/explore" },
-      { name: "Search for instructor", url: "/instructors" },
-    ],
-  },
-  {
-    title: "For instructors",
-    links: [
-      { name: "Teach on FLearn", url: "/instructor" },
       { name: "About us", url: "/about" },
       { name: "Contact us", url: "/contact" },
     ],
   },
+  {
+    links: [
+      { name: "Teach on FLearn", url: "/instructor" },
+      { name: "Blog", url: "/blog" },
+      { name: "Help and Supports", url: "/contact" },
+    ],
+  },
 
   {
-    title: "Policy and terms",
     links: [
       { name: "Terms", url: "/terms" },
       { name: "Private policy", url: "/policy" },
-      { name: "Send feedback", url: "/feedback" },
+      { name: "Sitemap", url: "/sitemap" },
     ],
   },
 ];

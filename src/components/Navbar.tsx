@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { NavLinks, categoryFilters, categorySubmenu, paths } from '../consts/index';
 import SearchTool from './SearchTool';
 import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined } from '@ant-design/icons';
+import { useState } from 'react';
 
 const Navbar = () => {
+  const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   // Create a submenu for each categoryFilter
   const submenus = categoryFilters.map((filter, index) => (
     <Menu.SubMenu key={index} title={filter}>
@@ -20,6 +22,9 @@ const Navbar = () => {
   const userData = JSON.parse(localStorage.getItem('user') || '{}');
   const { avatarUrl } = userData;
 
+  const handleMenuClick = () => {
+    setMobileMenuVisible(!mobileMenuVisible);
+  };
   return (
     <nav className="flexBetween navbar">
       <div className="flex-1 flexStart gap-10">
