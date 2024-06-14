@@ -1,17 +1,17 @@
 .course-container {
     display: flex;
     flex-direction: column;
-    width: 2000px;
+    width: 1380px;
     margin: 0 auto;
-    background-color: rgb(250, 238, 221);
-    color: black;
+    background-color: rgb(62, 61, 60);
+    color: white;
     padding: 2px;
     position: relative;
 }
 
 .course-card {
     display: flex;
-    background-color: rgb(250, 245, 238);
+    background-color: rgb(62, 61, 60);
     padding: 20px;
     margin-bottom: 5px;
 }
@@ -108,17 +108,17 @@
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
-    margin-left: 80px;
+    margin-left: 75px;
 }
 
 .button.save,
 .button.report-abuse {
     background-color: transparent;
-    color: #000000;
+    color: white;
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
-    font-size: 12px;
+    font-size: 15px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -131,64 +131,19 @@
     height: 16px;
 }
 
-.instructor {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    margin-left: 10px;
-    justify-content: space-between;
-}
-
-.instructor img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    margin-right: 20px;
-}
-
-.instructor-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.instructor-info h3 {
-    margin-bottom: 5px;
-}
-
-.button.subscribe {
-    background-color: #007bff;
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.info-instructor {
-    display: flex;
-    justify-content: space-between;
-
-}
-
 .course-stats {
     display: flex;
     position: absolute;
     bottom: 0;
     width: calc(100% - 10px);
+    right: 0px;
+    left: 0px;
+    width: 0px;
 }
 
 .stat {
     margin-right: 10px;
-    border: solid 1px #222;
     max-width: 80px;
-}
-
-.stat {
-    margin-right: 10px;
-    border: solid 1px #222;
-    width: 60px;
-    height: 40px;
 }
 
 .stat>span {
@@ -197,7 +152,6 @@
 
 .stat-button {
     background: none;
-    border: none;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -237,8 +191,23 @@
 
 @media (max-width: 1024px) {
     .course-container {
-        /* Adjust layout for tablet screens */
+        max-width: 400px;
     }
 
-    /* Add more styles as needed */
+    .course-card {
+        max-width: 400px;
+        flex-direction: column;
+    }
+
+    .course-info {
+        margin-top: 1rem;
+    }
+
+    .course-actions {
+        margin-top: 1rem;
+    }
+
+    .course-stats {
+        display: none;
+    }
 }

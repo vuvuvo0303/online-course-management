@@ -1,7 +1,7 @@
 import axios from 'axios';
 // Import các model và URL API
-import { Admin, Instructor, Student, Comment, Course, Enrollment, Lecture, Payment, Review } from "../models";
-import { API_ADMIN_URL, API_COURSES_URL, API_ENROLLMENT_URL, API_INSTRUCTOR_URL, API_LECTURE_URL, API_PAYMENT_URL, API_REVIEW_URL, API_STUDENT_URL } from '../consts/index';
+import { Admin, Instructor, Student, Comment, Course, Enrollment, Lecture, Payment, Review, Blog } from "../models";
+import { API_ADMIN_URL, API_BLOGS_URL, API_COURSES_URL, API_ENROLLMENT_URL, API_INSTRUCTOR_URL, API_LECTURE_URL, API_PAYMENT_URL, API_REVIEW_URL, API_STUDENT_URL } from '../consts/index';
 
 // Hàm fetch tổng quát
 export async function fetchData<T>(url: string): Promise<T[]> {
@@ -25,3 +25,5 @@ export const fetchEnrollments = () => fetchData<Enrollment>(API_ENROLLMENT_URL);
 export const fetchLectures = () => fetchData<Lecture>(API_LECTURE_URL);
 export const fetchPayments = () => fetchData<Payment>(API_PAYMENT_URL);
 export const fetchCourses = () => fetchData<Course>(API_COURSES_URL);
+export const fetchBlogs = () => fetchData<Blog>(API_BLOGS_URL);
+

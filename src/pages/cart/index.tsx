@@ -1,6 +1,7 @@
 import { CloseOutlined } from '@ant-design/icons'
 import styles from './cart.module.css'
 import { CartComponents } from '../../components'
+import { Link } from 'react-router-dom'
 const Cart: React.FC = () => {
     return (
         <div className="py-0 md:px-[4.8rem] px-4 mb-[4.4rem] max-w-[134rem] my-0 mx-auto">
@@ -37,7 +38,9 @@ const Cart: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button className={styles.checkout_button}>Checkout</button>
+                            <Link to="/checkout">
+                                <button className={styles.checkout_button}>Checkout now</button>
+                            </Link>
                         </div>
                         <div className={styles.redeem_coupon}>
                             <div>

@@ -33,6 +33,6 @@ export async function login(email: string, password: string): Promise<{ user: St
 }
 
 export function logout() {
-  sessionStorage.removeItem("user");
-  sessionStorage.removeItem("role");
+  localStorage.removeItem("user");
+  localStorage.removeItem("role");
 }

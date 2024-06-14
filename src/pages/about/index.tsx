@@ -2,7 +2,7 @@ import { Row, Col } from 'antd';
 import { Link } from 'react-router-dom';
 import styles from './about.module.css'; // Import CSS module
 
-const About = () => {
+const About: React.FC = () => {
     return (
         <div className={styles.aboutContainer}>
             <div className='container mx-auto'>
