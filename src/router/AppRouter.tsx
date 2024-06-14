@@ -11,6 +11,7 @@ import {
   ManageStudent,
   ManageInstructor,
   ManageBlogs,
+  ManageCategory,
   ManageCourses,
   ManageFeedbacks,
   Dashboard,
@@ -47,13 +48,10 @@ const AppRouter: React.FC = () => {
       <Route path="/teaching" element={<BecomeInstructorPage />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/payment-history" element={<StudentPaymentHistory />} />
-
-      {/* Profile route for all users */}
       <Route path="/profile" element={<Profile />} />
-
-      {/* Checkout route */}
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/instructor/dashboard/profile" element={<Profile />} />
+      <Route path="/admin/dashboard/profile" element={<Profile />} />"
       {/* Instructor routes */}
       <Route
         path="/instructor/dashboard/*"
@@ -73,12 +71,7 @@ const AppRouter: React.FC = () => {
             canAccess(["Instructor"]) ? <Profile /> : <Navigate to="/" />
           }
         />
-        <Route
-          path="profile"
-          element={
-            canAccess(["Instructor"]) ? <Profile /> : <Navigate to="/" />
-          }
-        />
+
         <Route
           path="payment-history"
           element={
@@ -92,7 +85,6 @@ const AppRouter: React.FC = () => {
           }
         />
       </Route>
-
       {/* Admin routes */}
       <Route
         path="/admin/dashboard/*"
@@ -115,6 +107,12 @@ const AppRouter: React.FC = () => {
           element={canAccess(["Admin"]) ? <ManageBlogs /> : <Navigate to="/" />}
         />
         <Route
+          path="manage-category"
+          element={
+            canAccess(["Admin"]) ? <ManageCategory /> : <Navigate to="/" />
+          }
+        />
+        <Route
           path="manage-courses"
           element={
             canAccess(["Admin"]) ? <ManageCourses /> : <Navigate to="/" />
@@ -127,7 +125,6 @@ const AppRouter: React.FC = () => {
           }
         />
       </Route>
-
       {/* Catch all other routes */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
