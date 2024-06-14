@@ -13,6 +13,7 @@ import {
   ManageStudent,
   ManageInstructor,
   ManageBlogs,
+  ManageCategory,
   ManageCourses,
   Dashboard,
   BecomeInstructorPage,
@@ -106,10 +107,9 @@ const AppRouter: React.FC = () => {
 
       {/* Profile route for all users */}
       <Route path="/profile" element={<Profile />} />
-
-      {/* Checkout route */}
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/instructor/dashboard/profile" element={<Profile />} />
+      <Route path="/admin/dashboard/profile" element={<Profile />} />"
       <Route path={paths.PAYMENT_HISTORY} element={<PaymentHistory />} />
       <Route path="/course/:id" element={<CourseDetail />} />
       <Route path={paths.ENROLLMENT} element={<Enrollment />} />
@@ -125,7 +125,66 @@ const AppRouter: React.FC = () => {
         <Route path="manage-students" element={<ManageStudentInstructor />} />
         <Route path="manage-blogs" element={<ManageBlogsInstructor />} />
         <Route path="statics" element={<InstrutorDashboard />} />
+        
+        {/* <Route
+          path="manage-lectures"
+          element={
+            canAccess(["Instructor"]) ? <ManageLectures /> : <Navigate to="/" />
+          }
+        /> */}
+
+        <Route
+          path="payment-history"
+          element={
+            canAccess(["Instructor"]) ? <PaymentHistory /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="create-course"
+          element={
+            canAccess(["Instructor"]) ? <CreateCourse /> : <Navigate to="/" />
+          }
+        />
       </Route>
+      {/* Admin routes */}
+      <Route
+        path="/admin/dashboard/*"
+        element={canAccess(["Admin"]) ? <Dashboard /> : <Navigate to="/" />}
+      >
+        <Route
+          path="manage-students"
+          element={
+            canAccess(["Admin"]) ? <ManageStudent /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="manage-instructors"
+          element={
+            canAccess(["Admin"]) ? <ManageInstructor /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="manage-blogs"
+          element={canAccess(["Admin"]) ? <ManageBlogs /> : <Navigate to="/" />}
+        />
+        <Route
+          path="manage-category"
+          element={
+            canAccess(["Admin"]) ? <ManageCategory /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="manage-courses"
+          element={
+            canAccess(["Admin"]) ? <ManageCourses /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="manage-feedbacks"
+          element={
+            canAccess(["Admin"]) ? <ManageFeedbacks /> : <Navigate to="/" />
+          }
+        />
       {/* admin setup router in here please (just for dashboard admin) */}
       <Route path="/admin/dashboard/*" element={canAccessRoute(["Admin"]) ? <Dashboard /> : <Navigate to="/" />}>
         <Route path="manage-students" element={<ManageStudent />} />

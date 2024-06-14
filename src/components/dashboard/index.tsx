@@ -63,15 +63,37 @@ const Dashboard: React.FC = () => {
     } else if (role === "Admin") {
       setItems([
         getItem("DashBoard", "/admin/dashboard/statics", <FundOutlined />),
-        getItem("Manage Students", "/admin/dashboard/manage-students", <TeamOutlined />),
-        getItem("Manage Instructors", "/admin/dashboard/manage-instructors", <TeamOutlined />),
-        getItem("Manage Courses", "/admin/dashboard/manage-courses", <FundProjectionScreenOutlined />),
-        getItem("Manage Blogs", "/admin/dashboard/manage-blogs", <ProfileOutlined />),
-        getItem("Manage Rate", "/admin/dashboard/manage-rate", <CommentOutlined />),
-        getItem("Manage Feedbacks", "/admin/dashboard/manage-feedbacks", <CommentOutlined />),
-
-        
-      
+        getItem("My Profile", "/admin/dashboard/profile", <UserOutlined />),
+        getItem(
+          "Manage Students",
+          "/admin/dashboard/manage-students",
+          <TeamOutlined />
+        ),
+        getItem(
+          "Manage Instructors",
+          "/admin/dashboard/manage-instructors",
+          <TeamOutlined />
+        ),
+        getItem(
+          "Manage Categories",
+          "/admin/dashboard/manage-category",
+          <TeamOutlined />
+        ),
+        getItem(
+          "Manage Courses",
+          "/admin/dashboard/manage-courses",
+          <FundProjectionScreenOutlined />
+        ),
+        getItem(
+          "Manage Blogs",
+          "/admin/dashboard/manage-blogs",
+          <ProfileOutlined />
+        ),
+        getItem(
+          "Manage Feedbacks",
+          "/admin/dashboard/manage-feedbacks",
+          <CommentOutlined />
+        ),
       ]);
     }
   }
