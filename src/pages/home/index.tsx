@@ -3,6 +3,7 @@ import TeacherCategories from "../../components/categories/teacher/TeacherCatego
 import ClientCarousel from "../../components/ClientCarousel";
 import LogoCategories from "../../components/categories/logo/LogoCategories";
 import NewSection from "../../components/news/NewSection";
+import List from "../../components/categories/list/List";
 
 const Home: React.FC = () => {
     return (
@@ -21,6 +22,9 @@ const Home: React.FC = () => {
                 <TeacherCategories />
             </section>
             <NewSection />
+            <section className='mb-[5rem] mt-[2rem]'>
+                <List />
+            </section>
         </div>
     );
 };
