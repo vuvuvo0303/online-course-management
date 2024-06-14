@@ -52,17 +52,15 @@ const AppRouter: React.FC = () => {
       <Route path={paths.SUPPORT} element={<Support />} />
       <Route path={paths.BLOG} element={<BlogList />} />
       <Route path="/blog/:id" element={<BlogDetail />} />
-      <Route path={paths.CONTACT} element={<Contact />} />
       <Route path={paths.TEACHING} element={<BecomeInstructorPage />} />
-      <Route path={paths.CART} element={<Cart />} />
-      <Route path="/teaching" element={<BecomeInstructorPage />} />
-      <Route path="/course" element={<Course />} />
-      <Route path="/course/:id" element={<CourseDetail />} />
-      <Route path="/cart" element={<Cart />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/payment-history" element={<PaymentHistory />} />
       <Route path="/create-course" element={<CreateCourse />} />
-      <Route path="/enrollment" element={<Enrollment />} />
+      <Route path={paths.CART} element={<Cart />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path={paths.PAYMENT_HISTORY} element={<PaymentHistory />} />
+      <Route path={paths.CONTACT} element={<Contact />} />
+      <Route path={paths.COURSE} element={<Course />} />
+      <Route path="/course/:id" element={<CourseDetail />} />
+      <Route path={paths.ENROLLMENT} element={<Enrollment />} />
 
       {/* Instructor routes */}
       <Route

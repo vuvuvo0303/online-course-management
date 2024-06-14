@@ -4,48 +4,48 @@ import PaymentCourses from './courses';
 import PaymentSubscriptions from './Subscriptions';
 import PaymentRefunds from './refunds';
 import { Payment } from '../../../models';
-import {  Table, Tag } from 'antd';
+import { Table, Tag } from 'antd';
 
 const columns = [
     {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
+        title: 'Amount',
+        dataIndex: 'amount',
+        key: 'amount',
     },
     {
-      title: 'Created Date',
-      dataIndex: 'createdDate',
-      key: 'createdDate',
-      render: (date:string) => new Date(date).toLocaleDateString(),
+        title: 'Created Date',
+        dataIndex: 'createdDate',
+        key: 'createdDate',
+        render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: 'Payment Method',
-      dataIndex: 'paymentMethod',
-      key: 'paymentMethod',
+        title: 'Payment Method',
+        dataIndex: 'paymentMethod',
+        key: 'paymentMethod',
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status:string) => (
-        <Tag color={status === 'completed' ? 'green' : 'volcano'}>
-          {status.toUpperCase()}
-        </Tag>
-      ),
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        render: (status: string) => (
+            <Tag color={status === 'completed' ? 'green' : 'volcano'}>
+                {status.toUpperCase()}
+            </Tag>
+        ),
     },
     {
-      title: 'User ID',
-      dataIndex: 'userId',
-      key: 'userId',
+        title: 'User ID',
+        dataIndex: 'userId',
+        key: 'userId',
     },
     {
-      title: 'Enrollment ID',
-      dataIndex: 'enrollmentId',
-      key: 'enrollmentId',
+        title: 'Enrollment ID',
+        dataIndex: 'enrollmentId',
+        key: 'enrollmentId',
     }
-  ];
+];
 
-const PaymentHistory = () => {
+const PaymentHistory: React.FC = () => {
     const [selectComponent, setSelectComponent] = useState("default");
     const [payments, setPayments] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -115,7 +115,7 @@ const PaymentHistory = () => {
             </div>
             {renderComponent()}
             <Table columns={columns} dataSource={payments} rowKey="paymentId" />
-           
+
         </div>
     );
 };

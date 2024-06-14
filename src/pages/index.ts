@@ -29,3 +29,4 @@ export { default as ManageBlogs } from "./admin/manage-blogs";
 export { default as ManageCourses } from "./admin/manage-courses";
 export { default as ManageFeedbacks } from "./admin/manage-feedbacks";
 export { default as Dashboard } from "../components/dashboard/index";
+
