@@ -9,12 +9,8 @@ import {
   Home,
   LoginPage,
   RegisterPage,
-<<<<<<< HEAD
-  // Course,
-=======
   Course,
   CourseDetail,
->>>>>>> 511f267a25305d6b2193d7359b55234ae4191896
   Terms,
   Policy,
   Guidelines,
@@ -30,15 +26,13 @@ import {
   BecomeInstructorPage,
   Cart,
   Profile,
-<<<<<<< HEAD
   BlogDetail,
   BlogList,
   About,
-  PaymentHistory, 
-  CreateCourse
-=======
+  PaymentHistory,
+  CreateCourse,
   Enrollment,
->>>>>>> 511f267a25305d6b2193d7359b55234ae4191896
+
 } from "../pages";
 
 import { useEffect } from "react";
@@ -100,14 +94,6 @@ const AppRouter: React.FC = () => {
       <Route path={paths.SUPPORT} element={<Support />} />
       <Route path={paths.BLOG} element={<BlogList />} />
       <Route path="/blog/:id" element={<BlogDetail />} />
-<<<<<<< HEAD
-      <Route path="/teaching" element={<BecomeInstructorPage />} />
-      <Route path="/create-course" element={<CreateCourse />} />
-      {/* <Route path="/course" element={<Course />} /> */}
-      <Route path="/cart" element={<Cart />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/payment-history" element={<PaymentHistory />} />
-=======
       <Route path={paths.CONTACT} element={<Contact />} />
       <Route path={paths.TEACHING} element={<BecomeInstructorPage />} />
       <Route path={paths.CART} element={<Cart />} />
@@ -116,9 +102,10 @@ const AppRouter: React.FC = () => {
       <Route path="/course/:id" element={<CourseDetail />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/paymenthistory" element={<PaymentHistory />} />
+      <Route path="/create-course" element={<CreateCourse />} />
       <Route path="/enrollment" element={<Enrollment />} />
 
->>>>>>> 511f267a25305d6b2193d7359b55234ae4191896
       {/* Instructor routes */}
       <Route
         path="/instructor/dashboard/*"
@@ -132,7 +119,7 @@ const AppRouter: React.FC = () => {
         <Route path="manage-students" element={canAccess(["Admin"]) ? <ManageStudent /> : <Navigate to="/" />} />
         <Route path="manage-instructors" element={canAccess(["Admin"]) ? <ManageInstructor /> : <Navigate to="/" />} />
         <Route path="manage-blogs" element={canAccess(["Admin"]) ? <ManageBlogs /> : <Navigate to="/" />} />
-        <Route path="manage-courses" element={canAccess(["Admin"]) ? <ManageCourses/>: <Navigate to="/" />} />
+        <Route path="manage-courses" element={canAccess(["Admin"]) ? <ManageCourses /> : <Navigate to="/" />} />
         <Route path="manage-feedbacks" element={canAccess(["Admin"]) ? <ManageFeedbacks /> : <Navigate to="/" />} />
         <Route path="statics" element={canAccess(["Admin"]) ? <Statics /> : <Navigate to="/" />} />
       </Route>
