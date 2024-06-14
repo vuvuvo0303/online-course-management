@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { SearchOutlined } from "@ant-design/icons";
+import { HomeOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnsType, TableColumnType } from "antd";
-import { Button, Image, Input, Space, Table } from "antd";
+import { Breadcrumb, Button, Image, Input, Space, Table } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
 import axios from "axios";
@@ -183,6 +183,31 @@ const ManageBlogs = () => {
   ];
   return (
     <div>
+      <div className="flex justify-between">
+        <Breadcrumb
+          className="py-2"
+          items={[
+            {
+              title: <HomeOutlined />,
+            },
+            {
+              href: "/dashboard/admin",
+              title: (
+                <>
+                  <UserOutlined />
+                  <span>Admin</span>
+                </>
+              ),
+            },
+            {
+              title: "Manage Blogs",
+            },
+          ]}
+        />
+        <div className="py-2">
+          <Button type="primary">Add New SBlogs</Button>
+        </div>
+      </div>
       <Table columns={columns} dataSource={dataSource} />;
     </div>
   );

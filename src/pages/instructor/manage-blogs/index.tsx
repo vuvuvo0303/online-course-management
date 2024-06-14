@@ -4,40 +4,31 @@ import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import { Breadcrumb, Button, Image, Input, Space, Table } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
-
-import { format } from "date-fns";
-import { fetchCourses } from "../../../services/get";
+import axios from "axios";
 
 interface DataType {
   key: string;
-  title: string;
-  createdDate: string;
-  updatedDate: string;
   category: string;
-  duration: string;
-  price: string;
-  level: number;
-  courseImgUrl: string;
+  time: string;
+  blog_image: string;
 }
 
 type DataIndex = keyof DataType;
 
-const ManageCourses = () => {
+const ManageBlogsInstructor = () => {
+
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
   const [dataSource, setDataSource] = useState([]);
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), "dd/MM/yyyy");
-  };
-  useEffect(() => {
-    const fetchcourses = async () => {
-      const response = await fetchCourses();
-      setDataSource(response);
-      console.log(response);
-    };
 
-    fetchcourses();
+  useEffect(() => {
+    const fetchBlogs = async() => {
+      const response = await axios.get("https://665fbf245425580055b0b23d.mockapi.io/blogs");
+      console.log(response);
+      setDataSource(response.data);
+    };
+    fetchBlogs()
   }, []);
 
   const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
@@ -124,81 +115,69 @@ const ManageCourses = () => {
 
   const columns: TableColumnsType<DataType> = [
     {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-      width: "10%",
-      ...getColumnSearchProps("title"),
+      title: "Catagory",
+      dataIndex: "category",
+      key: "category",
+      width: "30%",
+      ...getColumnSearchProps("category"),
     },
     {
-      title: "Level",
-      dataIndex: "level",
-      key: "level",
-      width: "10%",
-      ...getColumnSearchProps("level"),
-    },
-    {
-      title: "Duration",
-      dataIndex: "duration",
-      key: "duration",
-      width: "10%",
-      sorter: (a, b) => a.duration.length - b.duration.length,
+      title: "Time",
+      dataIndex: "time",
+      key: "time",
+      width: "20%",
+      sorter: (a, b) => a.time.length - b.time.length,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Created Date",
-      dataIndex: "createdDate",
-      render: (createdDate: string) => formatDate(createdDate),
-    },
-    {
-      title: "Updated Date",
-      dataIndex: "updatedDate",
-      render: (updatedDate: string) => formatDate(updatedDate),
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
-      width: "30%",
+      render: (description) => <span>{description.title}: {description.content}</span>, 
     },
     {
-      title: "Image",
-      dataIndex: "courseImgUrl",
-      key: "courseImgUrl",
-      render: (courseImgUrl: string) => <Image src={courseImgUrl} width={100} />,
+      title: "View",
+      dataIndex: "view",
+      key: "view",
+    },
+    {
+      title: "Blog Image",
+      dataIndex: "blog_image",
+      key: "blog_image",
+      render: (blog_image: string) => <Image src={blog_image} />,
     },
   ];
   return (
     <div>
-      <div className="flex justify-between">
-        {" "}
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              title: <HomeOutlined />,
-            },
-            {
-              href: "/dashboard/admin",
-              title: (
-                <>
-                  <UserOutlined />
-                  <span>Admin</span>
-                </>
-              ),
-            },
-            {
-              title: "Manage Course",
-            },
-          ]}
-        />
-        <div className="py-2">
-          <Button type="primary">Add New Students</Button>
-        </div>
-      </div>
-      {<Table columns={columns} dataSource={dataSource} />}
+      <Breadcrumb
+        className="py-2"
+        items={[
+          {
+            
+            title: <HomeOutlined />,
+          },
+          {
+            href: "/dashboard/admin",
+            title: (
+              <>
+                <UserOutlined />
+                <span>Admin</span>
+              </>
+            ),
+          },
+          {
+            title: "Manage Blogs",
+          },
+        ]}
+      />
+      <Table columns={columns} dataSource={dataSource} />;
     </div>
   );
 };
 
-export default ManageCourses;
+export default ManageBlogsInstructor;

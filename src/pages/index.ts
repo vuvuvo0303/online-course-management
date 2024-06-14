@@ -31,5 +31,5 @@ export { default as ManageInstructor } from "./admin/manage-instructors";
 export { default as ManageBlogs } from "./admin/manage-blogs";
 export { default as ManageCategory } from "./admin/manage-category";
 export { default as ManageCourses } from "./admin/manage-courses";
-export { default as ManageFeedbacks } from "./admin/manage-feedbacks";
+export { default as ManageFeedbacks } from "./admin/manage-admin-feedbacks";
 export { default as Dashboard } from "../components/dashboard/index";

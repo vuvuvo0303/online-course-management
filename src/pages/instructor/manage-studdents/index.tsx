@@ -15,7 +15,7 @@ interface DataType {
   userId: string;
 }
 
-const ManageStudent = () => {
+const ManageStudentInstructor = () => {
   const [data, setData] = useState<DataType[]>([]);
   const onChange = (isActive: boolean) => {
     console.log(`switch to ${isActive}`);
@@ -122,11 +122,11 @@ const ManageStudent = () => {
               title: <HomeOutlined />,
             },
             {
-              href: "/dashboard/admin",
+              href: "",
               title: (
                 <>
                   <UserOutlined />
-                  <span>Admin</span>
+                  <span>Instructor</span>
                 </>
               ),
             },
@@ -136,7 +136,7 @@ const ManageStudent = () => {
           ]}
         />
         <div className="py-2">
-          <Button type="primary">Add New Students</Button>
+          <Button type="primary">Add New Student</Button>
         </div>
       </div>
 
@@ -145,4 +145,4 @@ const ManageStudent = () => {
   );
 };
 
-export default ManageStudent;
+export default ManageStudentInstructor;

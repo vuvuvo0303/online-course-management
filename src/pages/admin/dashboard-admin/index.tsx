@@ -1,5 +1,5 @@
-import { FileDoneOutlined, PlaySquareOutlined, TeamOutlined } from "@ant-design/icons";
-import { Badge, Card, Col, Image, Rate, Row } from "antd";
+import { FileDoneOutlined, HomeOutlined, PlaySquareOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import { Badge, Breadcrumb, Card, Col, Image, Rate, Row } from "antd";
 import { Link } from "react-router-dom";
 import { UserChart } from "../chart/userchart";
 import { RevenueChart } from "../chart/revenuechart";
@@ -9,6 +9,27 @@ import top3 from "../../../assets/top3.png";
 const Statics = () => {
   return (
     <>
+      <Breadcrumb
+        className="py-2"
+        items={[
+          {
+            href: "",
+            title: <HomeOutlined />,
+          },
+          {
+            href: "/dashboard/admin",
+            title: (
+              <>
+                <UserOutlined />
+                <span>Admin</span>
+              </>
+            ),
+          },
+          {
+            title: "Dashboard",
+          },
+        ]}
+      />
       {" "}
       <div className="flex justify-between drop-shadow-xl gap-4">
       <Badge.Ribbon text="Flearn" color="blue">
