@@ -17,7 +17,7 @@ const getShortTitle = (title: string) => {
     }
     return count === 2 ? `${title.substring(0, index)}` : title
 }
-const BlogDetail = () => {
+const BlogDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [blog, setBlog] = useState<Blog | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -77,10 +77,10 @@ const BlogDetail = () => {
                 <Breadcrumb className=''
                     items={[
                         {
-                            title: <Link style={{color: " #5624d0", fontWeight: "700"}} to={"/"}>Home</Link>,
+                            title: <Link style={{ color: " #5624d0", fontWeight: "700" }} to={"/"}>Home</Link>,
                         },
                         {
-                            title: <Link style={{color: " #5624d0", fontWeight: "700"}} to={"/blog"}>Blog</Link>,
+                            title: <Link style={{ color: " #5624d0", fontWeight: "700" }} to={"/blog"}>Blog</Link>,
                         },
                         {
                             title: <div >{getShortTitle(blog.title)}...</div>,

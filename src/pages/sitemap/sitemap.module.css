@@ -1,0 +1,6 @@
+.sitemap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: -.8rem -.8rem 0;
+}

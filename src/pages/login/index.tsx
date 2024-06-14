@@ -1,11 +1,12 @@
 // pages/LoginPage.tsx
-import { Button, Form, FormProps, Input } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
-import Vector from '../../assets/Vector.png';
-import Rectangle from '../../assets/Rectangle .jpg';
-import { login } from '../../services/auth';
-import { toast } from 'react-toastify';
+import { Button, Form, FormProps, Input } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import Vector from "../../assets/Vector.png";
+import Rectangle from "../../assets/Rectangle .jpg";
+import { login } from "../../services/auth";
 import { removePassword } from '../../utils/validHelper';
+
+import { toast } from "react-toastify";
 
 type FieldType = {
   email: string;
@@ -15,40 +16,39 @@ type FieldType = {
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     const { email, password } = values;
     const authResult = await login(email, password);
-    if (authResult && 'user' in authResult) {
+    if (authResult && "user" in authResult) {
       const { user, role } = authResult;
       const userWithoutPassword = removePassword(user); // Loại bỏ mật khẩu
       localStorage.setItem('user', JSON.stringify(userWithoutPassword));
       localStorage.setItem('role', role);
 
       switch (role) {
-        case 'Student':
-          navigate('/');
+        case "Student":
+          navigate("/");
           break;
-        case 'Instructor':
-          navigate('/instructor/dashboard');
+        case "Instructor":
+          navigate("/instructor/dashboard");
           break;
-        case 'Admin':
-          navigate('/admin/dashboard');
+        case "Admin":
+          navigate("/admin/dashboard");
           break;
         default:
-          navigate('/');
+          navigate("/");
           break;
       }
       toast.success("Login successfully");
-
     } else {
       // Xử lý thông báo lỗi đăng nhập thất bại
-      console.log('Login failed');
-      toast.error("Login fail")
+      console.log("Login failed");
+      toast.error("Login fail");
     }
   };
 
-  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
+    console.log("Failed:", errorInfo);
   };
 
   return (
@@ -74,7 +74,11 @@ const LoginPage: React.FC = () => {
               <Form.Item
                 label="Email"
                 name="email"
-                rules={[{ required: true, message: 'Please input your email!' }]}
+                rules={[
+                  { required: true, message: "Please input your email!" },
+                  { type: "email", message: "Please enter the correct email format!" },
+                  { pattern: /^\S*$/, message: "Password must not contain spaces!" },
+                ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 className="mb-1"
@@ -84,7 +88,11 @@ const LoginPage: React.FC = () => {
               <Form.Item
                 label="Password"
                 name="password"
-                rules={[{ required: true, message: 'Please input your password!' }]}
+                rules={[
+                  { required: true, message: "Please input your password!" },
+                  { min: 6, message: "Password must be at least 6 characters!" },
+                  { pattern: /^\S*$/, message: "Password must not contain spaces!" },
+                ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 className="mb-1"
@@ -112,7 +120,7 @@ const LoginPage: React.FC = () => {
           </Form>
         </div>
         <span className="mt-4 block text-center">
-          Do you have an account?{' '}
+          Do you have an account?{" "}
           <strong>
             <Link to="/register" className="hover:cursor-pointer hover:text-red-400">
               Sign up here
@@ -128,11 +136,7 @@ const LoginPage: React.FC = () => {
         </div>
         <div className="flex justify-center mr-10">
           <button className="flex justify-center items-center gap-4 border border-black rounded-md px-12 py-3 shadow-xl hover:shadow-orange-200 w-full md:w-2/3 bg-transparent">
-            <img
-              src="https://www.pngall.com/wp-content/uploads/13/Google-Logo.png"
-              alt="Google Logo"
-              width={25}
-            />
+            <img src="https://www.pngall.com/wp-content/uploads/13/Google-Logo.png" alt="Google Logo" width={25} />
             <span>Login with Google</span>
           </button>
         </div>

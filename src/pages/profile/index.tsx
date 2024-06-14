@@ -3,7 +3,7 @@ import { Student, Admin, Instructor } from "../../models";
 import { Modal, Button, Form, Input } from "antd";
 import styles from "./profile.module.css";
 
-const Profile = () => {
+const Profile: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();

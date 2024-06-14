@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import styles from './paymentHistory.module.css';
-import PaymentCourses from './courses';
-import PaymentSubscriptions from './Subscriptions';
-import PaymentRefunds from './refunds';
+import styles from '../paymentHistory.module.css';
+import PaymentCourses from '../courses';
+import PaymentSubscriptions from '../Subscriptions';
+import PaymentRefunds from '../refunds';
 import { Payment } from '../../../models';
 import { Table, Tabs, TabsProps, Tag } from 'antd';
 
@@ -45,7 +45,7 @@ const columns = [
     }
 ];
 
-const PaymentHistory = () => {
+const PaymentHistory: React.FC = () => {
     const [selectComponent, setSelectComponent] = useState("default");
     const [payments, setPayments] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -60,6 +60,7 @@ const PaymentHistory = () => {
                 }
                 const data = await response.json();
                 setPayments(data);
+                console.log("check setPayments(data): ", setPayments(data))
             } catch (error: unknown) {
                 if (error instanceof Error) {
                     setError(error.message);

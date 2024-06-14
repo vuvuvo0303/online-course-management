@@ -87,7 +87,11 @@ const RegisterPage: React.FC = () => {
               <Form.Item
                 label="Email"
                 name="email"
-                rules={[{ required: true, message: "Please input your email!" }]}
+                rules={[
+                  { required: true, message: "Please input your email!" },
+                  { type: "email", message: "Please enter the correct email format!" },
+                  { pattern: /^\S*$/, message: "Password must not contain spaces!" },
+                ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 className="mb-1"
@@ -97,10 +101,14 @@ const RegisterPage: React.FC = () => {
               <Form.Item
                 label="Username"
                 name="username"
-                rules={[{ required: true, message: "Please input your username!" }]}
+                rules={[
+                  { required: true, message: "Please input your username!" },
+                  { pattern: /^\S*$/, message: "Username must not contain spaces!" },
+                  { min: 4, message: "Username must be at least 4 characters!" },
+                  { max: 20, message: "Username must be at most 20 characters!" },
+                ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-
               >
                 <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
               </Form.Item>
@@ -108,7 +116,11 @@ const RegisterPage: React.FC = () => {
               <Form.Item
                 label="Password"
                 name="password"
-                rules={[{ required: true, message: "Please input your password!" }]}
+                rules={[
+                  { required: true, message: "Please input your password!" },
+                  { min: 6, message: "Password must be at least 6 characters!" },
+                  { pattern: /^\S*$/, message: "Password must not contain spaces!" },
+                ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
               >
@@ -117,7 +129,10 @@ const RegisterPage: React.FC = () => {
               <Form.Item
                 label="Phone Number"
                 name="phonenumber"
-                rules={[{ required: true, message: "Please input your Phone Number!" }]}
+                rules={[
+                  { required: true, message: "Please input your Phone Number!" },
+                  { pattern: /^\d{10}$/, message: "Phone Number must be exactly 10 digits!" },
+                ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
               >
@@ -150,6 +165,7 @@ const RegisterPage: React.FC = () => {
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
               >
+                
                 <Checkbox>Agree to Terms and Conditions</Checkbox>
                 <span onClick={openModal} className="hover:cursor-pointer font-bold hover:text-red-400 ">
                   (See Policy)

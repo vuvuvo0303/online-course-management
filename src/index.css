@@ -71,6 +71,13 @@ body {
   line-height: 1.2;
 }
 
+.main_h2 {
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
 .main_p {
   font-weight: 400;
   line-height: 1.4;
