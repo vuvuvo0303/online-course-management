@@ -1,4 +1,3 @@
-// Checkout Component
 import React, { useState, useEffect } from "react";
 import { Button, Spin, message, Radio, Input, Form } from "antd";
 import { API_PAYMENT_URL, API_COURSES_URL } from "../../consts";
@@ -22,7 +21,7 @@ const Checkout: React.FC = () => {
   useEffect(() => {
     fetchPaymentDetails();
     fetchCourseDetails();
-    loadUserFromSessionStorage();
+    loadUserFromLocalStorage();
   }, []);
 
   const fetchPaymentDetails = async () => {
@@ -73,8 +72,8 @@ const Checkout: React.FC = () => {
     }
   };
 
-  const loadUserFromSessionStorage = () => {
-    const userString = sessionStorage.getItem("user");
+  const loadUserFromLocalStorage = () => {
+    const userString = localStorage.getItem("user");
     if (userString) {
       setUser(JSON.parse(userString));
     }

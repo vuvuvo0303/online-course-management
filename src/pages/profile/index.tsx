@@ -37,7 +37,7 @@ const Profile: React.FC = () => {
         updatedUser.avatarUrl = formValues.avatarUrl;
       }
 
-      sessionStorage.setItem("user", JSON.stringify(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser)); // Thay đổi sang sử dụng localStorage
 
       setIsModalVisible(false);
 
@@ -48,16 +48,16 @@ const Profile: React.FC = () => {
   };
 
   useEffect(() => {
-    const storedRole = sessionStorage.getItem("role");
+    const storedRole = localStorage.getItem("role"); // Thay đổi từ sử dụng sessionStorage sang localStorage
     if (!storedRole) {
-      console.error("Role not found in sessionStorage");
+      console.error("Role not found in localStorage");
       return;
     }
 
-    const storedUser = sessionStorage.getItem("user");
+    const storedUser = localStorage.getItem("user"); // Thay đổi từ sử dụng sessionStorage sang localStorage
 
     if (!storedUser) {
-      console.error("User data not found in sessionStorage");
+      console.error("User data not found in localStorage");
       return;
     }
 
