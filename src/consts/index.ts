@@ -26,6 +26,8 @@ export const paths = {
   CONTACT: "/contact",
   TEACHING: "/teaching",
   CART: "/cart",
+  CREATE_COURSE: "/create-course",
+  PAYMENT_HISTORY: "/payment-history",
   INSTRUCTOR_DASHBOARD: "/instructor/dashboard",
   ADMIN_DASHBOARD: "/admin/dashboard",
   MANAGE_LECTURES: "/instructor/dashboard/manage-lectures",

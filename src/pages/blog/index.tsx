@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import styles from './blog.module.css';
 import { Breadcrumb, Input, Pagination, Checkbox, Tag } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
+import useDebounce from './useDebounce'; // Import debounce hook
 
 const BlogList: React.FC = () => {
     const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -13,6 +14,8 @@ const BlogList: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const blogsPerPage = 3;
+
+    const debouncedSearchTerm = useDebounce(searchTerm, 1000); // Use debounce hook
 
     useEffect(() => {
         const fetchBlogs = async () => {
@@ -88,13 +91,13 @@ const BlogList: React.FC = () => {
     };
 
     const filteredBlogs = blogs.filter(blog =>
-        (blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            blog.name_user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            blog.introduce.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (blog.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+            blog.name_user.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+            blog.introduce.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
             blog.description.some(desc =>
-                desc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                desc.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
                 desc.content.some(content =>
-                    content.text.toLowerCase().includes(searchTerm.toLowerCase())
+                    content.text.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
                 )
             )) &&
         (selectedCategories.length === 0 || selectedCategories.includes(blog.category))
@@ -112,7 +115,7 @@ const BlogList: React.FC = () => {
                         title: <Link style={{ color: " #5624d0", fontWeight: "700" }} to={"/"}>Home</Link>,
                     },
                     {
-                        title: <div >Blog</div>,
+                        title: <div>Blog</div>,
                     },
                 ]}
             />
@@ -154,7 +157,7 @@ const BlogList: React.FC = () => {
                     <div className="grid gap-5">
                         {currentBlogs.map(blog => (
                             <Link to={`/blog/${blog.id}`} onClick={() => handleViewUpdate(blog.id)} key={blog.id}>
-                                <div className={`${styles.blogContainer} grid gird-cols-1 md:grid-cols-6  gap-10 `}>
+                                <div className={`${styles.blogContainer} grid gird-cols-1 md:grid-cols-6 gap-10 `}>
                                     <div className={`${styles.imgContainer} md:col-span-2 `}>
                                         <img className='xs:h-48 w-96' src={blog.blog_image} alt="Blog image" />
                                     </div>

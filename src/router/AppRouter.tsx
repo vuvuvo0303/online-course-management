@@ -9,12 +9,7 @@ import {
   Home,
   LoginPage,
   RegisterPage,
-<<<<<<< HEAD
   // Course,
-=======
-  Course,
-  CourseDetail,
->>>>>>> 511f267a25305d6b2193d7359b55234ae4191896
   Terms,
   Policy,
   Guidelines,
@@ -30,15 +25,11 @@ import {
   BecomeInstructorPage,
   Cart,
   Profile,
-<<<<<<< HEAD
   BlogDetail,
   BlogList,
   About,
   PaymentHistory, 
   CreateCourse
-=======
-  Enrollment,
->>>>>>> 511f267a25305d6b2193d7359b55234ae4191896
 } from "../pages";
 
 import { useEffect } from "react";
@@ -97,26 +88,13 @@ const AppRouter: React.FC = () => {
       <Route path={paths.GUIDELINES} element={<Guidelines />} />
       <Route path={paths.SUPPORT} element={<Support />} />
       <Route path={paths.BLOG} element={<BlogList />} />
-      <Route path="/blog/:id" element={<BlogDetail />} />
-<<<<<<< HEAD
+      <Route path={paths.BLOG_DETAIL} element={<BlogDetail />} />
       <Route path="/teaching" element={<BecomeInstructorPage />} />
-      <Route path="/create-course" element={<CreateCourse />} />
+      <Route path={paths.CREATE_COURSE} element={<CreateCourse />} />
       {/* <Route path="/course" element={<Course />} /> */}
       <Route path="/cart" element={<Cart />} />
       <Route path="/profile" element={<Profile />} />
-      <Route path="/payment-history" element={<PaymentHistory />} />
-=======
-      <Route path={paths.CONTACT} element={<Contact />} />
-      <Route path={paths.TEACHING} element={<BecomeInstructorPage />} />
-      <Route path={paths.CART} element={<Cart />} />
-      <Route path="/teaching" element={<BecomeInstructorPage />} />
-      <Route path="/course" element={<Course />} />
-      <Route path="/course/:id" element={<CourseDetail />} />
-      <Route path="/cart" element={<Cart />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/enrollment" element={<Enrollment />} />
-
->>>>>>> 511f267a25305d6b2193d7359b55234ae4191896
+      <Route path={paths.PAYMENT_HISTORY} element={<PaymentHistory />} />
       {/* Instructor routes */}
       <Route
         path="/instructor/dashboard/*"

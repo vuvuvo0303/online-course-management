@@ -76,7 +76,9 @@ const FreeComponent: React.FC = () => {
                     <p>Require Enroll</p>
                 </Col>
             </Row>
-            <p className="px-10 mx-10  text-center">If the course is free, if student require to enroll your course, if not required enroll, if students required sign in to your website to take this course.</p>
+           <div className=" md:px-10 md:mx-10  text-center">
+           <p className=" ">If the course is free, if student require to enroll your course, if not required enroll, if students required sign in to your website to take this course.</p>
+           </div>
         </>
     );
 };

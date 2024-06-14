@@ -86,7 +86,7 @@ const MediaStep = () => {
                         <Col key={buttonLabel}>
                             <Button
                                 type="primary"
-                                className={`w-32 h-10 ${selectedButton === buttonLabel ? "bg-red-500 text-white" : "bg-white text-black"} border-2 border-gray-200`}
+                                className={`w-32 h-10 m-2 ${selectedButton === buttonLabel ? "bg-red-500 text-white" : "bg-white text-black"} border-2 border-gray-200`}
                                 danger={selectedButton === buttonLabel}
                                 onClick={() => handleButtonClick(buttonLabel)}
                             >
