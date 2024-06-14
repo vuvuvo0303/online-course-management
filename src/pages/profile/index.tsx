@@ -10,6 +10,12 @@ const Profile: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [forceUpdateFlag, setForceUpdateFlag] = useState(false);
+  const [role, setRole] = useState<string | null>(null); // State to hold user role
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    setRole(storedRole); // Set role state from localStorage
+  }, []);
 
   const showEditModal = () => {
     setIsModalVisible(true);
@@ -37,7 +43,7 @@ const Profile: React.FC = () => {
         updatedUser.avatarUrl = formValues.avatarUrl;
       }
 
-      localStorage.setItem("user", JSON.stringify(updatedUser)); // Thay đổi sang sử dụng localStorage
+      localStorage.setItem("user", JSON.stringify(updatedUser));
 
       setIsModalVisible(false);
 
@@ -48,13 +54,7 @@ const Profile: React.FC = () => {
   };
 
   useEffect(() => {
-    const storedRole = localStorage.getItem("role"); // Thay đổi từ sử dụng sessionStorage sang localStorage
-    if (!storedRole) {
-      console.error("Role not found in localStorage");
-      return;
-    }
-
-    const storedUser = localStorage.getItem("user"); // Thay đổi từ sử dụng sessionStorage sang localStorage
+    const storedUser = localStorage.getItem("user");
 
     if (!storedUser) {
       console.error("User data not found in localStorage");
@@ -68,9 +68,12 @@ const Profile: React.FC = () => {
     const storedEmail = userObj.email;
     const storedAvatarUrl = userObj.avatarUrl;
     const storedCreatedDate = new Date(userObj.createdDate).toUTCString();
+    const storedDegree = userObj.degree;
+    const storedDescription = userObj.description;
+    const storedLastLogin = userObj.lastLogin;
 
     let newUser: any = null;
-    if (storedRole === "Student") {
+    if (role === "Student") {
       newUser = new Student(
         storedUserId,
         storedFullName,
@@ -79,28 +82,32 @@ const Profile: React.FC = () => {
         storedAvatarUrl,
         storedCreatedDate
       );
-    } else if (storedRole === "Admin") {
+    } else if (role === "Admin") {
       newUser = new Admin(
         storedUserId,
         storedFullName,
         storedEmail,
         "",
         storedAvatarUrl,
-        storedCreatedDate
+        storedCreatedDate,
+        storedLastLogin
       );
-    } else if (storedRole === "Instructor") {
+    } else if (role === "Instructor") {
       newUser = new Instructor(
         storedUserId,
         storedFullName,
         storedEmail,
         "",
         storedAvatarUrl,
-        storedCreatedDate
+        storedCreatedDate,
+        "",
+        storedDescription,
+        storedDegree
       );
     }
 
     setUser(newUser);
-  }, [forceUpdateFlag]);
+  }, [role, forceUpdateFlag]);
 
   if (!user) {
     return <div>Loading...</div>;
@@ -157,41 +164,46 @@ const Profile: React.FC = () => {
                 {user instanceof Admin && (
                   <div>
                     <p className={styles.profileDetailItem}>
-                      Last Login: {user.lastLogin}
+                      <strong>Last Login:</strong> {user.lastLogin}
                     </p>
                   </div>
                 )}
                 {user instanceof Instructor && (
                   <div>
                     <p className={styles.profileDetailItem}>
-                      Description: {user.description}
+                      <strong>Description:</strong> {user.description}
                     </p>
                     <p className={styles.profileDetailItem}>
-                      Degree: {user.degree}
-                    </p>
-                    <p className={styles.profileDetailItem}>
-                      Status: {user.status}
+                      <strong>Degree:</strong>
+                      <br />
+                      <img
+                        src={user.degree}
+                        alt="Degree Certificate"
+                        className={styles.degreeImage}
+                      />
                     </p>
                   </div>
                 )}
               </div>
             </TabPane>
-            <TabPane tab="Purchased Courses" key="2">
-              <div className={styles.coursesContainer}>
-                <h1 className={styles.coursesHeader}>My Courses</h1>
-                {user.courses && user.courses.length > 0 ? (
-                  <ul className={styles.coursesList}>
-                    {user.courses.map((course: any, index: number) => (
-                      <li key={index} className={styles.courseItem}>
-                        {course.name}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <Empty description="No courses purchased" />
-                )}
-              </div>
-            </TabPane>
+            {role === "Student" && (
+              <TabPane tab="Purchased Courses" key="2">
+                <div className={styles.coursesContainer}>
+                  <h1 className={styles.coursesHeader}>My Courses</h1>
+                  {user.courses && user.courses.length > 0 ? (
+                    <ul className={styles.coursesList}>
+                      {user.courses.map((course: any, index: number) => (
+                        <li key={index} className={styles.courseItem}>
+                          {course.name}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <Empty description="No courses purchased" />
+                  )}
+                </div>
+              </TabPane>
+            )}
           </Tabs>
         </div>
       </div>

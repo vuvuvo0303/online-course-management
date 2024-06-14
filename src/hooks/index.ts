@@ -1,3 +1,5 @@
+// hooks/index.ts
+
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { roles } from "../consts";
@@ -46,5 +48,3 @@ const useRoleRedirect = () => {
 };
 
 export default useRoleRedirect;
-
-
