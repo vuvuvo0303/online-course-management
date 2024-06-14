@@ -33,7 +33,12 @@ const columns = [
         dataIndex: 'status',
         key: 'status',
         render: (status: string) => (
-            <Tag color={status === 'completed' ? 'green' : 'volcano'}>
+            <Tag color={
+                status === 'COMPLETED' ? 'green' :
+                status === 'REJECTED' ? 'red' :
+                status === 'PENDING' ? 'gold' :
+                'default' // Màu mặc định khi không trùng khớp
+            }>
                 {status.toUpperCase()}
             </Tag>
         ),
@@ -47,7 +52,7 @@ const columns = [
 
 const StudentPaymentHistory: React.FC = () => {
     const [selectComponent, setSelectComponent] = useState("courses");
-    const [payment, setPayments] = useState<Payment | null >(null); // Sử dụng `Payment | null` thay vì `Payment[]`
+    const [payment, setPayments] = useState<Payment[] | null >(null); // Update to Payment[] | null
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -69,16 +74,18 @@ const StudentPaymentHistory: React.FC = () => {
             }
     
             try {
-                const response = await fetch(`https://665fbf245425580055b0b23d.mockapi.io/payments`);
+                const response = await fetch(`https://665fbf245425580055b0b23d.mockapi.io/payments?userId=${userId}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
                 
-                // Lọc danh sách thanh toán chỉ lấy những thanh toán có userId tương ứng
-                const filteredPayments = data.filter((payment: Payment) => payment.userId === userId);
-                
-                setPayments(filteredPayments);
+                // Ensure data is an array of Payment objects
+                if (Array.isArray(data)) {
+                    setPayments(data); // Set payments to the array of Payment objects
+                } else {
+                    setPayments([]); // Set an empty array if data is not an array
+                }
             } catch (error: unknown) {
                 if (error instanceof Error) {
                     setError(error.message);
@@ -92,7 +99,6 @@ const StudentPaymentHistory: React.FC = () => {
     
         fetchPayments();
     }, []);
-    
 
     const renderComponent = () => {
         switch (selectComponent) {
@@ -140,7 +146,7 @@ const StudentPaymentHistory: React.FC = () => {
                     <Tabs.TabPane key={item.key} tab={item.label} />
                 ))}
             </Tabs>
-            <Table columns={columns} dataSource={payment} rowKey="paymentId" /> {/* Sử dụng `payment ? [payment] : []` để đảm bảo chỉ có một đối tượng trong dataSource */}
+            <Table columns={columns} dataSource={payment || []} rowKey="paymentId" /> {/* Use payment || [] to ensure dataSource is an array */}
             {renderComponent()}
         </div>
     );

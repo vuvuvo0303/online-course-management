@@ -33,10 +33,16 @@ const columns = [
         dataIndex: 'status',
         key: 'status',
         render: (status: string) => (
-            <Tag color={status === 'completed' ? 'green' : 'volcano'}>
+            <Tag color={
+                status === 'COMPLETED' ? 'blue' :
+                status === 'REJECTED' ? 'red' :
+                status === 'PENDING' ? 'gold' :
+                'default' // Màu mặc định khi không trùng khớp
+            }>
                 {status.toUpperCase()}
             </Tag>
         ),
+        
     },
     {
         title: 'Enrollment ID',

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import styles from './blog.module.css';
 import { Breadcrumb, Input, Pagination, Checkbox, Tag } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
-import useDebounce from './useDebounce'; // Import debounce hook
+import useDebounce from '../../hooks/useDebounce'; // Import debounce hook
 
 const BlogList: React.FC = () => {
     const [blogs, setBlogs] = useState<Blog[]>([]);
