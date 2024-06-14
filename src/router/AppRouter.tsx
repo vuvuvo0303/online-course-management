@@ -2,8 +2,6 @@ import {
   Routes,
   Route,
   Navigate,
-  useNavigate,
-  useLocation,
 } from "react-router-dom";
 import {
   Home,
@@ -32,54 +30,14 @@ import {
   PaymentHistory,
   CreateCourse,
   Enrollment,
-
 } from "../pages";
 
-import { useEffect } from "react";
 import { paths, roles } from "../consts";
 import Statics from "../pages/admin/dashboard-admin";
+import useRoleRedirect from "../hooks";
 
 const AppRouter: React.FC = () => {
-  const userRole = sessionStorage.getItem("role");
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (userRole) {
-      redirectBasedOnRole();
-    }
-  }, [userRole, location.pathname]);
-
-  // Hàm điều hướng dựa trên vai trò của người dùng
-  const redirectBasedOnRole = () => {
-    const path = location.pathname;
-
-    switch (userRole) {
-      case "Student":
-        if (path.includes("/instructor") || path.includes("/admin")) {
-          navigate("/");
-        }
-        break;
-      case "Admin":
-        if (!path.includes("/admin")) {
-          navigate("/admin/dashboard");
-        }
-        break;
-      case "Instructor":
-        if (!path.includes("/instructor")) {
-          navigate("/instructor/dashboard");
-        }
-        break;
-      default:
-        navigate("/");
-        break;
-    }
-  };
-
-  // Hàm kiểm tra quyền truy cập của người dùng
-  const canAccess = (allowedRoles: string[]) => {
-    return userRole && allowedRoles.includes(userRole);
-  };
+  const { canAccess } = useRoleRedirect();
 
   return (
     <Routes>
@@ -102,7 +60,7 @@ const AppRouter: React.FC = () => {
       <Route path="/course/:id" element={<CourseDetail />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/profile" element={<Profile />} />
-      <Route path="/paymenthistory" element={<PaymentHistory />} />
+      <Route path="/payment-history" element={<PaymentHistory />} />
       <Route path="/create-course" element={<CreateCourse />} />
       <Route path="/enrollment" element={<Enrollment />} />
 
