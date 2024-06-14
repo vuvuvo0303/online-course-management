@@ -1,9 +1,9 @@
-import { Rate, Space, Table } from "antd";
+import { Breadcrumb, Rate, Space, Table } from "antd";
 import type { TableProps } from "antd";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { fetchReviews } from "../../../services/get";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 
 type DataType = {
   key: string;
@@ -12,7 +12,7 @@ type DataType = {
   rating: number;
   tags: string[];
 };
-const ManageFeedbacks = () => {
+const ManageAdminFeedbacks = () => {
   const [dataSource, setDataSource] = useState([]);
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
@@ -81,9 +81,30 @@ const ManageFeedbacks = () => {
 
   return (
     <div>
+      <Breadcrumb
+        className="py-2"
+        items={[
+          {
+            
+            title: <HomeOutlined />,
+          },
+          {
+            href: "/dashboard/admin",
+            title: (
+              <>
+                <UserOutlined />
+                <span>Admin</span>
+              </>
+            ),
+          },
+          {
+            title: "Manage Feedbacks",
+          },
+        ]}
+      />
       <Table columns={columns} dataSource={dataSource} />;
     </div>
   );
 };
 
-export default ManageFeedbacks;
+export default ManageAdminFeedbacks;
