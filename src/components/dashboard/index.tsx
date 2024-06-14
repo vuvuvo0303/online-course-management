@@ -73,6 +73,7 @@ const Dashboard: React.FC = () => {
     } else if (role === "Admin") {
       setItems([
         getItem("DashBoard", "/admin/dashboard/statics", <FundOutlined />),
+        getItem("My Profile", "/admin/dashboard/profile", <UserOutlined />),
         getItem(
           "Manage Students",
           "/admin/dashboard/manage-students",
@@ -81,6 +82,11 @@ const Dashboard: React.FC = () => {
         getItem(
           "Manage Instructors",
           "/admin/dashboard/manage-instructors",
+          <TeamOutlined />
+        ),
+        getItem(
+          "Manage Categories",
+          "/admin/dashboard/manage-category",
           <TeamOutlined />
         ),
         getItem(

@@ -10,11 +10,11 @@ const Profile: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [forceUpdateFlag, setForceUpdateFlag] = useState(false);
-  const [role, setRole] = useState<string | null>(null); // State to hold user role
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     const storedRole = localStorage.getItem("role");
-    setRole(storedRole); // Set role state from localStorage
+    setRole(storedRole);
   }, []);
 
   const showEditModal = () => {
@@ -70,7 +70,12 @@ const Profile: React.FC = () => {
     const storedCreatedDate = new Date(userObj.createdDate).toUTCString();
     const storedDegree = userObj.degree;
     const storedDescription = userObj.description;
-    const storedLastLogin = userObj.lastLogin;
+    let storedLastLogin = userObj.lastLogin;
+
+    // Convert storedLastLogin to UTC format
+    if (role === "Admin" && storedLastLogin) {
+      storedLastLogin = new Date(storedLastLogin).toUTCString();
+    }
 
     let newUser: any = null;
     if (role === "Student") {
@@ -90,6 +95,7 @@ const Profile: React.FC = () => {
         "",
         storedAvatarUrl,
         storedCreatedDate,
+        "",
         storedLastLogin
       );
     } else if (role === "Instructor") {
