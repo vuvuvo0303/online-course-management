@@ -19,10 +19,13 @@ import {
   Cart,
   Profile,
   Checkout,
+  CreateCourse,
+  PaymentHistory,
+  StudentPaymentHistory,
+  About,
+  BlogDetail,
+  BlogList,
 } from "../pages";
-import BlogList from "../pages/blog";
-import BlogDetail from "../pages/blog/blogDetail";
-import About from "../pages/about";
 import useRoleRedirect from "../hooks/index";
 
 const AppRouter: React.FC = () => {
@@ -43,6 +46,7 @@ const AppRouter: React.FC = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/teaching" element={<BecomeInstructorPage />} />
       <Route path="/cart" element={<Cart />} />
+      <Route path="/payment-history" element={<StudentPaymentHistory />} />
 
       {/* Profile route for all users */}
       <Route path="/profile" element={<Profile />} />
@@ -61,6 +65,30 @@ const AppRouter: React.FC = () => {
           path="manage-lectures"
           element={
             canAccess(["Instructor"]) ? <ManageLectures /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            canAccess(["Instructor"]) ? <Profile /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            canAccess(["Instructor"]) ? <Profile /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="payment-history"
+          element={
+            canAccess(["Instructor"]) ? <PaymentHistory /> : <Navigate to="/" />
+          }
+        />
+        <Route
+          path="create-course"
+          element={
+            canAccess(["Instructor"]) ? <CreateCourse /> : <Navigate to="/" />
           }
         />
       </Route>

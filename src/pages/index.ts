@@ -14,11 +14,11 @@ export { default as About } from "./about";
 export { default as BlogDetail } from "./blog/blogDetail";
 export { default as BlogList } from "./blog";
 export { default as StudentPaymentHistory } from "./payment/StudentPaymentHistory";
-export { default as CreateCourse } from "./course/createCourse";
 /* Instructor Page */
 export { default as BecomeInstructorPage } from "./teaching";
 export { default as ManageLectures } from "./instructor/manage-lectures";
 export { default as PaymentHistory } from "./payment/paymentHistory";
+export { default as CreateCourse } from "./course/createCourse";
 /* Admin Page */
 export { default as ManageStudent } from "./admin/manage-students";
 export { default as ManageInstructor } from "./admin/manage-instructors";
