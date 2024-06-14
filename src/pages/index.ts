@@ -9,10 +9,10 @@ export { default as Terms } from "./terms";
 export { default as Guidelines } from "./guideline";
 export { default as Cart } from "./cart";
 export { default as Profile } from "./profile";
+export { default as Checkout } from "./checkout";
 export { default as About } from "./about";
 export { default as BlogDetail } from "./blog/blogDetail";
 export { default as BlogList } from "./blog";
-
 export { default as StudentPaymentHistory } from "./payment/StudentPaymentHistory";
 export { default as CreateCourse } from "./course/createCourse";
 /* Instructor Page */
