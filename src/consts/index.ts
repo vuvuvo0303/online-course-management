@@ -1,3 +1,4 @@
+
 /* API */
 const BASE_URL = "https://665fbf245425580055b0b23d.mockapi.io";
 export const API_STUDENT_URL = `${BASE_URL}/students`;
@@ -27,7 +28,10 @@ export const paths = {
   BLOG_DETAIL: "/blog/:id",
   CONTACT: "/contact",
   TEACHING: "/teaching",
+  ENROLLMENT: "/enrollment",
   CART: "/cart",
+  CREATE_COURSE: "/create-course",
+  STUDENT_PAYMENT_HISTORY: "/payment-history",
   INSTRUCTOR_DASHBOARD: "/instructor/dashboard",
   ADMIN_DASHBOARD: "/admin/dashboard",
   MANAGE_LECTURES: "/instructor/dashboard/manage-lectures",

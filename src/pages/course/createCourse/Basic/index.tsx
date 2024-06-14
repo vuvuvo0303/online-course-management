@@ -63,7 +63,7 @@ const BasicStep: React.FC = () => {
             <div className={`${styles.Border} border-t-2 border-b-2`}>
                 <Row gutter={10}>
                     <Col>
-                        <InfoCircleOutlined className={styles.icon}  />
+                        <InfoCircleOutlined className={styles.icon} />
                     </Col>
                     <Col>
                         <h1 className=" font-bold">Basic Infomation</h1>
@@ -97,22 +97,22 @@ const BasicStep: React.FC = () => {
                 </div>
                 <div className="mt-10">
                     <Row gutter={10}>
-                        <Col span={12}>
-                            <p>
-                                What will students learn in your course?*
-                            </p>
-                            <TextArea className="mt-2" rows={4} />
-                            <p className={`${styles.note} mt-2`}>
-                                Student will gain this skills, knowledge after completing this course. (One per line).
+                        <Col xs={24} sm={12} className="flex flex-col">
+                            <p className="mb-2">What will students learn in your course?*</p>
+                            <div className="flex-grow">
+                                <Input.TextArea rows={4} className="border border-gray-300 rounded p-2 w-full" />
+                            </div>
+                            <p className="text-sm mt-2">
+                                Students will gain these skills and knowledge after completing this course. (One per line).
                             </p>
                         </Col>
-                        <Col span={12}>
-                            <p>
-                                Requirements*
-                            </p>
-                            <TextArea className="mt-2" rows={4} />
-                            <p className={`${styles.note} mt-2`}>
-                                What knowledge, technology, tools required by users to start this course. (One per line).
+                        <Col xs={24} sm={12} className="flex flex-col mt-5 sm:mt-0">
+                            <p className="mb-2">Requirements*</p>
+                            <div className="flex-grow">
+                                <Input.TextArea rows={4} className="border border-gray-300 rounded p-2 w-full" />
+                            </div>
+                            <p className="text-sm mt-2">
+                                What knowledge, technology, tools are required by users to start this course. (One per line).
                             </p>
                         </Col>
                     </Row>

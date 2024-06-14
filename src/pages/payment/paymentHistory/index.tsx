@@ -1,51 +1,57 @@
 import { useEffect, useState } from 'react';
-import styles from './paymentHistory.module.css';
-import PaymentCourses from './courses';
-import PaymentSubscriptions from './Subscriptions';
-import PaymentRefunds from './refunds';
+import styles from '../paymentHistory.module.css';
+import PaymentCourses from '../courses';
+import PaymentSubscriptions from '../Subscriptions';
+import PaymentRefunds from '../refunds';
 import { Payment } from '../../../models';
-import {  Table, Tag } from 'antd';
+import { Table, Tabs, TabsProps, Tag } from 'antd';
 
 const columns = [
     {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
+        title: 'User ID',
+        dataIndex: 'userId',
+        key: 'userId',
     },
     {
-      title: 'Created Date',
-      dataIndex: 'createdDate',
-      key: 'createdDate',
-      render: (date:string) => new Date(date).toLocaleDateString(),
+        title: 'Amount',
+        dataIndex: 'amount',
+        key: 'amount',
     },
     {
-      title: 'Payment Method',
-      dataIndex: 'paymentMethod',
-      key: 'paymentMethod',
+        title: 'Created Date',
+        dataIndex: 'createdDate',
+        key: 'createdDate',
+        render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status:string) => (
-        <Tag color={status === 'completed' ? 'green' : 'volcano'}>
-          {status.toUpperCase()}
-        </Tag>
-      ),
+        title: 'Payment Method',
+        dataIndex: 'paymentMethod',
+        key: 'paymentMethod',
     },
     {
-      title: 'User ID',
-      dataIndex: 'userId',
-      key: 'userId',
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        render: (status: string) => (
+            <Tag color={
+                status === 'COMPLETED' ? 'blue' :
+                status === 'REJECTED' ? 'red' :
+                status === 'PENDING' ? 'gold' :
+                'default' // Màu mặc định khi không trùng khớp
+            }>
+                {status.toUpperCase()}
+            </Tag>
+        ),
+        
     },
     {
-      title: 'Enrollment ID',
-      dataIndex: 'enrollmentId',
-      key: 'enrollmentId',
+        title: 'Enrollment ID',
+        dataIndex: 'enrollmentId',
+        key: 'enrollmentId',
     }
-  ];
+];
 
-const PaymentHistory = () => {
+const PaymentHistory: React.FC = () => {
     const [selectComponent, setSelectComponent] = useState("default");
     const [payments, setPayments] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -54,12 +60,13 @@ const PaymentHistory = () => {
     useEffect(() => {
         const fetchPayments = async () => {
             try {
-                const response = await fetch('https://665fbf245425580055b0b23d.mockapi.io/payments'); // Thay thế URL bằng API của bạn
+                const response = await fetch('https://665fbf245425580055b0b23d.mockapi.io/payments');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
                 setPayments(data);
+                console.log("check setPayments(data): ", setPayments(data))
             } catch (error: unknown) {
                 if (error instanceof Error) {
                     setError(error.message);
@@ -92,32 +99,34 @@ const PaymentHistory = () => {
     if (error) {
         return <p>Error: {error}</p>;
     }
+    
 
-    return (
-        <div className="container mx-auto mt-10">
-            <h1>Payment History</h1>
-            <div className={styles.paymentBar}>
-                <div>
-                    <button onClick={() => setSelectComponent("courses")}>
-                        Courses
-                    </button>
-                </div>
-                <div>
-                    <button onClick={() => setSelectComponent("subscriptions")}>
-                        Subscriptions
-                    </button>
-                </div>
-                <div>
-                    <button onClick={() => setSelectComponent("refunds")}>
-                        Refunds
-                    </button>
-                </div>
-            </div>
-            {renderComponent()}
-            <Table columns={columns} dataSource={payments} rowKey="paymentId" />
-           
-        </div>
-    );
+const onChange = (key: string) => {
+    setSelectComponent(key)
+}
+const items: TabsProps['items'] = [
+    {
+        key: 'courses',
+        label: 'Tab 1'       
+    },
+    {
+        key: 'subscriptions',
+        label: 'Tab 2',
+    },
+    {
+        key: 'refunds',
+        label: 'Tab 3',
+    },
+];
+return (
+    <div className="container mx-auto mt-10">
+        <h1>Payment History</h1>
+        <Tabs defaultActiveKey="courses" items={items} onChange={onChange} />
+    
+        <Table columns={columns} dataSource={payments} rowKey="paymentId" />
+        {renderComponent()}
+    </div>
+);
 };
 
 export default PaymentHistory;
