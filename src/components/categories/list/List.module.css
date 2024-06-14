@@ -1,0 +1,16 @@
+.carousel-item-padding-10px {
+    padding: 10px;
+}
+
+.carousel-item-padding-10px .bg-white-transparent {
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Adjust the transparency */
+}
+
+.carousel-item-padding-10px .border {
+    border-color: lightgray;
+}
+
+.carousel-item-padding-10px .text-gray-800 {
+    color: #2d3748;
+}

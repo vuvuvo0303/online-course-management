@@ -32,7 +32,6 @@ export const paths = {
   CART: "/cart",
   CREATE_COURSE: "/create-course",
   STUDENT_PAYMENT_HISTORY: "/payment-history",
-  ENROLLMENT: "/enrollment",
   PAYMENT_HISTORY: "/payment-history",
   COURSE: "/course",
   SITEMAP: "/sitemap",
