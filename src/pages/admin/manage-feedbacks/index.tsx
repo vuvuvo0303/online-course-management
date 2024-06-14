@@ -1,4 +1,4 @@
-import { Rate, Space, Table } from "antd";
+import { Rate, Table } from "antd";
 import type { TableProps } from "antd";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
@@ -42,20 +42,20 @@ const ManageFeedbacks = () => {
       title: "Feedback",
       dataIndex: "message",
       key: "message",
-      width:"30%",
+      width: "30%",
 
     },
     {
       title: "Created Date",
       dataIndex: "createdDate",
       render: (createdDate: string) => formatDate(createdDate),
-      width:"10%",
+      width: "10%",
     },
     {
       title: "Updated Date",
       dataIndex: "updatedDate",
       render: (updatedDate: string) => formatDate(updatedDate),
-      width:"10%",
+      width: "10%",
 
     },
     {
@@ -68,7 +68,7 @@ const ManageFeedbacks = () => {
     {
       title: "Action",
       key: "action",
-      render: (_, record) => (
+      render: () => (
         <div>
           <DeleteOutlined
             className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60 "

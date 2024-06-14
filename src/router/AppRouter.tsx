@@ -8,6 +8,7 @@ import {
   Guidelines,
   Support,
   Contact,
+  Course,
   ManageStudent,
   ManageInstructor,
   ManageBlogs,
@@ -16,6 +17,7 @@ import {
   Dashboard,
   ManageLectures,
   BecomeInstructorPage,
+  ManageFeedback,
   Cart,
   Profile,
   Checkout,
@@ -32,7 +34,6 @@ import {
 import useRoleRedirect from "../hooks/index";
 
 import { paths } from "../consts";
-import Course from "../pages/course";
 import CourseDetail from "../pages/coursedetail/coursedetail";
 
 const AppRouter: React.FC = () => {
@@ -49,10 +50,8 @@ const AppRouter: React.FC = () => {
       <Route path="/terms/guidelines" element={<Guidelines />} />
       <Route path={paths.SUPPORT} element={<Support />} />
       <Route path={paths.BLOG} element={<BlogList />} />
+      <Route path="/course" element={<Course />} />
       <Route path="/blog/:id" element={<BlogDetail />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/teaching" element={<BecomeInstructorPage />} />
-      <Route path="/cart" element={<Cart />} />
       <Route path="/payment-history" element={<StudentPaymentHistory />} />
       <Route path={paths.CONTACT} element={<Contact />} />
       <Route path={paths.TEACHING} element={<BecomeInstructorPage />} />
@@ -66,8 +65,6 @@ const AppRouter: React.FC = () => {
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/instructor/dashboard/profile" element={<Profile />} />
       <Route path={paths.PAYMENT_HISTORY} element={<PaymentHistory />} />
-      <Route path={paths.CONTACT} element={<Contact />} />
-      <Route path={paths.COURSE} element={<Course />} />
       <Route path="/course/:id" element={<CourseDetail />} />
       <Route path={paths.ENROLLMENT} element={<Enrollment />} />
       <Route path={paths.SITEMAP} element={<SiteMap />} />
@@ -80,15 +77,15 @@ const AppRouter: React.FC = () => {
         }
       >
         <Route
-          path="manage-lectures"
+          path="manage-feedback"
           element={
-            canAccess(["Instructor"]) ? <ManageLectures /> : <Navigate to="/" />
+            canAccess(["Instructor"]) ? <ManageFeedback /> : <Navigate to="/" />
           }
         />
         <Route
-          path="profile"
+          path="manage-lectures"
           element={
-            canAccess(["Instructor"]) ? <Profile /> : <Navigate to="/" />
+            canAccess(["Instructor"]) ? <ManageLectures /> : <Navigate to="/" />
           }
         />
         <Route
