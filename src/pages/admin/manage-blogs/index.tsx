@@ -16,19 +16,18 @@ interface DataType {
 type DataIndex = keyof DataType;
 
 const ManageBlogs = () => {
-
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
   const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
-    const fetchBlogs = async() => {
+    const fetchBlogs = async () => {
       const response = await axios.get("https://665fbf245425580055b0b23d.mockapi.io/blogs");
       console.log(response);
       setDataSource(response.data);
     };
-    fetchBlogs()
+    fetchBlogs();
   }, []);
 
   const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
@@ -138,7 +137,11 @@ const ManageBlogs = () => {
       title: "Description",
       dataIndex: "description",
       key: "description",
-      render: (description) => <span>{description.title}: {description.content}</span>, 
+      render: (description) => (
+        <span>
+          {description.title}: {description.content}
+        </span>
+      ),
     },
     {
       title: "View",
@@ -154,27 +157,31 @@ const ManageBlogs = () => {
   ];
   return (
     <div>
-      <Breadcrumb
-        className="py-2"
-        items={[
-          {
-            
-            title: <HomeOutlined />,
-          },
-          {
-            href: "/dashboard/admin",
-            title: (
-              <>
-                <UserOutlined />
-                <span>Admin</span>
-              </>
-            ),
-          },
-          {
-            title: "Manage Blogs",
-          },
-        ]}
-      />
+      <div className="flex justify-between">
+        <Breadcrumb
+          className="py-2"
+          items={[
+            {
+              title: <HomeOutlined />,
+            },
+            {
+              href: "/dashboard/admin",
+              title: (
+                <>
+                  <UserOutlined />
+                  <span>Admin</span>
+                </>
+              ),
+            },
+            {
+              title: "Manage Blogs",
+            },
+          ]}
+        />
+        <div className="py-2">
+          <Button type="primary">Add New SBlogs</Button>
+        </div>
+      </div>
       <Table columns={columns} dataSource={dataSource} />;
     </div>
   );

@@ -102,6 +102,7 @@ const ManageIntructors = () => {
 
   return (
     <div>
+      <div className="flex justify-between">
       <Breadcrumb
         className="py-2"
         items={[
@@ -123,6 +124,10 @@ const ManageIntructors = () => {
           },
         ]}
       />
+      <div className="py-2">
+          <Button type="primary">Add New Instructor</Button>
+        </div>
+        </div>
       <Table columns={columns} dataSource={data} />
     </div>
   );

@@ -15,7 +15,7 @@ interface DataType {
   userId: string;
 }
 
-const ManageStudent = () => {
+const ManageStudentInstructor = () => {
   const [data, setData] = useState<DataType[]>([]);
   const onChange = (isActive: boolean) => {
     console.log(`switch to ${isActive}`);
@@ -145,4 +145,4 @@ const ManageStudent = () => {
   );
 };
 
-export default ManageStudent;
+export default ManageStudentInstructor;

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import TopSelling from "./top3selling";
 import TopNews from "./topnew";
 import ProfileAnalytics from "./profile-overview";
-import { RevenueChart } from "../../admin/chart/revenuechart";
+
 
 const InstrutorDashboard = () => {
   return (

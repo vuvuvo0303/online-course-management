@@ -81,8 +81,7 @@ const ManageStudent = () => {
       title: "Image",
       dataIndex: "avatarUrl",
       key: "avatarUrl",
-      render: (avatarUrl: string) => <Image src={avatarUrl} width={50}/>,
-      
+      render: (avatarUrl: string) => <Image src={avatarUrl} width={50} />,
     },
     {
       title: "Status",
@@ -102,8 +101,11 @@ const ManageStudent = () => {
       key: "userId",
       render: (userId: string) => (
         <div>
-          <EditOutlined className="hover:cursor-pointer text-blue-400 hover:opacity-60" style={{fontSize:"20px"}}/>
-          <DeleteOutlined className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60 "style={{fontSize:"20px"}} />
+          <EditOutlined className="hover:cursor-pointer text-blue-400 hover:opacity-60" style={{ fontSize: "20px" }} />
+          <DeleteOutlined
+            className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60 "
+            style={{ fontSize: "20px" }}
+          />
         </div>
       ),
     },
@@ -111,27 +113,33 @@ const ManageStudent = () => {
 
   return (
     <div>
-      <Breadcrumb
-        className="py-2"
-        items={[
-          {
-            href: "/",
-            title: <HomeOutlined />,
-          },
-          {
-            href: "/dashboard/admin",
-            title: (
-              <>
-                <UserOutlined />
-                <span>Admin</span>
-              </>
-            ),
-          },
-          {
-            title: "Manage Students",
-          },
-        ]}
-      />
+      <div className="flex justify-between">
+        <Breadcrumb
+          className="py-2"
+          items={[
+            {
+              href: "/",
+              title: <HomeOutlined />,
+            },
+            {
+              href: "/dashboard/admin",
+              title: (
+                <>
+                  <UserOutlined />
+                  <span>Admin</span>
+                </>
+              ),
+            },
+            {
+              title: "Manage Students",
+            },
+          ]}
+        />
+        <div className="py-2">
+          <Button type="primary">Add New Students</Button>
+        </div>
+      </div>
+
       <Table columns={columns} dataSource={data} />
     </div>
   );
