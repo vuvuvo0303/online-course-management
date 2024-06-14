@@ -15,6 +15,9 @@ export { default as BlogDetail } from "./blog/blogDetail";
 export { default as BlogList } from "./blog";
 export { default as StudentPaymentHistory } from "./payment/StudentPaymentHistory";
 export { default as CreateCourse } from "./course/createCourse";
+export { default as Enrollment } from "./enrollment/index";
+export { default as SiteMap } from "./sitemap";
+export { default as NotFound } from "./notfound";
 /* Instructor Page */
 export { default as BecomeInstructorPage } from "./teaching";
 export { default as ManageLectures } from "./instructor/manage-lectures";

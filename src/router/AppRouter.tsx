@@ -19,36 +19,51 @@ import {
   Cart,
   Profile,
   Checkout,
+  PaymentHistory,
+  Enrollment,
+  SiteMap,
+  NotFound,
 } from "../pages";
 import BlogList from "../pages/blog";
 import BlogDetail from "../pages/blog/blogDetail";
 import About from "../pages/about";
 import useRoleRedirect from "../hooks/index";
 
+import { paths } from "../consts";
+import Course from "../pages/course";
+import CourseDetail from "../pages/coursedetail/coursedetail";
+
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/terms" element={<Terms />} />
+      <Route path={paths.HOME} element={<Home />} />
+      <Route path={paths.LOGIN} element={<LoginPage />} />
+      <Route path={paths.ABOUT} element={<About />} />
+      <Route path={paths.REGISTER} element={<RegisterPage />} />
+      <Route path={paths.TERMS} element={<Terms />} />
       <Route path="/terms/policy" element={<Policy />} />
       <Route path="/terms/guidelines" element={<Guidelines />} />
-      <Route path="/support" element={<Support />} />
-      <Route path="/blog" element={<BlogList />} />
+      <Route path={paths.SUPPORT} element={<Support />} />
+      <Route path={paths.BLOG} element={<BlogList />} />
       <Route path="/blog/:id" element={<BlogDetail />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/teaching" element={<BecomeInstructorPage />} />
-      <Route path="/cart" element={<Cart />} />
+      <Route path={paths.CONTACT} element={<Contact />} />
+      <Route path={paths.TEACHING} element={<BecomeInstructorPage />} />
+      <Route path={paths.CART} element={<Cart />} />
+      <Route path={paths.NOTFOUND} element={<NotFound />} />
 
       {/* Profile route for all users */}
       <Route path="/profile" element={<Profile />} />
 
       {/* Checkout route */}
       <Route path="/checkout" element={<Checkout />} />
+      <Route path={paths.PAYMENT_HISTORY} element={<PaymentHistory />} />
+      <Route path={paths.CONTACT} element={<Contact />} />
+      <Route path={paths.COURSE} element={<Course />} />
+      <Route path="/course/:id" element={<CourseDetail />} />
+      <Route path={paths.ENROLLMENT} element={<Enrollment />} />
+      <Route path={paths.SITEMAP} element={<SiteMap />} />
 
       {/* Instructor routes */}
       <Route
@@ -113,7 +128,7 @@ const AppRouter: React.FC = () => {
       </Route>
 
       {/* Catch all other routes */}
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="*" element={<Navigate to="/notfound" />} />
     </Routes>
   );
 };

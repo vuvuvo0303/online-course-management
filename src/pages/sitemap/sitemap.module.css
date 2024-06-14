@@ -4,3 +4,17 @@
     flex-wrap: wrap;
     margin: -.8rem -.8rem 0;
 }
+
+.sitemap_column_3 {
+    max-width: 33.33%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: .8rem .8rem 0;
+}
+
+@media (max-width: 468px) {
+    .sitemap_column_3 {
+        max-width: 100%;
+    }
+}
