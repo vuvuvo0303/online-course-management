@@ -69,7 +69,7 @@ const AboutCourse: React.FC = () => {
                     </ul>
                 </div>
 
-                <div className="bg-[lightgray] mb-10 border-gray-300 p-4">
+                <div className="bg-white-transparent mb-10 border-gray-300 p-4">
                     <h2 className="text-2xl font-bold mb-4">What you'll learn</h2>
                     <div className="grid grid-cols-2 gap-4">
                         <ul className="list-disc ml-5 space-y-2">

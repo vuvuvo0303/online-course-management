@@ -1,10 +1,12 @@
 import { Menu, Dropdown, Badge } from 'antd';
 import { Link } from 'react-router-dom';
-import { NavLinks, categoryFilters, categorySubmenu } from '../consts/index';
+import { NavLinks, categoryFilters, categorySubmenu, paths } from '../consts/index';
 import SearchTool from './SearchTool';
 import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined } from '@ant-design/icons';
+import { useState } from 'react';
 
 const Navbar = () => {
+  const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   // Create a submenu for each categoryFilter
   const submenus = categoryFilters.map((filter, index) => (
     <Menu.SubMenu key={index} title={filter}>
@@ -20,6 +22,9 @@ const Navbar = () => {
   const userData = JSON.parse(localStorage.getItem('user') || '{}');
   const { avatarUrl } = userData;
 
+  const handleMenuClick = () => {
+    setMobileMenuVisible(!mobileMenuVisible);
+  };
   return (
     <nav className="flexBetween navbar">
       <div className="flex-1 flexStart gap-10">
@@ -48,7 +53,7 @@ const Navbar = () => {
 
       <div className="flexCenter gap-10 mr-5">
         <SearchTool />
-        <Link to="/enrollment">
+        <Link to={paths.ENROLLMENT}>
           <Badge count={4}>
             <HeartOutlined className="text-gray-400 text-3xl" />
           </Badge>
@@ -59,7 +64,7 @@ const Navbar = () => {
         <Badge count={3}>
           <BellOutlined className="text-gray-400 text-3xl" />
         </Badge>
-        <Link to="/cart">
+        <Link to={paths.CART}>
           <Badge count={2}>
             <ShoppingCartOutlined className="text-gray-400 text-3xl" />
           </Badge>
@@ -71,7 +76,7 @@ const Navbar = () => {
             className="w-8 h-8 rounded-full object-cover cursor-pointer"
           />
         ) : (
-          <Link to="/login">
+          <Link to={paths.LOGIN}>
             <UserOutlined className="text-gray-400 text-3xl cursor-pointer" />
           </Link>
         )}

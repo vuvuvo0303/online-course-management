@@ -61,10 +61,10 @@ const CreateCourse: React.FC = () => {
                 {steps[current].content}
             </div>
             <div className="flex justify-between mt-4">
-                <Button onClick={prev} disabled={current === 0} className="w-32">
+                <Button onClick={prev} disabled={current === 0} className="px-6">
                     Previous
                 </Button>
-                <Button onClick={next} type="primary" disabled={current === steps.length - 1} className="w-32">
+                <Button onClick={next} type="primary" disabled={current === steps.length - 1} className="px-6">
                     Next
                 </Button>
             </div>

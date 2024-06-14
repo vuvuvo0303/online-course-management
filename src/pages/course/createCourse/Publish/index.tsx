@@ -1,4 +1,4 @@
-import { EditOutlined, SnippetsOutlined, UploadOutlined } from "@ant-design/icons";
+import { EditOutlined, UploadOutlined } from "@ant-design/icons";
 import { Col, Row } from "antd";
 import styles from "./publish.module.css"
 const PublishStep: React.FC = () => {

@@ -1,11 +1,10 @@
 .profileContainer {
-  max-width: 800px;
+  max-width: 1500px;
   margin: 20px auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
   background-color: #f9f9f9;
-  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 100px;
 }
 
 .coverPhoto {
@@ -18,6 +17,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 8px 8px 0 0;
 }
 
 .profileAvatar {
@@ -40,7 +40,7 @@
 
 .profileDetails {
   font-size: 16px;
-  margin-top: 100px;
+  padding: 20px;
 }
 
 .profileDetailItem {
@@ -57,4 +57,53 @@
 .editButton:hover {
   background-color: #1890ff;
   color: white;
+}
+
+.coursesContainer {
+  padding: 20px;
+}
+
+.coursesHeader {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #c78b57;
+}
+
+.coursesList {
+  list-style-type: none;
+  padding: 0;
+}
+
+.courseItem {
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
+.courseItem:hover {
+  transform: scale(1.02);
+}
+
+.ant-tabs-nav {
+  margin-top: 20px;
+}
+
+.ant-tabs-nav .ant-tabs-tab {
+  font-size: 18px;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #c78b57 !important;
+}
+
+.tab {
+  margin-top: 70px;
+}
+
+.degreeImage {
+  max-width: 20%;
 }

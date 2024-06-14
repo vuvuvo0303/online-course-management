@@ -36,7 +36,7 @@ const WishListCard = () => {
                             </span>
                             <span className={styles.enrollment_quantity}>(225,245)</span>
                         </div>
-                        <div className={`mb-[.4rem] flex flex-nowrap items-center`}>
+                        <div className={`mb-[.4rem] lg:block flex flex-nowrap items-center`}>
                             <div className={styles.course_details_container}>
                                 <span>27.5 total hours</span>
                                 <div className={styles.bullet}></div>

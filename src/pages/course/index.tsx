@@ -64,16 +64,16 @@ const Course: React.FC = () => {
                     </div>
                 </div>
                 <div className="course-actions mb-[0.1rem]">
-                    <button className="button save">
-                        <HeartOutlined />
+                    <a href="/enrollment" className="button save flex items-center">
+                        <HeartOutlined className="mr-2" />
                         Save
-                    </button>
+                    </a>
                     <button className="button report-abuse">
                         <FlagOutlined />
                         Report abuse
                     </button>
                     <div className='info-instructor'>
-                        <div className="course-stats ml-[76rem] mb-[0.1rem]">
+                        <div className="course-stats ml-[70rem] mb-[0.1rem]">
                             <div className="stat">
                                 <button className="stat-button ml-[-0.2rem] mt-[0.1rem]">
                                     <EyeOutlined className='mr-[0.2rem]' />
@@ -103,8 +103,8 @@ const Course: React.FC = () => {
                 </div>
 
             </div>
-            <div className="course-tabs ml-[1rem] lg:ml-[36rem]">
-                <Tabs defaultActiveKey="1" onChange={onChange}>
+            <div className="course-tabs">
+                <Tabs defaultActiveKey="1" centered onChange={onChange}>
                     <TabPane tab="About" key="1" />
                     <TabPane tab="Course Content" key="2" />
                     <TabPane tab="Reviews" key="3" />

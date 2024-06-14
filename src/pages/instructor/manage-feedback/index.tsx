@@ -1,4 +1,3 @@
-import React from 'react';
 import { Rate, Progress, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import 'tailwindcss/tailwind.css'; // Make sure Tailwind CSS is configured

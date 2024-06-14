@@ -30,7 +30,7 @@ const PriceStep: React.FC = () => {
                         <Col span={12}>
                             <Button
                                 type="primary"
-                                className={`w-full ${selectedButton === "Free" ? "bg-red-500 text-white border-red-500" : "bg-white text-black border-gray-300"}`}
+                                className={`w-full h-14 ${selectedButton === "Free" ? "bg-red-500 text-white border-red-500" : "bg-white text-black border-gray-300"}`}
                                 danger={selectedButton === "Free"}
                                 onClick={() => handleButtonClick("Free", <FreeComponent />)}
                             >
@@ -40,7 +40,7 @@ const PriceStep: React.FC = () => {
                         <Col span={12}>
                             <Button
                                 type="primary"
-                                className={`w-full ${selectedButton === "Paid" ? "bg-red-500 text-white border-red-500" : "bg-white text-black border-gray-300"}`}
+                                className={`w-full h-14 ${selectedButton === "Paid" ? "bg-red-500 text-white border-red-500" : "bg-white text-black border-gray-300"}`}
                                 danger={selectedButton === "Paid"}
                                 onClick={() => handleButtonClick("Paid", <PaidComponent />)}
                             >
@@ -76,7 +76,9 @@ const FreeComponent: React.FC = () => {
                     <p>Require Enroll</p>
                 </Col>
             </Row>
-            <p className="px-10 mx-10  text-center">If the course is free, if student require to enroll your course, if not required enroll, if students required sign in to your website to take this course.</p>
+           <div className=" md:px-10 md:mx-10  text-center">
+           <p className=" ">If the course is free, if student require to enroll your course, if not required enroll, if students required sign in to your website to take this course.</p>
+           </div>
         </>
     );
 };

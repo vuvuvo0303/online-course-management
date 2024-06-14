@@ -42,20 +42,20 @@ const ManageAdminFeedbacks = () => {
       title: "Feedback",
       dataIndex: "message",
       key: "message",
-      width:"30%",
+      width: "30%",
 
     },
     {
       title: "Created Date",
       dataIndex: "createdDate",
       render: (createdDate: string) => formatDate(createdDate),
-      width:"10%",
+      width: "10%",
     },
     {
       title: "Updated Date",
       dataIndex: "updatedDate",
       render: (updatedDate: string) => formatDate(updatedDate),
-      width:"10%",
+      width: "10%",
 
     },
     {
@@ -68,7 +68,7 @@ const ManageAdminFeedbacks = () => {
     {
       title: "Action",
       key: "action",
-      render: (_, record) => (
+      render: () => (
         <div>
           <DeleteOutlined
             className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60 "
