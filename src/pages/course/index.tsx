@@ -103,8 +103,8 @@ const Course: React.FC = () => {
                 </div>
 
             </div>
-            <div className="course-tabs ml-[2rem] lg:ml-[34rem]">
-                <Tabs defaultActiveKey="1" onChange={onChange}>
+            <div className="course-tabs">
+                <Tabs defaultActiveKey="1" centered onChange={onChange}>
                     <TabPane tab="About" key="1" />
                     <TabPane tab="Course Content" key="2" />
                     <TabPane tab="Reviews" key="3" />

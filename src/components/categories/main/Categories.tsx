@@ -62,7 +62,7 @@ const Categories: React.FC = () => {
                         <div className="max-w-[350px] max-h-[400px] flex flex-col justify-between p-4 text-left">
                             <div>
                                 <h3 className="text-green-600 text-[1rem] mb-2">The Complete Python Bootcamp From Zero to Hero in Python</h3>
-                                <p className="text-black text-[0.6rem] mb-2">Updated at 7/2023</p>
+                                <p className="text-black text-[0.8rem] mb-2">Updated at 7/2023</p>
                             </div>
                             <div>
                                 <p className="text-black text-[1rem] mb-2">Learn Python like a Professional Start from the basics and go all the way to creating your own applications and games</p>

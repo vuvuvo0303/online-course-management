@@ -21,6 +21,7 @@ export { default as Enrollment } from "./enrollment";
 /* Instructor Page */
 export { default as BecomeInstructorPage } from "./teaching";
 export { default as ManageLectures } from "./instructor/manage-lectures";
+export { default as ManageFeedback } from "./instructor/manage-feedback";
 
 /* Admin Page */
 export { default as ManageStudent } from "./admin/manage-students";

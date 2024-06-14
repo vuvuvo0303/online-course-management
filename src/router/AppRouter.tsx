@@ -22,6 +22,7 @@ import {
   Dashboard,
   ManageLectures,
   BecomeInstructorPage,
+  ManageFeedback,
   Cart,
   Profile,
   BlogDetail,
@@ -70,6 +71,7 @@ const AppRouter: React.FC = () => {
         element={canAccess(["Instructor"]) ? <Dashboard /> : <Navigate to="/" />}
       >
         <Route path="manage-lectures" element={canAccess([roles.INSTRUCTOR]) ? <ManageLectures /> : <Navigate to="/" />} />
+        <Route path="manage-feedback" element={canAccess([roles.INSTRUCTOR]) ? <ManageFeedback /> : <Navigate to="/" />} />
       </Route>
 
       {/* Admin routes */}

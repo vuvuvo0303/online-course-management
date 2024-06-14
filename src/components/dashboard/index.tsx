@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
   const [role, setRole] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
   useEffect(() => {
-  
+
     const userRole = localStorage.getItem('role');
     const user = localStorage.getItem('user');
     if (userRole && user) {
@@ -44,7 +44,10 @@ const Dashboard: React.FC = () => {
 
   function loadItems() {
     if (role === "Instructor") {
-      setItems([getItem("Manage Lectures", "/instructor/dashboard/manage-lectures", <DesktopOutlined />)]);
+      setItems([
+        getItem("Manage Lectures", "/instructor/dashboard/manage-lectures", <DesktopOutlined />),
+        getItem("Manage Feedback", "/instructor/dashboard/manage-feedback", <CommentOutlined />)
+      ]);
     } else if (role === "Admin") {
       setItems([
         getItem("DashBoard", "/admin/dashboard/statics", <FundOutlined />),
@@ -80,14 +83,14 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value) }>
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
           <div className="demo-logo-vertical" />
           <Menu className="py-4 bg-white-50 h-full   " defaultSelectedKeys={["1"]} mode="vertical" items={items} />
         </Sider>
         <Layout className="bg-stone-100">
           <Header className="flex justify-between items-center drop-shadow-xl bg-white ">
             <img
-              
+
               src="https://fsoft-academy.edu.vn/dao-tao-lap-trinh/public/media/lt-logo.png"
               alt=" logo"
               width={100}
