@@ -1,4 +1,4 @@
-const ProfileAnalytics = () => {
+const ProfileOverview = () => {
   return (
     <div>
       <div>
@@ -22,26 +22,23 @@ const ProfileAnalytics = () => {
           <div className="flex items-center">
             <span>100.000</span>
             <img src="https://endlessicons.com/wp-content/uploads/2012/11/view-icon-614x460.png" width={40} />
-
           </div>
         </div>
         <div className=" flex justify-between items-center">
           <span className="font-bold"> Total Purchased</span>
           <div className="flex items-center gap-3">
-            
             <span>75 course</span>
-            <img src="https://cdn-icons-png.flaticon.com/512/1011/1011853.png" className="mb-2"width={30} />
-
+            <img src="https://cdn-icons-png.flaticon.com/512/1011/1011853.png" className="mb-2" width={30} />
           </div>
         </div>
         <div className=" flex justify-between items-center">
           <span className="font-bold">Total Enroll</span>
           <div className="flex items-center gap-3">
-            
             <span>100.000</span>
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoJ8GzGXZ4yCVy8_726gTpPRCHHtWK3zVw-A&s" width={30} />
-
-
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoJ8GzGXZ4yCVy8_726gTpPRCHHtWK3zVw-A&s"
+              width={30}
+            />
           </div>
         </div>
       </div>
@@ -49,4 +46,4 @@ const ProfileAnalytics = () => {
   );
 };
 
-export default ProfileAnalytics;
+export default ProfileOverview;

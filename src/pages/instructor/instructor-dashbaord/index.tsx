@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import TopSelling from "./top3selling";
 import TopNews from "./topnew";
 import ProfileAnalytics from "./profile-overview";
-
+import ProfileOverview from "./profile-overview";
 
 const InstrutorDashboard = () => {
   return (
@@ -115,9 +115,7 @@ const InstrutorDashboard = () => {
             </Card>
           </Col>
           <Col span={8}>
-            <Card title="Profile Overview" bordered={false}>
-              <ProfileAnalytics />
-            </Card>
+            <Card title="Profile Overview" bordered={false}><ProfileOverview/></Card>
           </Col>
         </Row>
       </div>
