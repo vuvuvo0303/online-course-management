@@ -9,6 +9,8 @@ export const API_ENROLLMENT_URL = `${BASE_URL}/enrollments`;
 export const API_LECTURE_URL = `${BASE_URL}/lectures`;
 export const API_PAYMENT_URL = `${BASE_URL}/payments`;
 export const API_REVIEW_URL = `${BASE_URL}/reviews`;
+export const API_BLOGS_URL = `${BASE_URL}/blogs`;
+
 
 // consts/paths.ts
 
@@ -26,6 +28,8 @@ export const paths = {
   CONTACT: "/contact",
   TEACHING: "/teaching",
   CART: "/cart",
+  CREATE_COURSE: "/create-course",
+  STUDENT_PAYMENT_HISTORY: "/payment-history",
   INSTRUCTOR_DASHBOARD: "/instructor/dashboard",
   ADMIN_DASHBOARD: "/admin/dashboard",
   MANAGE_LECTURES: "/instructor/dashboard/manage-lectures",
