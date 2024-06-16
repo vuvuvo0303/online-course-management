@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styles from '../paymentHistory.module.css';
 import PaymentCourses from '../courses';
-import PaymentSubscriptions from '../Subscriptions';
+import PaymentSubscriptions from '../subscriptions';
 import PaymentRefunds from '../refunds';
 import { Payment } from '../../../models';
 import { Table, Tabs, TabsProps, Tag } from 'antd';
@@ -35,14 +35,14 @@ const columns = [
         render: (status: string) => (
             <Tag color={
                 status === 'COMPLETED' ? 'blue' :
-                status === 'REJECTED' ? 'red' :
-                status === 'PENDING' ? 'gold' :
-                'default' // Màu mặc định khi không trùng khớp
+                    status === 'REJECTED' ? 'red' :
+                        status === 'PENDING' ? 'gold' :
+                            'default' // Màu mặc định khi không trùng khớp
             }>
                 {status.toUpperCase()}
             </Tag>
         ),
-        
+
     },
     {
         title: 'Enrollment ID',
@@ -99,34 +99,34 @@ const PaymentHistory: React.FC = () => {
     if (error) {
         return <p>Error: {error}</p>;
     }
-    
 
-const onChange = (key: string) => {
-    setSelectComponent(key)
-}
-const items: TabsProps['items'] = [
-    {
-        key: 'courses',
-        label: 'Tab 1'       
-    },
-    {
-        key: 'subscriptions',
-        label: 'Tab 2',
-    },
-    {
-        key: 'refunds',
-        label: 'Tab 3',
-    },
-];
-return (
-    <div className="container mx-auto mt-10">
-        <h1>Payment History</h1>
-        <Tabs defaultActiveKey="courses" items={items} onChange={onChange} />
-    
-        <Table columns={columns} dataSource={payments} rowKey="paymentId" />
-        {renderComponent()}
-    </div>
-);
+
+    const onChange = (key: string) => {
+        setSelectComponent(key)
+    }
+    const items: TabsProps['items'] = [
+        {
+            key: 'courses',
+            label: 'Tab 1'
+        },
+        {
+            key: 'subscriptions',
+            label: 'Tab 2',
+        },
+        {
+            key: 'refunds',
+            label: 'Tab 3',
+        },
+    ];
+    return (
+        <div className="container mx-auto mt-10">
+            <h1>Payment History</h1>
+            <Tabs defaultActiveKey="courses" items={items} onChange={onChange} />
+
+            <Table columns={columns} dataSource={payments} rowKey="paymentId" />
+            {renderComponent()}
+        </div>
+    );
 };
 
 export default PaymentHistory;

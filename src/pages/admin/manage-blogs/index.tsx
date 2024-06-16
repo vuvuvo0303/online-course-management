@@ -15,7 +15,7 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const ManageBlogs = () => {
+const AdminManageBlogs: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
@@ -213,4 +213,4 @@ const ManageBlogs = () => {
   );
 };
 
-export default ManageBlogs;
+export default AdminManageBlogs;

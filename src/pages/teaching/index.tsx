@@ -2,12 +2,13 @@ import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/CustomButton";
 import { DollarOutlined, ExpandAltOutlined, GlobalOutlined } from "@ant-design/icons";
 import './teaching.css'
+import { paths } from "../../consts";
 
 const BecomeInstructorPage: React.FC = () => {
     const navigate = useNavigate();
 
     const handleStart = () => {
-        navigate("/create-course");
+        navigate(paths.REGISTER);
     };
 
     return (

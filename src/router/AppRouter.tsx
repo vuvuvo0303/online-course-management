@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import {
   Home,
   LoginPage,
@@ -10,128 +10,87 @@ import {
   BlogList,
   BlogDetail,
   Course,
-  ManageStudent,
-  ManageInstructor,
-  ManageBlogs,
-  ManageCategory,
-  ManageCourses,
   Dashboard,
   BecomeInstructorPage,
-  ManageFeedback,
   Cart,
   Profile,
   PaymentHistory,
   Enrollment,
   NotFound,
-  ManageFeedbacks,
   About,
   StudentPaymentHistory,
   Contact,
   Checkout,
   SiteMap,
-  CreateCourse,
+  CourseDetail,
+  AdminManageFeedbacks,
+  InstrutorDashboard,
+  AdminDashboard,
+  InstructorManageBlogs,
+  InstructorManageStudents,
+  InstructorManageCourses,
+  InstructorCreateCourse,
+  InstructorManageFeedbacks,
+  AdminManageInstructors,
+  AdminManageCategories,
+  AdminManageBlogs,
+  AdminManageCourses,
+  AdminManageStudents
 } from "../pages";
-import useRoleRedirect from "../hooks/index";
-import { useEffect } from "react";
-import { paths } from "../consts";
-import Statics from "../pages/admin/dashboard-admin";
-import ManageAdminFeedbacks from "../pages/admin/manage-admin-feedbacks";
-import ManageCourse from "../pages/instructor/manage-course";
-import ManageStudentInstructor from "../pages/instructor/manage-studdents";
-import ManageBlogsInstructor from "../pages/instructor/manage-blogs";
-import InstrutorDashboard from "../pages/instructor/instructor-dashbaord";
-import CourseDetail from "../pages/coursedetail/coursedetail";
+import useRoleRedirect from "../hooks/useRoleRedirect";
+import { paths, roles } from "../consts";
 
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
-  const userRole = localStorage.getItem("role");
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  useEffect(() => {
-    console.log("User Role:", userRole);
-    if (userRole) {
-      redirectBasedOnRole();
-    }
-  }, [userRole, location.pathname]);
-
-  const redirectBasedOnRole = () => {
-    const path = location.pathname;
-    console.log("Current Path:", path);
-
-    switch (userRole) {
-      case "Student":
-        if (path.includes("/instructor") || path.includes("/admin")) {
-          navigate("/");
-        }
-        break;
-      case "Admin":
-        if (!path.includes("/admin")) {
-          navigate("/admin/dashboard");
-        }
-        break;
-      case "Instructor":
-        if (!path.includes("/instructor")) {
-          navigate("/instructor/dashboard");
-        }
-        break;
-      default:
-        navigate("/");
-        break;
-    }
-  };
-
-  const canAccessRoute = (allowedRoles: string[]) => {
-    console.log("Allowed Roles:", allowedRoles, "User Role:", userRole);
-    return userRole && allowedRoles.includes(userRole);
-  };
 
   return (
     <Routes>
+      {/* Route for Guest */}
       <Route path={paths.HOME} element={<Home />} />
       <Route path={paths.LOGIN} element={<LoginPage />} />
       <Route path={paths.ABOUT} element={<About />} />
       <Route path={paths.REGISTER} element={<RegisterPage />} />
       <Route path={paths.TERMS} element={<Terms />} />
-      <Route path="/terms/policy" element={<Policy />} />
-      <Route path="/terms/guidelines" element={<Guidelines />} />
+      <Route path={paths.POLICY} element={<Policy />} />
+      <Route path={paths.GUIDELINES} element={<Guidelines />} />
       <Route path={paths.SUPPORT} element={<Support />} />
       <Route path={paths.BLOG} element={<BlogList />} />
-      <Route path="/course" element={<Course />} />
-      <Route path="/blog/:id" element={<BlogDetail />} />
-      <Route path="/payment-history" element={<StudentPaymentHistory />} />
+      <Route path={paths.COURSE} element={<Course />} />
+      <Route path={paths.BLOG_DETAIL} element={<BlogDetail />} />
       <Route path={paths.CONTACT} element={<Contact />} />
-      <Route path={paths.TEACHING} element={<BecomeInstructorPage />} />
-      <Route path={paths.CART} element={<Cart />} />
-      <Route path={paths.NOTFOUND} element={<NotFound />} />
-      {/* Profile route for all users */}
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/checkout" element={<Checkout />} />
-      <Route path="/instructor/dashboard/profile" element={<Profile />} />
-      <Route path="/admin/dashboard/profile" element={<Profile />} />"
-      <Route path={paths.PAYMENT_HISTORY} element={<PaymentHistory />} />
-      <Route path="/course/:id" element={<CourseDetail />} />
-      <Route path={paths.ENROLLMENT} element={<Enrollment />} />
       <Route path={paths.SITEMAP} element={<SiteMap />} />
-      {/* instructor setup router in here please  (just for dashboard instructor) */}
+      <Route path={paths.TEACHING} element={<BecomeInstructorPage />} />
+      <Route path={paths.NOTFOUND} element={<NotFound />} />
+
+      {/* Route for Student */}
+      <Route path={paths.STUDENT_PAYMENT_HISTORY} element={<StudentPaymentHistory />} />
+      <Route path={paths.STUDENT_PROFILE} element={<Profile />} />
+      <Route path={paths.STUDENT_CART} element={<Cart />} />
+      <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
+      <Route path={paths.COURSE_DETAIL} element={<CourseDetail />} />
+      <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
+
+
+      {/* Route for Instructor */}
       <Route
-        path="/instructor/dashboard/*"
-        element={canAccessRoute(["Instructor"]) ? <Dashboard /> : <Navigate to="/" />}
+        path="/instructor/*"
+        element={canAccess([roles.INSTRUCTOR]) ? <Dashboard /> : <Navigate to="/" />}
       >
         <Route
-          path="manage-feedbacks"
-          element={canAccess(["Instructor"]) ? <ManageFeedbacks /> : <Navigate to="/" />}
+          path={paths.INSTRUCTOR_MANAGE_FEEDBACKS}
+          element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageFeedbacks /> : <Navigate to="/" />}
         />
-        <Route path="manage-courses" element={canAccess(["Instructor"]) ? <ManageCourse /> : <Navigate to="/" />} />
+        <Route path={paths.INSTRUCTOR_MANAGE_COURSES} element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageCourses /> : <Navigate to="/" />} />
         <Route
           path="manage-students"
-          element={canAccess(["Instructor"]) ? <ManageStudentInstructor /> : <Navigate to="/" />}
+          element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageStudents /> : <Navigate to="/" />}
         />
         <Route
           path="manage-blogs"
-          element={canAccess(["Instructor"]) ? <ManageBlogsInstructor /> : <Navigate to="/" />}
+          element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageBlogs /> : <Navigate to="/" />}
         />
-        <Route path="statics" element={canAccess(["Instructor"]) ? <InstrutorDashboard /> : <Navigate to="/" />} />
+        <Route path={paths.INSTRUCTOR_DASHBOARD} element={canAccess([roles.INSTRUCTOR]) ? <InstrutorDashboard /> : <Navigate to="/" />} />
 
         {/* <Route
           path="manage-lectures"
@@ -139,27 +98,28 @@ const AppRouter: React.FC = () => {
             canAccess(["Instructor"]) ? <ManageLectures /> : <Navigate to="/" />
           }
         /> */}
-
-        <Route path="payment-history" element={canAccess(["Instructor"]) ? <PaymentHistory /> : <Navigate to="/" />} />
-        <Route path="create-course" element={canAccess(["Instructor"]) ? <CreateCourse /> : <Navigate to="/" />} />
+        <Route path={paths.INSTRUCTOR_PROFILE} element={<Profile />} />
+        <Route path={paths.INSTRUCTOR_MANAGE_FEEDBACKS} element={<InstructorManageFeedbacks />} />
+        <Route path={paths.INSTRUCTOR_PAYMENT_HISTORY} element={canAccess([roles.INSTRUCTOR]) ? <PaymentHistory /> : <Navigate to="/" />} />
+        <Route path={paths.INSTRUCTOR_CREATE_COURSE} element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to="/" />} />
       </Route>
-      {/* admin setup router in here please (just for dashboard admin) */}
-      <Route path="/admin/dashboard/*" element={canAccessRoute(["Admin"]) ? <Dashboard /> : <Navigate to="/" />}>
-        <Route path="manage-students" element={<ManageStudent />} />
-        <Route path="manage-instructors" element={<ManageInstructor />} />
-        <Route path="manage-category" element={canAccess(["Admin"]) ? <ManageCategory /> : <Navigate to="/" />} />
-        <Route path="manage-blogs" element={<ManageBlogs />} />
-        <Route path="manage-courses" element={<ManageCourses />} />
-        <Route path="manage-rate" element={<ManageFeedback />} />
-        <Route path="manage-feedbacks" element={<ManageAdminFeedbacks />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="create-course" element={<CreateCourse />} />
-        <Route path="payments-history" element={<PaymentHistory />} />
 
-        <Route path="statics" element={<Statics />} />
+
+      {/* Route for Admin */}
+      <Route path="/admin/*" element={canAccess([roles.ADMIN]) ? <Dashboard /> : <Navigate to="/" />}>
+        <Route path={paths.ADMIN_DASHBOARD} element={<AdminDashboard />} />
+        <Route path={paths.ADMIN_PROFILE} element={<Profile />} />
+        <Route path={paths.ADMIN_PAYMENT_HISTORY} element={<PaymentHistory />} />
+        <Route path={paths.ADMIN_MANAGE_STUDENTS} element={<AdminManageStudents />} />
+        <Route path={paths.ADMIN_MANAGE_INSTRUCTORS} element={<AdminManageInstructors />} />
+        <Route path={paths.ADMIN_MANAGE_CATEGORIES} element={canAccess([roles.ADMIN]) ? <AdminManageCategories /> : <Navigate to="/" />} />
+        <Route path={paths.ADMIN_MANAGE_BLOGS} element={<AdminManageBlogs />} />
+        <Route path={paths.ADMIN_MANAGE_COURSES} element={<AdminManageCourses />} />
+        <Route path={paths.ADMIN_MANAGE_FEEDBACKS} element={<AdminManageFeedbacks />} />
+
       </Route>
       {/* Catch all other routes */}
-      <Route path="*" element={<Navigate to="/notfound" />} />
+      <Route path="*" element={<Navigate to={paths.NOTFOUND} />} />
     </Routes>
   );
 };

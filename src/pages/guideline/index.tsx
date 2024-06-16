@@ -3,7 +3,11 @@ import styles from './guideline.module.css'
 import ScrollToTopButton from '../../components/ScrollToTopButton'
 import TermsLayout from '../../layout/terms/TermsLayout'
 import { DislikeOutlined, LikeOutlined } from '@ant-design/icons'
+import { toast } from 'react-toastify'
 const Guidelines: React.FC = () => {
+    const handleLike = () => {
+        toast.success("Thanks for let us know!")
+    }
 
     return (
         <TermsLayout>
@@ -47,8 +51,8 @@ const Guidelines: React.FC = () => {
                     <div className='py-5 px-0'>
                         <span className='font-bold text-lg'>Was this article helpful?</span>
                         <div className='mt-4 mx-0 mb-1'>
-                            <LikeOutlined className={styles.icon} />
-                            <DislikeOutlined className={`${styles.icon} ml-2`} />
+                            <LikeOutlined className={styles.icon} onClick={handleLike} />
+                            <DislikeOutlined className={`${styles.icon} ml-2`} onClick={handleLike} />
                         </div>
                     </div>
                 </footer>

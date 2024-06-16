@@ -1,9 +1,9 @@
 
 
-const ManageLectures: React.FC = () => {
+const InstructorManageLectures: React.FC = () => {
   return (
     <div>ManageLectures</div>
   )
 }
 
-export default ManageLectures
+export default InstructorManageLectures

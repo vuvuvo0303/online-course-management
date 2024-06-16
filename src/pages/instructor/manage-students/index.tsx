@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Breadcrumb, Button, Image, Switch, Table, Tag } from "antd";
+import { Breadcrumb, Button, Image, Switch, Table } from "antd";
 import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 
@@ -15,7 +15,7 @@ interface DataType {
   userId: string;
 }
 
-const ManageStudentInstructor = () => {
+const InstructorManageStudents: React.FC = () => {
   const [data, setData] = useState<DataType[]>([]);
   const onChange = (isActive: boolean) => {
     console.log(`switch to ${isActive}`);
@@ -145,4 +145,4 @@ const ManageStudentInstructor = () => {
   );
 };
 
-export default ManageStudentInstructor;
+export default InstructorManageStudents;

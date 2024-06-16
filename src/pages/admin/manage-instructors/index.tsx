@@ -16,7 +16,7 @@ interface DataType {
   userId: string;
 }
 
-const ManageIntructors = () => {
+const AdminManageIntructors: React.FC = () => {
   const [data, setData] = useState<DataType[]>([]);
 
   const handleDelete = async (userId: string) => {
@@ -77,7 +77,7 @@ const ManageIntructors = () => {
       key: "avatarUrl",
       render: (avatarUrl: string) => <Image src={avatarUrl} width={50} />,
     },
-  
+
     {
       title: "Status",
       key: "isActive",
@@ -103,34 +103,34 @@ const ManageIntructors = () => {
   return (
     <div>
       <div className="flex justify-between">
-      <Breadcrumb
-        className="py-2"
-        items={[
-          {
-            
-            title: <HomeOutlined />,
-          },
-          {
-            href: "/dashboard/admin",
-            title: (
-              <>
-                <UserOutlined />
-                <span>Admin</span>
-              </>
-            ),
-          },
-          {
-            title: "Manage Insntructors",
-          },
-        ]}
-      />
-      <div className="py-2">
+        <Breadcrumb
+          className="py-2"
+          items={[
+            {
+
+              title: <HomeOutlined />,
+            },
+            {
+              href: "/dashboard/admin",
+              title: (
+                <>
+                  <UserOutlined />
+                  <span>Admin</span>
+                </>
+              ),
+            },
+            {
+              title: "Manage Insntructors",
+            },
+          ]}
+        />
+        <div className="py-2">
           <Button type="primary">Add New Instructor</Button>
         </div>
-        </div>
+      </div>
       <Table columns={columns} dataSource={data} />
     </div>
   );
 };
 
-export default ManageIntructors;
+export default AdminManageIntructors;

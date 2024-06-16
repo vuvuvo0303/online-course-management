@@ -1,15 +1,15 @@
 import { StockOutlined } from "@ant-design/icons";
 import { Steps, Button, Row, Col } from "antd";
 import { useState } from "react";
-import BasicStep from "./Basic"; // Import các component cho từng bước
-import CurriculumStep from "./Curriculum";
-import MediaStep from "./Media";
-import PriceStep from "./Price";
-import PublishStep from "./Publish";
+import BasicStep from "./basic"; // Import các component cho từng bước
+import CurriculumStep from "./curriculum";
+import MediaStep from "./media";
+import PriceStep from "./price";
+import PublishStep from "./publish";
 import styles from "./newCourse.module.css"
 const { Step } = Steps;
 
-const CreateCourse: React.FC = () => {
+const InstructorCreateCourse: React.FC = () => {
     const [current, setCurrent] = useState(0);
 
     const handleStepChange = (currentStep) => {
@@ -97,4 +97,4 @@ const CreateCourse: React.FC = () => {
     );
 };
 
-export default CreateCourse;
+export default InstructorCreateCourse;

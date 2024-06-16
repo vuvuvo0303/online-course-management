@@ -6,7 +6,7 @@ import { RevenueChart } from "../chart/revenuechart";
 import top1 from "../../../assets/top1.png";
 import top2 from "../../../assets/top2.png";
 import top3 from "../../../assets/top3.png";
-const Statics = () => {
+const AdminDashboard: React.FC = () => {
   return (
     <>
       <Breadcrumb
@@ -32,42 +32,42 @@ const Statics = () => {
       />
       {" "}
       <div className="flex justify-between drop-shadow-xl gap-4">
-      <Badge.Ribbon text="Flearn" color="blue">
-      <Card title="Total courses in the system" bordered={false} style={{ width: 300 }}>
-          <div className="flex justify-center gap-2">
-            <h1>50</h1>
-            <PlaySquareOutlined style={{ fontSize: "20px", color:"red" }} />
-          </div>
-        </Card>
-    </Badge.Ribbon>
-        
-    <Badge.Ribbon text="Flearn" color="orange">
-        <Link to={"manage-students"}>
-          <Card title="Total Student in the system" bordered={false} style={{ width: 300 }}>
+        <Badge.Ribbon text="Flearn" color="blue">
+          <Card title="Total courses in the system" bordered={false} style={{ width: 300 }}>
             <div className="flex justify-center gap-2">
-              <h1>500</h1>
-              <TeamOutlined style={{ fontSize: "20px", color:"gray" }} />
+              <h1>50</h1>
+              <PlaySquareOutlined style={{ fontSize: "20px", color: "red" }} />
             </div>
           </Card>
-        </Link>
+        </Badge.Ribbon>
+
+        <Badge.Ribbon text="Flearn" color="orange">
+          <Link to={"manage-students"}>
+            <Card title="Total Student in the system" bordered={false} style={{ width: 300 }}>
+              <div className="flex justify-center gap-2">
+                <h1>500</h1>
+                <TeamOutlined style={{ fontSize: "20px", color: "gray" }} />
+              </div>
+            </Card>
+          </Link>
         </Badge.Ribbon>
 
         <Badge.Ribbon text="Flearn" color="green">
-        <Card title="Total Instructor in the system" bordered={false} style={{ width: 300 }}>
-          <div className="flex justify-center gap-2">
-            <h1>100</h1>
-            <TeamOutlined style={{ fontSize: "20px", color:"gray"  }} />
-          </div>
-        </Card>
+          <Card title="Total Instructor in the system" bordered={false} style={{ width: 300 }}>
+            <div className="flex justify-center gap-2">
+              <h1>100</h1>
+              <TeamOutlined style={{ fontSize: "20px", color: "gray" }} />
+            </div>
+          </Card>
         </Badge.Ribbon>
 
         <Badge.Ribbon text="Flearn" color="red">
-        <Card title="Total Blogs in the system" bordered={false} style={{ width: 300 }}>
-          <div className="flex justify-center gap-2">
-            <h1>100</h1>
-            <FileDoneOutlined style={{ fontSize: "20px",color:"blue"  }} />
-          </div>
-        </Card>
+          <Card title="Total Blogs in the system" bordered={false} style={{ width: 300 }}>
+            <div className="flex justify-center gap-2">
+              <h1>100</h1>
+              <FileDoneOutlined style={{ fontSize: "20px", color: "blue" }} />
+            </div>
+          </Card>
         </Badge.Ribbon>
       </div>
       <div className="mt-9 drop-shadow-xl">
@@ -188,4 +188,4 @@ const Statics = () => {
   );
 };
 
-export default Statics;
+export default AdminDashboard;

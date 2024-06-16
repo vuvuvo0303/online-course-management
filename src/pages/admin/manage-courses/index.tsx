@@ -22,7 +22,7 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const ManageCourses = () => {
+const AdminManageCourses: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
@@ -201,4 +201,4 @@ const ManageCourses = () => {
   );
 };
 
-export default ManageCourses;
+export default AdminManageCourses;

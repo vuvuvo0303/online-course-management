@@ -7,6 +7,7 @@ import { login } from "../../services/auth";
 import { removePassword } from '../../utils/validHelper';
 
 import { toast } from "react-toastify";
+import { paths } from "../../consts";
 
 type FieldType = {
   email: string;
@@ -27,23 +28,21 @@ const LoginPage: React.FC = () => {
 
       switch (role) {
         case "Student":
-          navigate("/");
+          navigate(paths.HOME);
           break;
         case "Instructor":
-          navigate("/instructor/dashboard");
+          navigate(paths.INSTRUCTOR_HOME);
           break;
         case "Admin":
-          navigate("/admin/dashboard/statics");
+          navigate(paths.ADMIN_HOME);
           break;
         default:
-          navigate("/");
+          navigate(paths.HOME);
           break;
       }
       toast.success("Login successfully");
     } else {
-      // Xử lý thông báo lỗi đăng nhập thất bại
-      console.log("Login failed");
-      toast.error("Login fail");
+      toast.error("Login failed");
     }
   };
 

@@ -1,4 +1,4 @@
-import { Breadcrumb, Rate, Space, Table } from "antd";
+import { Breadcrumb, Rate, Table } from "antd";
 import type { TableProps } from "antd";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ type DataType = {
   rating: number;
   tags: string[];
 };
-const ManageAdminFeedbacks = () => {
+const AdminManageFeedbacks: React.FC = () => {
   const [dataSource, setDataSource] = useState([]);
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
@@ -85,7 +85,7 @@ const ManageAdminFeedbacks = () => {
         className="py-2"
         items={[
           {
-            
+
             title: <HomeOutlined />,
           },
           {
@@ -107,4 +107,4 @@ const ManageAdminFeedbacks = () => {
   );
 };
 
-export default ManageAdminFeedbacks;
+export default AdminManageFeedbacks;

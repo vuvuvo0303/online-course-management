@@ -2,7 +2,7 @@ import { Rate, Progress, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import 'tailwindcss/tailwind.css'; // Make sure Tailwind CSS is configured
 
-const ReviewPage: React.FC = () => {
+const InstructorManageFeedBacks: React.FC = () => {
     const reviews = [
         {
             name: 'John Doe',
@@ -98,4 +98,4 @@ const ReviewPage: React.FC = () => {
     );
 };
 
-export default ReviewPage;
+export default InstructorManageFeedBacks;

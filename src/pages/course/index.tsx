@@ -49,11 +49,11 @@ const Course: React.FC = () => {
                             <p>Last updated 1/2024</p>
                         </div>
                         <div className="course-buttons">
-                            {/* <Link to="/cart"> */}
-                            <button className="button add-to-cart">
-                                <ShoppingCartOutlined className='mr-[0.5rem]' /> Add to Cart
-                            </button>
-                            {/* </Link> */}
+                            <Link to="/cart">
+                                <button className="button add-to-cart">
+                                    <ShoppingCartOutlined className='mr-[0.5rem]' /> Add to Cart
+                                </button>
+                            </Link>
                             <Link to="/checkout">
                                 <button className="button buy-now">Buy Now</button>
                             </Link>

@@ -5,14 +5,13 @@ import { Footer, Navbar } from './components';
 function App() {
   const location = useLocation();
 
-  const isAdminPath = location.pathname.includes('/admin') || location.pathname.includes('/dashboard');
-  const isCourseDetailPath = location.pathname.includes('/course/');
+  const isPrivatePath = location.pathname.includes('/admin') || location.pathname.includes('/instructor');
 
   return (
     <>
-      {!isAdminPath && !isCourseDetailPath && <Navbar />}
+      {!isPrivatePath && <Navbar />}
       <AppRouter />
-      {!isAdminPath && !isCourseDetailPath && <Footer />}
+      {!isPrivatePath && <Footer />}
     </>
   );
 }

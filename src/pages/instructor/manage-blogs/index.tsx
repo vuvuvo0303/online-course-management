@@ -15,7 +15,7 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const ManageBlogsInstructor = () => {
+const InstructorManageBlogs: React.FC = () => {
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -23,7 +23,7 @@ const ManageBlogsInstructor = () => {
   const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
-    const fetchBlogs = async() => {
+    const fetchBlogs = async () => {
       const response = await axios.get("https://665fbf245425580055b0b23d.mockapi.io/blogs");
       console.log(response);
       setDataSource(response.data);
@@ -138,7 +138,7 @@ const ManageBlogsInstructor = () => {
       title: "Description",
       dataIndex: "description",
       key: "description",
-      render: (description) => <span>{description.title}: {description.content}</span>, 
+      render: (description) => <span>{description.title}: {description.content}</span>,
     },
     {
       title: "View",
@@ -158,7 +158,7 @@ const ManageBlogsInstructor = () => {
         className="py-2"
         items={[
           {
-            
+
             title: <HomeOutlined />,
           },
           {
@@ -180,4 +180,4 @@ const ManageBlogsInstructor = () => {
   );
 };
 
-export default ManageBlogsInstructor;
+export default InstructorManageBlogs;

@@ -24,12 +24,12 @@ const useRoleRedirect = () => {
         break;
       case roles.ADMIN:
         if (!path.includes("/admin")) {
-          navigate("/admin/dashboard/statics");
+          navigate(paths.ADMIN_HOME);
         }
         break;
       case roles.INSTRUCTOR:
         if (!path.includes("/instructor")) {
-          navigate("/instructor/dashboard/statics");
+          navigate(paths.INSTRUCTOR_HOME);
         }
         break;
       default:

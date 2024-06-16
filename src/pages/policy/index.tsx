@@ -14,7 +14,7 @@ const Policy: React.FC = () => {
                     </p>
                     <p className='p_line_height mt-3'>
                         Thank you for joining FLearn. We at FLearn (
-                        <strong>“FLearn”</strong>
+                        <strong>“FLearn”</strong>,
                         <strong>“we”</strong>,
                         <strong>“us”</strong>,
                         ) respect your privacy and want you to understand how we collect, use, and share data about you. This Privacy Policy covers our data collection practices and describes your rights regarding your personal data.

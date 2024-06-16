@@ -1,10 +1,11 @@
-import { Button, Checkbox, Form, FormProps, Image, Input, Modal, Upload } from "antd";
+import { Button, Checkbox, Form, FormProps, Image, Input, Modal, Radio, Upload } from "antd";
 import { Link } from "react-router-dom";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import Vector from "../../assets/Vector.png";
 import Ractangle from "../../assets/Rectangle .jpg";
+import { postStudent, postInstructor } from '../../services/post';
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type FieldType = {
@@ -14,6 +15,7 @@ type FieldType = {
   password?: string;
   avatar?: string;
   policy?: string;
+  role?: string;
 };
 
 const RegisterPage: React.FC = () => {
@@ -24,17 +26,23 @@ const RegisterPage: React.FC = () => {
   const openModal = () => {
     setIsModalOpen(true);
   };
-  const handleCacncle = () => {
+  const handleCancel = () => {
     setIsModalOpen(false);
   };
 
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log("Success:", values);
+    if (values.role === 'student') {
+      postStudent(values);
+    } else if (values.role === 'instructor') {
+      postInstructor(values);
+    }
   };
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -42,6 +50,7 @@ const RegisterPage: React.FC = () => {
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = (error) => reject(error);
     });
+
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -63,21 +72,21 @@ const RegisterPage: React.FC = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
+
   return (
     <div className="flex min-h-screen relative">
       <img src={Vector} alt="" className="absolute bottom-8" />
 
       <div className="w-full md:w-1/2 flex flex-col justify-center  pt-5 bg-white rounded-l-lg">
         <div className="mr-4">
-          {" "}
           <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Register </h1>
-          <span className="flex justify-center mb-4">Learn from top experts . Sign up for FLearn now!</span>
+          <span className="flex justify-center mb-4">Learn from top experts. Sign up for FLearn now!</span>
         </div>
         <div className="mb-6">
           <div className="mt- flex justify-center ">
             <Form
               name="basic"
-              className="space-y-0 "
+              className="space-y-0"
               style={{ maxWidth: 600 }}
               initialValues={{ remember: true }}
               onFinish={onFinish}
@@ -90,7 +99,7 @@ const RegisterPage: React.FC = () => {
                 rules={[
                   { required: true, message: "Please input your email!" },
                   { type: "email", message: "Please enter the correct email format!" },
-                  { pattern: /^\S*$/, message: "Password must not contain spaces!" },
+                  { pattern: /^\S*$/, message: "Email must not contain spaces!" },
                 ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
@@ -137,7 +146,7 @@ const RegisterPage: React.FC = () => {
                 wrapperCol={{ span: 24 }}
               >
                 <Input
-                  type="Number"
+                  type="number"
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
               </Form.Item>
@@ -159,21 +168,32 @@ const RegisterPage: React.FC = () => {
                 </Upload>
               </Form.Item>
               <Form.Item<FieldType>
+                label="Role"
+                name="role"
+                rules={[{ required: true, message: "Please select your role!" }]}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+              >
+                <Radio.Group>
+                  <Radio value="student">Student</Radio>
+                  <Radio value="instructor">Instructor</Radio>
+                </Radio.Group>
+              </Form.Item>
+              <Form.Item<FieldType>
                 name="policy"
                 valuePropName="checked"
                 rules={[{ required: true, message: "Please accept Policy!" }]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
               >
-                
-                <Checkbox>Agree to Terms and Conditions</Checkbox>
-                <span onClick={openModal} className="hover:cursor-pointer font-bold hover:text-red-400 ">
+                <Checkbox className="mt-2">Agree to Terms and Conditions</Checkbox>
+                <span onClick={openModal} className="hover:cursor-pointer font-bold hover:text-red-400">
                   (See Policy)
                 </span>
-                <Modal title="Policy" open={isModalOpen} onCancel={handleCacncle} onOk={handleOk}></Modal>
+                <Modal title="Policy" open={isModalOpen} onCancel={handleCancel} onOk={handleOk}></Modal>
               </Form.Item>
               <Form.Item wrapperCol={{ span: 24 }}>
-                <Button type="primary" htmlType="submit" className="w-full shadow-xl hover:shadow-sky-600 bg-black ">
+                <Button type="primary" htmlType="submit" className="mt-2 w-full shadow-xl hover:shadow-sky-600 bg-black">
                   Create Account
                 </Button>
               </Form.Item>
@@ -209,4 +229,5 @@ const RegisterPage: React.FC = () => {
     </div>
   );
 };
+
 export default RegisterPage;

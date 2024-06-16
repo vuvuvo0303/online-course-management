@@ -3,10 +3,9 @@ import { Badge, Breadcrumb, Card, Col, Row } from "antd";
 import { Link } from "react-router-dom";
 import TopSelling from "./top3selling";
 import TopNews from "./topnew";
-import ProfileAnalytics from "./profile-overview";
 import ProfileOverview from "./profile-overview";
 
-const InstrutorDashboard = () => {
+const InstructorDashboard: React.FC = () => {
   return (
     <div>
       <Breadcrumb
@@ -115,7 +114,7 @@ const InstrutorDashboard = () => {
             </Card>
           </Col>
           <Col span={8}>
-            <Card title="Profile Overview" bordered={false}><ProfileOverview/></Card>
+            <Card title="Profile Overview" bordered={false}><ProfileOverview /></Card>
           </Col>
         </Row>
       </div>
@@ -123,4 +122,4 @@ const InstrutorDashboard = () => {
   );
 };
 
-export default InstrutorDashboard;
+export default InstructorDashboard;

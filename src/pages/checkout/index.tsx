@@ -140,7 +140,7 @@ const Checkout: React.FC = () => {
                   <strong>Date:</strong> {payment.createdDate}
                 </p>
                 <p>
-                  <strong>Total Price:</strong> ${course.price}
+                  <strong>Total Price:</strong> 0
                 </p>
               </div>
             )}
@@ -274,7 +274,7 @@ const Checkout: React.FC = () => {
                   <strong>Description:</strong> {course.description}
                 </p>
                 <p>
-                  <strong>Price: </strong> ${course.price}
+                  <strong>Price: </strong> 0
                 </p>
               </div>
             </div>

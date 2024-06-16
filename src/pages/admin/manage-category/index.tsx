@@ -10,7 +10,7 @@ interface Category {
   name: string;
 }
 
-const ManageCategory: React.FC = () => {
+const AdminManageCategories: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -143,4 +143,4 @@ const ManageCategory: React.FC = () => {
   );
 };
 
-export default ManageCategory;
+export default AdminManageCategories;

@@ -13,9 +13,10 @@ export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 export const API_BLOGS_URL = `${BASE_URL}/blogs`;
 
 
-// consts/paths.ts
-
+/* PATHS */
 export const paths = {
+
+  /* GUEST PATHS */
   HOME: "/",
   LOGIN: "/login",
   ABOUT: "/about",
@@ -28,39 +29,63 @@ export const paths = {
   BLOG_DETAIL: "/blog/:id",
   CONTACT: "/contact",
   TEACHING: "/teaching",
-  ENROLLMENT: "/enrollment",
-  CART: "/cart",
-  CREATE_COURSE: "/create-course",
-  STUDENT_PAYMENT_HISTORY: "/payment-history",
-  PAYMENT_HISTORY: "/payment-history",
   COURSE: "/course",
   SITEMAP: "/sitemap",
   NOTFOUND: "/notfound",
-  INSTRUCTOR_DASHBOARD: "/instructor/dashboard",
-  ADMIN_DASHBOARD: "/admin/dashboard",
-  MANAGE_LECTURES: "/instructor/dashboard/manage-lectures",
-  MANAGE_STUDENTS: "/admin/dashboard/manage-students",
-  MANAGE_INSTRUCTORS: "/admin/dashboard/manage-instructors",
-  MANAGE_BLOGS: "/admin/dashboard/manage-blogs",
-  MANAGE_COURSES: "/admin/dashboard/manage-courses",
-  MANAGE_FEEDBACKS: "/admin/dashboard/manage-feedbacks",
+  COURSE_DETAIL: "/course/:id",
+
+  /* STUDENT PATHS */
+  STUDENT_PROFILE: "/profile",
+  STUDENT_PAYMENT_HISTORY: "/payment-history",
+  STUDENT_ENROLLMENT: "/enrollment",
+  STUDENT_CHECKOUT: "/checkout",
+  STUDENT_CART: "/cart",
+
+
+  /* INSTRUCTORS PATHS */
+  INSTRUCTOR_DASHBOARD: "dashboard",
+  INSTRUCTOR_PROFILE: "profile",
+  INSTRUCTOR_CREATE_COURSE: "create-course",
+  INSTRUCTOR_PAYMENT_HISTORY: "payment-history",
+  INSTRUCTOR_MANAGE_FEEDBACKS: "manage-feedbacks",
+  INSTRUCTOR_MANAGE_COURSES: "manage-courses",
+
+
+  /* ADMIN PATHS */
+  ADMIN_DASHBOARD: "dashboard",
+  ADMIN_PROFILE: "profile",
+  ADMIN_CREATE_COURSE: "create-course",
+  ADMIN_MANAGE_LECTURES: "manage-lectures",
+  ADMIN_MANAGE_STUDENTS: "manage-students",
+  ADMIN_MANAGE_INSTRUCTORS: "manage-instructors",
+  ADMIN_MANAGE_CATEGORIES: "manage-categories",
+  ADMIN_MANAGE_BLOGS: "manage-blogs",
+  ADMIN_MANAGE_COURSES: "manage-courses",
+  ADMIN_MANAGE_FEEDBACKS: "manage-feedbacks",
+  ADMIN_PAYMENT_HISTORY: "payment-history",
+
+  /* SPECIAL PATHS */
+  INSTRUCTOR_HOME: "/instructor/dashboard",
+  ADMIN_HOME: "/admin/dashboard"
 };
 
 
-// consts/roles.ts
-
+/* ROLE */
 export const roles = {
   STUDENT: "Student",
   INSTRUCTOR: "Instructor",
   ADMIN: "Admin",
 };
 
-/* Navbar */
+
+/* NAV LINKs */
 export const NavLinks = [
   { href: "/", key: "Saved Courses", text: "Saved Courses" },
   { href: "/teaching", key: "Be an Instructors", text: "Be an Instructors" },
 ];
 
+
+/* CATEGORIES */
 export const categoryFilters = [
   "Development",
   "Business",
@@ -77,6 +102,8 @@ export const categoryFilters = [
   "Teaching & Academics",
 ];
 
+
+/* SUB CATEGORIES */
 export const categorySubmenu = [
   "Frontend",
   "Backend",
@@ -91,7 +118,8 @@ export const categorySubmenu = [
   "Blockchain",
   "E-commerce",
   "Chatbots"
-]
+];
+
 
 export const teacherCategories = [
   "Mr. Johnson",
@@ -109,7 +137,8 @@ export const teacherCategories = [
   "Mr. Lewis"
 ];
 
-/* Sidebar Policies */
+
+/* SIDEBAR POLICES */
 export const sidebarPolicies = [
   { id: 1, name: "Terms of Use", link: "/terms" },
   { id: 2, name: "Privacy Policy", link: "/terms/policy" },
@@ -120,7 +149,8 @@ export const sidebarPolicies = [
   { id: 7, name: "Help & Support", link: "/support" },
 ];
 
-/* Polices */
+
+/* POLICES */
 export const policies = [
   { id: 1, name: "1. What Data We Get", link: "#section1" },
   { id: 2, name: "2. How We Get Data About You", link: "#section2" },
@@ -132,7 +162,8 @@ export const policies = [
   { id: 8, name: "8. Updates & Contact Info", link: "#section8" },
 ];
 
-/* Terms */
+
+/* TERMS */
 export const terms = [
   { id: 1, name: "1. Account", link: "#section1" },
   { id: 2, name: "2. Content Subscription and Lifetime Access", link: "#section2" },
@@ -148,7 +179,8 @@ export const terms = [
   { id: 12, name: "12. How to contact us", link: "#section12" },
 ];
 
-/* faq */
+
+/* STUDENT FAQ */
 export const faq_student = [
   { id: 1, name: "Refund Status: Common Questions", link: "#section1" },
   { id: 2, name: "Payment Methods on FLearn", link: "#section2" },
@@ -161,6 +193,8 @@ export const faq_student = [
   { id: 9, name: "Troubleshooting Payment Failures", link: "#section9" },
 ];
 
+
+/* INSTRUCTOR FAQ */
 export const faq_instructor = [
   { id: 1, name: "FLearn Course Quality Checklist", link: "#section1" },
   { id: 2, name: "How to Become a Premium Instructor", link: "#section2" },
@@ -170,7 +204,8 @@ export const faq_instructor = [
   { id: 6, name: "Teaching on FLearn: Frequently Asked Questions", link: "#section6" },
 ];
 
-/* topic */
+
+/* STUDENT TOPIC SUPPORT*/
 export const topic_student = [
   { id: 1, name: "Account/Profile", description: "Manage your account settings.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJ75XEBMHTVM355A2ATG", link: "#section1" },
   { id: 2, name: "Troubleshooting", description: "Experiencing a technical issue? Check here.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FM9JPEPTW2N7HD3XSSST", link: "#section1" },
@@ -178,17 +213,19 @@ export const topic_student = [
   { id: 4, name: "Purchase/Refunds", description: "Learn about purchasing courses, how to send gifts, and refunds", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJB5Y47293NZF0220ZKY", link: "#section1" },
   { id: 5, name: "Mobile", description: "On the go? Learn about our mobile app", img: "https://support.udemy.com/hc/theming_assets/01HZP8FGTNPB2Z3MC5WWRWTSAZ", link: "#section1" },
   { id: 6, name: "Trust & Safety", description: "Trust & Safety information and reporting", img: "https://support.udemy.com/hc/theming_assets/01HZP8FMD53E72SM31SP8RT0MM", link: "#section1" },
-]
+];
 
+
+/* INSTRUCTOR TOPIC SUPPORT*/
 export const topic_instructor = [
   { id: 1, name: "Instructor Payments", description: "Understand the revenue share and how to receive payments.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FJ3P0VC64QMBMBXKSDMQ", link: "#section1" },
   { id: 2, name: "Selling & Promotion", description: "Learn about the announcement.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FKSFR8QFBH1N595WYPTM", link: "#section1" },
   { id: 3, name: "Course Building", description: "Build your course curriculum and landing page.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FDKGE7PT2EXYKDQZ8BD6", link: "#section1" },
   { id: 4, name: "Course Management", description: "Maintain your course and engage with students.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FM2TN5216VEXR1GY2RMS", link: "#section1" },
   { id: 5, name: "Trust & Safety", description: "Policy and copyright questions and guidance.", img: "https://support.udemy.com/hc/theming_assets/01HZP8FMD53E72SM31SP8RT0MM", link: "#section1" },
-]
+];
 
-/* Footer */
+/* FOOTER LINKS */
 export const footerLinks = [
   {
     links: [
@@ -198,7 +235,7 @@ export const footerLinks = [
   },
   {
     links: [
-      { name: "Teach on FLearn", url: "/instructor" },
+      { name: "Teach on FLearn", url: "/teaching" },
       { name: "Blog", url: "/blog" },
       { name: "Help and Supports", url: "/contact" },
     ],
@@ -207,7 +244,7 @@ export const footerLinks = [
   {
     links: [
       { name: "Terms", url: "/terms" },
-      { name: "Private policy", url: "/policy" },
+      { name: "Private policy", url: "/terms/policy" },
       { name: "Sitemap", url: "/sitemap" },
     ],
   },

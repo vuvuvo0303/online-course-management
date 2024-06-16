@@ -15,7 +15,7 @@ const columns: TableColumnsType<DataType> = [
   { title: "Name Course", dataIndex: "name", key: "name" },
   { title: "Price", dataIndex: "price", key: "price" },
   { title: "Catagoy", dataIndex: "catagory", key: "catagory" },
-  
+
 
 
   {
@@ -64,7 +64,7 @@ const data: DataType[] = [
   },
 ];
 
-const ManageCourse = () => {
+const InstructorManageCourses: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between">
@@ -99,7 +99,7 @@ const ManageCourse = () => {
         columns={columns}
         expandable={{
           expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
-          
+
         }}
         dataSource={data}
       />
@@ -107,4 +107,4 @@ const ManageCourse = () => {
   );
 };
 
-export default ManageCourse;
+export default InstructorManageCourses;
