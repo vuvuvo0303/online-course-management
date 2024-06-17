@@ -1,14 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Cài đặt chung */
 * {
-  font-family: "Roboto", sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
   font-family: "Roboto", sans-serif;
   margin: 0;
   padding: 0;
@@ -20,50 +17,15 @@ html {
   scroll-padding-top: 1.5rem;
 }
 
+body {
+  font-family: "Inter", sans-serif;
+}
+
 h1 {
   font-size: 2rem;
-  font-size: 2rem;
-
 }
 
-.p_line_height {
-  line-height: 1.8rem;
-  letter-spacing: 0.005rem;
-}
-
-.li_line_height {
-  line-height: 2rem;
-}
-
-.p_line_height {
-  line-height: 1.8rem;
-  letter-spacing: 0.005rem;
-}
-
-.li_line_height {
-  line-height: 2rem;
-  font-size: 2rem;
-}
-
-body {
-  font-family: Inter;
-
-}
-
-::-webkit-scrollbar {
-  width: 5px;
-  height: 4px;
-  width: 5px;
-  height: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 12px;
-  background: #888;
-  border-radius: 12px;
-}
-
+/* Định dạng chữ */
 .main_h1 {
   font-weight: 700;
   font-size: 2.5rem;
@@ -91,18 +53,70 @@ body {
   font-size: 1.3rem;
 }
 
+.ud_h {
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-size: 1.9rem;
+  max-width: 36em;
+  color: #3e4143;
+  margin: 40px auto;
+}
+
+.ud_h4 {
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-size: 1.4rem;
+  max-width: 36em;
+  text-align: center;
+}
+
+.faq_h5 {
+  color: #3e4143;
+  margin: 0 0 0.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-size: 1.6rem;
+}
+
+/* Dòng kẻ và viền */
+.vertical_line {
+  margin: 0 24px;
+  width: 1px;
+  background-color: #bbb;
+}
+
+.custom_hr {
+  border: 0;
+  height: 1px;
+  background-color: #bbb;
+  margin: 1.5rem 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 12px;
+}
+
+/* Các lớp tùy chỉnh */
 .custom-btn {
   @apply flex flex-row relative justify-center items-center py-3 px-6 outline-none;
 }
 
 .flexCenter {
   @apply flex justify-center items-center;
-
 }
 
 .flexBetween {
   @apply flex justify-between items-center;
-
 }
 
 .flexEvenly {
@@ -111,36 +125,31 @@ body {
 
 .flexStart {
   @apply flex items-center justify-start;
-
 }
 
 .text-small {
   @apply text-sm font-medium;
-
 }
 
 .paddings {
   @apply lg:px-20 py-6 px-5;
-
 }
 
 /* Navbar */
 .navbar {
   @apply py-5 px-8 border-b border-nav-border gap-4;
-
 }
 
 /* Footer */
 .footer {
   @apply flex-col paddings w-full gap-20 bg-light-white;
-
 }
 
-.footer>.flex:first-child {
+.footer > .flex:first-child {
   @apply flex-row justify-between;
 }
 
-.footer>.flex:first-child>.flex {
+.footer > .flex:first-child > .flex {
   @apply gap-8;
 }
 
@@ -148,12 +157,11 @@ body {
   @apply flex justify-center items-center w-full text-sm font-normal;
 }
 
-
 .footer_column {
   @apply flex-1 flex flex-col gap-3 text-sm min-w-max;
-
 }
 
+/* Instructors */
 .instructor_title {
   font-size: 3rem;
   background: linear-gradient(to bottom, rgb(9, 124, 224), #bbb);
@@ -178,54 +186,14 @@ body {
   font-size: 2.3rem;
 }
 
-
-.vertical_line {
-  margin: 0 24px;
-  width: 1px;
-  background-color: #bbb;
-}
-
-.custom_hr {
-  border: 0;
-  height: 1px;
-  background-color: #bbb;
-  margin: 1.5rem 0;
-}
-
-.ud_h {
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0;
-  font-size: 1.9rem;
-  max-width: 36em;
-  color: #3e4143;
-  margin: 40px auto;
-}
-
-.ud_h4 {
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0;
-  font-size: 1.4rem;
-  max-width: 36em;
-  text-align: center;
-}
-
+/* FAQ */
 .faq_container {
   display: flex;
   justify-content: center;
   margin: 2.4rem 0 1.2rem;
 }
 
-.faq_h5 {
-  color: #3e4143;
-  margin: 0 0 .8rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0;
-  font-size: 1.6rem;
-}
-
+/* Media queries */
 @media (max-width: 1024px) {
   .instructor_title {
     font-size: 1.5rem;
@@ -235,7 +203,7 @@ body {
     font-size: 0.875rem;
   }
 
-  .flexEvenly>div {
+  .flexEvenly > div {
     max-width: 100%;
     padding: 1rem;
   }
@@ -255,7 +223,6 @@ body {
   .ud_h {
     font-size: 1.5rem;
   }
-
 }
 
 /*Login*/

@@ -33,6 +33,10 @@ export default {
       fontSize: {
         custom: "16px",
       },
+      fontFamily: {
+        playfair: ["Playfair Display", "serif"],
+        raleway: ["Raleway", "sans-serif"],
+      },
     },
   },
 

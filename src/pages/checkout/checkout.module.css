@@ -1,63 +1,96 @@
-/* checkout.module.css */
 .checkoutContainer {
-  max-width: 1000px;
+  width: 100%;
+  height: 100%;
   margin: 0 auto;
-  padding: 20px;
+  display: grid;
+  grid-template-columns: 6fr 4fr;
 }
 
 .detailsContainer {
-  background-color: #f7f9fa;
-  padding: 10px;
+  padding: 20px;
   border-radius: 8px;
+  margin-left: 50px;
 }
 
 .title {
-  font-size: 30px;
+  font-size: 35px;
   text-align: left;
-  color: #b4daa7;
+  color: #2d3a38;
   letter-spacing: 1px;
   font-weight: bold;
-  margin-left: 10px;
 }
 
 .sectionTitle {
   font-size: 20px;
   margin-bottom: 10px;
   margin-top: 20px;
-  font-weight: bold;
-  color: #4a5a55;
+  margin-left: 10px;
+  color: #2d3a38;
+}
+
+.description {
+  color: #2d3a38;
+  margin-left: 20px;
 }
 
 .paymentDetailsContent {
   max-width: 800px;
-  margin-left: 40px;
+  margin: 0 auto;
 }
 
-.courseImage {
-  text-align: center;
-  margin-bottom: 20px;
-  max-width: 200px;
-  height: auto;
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 10px;
+}
+
+.detailItem {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.detailLabel {
+  color: #2d3a38;
+  margin-left: 10px;
+}
+
+.detailValue {
+  margin-top: 5px;
+  margin-left: 10px;
+}
+
+.paymentMethod {
+  margin-top: 20px;
+}
+
+.radioGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-left: 20px;
 }
 
 .paymentForm {
   margin-top: 20px;
+  margin-left: 20px;
 }
 
 .payButton {
-  width: 20%;
-  margin: 0 auto;
+  width: 30%;
   display: block;
-  margin-top: 5px;
-  margin-bottom: 50px;
+  margin-bottom: 10px;
 }
 
 .confirm {
-  display: flex;
+  display: grid;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+  text-align: left;
   margin-top: 50px;
+  margin-left: 80px;
 }
 
 .terms {
@@ -65,10 +98,32 @@
   color: rgb(131, 127, 127);
 }
 
-.paymentDetails {
-  display: flex;
+.courseImage img {
+  max-width: 100%;
+  height: 100px;
+  border-radius: 8px;
+  margin-right: 15px;
+  margin-left: 20px;
 }
 
 .courseDetails {
-  margin-left: 200px;
+  display: flex;
+  margin-bottom: 50px;
+}
+
+.summary {
+  background-color: #f7f9fa;
+}
+
+.summaryTitle {
+  font-size: 20px;
+  margin-bottom: 10px;
+  margin-top: 90px;
+  margin-left: 50px;
+  color: #2d3a38;
+}
+
+.summaryDescription {
+  color: #2d3a38;
+  margin-left: 80px;
 }
