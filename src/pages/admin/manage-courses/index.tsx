@@ -7,38 +7,42 @@ import Highlighter from "react-highlight-words";
 
 import { format } from "date-fns";
 import { fetchCourses } from "../../../services/get";
+import { Course } from "../../../models";
 
-interface DataType {
-  key: string;
-  title: string;
-  createdDate: string;
-  updatedDate: string;
-  category: string;
-  duration: string;
-  price: string;
-  level: number;
-  courseImgUrl: string;
-}
 
-type DataIndex = keyof DataType;
+type DataIndex = keyof Course;
 
 const AdminManageCourses: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
-  const [dataSource, setDataSource] = useState([]);
+  const [data, setData] = useState<Course[]>([]);
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
   };
+
+  const sortCourseByCreatedDate = (courses: Course[]) => {
+    return courses.sort((a, b) => {
+      const dateA = new Date(a.createdDate).getTime();
+      const dateB = new Date(b.createdDate).getTime();
+      return dateB - dateA;
+    })
+  }
   useEffect(() => {
-    const fetchcourses = async () => {
-      const response = await fetchCourses();
-      setDataSource(response);
-      console.log(response);
+    const fetchData = async () => {
+      try {
+        const courses = await fetchCourses();
+        const sortedCourses = sortCourseByCreatedDate(courses);
+        setData(sortedCourses);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
-    fetchcourses();
+    fetchData();
   }, []);
+
+
 
   const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
     confirm();
@@ -51,7 +55,7 @@ const AdminManageCourses: React.FC = () => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<DataType> => ({
+  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Course> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
@@ -80,7 +84,7 @@ const AdminManageCourses: React.FC = () => {
             size="small"
             onClick={() => {
               confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
+setSearchText((selectedKeys as string[])[0]);
               setSearchedColumn(dataIndex);
             }}
           >
@@ -122,7 +126,7 @@ const AdminManageCourses: React.FC = () => {
       ),
   });
 
-  const columns: TableColumnsType<DataType> = [
+  const columns: TableColumnsType<Course> = [
     {
       title: "Title",
       dataIndex: "title",
@@ -193,10 +197,10 @@ const AdminManageCourses: React.FC = () => {
           ]}
         />
         <div className="py-2">
-          <Button type="primary">Add New Students</Button>
+          <Button type="primary">Add New Course</Button>
         </div>
       </div>
-      {<Table columns={columns} dataSource={dataSource} />}
+      {<Table columns={columns} dataSource={data} />}
     </div>
   );
 };

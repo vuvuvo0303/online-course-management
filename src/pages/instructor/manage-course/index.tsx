@@ -21,15 +21,16 @@ const columns: TableColumnsType<DataType> = [
   {
     title: "Action",
     key: "userId",
-    render: (userId: string) => (
+    render: () => (
       <div>
         <EditOutlined className="hover:cursor-pointer text-blue-400 hover:opacity-60" style={{ fontSize: "20px" }} />
         <DeleteOutlined
-          className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60 "
+          className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
           style={{ fontSize: "20px" }}
         />
       </div>
     ),
+    
   },
 ];
 
@@ -37,32 +38,13 @@ const data: DataType[] = [
   {
     key: 1,
     name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
+    price: 32,
+    catagory: "New York No. 1 Lake Park",
     description: "My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.",
   },
-  {
-    key: 2,
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    description: "My name is Jim Green, I am 42 years old, living in London No. 1 Lake Park.",
-  },
-  {
-    key: 3,
-    name: "Not Expandable",
-    age: 29,
-    address: "Jiangsu No. 1 Lake Park",
-    description: "This not expandable",
-  },
-  {
-    key: 4,
-    name: "Joe Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-    description: "My name is Joe Black, I am 32 years old, living in Sydney No. 1 Lake Park.",
-  },
+  // Add other data objects similarly
 ];
+
 
 const InstructorManageCourses: React.FC = () => {
   return (

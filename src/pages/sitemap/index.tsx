@@ -1,12 +1,11 @@
 import { categoryFilters, categorySubmenu } from '../../consts';
 import styles from './sitemap.module.css';
 
-
 const columns = 3;
 const categoriesPerColumn = Math.ceil(categoryFilters.length / columns);
 
 const renderCategories = () => {
-    const columnsArray = Array.from({ length: columns }, () => []);
+    const columnsArray: string[][] = Array.from({ length: columns }, () => []);
 
     categoryFilters.forEach((category, index) => {
         const columnIndex = Math.floor(index / categoriesPerColumn);

@@ -86,7 +86,7 @@ const Checkout: React.FC = () => {
     }
     form
       .validateFields()
-      .then(async (values) => {
+      .then(async () => {
         setLoading(true);
         try {
           await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -114,195 +114,226 @@ const Checkout: React.FC = () => {
   return (
     <div className={styles.checkoutContainer}>
       <div className={styles.detailsContainer}>
-        <h1 className={styles.title}>
-          <strong>Checkout</strong>
-        </h1>
+        <h1 className={`${styles.title} font-playfair`}>Checkout</h1>
         <div className={styles.paymentDetails}>
           <div className={styles.paymentDetailsContent}>
+            <h2 className={`${styles.sectionTitle}`}>
+              <strong>Billing Details</strong>
+            </h2>
             <div className={styles.description}>
+              <div className={styles.detailsGrid}>
+                <div className={styles.detailItem}>
+                  <p className={styles.detailLabel}>
+                    <strong>Student Name:</strong>
+                  </p>
+                  <p className={styles.detailValue}>{user && user.fullName}</p>
+                </div>
+                <div className={styles.detailItem}>
+                  <p className={styles.detailLabel}>
+                    <strong>Email:</strong>
+                  </p>
+                  <p className={styles.detailValue}>{user && user.email}</p>
+                </div>
+                {payment && (
+                  <>
+                    <div className={styles.detailItem}>
+                      <p className={styles.detailLabel}>
+                        <strong>Date:</strong>
+                      </p>
+                      <p className={styles.detailValue}>
+                        {payment.createdDate}
+                      </p>
+                    </div>
+                    <div className={styles.detailItem}>
+                      <p className={styles.detailLabel}>
+                        <strong>Total Price:</strong>
+                      </p>
+                      <p className={styles.detailValue}>0</p>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className={styles.paymentMethod}>
               <h2 className={styles.sectionTitle}>
-                <strong>Billing Details</strong>
+                <strong>Payment Method</strong>
               </h2>
-              {user && (
-                <p>
-                  <strong>Student Name:</strong> {user.fullName}
-                </p>
-              )}
-              {user && (
-                <p>
-                  <strong>Email:</strong> {user.email}
-                </p>
+              <Radio.Group
+                options={paymentMethods}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                value={paymentMethod}
+                className={styles.radioGroup}
+              />
+              {paymentMethod && (
+                <Form
+                  form={form}
+                  layout="vertical"
+                  className={styles.paymentForm}
+                >
+                  {paymentMethod === "credit_card" && (
+                    <>
+                      <Form.Item
+                        name="cardNumber"
+                        label="Card Number"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your card number!",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="1234 5678 9012 3456" />
+                      </Form.Item>
+                      <Form.Item
+                        name="cardExpiry"
+                        label="Expiry Date"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your card expiry date!",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="MM/YY" />
+                      </Form.Item>
+                      <Form.Item
+                        name="cardCVC"
+                        label="CVC"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your card CVC!",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="123" />
+                      </Form.Item>
+                    </>
+                  )}
+                  {paymentMethod === "paypal" && (
+                    <Form.Item
+                      name="paypalEmail"
+                      label="PayPal Email"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your PayPal email!",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="example@paypal.com" />
+                    </Form.Item>
+                  )}
+                  {paymentMethod === "bank_transfer" && (
+                    <>
+                      <Form.Item
+                        name="bankName"
+                        label="Bank Name"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your bank name!",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="Bank Name" />
+                      </Form.Item>
+                      <Form.Item
+                        name="accountNumber"
+                        label="Account Number"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your account number!",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="1234567890" />
+                      </Form.Item>
+                      <Form.Item
+                        name="routingNumber"
+                        label="Routing Number"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your routing number!",
+                          },
+                        ]}
+                      >
+                        <Input placeholder="123456789" />
+                      </Form.Item>
+                    </>
+                  )}
+                </Form>
               )}
             </div>
-            {payment && (
-              <div className={styles.description}>
-                <p>
-                  <strong>Date:</strong> {payment.createdDate}
-                </p>
-                <p>
-                  <strong>Total Price:</strong> 0
-                </p>
+            {course && (
+              <div>
+                <h2 className={styles.sectionTitle}>
+                  <strong>Order Details</strong>
+                </h2>
+                <div className={styles.courseDetails}>
+                  <div className={styles.courseImage}>
+                    <img src={courseImage} alt={course.title} />
+                  </div>
+                  <div className={styles.description}>
+                    <p>
+                      <strong>Course Name:</strong> {course.title}
+                    </p>
+                    <p>
+                      <strong>Description:</strong> {course.description}
+                    </p>
+                    <p>
+                      <strong>Price:</strong> 0
+                    </p>
+                  </div>
+                </div>
               </div>
-            )}
-
-            <h2 className={styles.sectionTitle}>
-              <strong>Payment Method</strong>
-            </h2>
-            <Radio.Group
-              options={paymentMethods}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              value={paymentMethod}
-              className={styles.radioGroup}
-            />
-            {paymentMethod && (
-              <Form
-                form={form}
-                layout="vertical"
-                className={styles.paymentForm}
-              >
-                {paymentMethod === "credit_card" && (
-                  <>
-                    <Form.Item
-                      name="cardNumber"
-                      label="Card Number"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your card number!",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="1234 5678 9012 3456" />
-                    </Form.Item>
-                    <Form.Item
-                      name="cardExpiry"
-                      label="Expiry Date"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your card expiry date!",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="MM/YY" />
-                    </Form.Item>
-                    <Form.Item
-                      name="cardCVC"
-                      label="CVC"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your card CVC!",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="123" />
-                    </Form.Item>
-                  </>
-                )}
-                {paymentMethod === "paypal" && (
-                  <Form.Item
-                    name="paypalEmail"
-                    label="PayPal Email"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input your PayPal email!",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="example@paypal.com" />
-                  </Form.Item>
-                )}
-                {paymentMethod === "bank_transfer" && (
-                  <>
-                    <Form.Item
-                      name="bankName"
-                      label="Bank Name"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your bank name!",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="Bank Name" />
-                    </Form.Item>
-                    <Form.Item
-                      name="accountNumber"
-                      label="Account Number"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your account number!",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="1234567890" />
-                    </Form.Item>
-                    <Form.Item
-                      name="routingNumber"
-                      label="Routing Number"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your routing number!",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="123456789" />
-                    </Form.Item>
-                  </>
-                )}
-              </Form>
             )}
           </div>
-
-          {course && (
-            <div className={styles.courseDetails}>
-              <h2 className={styles.sectionTitle}>
-                <strong>Order Details</strong>
-              </h2>
-              <div className={styles.courseImage}>
-                <img src={courseImage} alt={course.title} />
-              </div>
-              <div className={styles.description}>
-                <p>
-                  <strong>Course Name:</strong> {course.title}
-                </p>
-                <p>
-                  <strong>Description:</strong> {course.description}
-                </p>
-                <p>
-                  <strong>Price: </strong> 0
-                </p>
-              </div>
-            </div>
-          )}
         </div>
       </div>
-      <div className={styles.confirm}>
-        <p className={styles.terms}>
-          By completing your purchase you agree to these{" "}
-          <a
-            href="/terms"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 underline"
+      <div className={styles.summary}>
+        <h2 className={styles.summaryTitle}>
+          <strong>Summary</strong>
+        </h2>
+        <div className={styles.summaryDescription}>
+          <p>
+            <strong>Original Price:</strong> 0
+          </p>
+          <p>
+            <strong>Discount:</strong> 0
+          </p>
+          <hr style={{ width: "250px" }} />
+          <p>
+            <strong>Total:</strong> 0
+          </p>
+        </div>
+        <div className={styles.confirm}>
+          <p className={styles.terms}>
+            By completing your purchase you agree to these{" "}
+            <span
+              className="text-blue-600 underline"
+              style={{ cursor: "pointer" }}
+              onClick={() =>
+                window.open("/terms", "_blank", "noopener,noreferrer")
+              }
+            >
+              Terms of Service
+            </span>
+            .
+          </p>
+
+          <Button
+            type="primary"
+            className={styles.payButton}
+            onClick={handlePayment}
+            loading={loading}
+            disabled={loading}
           >
-            Terms of Service
-          </a>
-          .
-        </p>
-        <Button
-          type="primary"
-          className={styles.payButton}
-          onClick={handlePayment}
-          loading={loading}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Complete Checkout"}
-        </Button>
+            {loading ? "Processing..." : "Complete Checkout"}
+          </Button>
+        </div>{" "}
       </div>
     </div>
   );

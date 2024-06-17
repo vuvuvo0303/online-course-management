@@ -89,7 +89,7 @@ const InstructorManageStudents: React.FC = () => {
       dataIndex: "isActive",
       width: "10%",
 
-      render: (isActive: boolean) => (
+      render: () => (
         <>
           <Switch defaultChecked onChange={onChange} />
         </>
@@ -99,11 +99,12 @@ const InstructorManageStudents: React.FC = () => {
     {
       title: "Action",
       key: "userId",
-      render: (userId: string) => (
+      render: (record: DataType) => (
         <div>
           <EditOutlined className="hover:cursor-pointer text-blue-400 hover:opacity-60" style={{ fontSize: "20px" }} />
           <DeleteOutlined
-            className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60 "
+            onClick={() => handleDelete(record.userId)}
+            className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
             style={{ fontSize: "20px" }}
           />
         </div>

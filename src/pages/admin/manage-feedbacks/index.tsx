@@ -4,29 +4,37 @@ import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { fetchReviews } from "../../../services/get";
 import { DeleteOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { Review } from "../../../models";
 
-type DataType = {
-  key: string;
-  name: string;
-  message: number;
-  rating: number;
-  tags: string[];
-};
 const AdminManageFeedbacks: React.FC = () => {
-  const [dataSource, setDataSource] = useState([]);
+  const [data, setData] = useState<Review[]>([]);
+
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
   };
+
+  const sortFeedbacksByCreatedDate = (feedbacks: Review[]) => {
+    return feedbacks.sort((a, b) => {
+      const dateA = new Date(a.createdDate).getTime();
+      const dateB = new Date(b.createdDate).getTime();
+      return dateB - dateA;
+    })
+  }
+
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetchReviews();
-      setDataSource(response);
-      console.log(response);
+      try {
+        const students = await fetchReviews();
+        const sortedStudents = sortFeedbacksByCreatedDate(students);
+        setData(sortedStudents);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
     };
 
     fetchData();
   }, []);
-  const columns: TableProps<DataType>["columns"] = [
+  const columns: TableProps<Review>["columns"] = [
     {
       title: "User Name",
       dataIndex: "name",
@@ -36,14 +44,13 @@ const AdminManageFeedbacks: React.FC = () => {
     {
       title: "Course Name",
       dataIndex: "title",
-      key: "messtitleage",
+      key: "title",
     },
     {
       title: "Feedback",
       dataIndex: "message",
       key: "message",
       width: "30%",
-
     },
     {
       title: "Created Date",
@@ -56,7 +63,6 @@ const AdminManageFeedbacks: React.FC = () => {
       dataIndex: "updatedDate",
       render: (updatedDate: string) => formatDate(updatedDate),
       width: "10%",
-
     },
     {
       title: "Rating",
@@ -64,7 +70,6 @@ const AdminManageFeedbacks: React.FC = () => {
       key: "rating",
       render: (rating: number) => <Rate allowHalf defaultValue={rating} />,
     },
-
     {
       title: "Action",
       key: "action",
@@ -85,7 +90,6 @@ const AdminManageFeedbacks: React.FC = () => {
         className="py-2"
         items={[
           {
-
             title: <HomeOutlined />,
           },
           {
@@ -102,7 +106,7 @@ const AdminManageFeedbacks: React.FC = () => {
           },
         ]}
       />
-      <Table columns={columns} dataSource={dataSource} />;
+      <Table columns={columns} dataSource={data} />;
     </div>
   );
 };

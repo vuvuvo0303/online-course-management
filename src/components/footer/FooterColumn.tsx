@@ -1,3 +1,5 @@
+import React from 'react';
+
 type FooterLink = {
   name: string;
   url: string;
