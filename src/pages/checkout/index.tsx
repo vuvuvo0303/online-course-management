@@ -86,7 +86,7 @@ const Checkout: React.FC = () => {
     }
     form
       .validateFields()
-      .then(async (values) => {
+      .then(async () => {
         setLoading(true);
         try {
           await new Promise((resolve) => setTimeout(resolve, 2000));

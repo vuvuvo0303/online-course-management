@@ -5,18 +5,24 @@ import { useEffect, useState } from "react";
 import { fetchReviews } from "../../../services/get";
 import { DeleteOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 
-type DataType = {
+type Review = {
   key: string;
   name: string;
-  message: number;
+  title: string;
+  message: string;
+  createdDate: string;
+  updatedDate: string;
   rating: number;
   tags: string[];
 };
+
 const AdminManageFeedbacks: React.FC = () => {
-  const [dataSource, setDataSource] = useState([]);
+  const [dataSource, setDataSource] = useState<Review[]>([]);
+
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
   };
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetchReviews();
@@ -26,7 +32,8 @@ const AdminManageFeedbacks: React.FC = () => {
 
     fetchData();
   }, []);
-  const columns: TableProps<DataType>["columns"] = [
+
+  const columns: TableProps<Review>["columns"] = [
     {
       title: "User Name",
       dataIndex: "name",
@@ -36,14 +43,13 @@ const AdminManageFeedbacks: React.FC = () => {
     {
       title: "Course Name",
       dataIndex: "title",
-      key: "messtitleage",
+      key: "title",
     },
     {
       title: "Feedback",
       dataIndex: "message",
       key: "message",
       width: "30%",
-
     },
     {
       title: "Created Date",
@@ -56,7 +62,6 @@ const AdminManageFeedbacks: React.FC = () => {
       dataIndex: "updatedDate",
       render: (updatedDate: string) => formatDate(updatedDate),
       width: "10%",
-
     },
     {
       title: "Rating",
@@ -64,7 +69,6 @@ const AdminManageFeedbacks: React.FC = () => {
       key: "rating",
       render: (rating: number) => <Rate allowHalf defaultValue={rating} />,
     },
-
     {
       title: "Action",
       key: "action",
@@ -85,7 +89,6 @@ const AdminManageFeedbacks: React.FC = () => {
         className="py-2"
         items={[
           {
-
             title: <HomeOutlined />,
           },
           {
@@ -102,7 +105,7 @@ const AdminManageFeedbacks: React.FC = () => {
           },
         ]}
       />
-      <Table columns={columns} dataSource={dataSource} />;
+      <Table columns={columns} dataSource={dataSource} />
     </div>
   );
 };

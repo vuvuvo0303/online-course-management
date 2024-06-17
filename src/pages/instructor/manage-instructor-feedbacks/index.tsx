@@ -1,4 +1,4 @@
-import { Breadcrumb, Rate, Space, Table } from "antd";
+import { Breadcrumb, Rate, Table } from "antd";
 import type { TableProps } from "antd";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
@@ -66,7 +66,7 @@ const ManageInstructorFeedbacks = () => {
     {
       title: "Action",
       key: "action",
-      render: (_, record) => (
+      render: () => (
         <div>
           <DeleteOutlined
             className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60 "

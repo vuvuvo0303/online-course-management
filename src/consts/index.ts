@@ -228,20 +228,22 @@ export const topic_instructor = [
 /* FOOTER LINKS */
 export const footerLinks = [
   {
+    title: "Company",
     links: [
       { name: "About us", url: "/about" },
       { name: "Contact us", url: "/contact" },
     ],
   },
   {
+    title: "Community",
     links: [
       { name: "Teach on FLearn", url: "/teaching" },
       { name: "Blog", url: "/blog" },
       { name: "Help and Supports", url: "/contact" },
     ],
   },
-
   {
+    title: "Legal",
     links: [
       { name: "Terms", url: "/terms" },
       { name: "Private policy", url: "/terms/policy" },

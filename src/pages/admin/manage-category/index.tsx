@@ -93,7 +93,7 @@ const AdminManageCategories: React.FC = () => {
           title="Category Name"
           dataIndex="name"
           key="name"
-          render={(text, record: Category) => (
+          render={( record: Category) => (
             <Link
               to={`/courses/${record.name.toLowerCase().replace(/\s+/g, "-")}`}
             >
@@ -106,7 +106,7 @@ const AdminManageCategories: React.FC = () => {
           title="Action"
           key="action"
           className={styles["table-action"]}
-          render={(text, record: Category) => (
+          render={( record: Category) => (
             <Space size="middle">
               <Button
                 type="link"

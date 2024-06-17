@@ -4,11 +4,11 @@ import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import { Breadcrumb, Button, Image, Input, Space, Table } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
-
 import { format } from "date-fns";
 import { fetchCourses } from "../../../services/get";
 
-interface DataType {
+// Định nghĩa kiểu dữ liệu cho bảng
+type DataType = {
   key: string;
   title: string;
   createdDate: string;
@@ -18,7 +18,11 @@ interface DataType {
   price: string;
   level: number;
   courseImgUrl: string;
-}
+  description: string;
+};
+
+// Định nghĩa kiểu dữ liệu cho khóa học nhận từ API
+type Course = Omit<DataType, 'key' | 'price'> & { id: string; price: number; level: number };
 
 type DataIndex = keyof DataType;
 
@@ -26,18 +30,29 @@ const AdminManageCourses: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
-  const [dataSource, setDataSource] = useState([]);
+  const [dataSource, setDataSource] = useState<DataType[]>([]);
+
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
   };
+
   useEffect(() => {
-    const fetchcourses = async () => {
-      const response = await fetchCourses();
-      setDataSource(response);
-      console.log(response);
+    const fetchCoursesData = async () => {
+      try {
+        const response: Course[] = await fetchCourses();
+        const dataWithKeys = response.map((course: Course, index: number) => ({
+          ...course,
+          key: course.id || index.toString(),
+          price: course.price.toString(), // Chuyển đổi price từ number sang string
+        }));
+        setDataSource(dataWithKeys);
+        console.log(dataWithKeys);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
     };
 
-    fetchcourses();
+    fetchCoursesData();
   }, []);
 
   const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
@@ -148,11 +163,13 @@ const AdminManageCourses: React.FC = () => {
     {
       title: "Created Date",
       dataIndex: "createdDate",
+      key: "createdDate",
       render: (createdDate: string) => formatDate(createdDate),
     },
     {
       title: "Updated Date",
       dataIndex: "updatedDate",
+      key: "updatedDate",
       render: (updatedDate: string) => formatDate(updatedDate),
     },
     {
@@ -168,10 +185,10 @@ const AdminManageCourses: React.FC = () => {
       render: (courseImgUrl: string) => <Image src={courseImgUrl} width={100} />,
     },
   ];
+
   return (
     <div>
       <div className="flex justify-between">
-        {" "}
         <Breadcrumb
           className="py-2"
           items={[
@@ -196,7 +213,7 @@ const AdminManageCourses: React.FC = () => {
           <Button type="primary">Add New Students</Button>
         </div>
       </div>
-      {<Table columns={columns} dataSource={dataSource} />}
+      <Table columns={columns} dataSource={dataSource} />
     </div>
   );
 };
