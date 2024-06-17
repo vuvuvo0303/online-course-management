@@ -4,35 +4,36 @@ import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { fetchReviews } from "../../../services/get";
 import { DeleteOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
-
-type Review = {
-  key: string;
-  name: string;
-  title: string;
-  message: string;
-  createdDate: string;
-  updatedDate: string;
-  rating: number;
-  tags: string[];
-};
+import { Review } from "../../../models";
 
 const AdminManageFeedbacks: React.FC = () => {
-  const [dataSource, setDataSource] = useState<Review[]>([]);
+  const [data, setData] = useState<Review[]>([]);
 
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
   };
 
+  const sortFeedbacksByCreatedDate = (feedbacks: Review[]) => {
+    return feedbacks.sort((a, b) => {
+      const dateA = new Date(a.createdDate).getTime();
+      const dateB = new Date(b.createdDate).getTime();
+      return dateB - dateA;
+    })
+  }
+
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetchReviews();
-      setDataSource(response);
-      console.log(response);
+      try {
+        const students = await fetchReviews();
+        const sortedStudents = sortFeedbacksByCreatedDate(students);
+        setData(sortedStudents);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
     };
 
     fetchData();
   }, []);
-
   const columns: TableProps<Review>["columns"] = [
     {
       title: "User Name",
@@ -105,7 +106,7 @@ const AdminManageFeedbacks: React.FC = () => {
           },
         ]}
       />
-      <Table columns={columns} dataSource={dataSource} />
+      <Table columns={columns} dataSource={data} />;
     </div>
   );
 };
