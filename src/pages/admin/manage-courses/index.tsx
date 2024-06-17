@@ -4,10 +4,10 @@ import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import { Breadcrumb, Button, Image, Input, Space, Table } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
-
 import { format } from "date-fns";
 import { fetchCourses } from "../../../services/get";
 
+// Định nghĩa kiểu dữ liệu cho bảng
 type DataType = {
   key: string; 
   title: string;
@@ -21,6 +21,8 @@ type DataType = {
   description: string;
 }
 
+// Định nghĩa kiểu dữ liệu cho khóa học nhận từ API
+type Course = Omit<DataType, 'key' | 'price'> & { id: string; price: number };
 type DataIndex = keyof DataType;
 
 const AdminManageCourses: React.FC = () => {
@@ -36,9 +38,14 @@ const AdminManageCourses: React.FC = () => {
   useEffect(() => {
     const fetchCoursesData = async () => {
       try {
-        const response = await fetchCourses();
-        setDataSource(response);
-        console.log(response);
+        const response: Course[] = await fetchCourses();
+        const dataWithKeys = response.map((course: Course, index: number) => ({
+          ...course,
+          key: course.id || index.toString(),
+          price: course.price.toString(), // Chuyển đổi price từ number sang string
+        }));
+        setDataSource(dataWithKeys);
+        console.log(dataWithKeys);
       } catch (error) {
         console.error("Error fetching courses:", error);
       }
@@ -181,10 +188,10 @@ const AdminManageCourses: React.FC = () => {
       render: (courseImgUrl: string) => <Image src={courseImgUrl} width={100} />,
     },
   ];
+
   return (
     <div>
       <div className="flex justify-between">
-        {" "}
         <Breadcrumb
           className="py-2"
           items={[
@@ -209,7 +216,7 @@ const AdminManageCourses: React.FC = () => {
           <Button type="primary">Add New Students</Button>
         </div>
       </div>
-      {<Table columns={columns} dataSource={dataSource} />}
+      <Table columns={columns} dataSource={dataSource} />
     </div>
   );
 };
