@@ -9,7 +9,7 @@ import { fetchCourses } from "../../../services/get";
 
 // Định nghĩa kiểu dữ liệu cho bảng
 type DataType = {
-  key: string; 
+  key: string;
   title: string;
   createdDate: string;
   updatedDate: string;
@@ -19,10 +19,11 @@ type DataType = {
   level: number;
   courseImgUrl: string;
   description: string;
-}
+};
 
 // Định nghĩa kiểu dữ liệu cho khóa học nhận từ API
-type Course = Omit<DataType, 'key' | 'price'> & { id: string; price: number };
+type Course = Omit<DataType, 'key' | 'price'> & { id: string; price: number; level: number };
+
 type DataIndex = keyof DataType;
 
 const AdminManageCourses: React.FC = () => {
@@ -54,11 +55,7 @@ const AdminManageCourses: React.FC = () => {
     fetchCoursesData();
   }, []);
 
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: FilterDropdownProps["confirm"],
-    dataIndex: DataIndex
-  ) => {
+  const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
