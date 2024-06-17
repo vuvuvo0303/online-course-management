@@ -5,7 +5,7 @@ import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import Vector from "../../assets/Vector.png";
 import Ractangle from "../../assets/Rectangle .jpg";
-import { postStudent, postInstructor } from '../../services/post';
+// import { postStudent, postInstructor } from '../../services/post';
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type FieldType = {
@@ -33,9 +33,9 @@ const RegisterPage: React.FC = () => {
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log("Success:", values);
     if (values.role === 'student') {
-      postStudent(values);
+      // postStudent(values);
     } else if (values.role === 'instructor') {
-      postInstructor(values);
+      // postInstructor(values);
     }
   };
 
@@ -88,7 +88,7 @@ const RegisterPage: React.FC = () => {
               name="basic"
               className="space-y-0"
               style={{ maxWidth: 600 }}
-              initialValues={{ remember: true }}
+              initialValues={{ remember: true, role: 'student' }} // Set default role here
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
               autoComplete="off"
@@ -225,9 +225,20 @@ const RegisterPage: React.FC = () => {
           }}
           src={previewImage}
         />
-      )}
-    </div>
-  );
-};
-
-export default RegisterPage;
+        )}
+  
+        <Modal
+          title="Policy"
+          visible={isModalOpen}
+          onCancel={handleCancel}
+          onOk={handleOk}
+        >
+          {/* Nội dung của modal ở đây */}
+          <p>This is where your policy content goes.</p>
+        </Modal>
+      </div>
+    );
+  };
+  
+  export default RegisterPage;
+  
