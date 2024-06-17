@@ -1,9 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Card, Popover, Button, Rate } from 'antd';
 import Carousel from "react-multi-carousel";
+import { Link } from 'react-router-dom';
 import "react-multi-carousel/lib/styles.css";
 import { categoryFilters, categorySubmenu } from "../../../consts/index";
-import { CheckOutlined } from '@ant-design/icons'; // Importing the icon
+import { CheckOutlined, HeartOutlined } from '@ant-design/icons'; // Importing the icon
 import './Categories.css';
 
 const { Meta } = Card;
@@ -51,7 +52,7 @@ const Categories: React.FC = () => {
 
     const renderPopoverContent = useCallback((filter: string) => {
         const handleGoToCourse = () => {
-            window.location.href = "/course";
+            window.location.href = "/cart";
         };
 
         return (
@@ -59,7 +60,7 @@ const Categories: React.FC = () => {
                 <Meta
                     title={filter}
                     description={
-                        <div className="max-w-[350px] max-h-[400px] flex flex-col justify-between p-4 text-left">
+                        <div className="max-w-[350px] max-h-[410px] flex flex-col justify-between p-4 text-left">
                             <div>
                                 <h3 className="text-green-600 text-[1rem] mb-2">The Complete Python Bootcamp From Zero to Hero in Python</h3>
                                 <p className="text-black text-[0.8rem] mb-2">Updated at 7/2023</p>
@@ -77,9 +78,25 @@ const Categories: React.FC = () => {
                         </div>
                     }
                 />
-                <Button type="primary" onClick={handleGoToCourse} style={{ marginTop: '10px' }}>
-                    Go to Course
-                </Button>
+                <div className="flex items-center ml-[4rem]">
+                    <Button
+                        type="default"
+                        onClick={handleGoToCourse}
+                        style={{
+                            backgroundColor: '#A020F0',
+                            borderColor: '#A020F0',
+                            color: '#fff',
+                            fontWeight: 'bold',
+                            padding: '4px 60px', // Adjust padding as needed
+                            lineHeight: 'normal', // Reset line height if necessary
+                        }}
+                    >
+                        Go to cart
+                    </Button>
+                    <Link to='/enrollment' className="ml-4 mt-[0.4rem]">
+                        <HeartOutlined className="text-black text-2xl" />
+                    </Link>
+                </div>
             </div>
         );
     }, []);
@@ -135,11 +152,13 @@ const Categories: React.FC = () => {
                                     style={{ margin: '10px' }}
                                     cover={
                                         <div className="avatar-container">
-                                            <img
-                                                alt="example"
-                                                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                                                style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
-                                            />
+                                            <Link to='/course'>
+                                                <img
+                                                    alt="example"
+                                                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                                                    style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+                                                />
+                                            </Link>
                                             <div className="best-seller-label text-yellow-200 text-base">Best Seller</div>
                                         </div>
                                     }

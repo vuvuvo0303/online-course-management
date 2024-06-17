@@ -78,11 +78,11 @@ export const roles = {
 };
 
 
-/* NAV LINKs */
-export const NavLinks = [
-  { href: "/", key: "Saved Courses", text: "Saved Courses" },
-  { href: "/teaching", key: "Be an Instructors", text: "Be an Instructors" },
-];
+// /* NAV LINKs */
+// export const NavLinks = [
+//   // { href: "/enrollment", key: "Saved Courses", text: "Saved Courses" },
+//   // { href: "/teaching", key: "Be an Instructors", text: "Be an Instructors" },
+// ];
 
 
 /* CATEGORIES */

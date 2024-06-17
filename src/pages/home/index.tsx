@@ -1,14 +1,14 @@
-import Categories from "../../components/categories/main/Categories";
-import TeacherCategories from "../../components/categories/teacher/TeacherCategories";
-import ClientCarousel from "../../components/ClientCarousel";
-import LogoCategories from "../../components/categories/logo/LogoCategories";
+import Categories from "../../components/categories/main";
+import TeacherCategories from "../../components/categories/teacher";
+import Banner from "../../components/categories/banner";
+import LogoCategories from "../../components/categories/logo";
 import NewSection from "../../components/news/NewSection";
-import List from "../../components/categories/list/List";
+import List from "../../components/categories/list";
 
 const Home: React.FC = () => {
     return (
         <div>
-            <ClientCarousel />
+            <Banner />
             <LogoCategories />
             <h2 className='flex-1 flexStart gap-10 ml-[50px] text-[25px] mt-[50px] font-bold'>Extensive course collection</h2>
             <h3 className='flex-1 flexStart gap-10 ml-[50px] text-[15px] mt-[5px]'>

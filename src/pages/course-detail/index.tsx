@@ -61,7 +61,7 @@ const CourseDetail: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-100">
+        <div className="min-h-screen flex flex-col bg-white">
             <div className="w-full bg-white p-4 flex items-center fixed top-0 z-10 shadow-md">
                 <Link to='/course'>
                     <Button type="default"> {'<'} </Button>
@@ -70,8 +70,8 @@ const CourseDetail: React.FC = () => {
                 <QuestionCircleOutlined className="ml-auto" />
                 {isMobile && <Button type="primary" onClick={showDrawer}>Course Content</Button>}
             </div>
-            <div className={`flex flex-1 ${isMobile ? 'flex-col mt-16' : 'mt-16'}`}>
-                <div className={`p-6 bg-white overflow-auto ${isMobile ? 'w-full mt-[4rem]' : 'w-3/4'}`} style={{ height: 'calc(100vh - 112px)' }}>
+            <div className='flex flex-1'>
+                <div className={`p-6 bg-white overflow-auto ${isMobile ? 'w-full' : 'w-3/4'}`} style={{ height: 'calc(100vh - 112px)' }}>
                     <div className="text-center mb-4 w-full">
                         <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
                             <iframe

@@ -1,12 +1,12 @@
 import { Menu, Dropdown, Badge } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
-import { NavLinks, categoryFilters, categorySubmenu, paths } from '../consts/index';
+import { categoryFilters, categorySubmenu, paths } from '../consts/index';
 import SearchTool from './SearchTool';
 import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 const Navbar = () => {
-  const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
+  // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
   const isLoginOrRegister = location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
 
@@ -25,8 +25,12 @@ const Navbar = () => {
   const userData = JSON.parse(localStorage.getItem('user') || '{}');
   const { avatarUrl } = userData;
 
-  const handleMenuClick = () => {
-    setMobileMenuVisible(!mobileMenuVisible);
+  // const handleMenuClick = () => {
+  //   setMobileMenuVisible(!mobileMenuVisible);
+  // };
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
   };
 
   return (
@@ -40,19 +44,22 @@ const Navbar = () => {
             <Dropdown overlay={<Menu>{submenus}</Menu>} placement="bottomLeft">
               <a
                 className="ant-dropdown-link"
-                onClick={(e) => e.preventDefault()}
-                style={{ fontSize: '14px' }}
+                onMouseEnter={handleMouseEnter}
+                style={{ fontSize: '14px', cursor: 'pointer' }}
               >
                 Categories
               </a>
             </Dropdown>
-            <ul className="xl:flex hidden text-small gap-7">
-              {NavLinks.map((link) => (
-                <li key={link.key}>
-                  <Link to={link.href}>{link.text}</Link>
-                </li>
-              ))}
-            </ul>
+            <Link to='/enrollment?activeTab=1'>
+              <a className="link" style={{ fontSize: '14px' }}>
+                Saved Courses
+              </a>
+            </Link>
+            <Link to='/teaching'>
+              <a className="link" style={{ fontSize: '14px' }}>
+                Be an Instructors
+              </a>
+            </Link>
           </>
         )}
       </div>
