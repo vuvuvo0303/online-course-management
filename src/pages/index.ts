@@ -28,7 +28,7 @@ export { default as InstrutorDashboard } from "./instructor/instructor-dashboard
 export { default as InstructorManageLectures } from "./instructor/manage-lectures";
 export { default as InstructorManageFeedbacks } from "./instructor/manage-feedback";
 export { default as PaymentHistory } from "./payment/payment-history";
-export { default as InstructorCreateCourse } from "./course/createCourse";
+export { default as InstructorCreateCourse } from "../pages/course/create-course";
 export { default as InstructorManageCourses } from "./instructor/manage-course/index";
 export { default as InstructorManageStudents } from "./instructor/manage-students";
 export { default as InstructorManageBlogs } from "./instructor/manage-blogs/index";
