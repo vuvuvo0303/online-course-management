@@ -24,7 +24,6 @@ const Navbar = () => {
   // Get user data from localStorage
   const userData = JSON.parse(localStorage.getItem('user') || '{}');
   const { avatarUrl } = userData;
-<<<<<<< HEAD
 
   // const handleMenuClick = () => {
   //   setMobileMenuVisible(!mobileMenuVisible);
@@ -33,12 +32,6 @@ const Navbar = () => {
   const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
   };
-=======
-// if you use , you can remove comment
-  // const handleMenuClick = () => {
-  //   setMobileMenuVisible(!mobileMenuVisible);
-  // };
->>>>>>> origin/master
 
   return (
     <nav className={`flexBetween navbar ${isLoginOrRegister ? 'justify-center' : ''}`}>
