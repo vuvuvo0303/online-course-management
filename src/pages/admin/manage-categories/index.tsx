@@ -5,10 +5,10 @@ import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import Column from "antd/es/table/Column";
 import styles from "./managecategory.module.css";
 
-interface Category {
+type Category = {
   id: number;
   name: string;
-}
+};
 
 const AdminManageCategories: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -93,11 +93,9 @@ const AdminManageCategories: React.FC = () => {
           title="Category Name"
           dataIndex="name"
           key="name"
-          render={( record: Category) => (
-            <Link
-              to={`/courses/${record.name.toLowerCase().replace(/\s+/g, "-")}`}
-            >
-              {record.name}
+          render={(name: string, record: Category) => (
+            <Link to={`/courses/${name.toLowerCase().replace(/\s+/g, "-")}`}>
+              {name}
             </Link>
           )}
         />
@@ -106,7 +104,7 @@ const AdminManageCategories: React.FC = () => {
           title="Action"
           key="action"
           className={styles["table-action"]}
-          render={( record: Category) => (
+          render={(text: string, record: Category) => (
             <Space size="middle">
               <Button
                 type="link"

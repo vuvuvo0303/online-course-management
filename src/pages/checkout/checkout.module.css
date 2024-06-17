@@ -79,7 +79,7 @@
 }
 
 .payButton {
-  width: 30%;
+  width: 40%;
   display: block;
   margin-bottom: 10px;
 }
@@ -125,5 +125,6 @@
 
 .summaryDescription {
   color: #2d3a38;
+  margin-top: 15px;
   margin-left: 80px;
 }

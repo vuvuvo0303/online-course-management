@@ -34,7 +34,12 @@ const Dashboard: React.FC = () => {
     }
   }, [navigate]);
 
-  function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
+  function getItem(
+    label: React.ReactNode,
+    key: React.Key,
+    icon?: React.ReactNode,
+    children?: MenuItem[]
+  ): MenuItem {
     return {
       key,
       icon,
@@ -49,26 +54,61 @@ const Dashboard: React.FC = () => {
         // getItem("Manage Lectures", "/instructor/dashboard/manage-lectures", <DesktopOutlined />),
         getItem("Dashboard", "/instructor/dashboard", <FundOutlined />),
 
-        getItem("Manage Feedbacks", "/instructor/manage-feedbacks", <CommentOutlined />),
-        getItem("Manage Courses", "/instructor/manage-courses", <FundProjectionScreenOutlined />),
-        getItem("Manage Students", "/instructor/manage-students", <TeamOutlined />),
+        getItem(
+          "Manage Feedbacks",
+          "/instructor/manage-feedbacks",
+          <CommentOutlined />
+        ),
+        getItem(
+          "Manage Courses",
+          "/instructor/manage-courses",
+          <FundProjectionScreenOutlined />
+        ),
+        getItem(
+          "Manage Students",
+          "/instructor/manage-students",
+          <TeamOutlined />
+        ),
         getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
 
         getItem("My Profile", "/instructor/profile", <UserOutlined />),
-        // getItem("Manage Lectures", "/instructor/dashboard/manage-lectures", <DesktopOutlined />),
-        getItem("Create New Course", "/instructor/create-course", <DesktopOutlined />),
-        getItem("Payment History", "/instructor/payments-history", <DesktopOutlined />),
+        getItem(
+          "Create New Course",
+          "/instructor/create-course",
+          <DesktopOutlined />
+        ),
+        getItem(
+          "Payment History",
+          "/instructor/payments-history",
+          <DesktopOutlined />
+        ),
       ]);
     } else if (role === "Admin") {
       setItems([
         getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
         getItem("My Profile", "/admin/profile", <UserOutlined />),
         getItem("Manage Students", "/admin/manage-students", <TeamOutlined />),
-        getItem("Manage Instructors", "/admin/manage-instructors", <TeamOutlined />),
-        getItem("Manage Categories", "/admin/manage-categories", <TeamOutlined />),
-        getItem("Manage Courses", "/admin/manage-courses", <FundProjectionScreenOutlined />),
+        getItem(
+          "Manage Instructors",
+          "/admin/manage-instructors",
+          <TeamOutlined />
+        ),
+        getItem(
+          "Manage Categories",
+          "/admin/manage-categories",
+          <ProfileOutlined />
+        ),
+        getItem(
+          "Manage Courses",
+          "/admin/manage-courses",
+          <FundProjectionScreenOutlined />
+        ),
         getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
-        getItem("Manage Feedbacks", "/admin/manage-feedbacks", <CommentOutlined />),
+        getItem(
+          "Manage Feedbacks",
+          "/admin/manage-feedbacks",
+          <CommentOutlined />
+        ),
       ]);
     }
   }
@@ -89,16 +129,29 @@ const Dashboard: React.FC = () => {
       key: "2",
     },
     {
-      label: <p className="text-sm hover:cursor-pointer hover:text-red-600">Logout</p>,
+      label: (
+        <p className="text-sm hover:cursor-pointer hover:text-red-600">
+          Logout
+        </p>
+      ),
       key: "3",
     },
   ];
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
           <div className="demo-logo-vertical" />
-          <Menu className="py-4 bg-white-50 h-full   " defaultSelectedKeys={["1"]} mode="vertical" items={items} />
+          <Menu
+            className="py-4 bg-white-50 h-full   "
+            defaultSelectedKeys={["1"]}
+            mode="vertical"
+            items={items}
+          />
         </Sider>
         <Layout className="bg-stone-100">
           <Header className="flex justify-between items-center drop-shadow-xl bg-white ">
@@ -132,7 +185,9 @@ const Dashboard: React.FC = () => {
               <Outlet />
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>@ 2024 FLearn. All rights reserved</Footer>
+          <Footer style={{ textAlign: "center" }}>
+            @ 2024 FLearn. All rights reserved
+          </Footer>
         </Layout>
       </Layout>
     </>
