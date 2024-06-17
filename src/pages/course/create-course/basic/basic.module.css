@@ -1,0 +1,21 @@
+
+:root {
+    --primary-color: rgb(219, 227, 235);
+  }
+
+
+.note{
+    color: var(--primary-color);
+}
+
+.Border{
+ border-color: rgb(220, 227, 234);
+}
+
+.icon{
+  font-size: 40px;
+}
+/* .BasicContent{
+  margin: 2px;
+  border: 1px solid black;
+} */
