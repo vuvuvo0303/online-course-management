@@ -312,7 +312,7 @@ const Checkout: React.FC = () => {
         <div className={styles.confirm}>
           <p className={styles.terms}>
             By completing your purchase you agree to these{" "}
-            <div
+            <span
               className="text-blue-600 underline"
               style={{ cursor: "pointer" }}
               onClick={() =>
@@ -320,9 +320,10 @@ const Checkout: React.FC = () => {
               }
             >
               Terms of Service
-            </div>
+            </span>
             .
           </p>
+
           <Button
             type="primary"
             className={styles.payButton}
