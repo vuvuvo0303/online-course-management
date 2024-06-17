@@ -17,22 +17,21 @@ interface DataType {
 
 const AdminManageStudents: React.FC = () => {
   const [data, setData] = useState<DataType[]>([]);
-  const onChange = (isActive: boolean) => {
-    console.log(`switch to ${isActive}`);
-  };
+
   const handleDelete = async (userId: string) => {
-    const response = await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/students/${userId}`);
-    console.log(response);
-    const listAfterDelete = data.filter((student) => student.userId !== userId);
-    setData(listAfterDelete);
+    try {
+      await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/students/${userId}`);
+      const updatedData = data.filter(student => student.userId !== userId);
+      setData(updatedData);
+    } catch (error) {
+      console.error("Error deleting student:", error);
+    }
   };
 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         const response = await axios.get("https://665fbf245425580055b0b23d.mockapi.io/students");
-        console.log(response.data);
-
         setData(response.data);
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -41,9 +40,11 @@ const AdminManageStudents: React.FC = () => {
 
     fetchStudents();
   }, []);
+
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
   };
+
   const columns = [
     {
       title: "UserID",
@@ -88,22 +89,22 @@ const AdminManageStudents: React.FC = () => {
       key: "isActive",
       dataIndex: "isActive",
       width: "10%",
-
       render: (isActive: boolean) => (
-        <>
-          <Switch defaultChecked onChange={onChange} />
-        </>
+        <Switch defaultChecked={isActive} onChange={(checked) => console.log(`switch to ${checked}`)} />
       ),
     },
-
     {
       title: "Action",
-      key: "userId",
-      render: (userId: string) => (
+      key: "action",
+      render: (record: DataType) => (
         <div>
-          <EditOutlined className="hover:cursor-pointer text-blue-400 hover:opacity-60" style={{ fontSize: "20px" }} />
+          <EditOutlined
+            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
+            style={{ fontSize: "20px" }}
+          />
           <DeleteOutlined
-            className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60 "
+            onClick={() => handleDelete(record.userId)}
+            className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
             style={{ fontSize: "20px" }}
           />
         </div>

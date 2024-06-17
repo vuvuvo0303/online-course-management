@@ -3,10 +3,10 @@ import { Link, useLocation } from 'react-router-dom';
 import { NavLinks, categoryFilters, categorySubmenu, paths } from '../consts/index';
 import SearchTool from './SearchTool';
 import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 const Navbar = () => {
-  const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
+  // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
   const isLoginOrRegister = location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
 
@@ -24,10 +24,10 @@ const Navbar = () => {
   // Get user data from localStorage
   const userData = JSON.parse(localStorage.getItem('user') || '{}');
   const { avatarUrl } = userData;
-
-  const handleMenuClick = () => {
-    setMobileMenuVisible(!mobileMenuVisible);
-  };
+// if you use , you can remove comment
+  // const handleMenuClick = () => {
+  //   setMobileMenuVisible(!mobileMenuVisible);
+  // };
 
   return (
     <nav className={`flexBetween navbar ${isLoginOrRegister ? 'justify-center' : ''}`}>

@@ -8,8 +8,8 @@ import Highlighter from "react-highlight-words";
 import { format } from "date-fns";
 import { fetchCourses } from "../../../services/get";
 
-interface DataType {
-  key: string;
+type DataType = {
+  key: string; 
   title: string;
   createdDate: string;
   updatedDate: string;
@@ -18,6 +18,7 @@ interface DataType {
   price: string;
   level: number;
   courseImgUrl: string;
+  description: string;
 }
 
 type DataIndex = keyof DataType;
@@ -26,21 +27,31 @@ const AdminManageCourses: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
-  const [dataSource, setDataSource] = useState([]);
+  const [dataSource, setDataSource] = useState<DataType[]>([]);
+
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
   };
+
   useEffect(() => {
-    const fetchcourses = async () => {
-      const response = await fetchCourses();
-      setDataSource(response);
-      console.log(response);
+    const fetchCoursesData = async () => {
+      try {
+        const response = await fetchCourses();
+        setDataSource(response);
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
     };
 
-    fetchcourses();
+    fetchCoursesData();
   }, []);
 
-  const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: FilterDropdownProps["confirm"],
+    dataIndex: DataIndex
+  ) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -148,11 +159,13 @@ const AdminManageCourses: React.FC = () => {
     {
       title: "Created Date",
       dataIndex: "createdDate",
+      key: "createdDate",
       render: (createdDate: string) => formatDate(createdDate),
     },
     {
       title: "Updated Date",
       dataIndex: "updatedDate",
+      key: "updatedDate",
       render: (updatedDate: string) => formatDate(updatedDate),
     },
     {
