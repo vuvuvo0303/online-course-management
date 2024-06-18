@@ -21,12 +21,11 @@ const LoginPage: React.FC = () => {
     const { email, password } = values;
     const authResult = await login(email, password);
     if (authResult && "user" in authResult) {
-      const { user, role } = authResult;
+      const { user } = authResult;
       const userWithoutPassword = removePassword(user); // Loại bỏ mật khẩu
       localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-      localStorage.setItem('role', role);
 
-      switch (role) {
+      switch (user.role) {
         case "Student":
           navigate(paths.HOME);
           break;

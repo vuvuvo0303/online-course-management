@@ -95,7 +95,7 @@ const InstructorDashboard: React.FC = () => {
               />
               <span className="text-2xl">Jump Into Course Creation</span>
             </div>
-            <Link to={""}>
+            <Link to="/instructor/create-course">
               <button className="bg-red-500 px-8 py-3 text-white rounded-lg hover:bg-black">Create Your Course</button>
             </Link>
           </div>

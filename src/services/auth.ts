@@ -2,7 +2,7 @@
 import { fetchStudents, fetchInstructors, fetchAdmins } from './get';
 import { Student, Instructor, Admin } from '../models/User';
 
-export async function login(email: string, password: string): Promise<{ user: Student | Instructor | Admin, role: string } | null> {
+export async function login(email: string, password: string): Promise<{ user: Student | Instructor | Admin } | null> {
   try {
     const [students, instructors, admins] = await Promise.all([
       fetchStudents(),
@@ -12,17 +12,17 @@ export async function login(email: string, password: string): Promise<{ user: St
 
     const student = students.find(student => student.email === email && student.password === password);
     if (student) {
-      return { user: student, role: 'Student' };
+      return { user: student };
     }
 
     const instructor = instructors.find(instructor => instructor.email === email && instructor.password === password);
     if (instructor) {
-      return { user: instructor, role: 'Instructor' };
+      return { user: instructor};
     }
 
     const admin = admins.find(admin => admin.email === email && admin.password === password);
     if (admin) {
-      return { user: admin, role: 'Admin' };
+      return { user: admin};
     }
 
     return null;
@@ -32,7 +32,3 @@ export async function login(email: string, password: string): Promise<{ user: St
   }
 }
 
-export function logout() {
-  localStorage.removeItem("user");
-  localStorage.removeItem("role");
-}

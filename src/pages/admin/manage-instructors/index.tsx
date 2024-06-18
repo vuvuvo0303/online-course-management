@@ -1,55 +1,42 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Breadcrumb, Button, Image, Table, Tag } from "antd";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Image, Switch, Table } from "antd";
+import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
+import { Instructor } from "../../../models";
+import { toast } from "react-toastify";
 
-interface DataType {
-  key: string;
-  fullName: string;
-  email: string;
-  createdDate: string;
-  updatedDate: string;
-  isActive: boolean;
-  avatarUrl: string;
-
-  userId: string;
-}
 
 const AdminManageIntructors: React.FC = () => {
-  const [data, setData] = useState<DataType[]>([]);
+  const [data, setData] = useState<Instructor[]>([]);
 
-  const handleDelete = async (userId: string) => {
-    const response = await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/students/${userId}`);
-    console.log(response);
-    const listAfterDelete = data.filter((student) => student.userId !== userId);
-    setData(listAfterDelete);
+  const handleDelete = async (userId: string, email: string) => {
+    try {
+      await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/instructors/${userId}`);
+      const listAfterDelete = data.filter((student) => student.userId !== userId);
+      setData(listAfterDelete);
+      toast.success(`Delete user ${email} successfully`)
+    } catch (error) {
+      toast.error(`Delete user ${email} failed`)
+    }
   };
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchInstructors = async () => {
       try {
         const response = await axios.get("https://665fbf245425580055b0b23d.mockapi.io/instructors");
-        console.log(response.data);
-
         setData(response.data);
       } catch (error) {
         console.error("Error fetching students:", error);
       }
     };
 
-    fetchStudents();
+    fetchInstructors();
   }, []);
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
   };
   const columns = [
-    {
-      title: "UserID",
-      dataIndex: "userId",
-      key: "userId",
-      render: (text: string) => <a>{text}</a>,
-    },
     {
       title: "Name",
       dataIndex: "fullName",
@@ -82,20 +69,27 @@ const AdminManageIntructors: React.FC = () => {
       title: "Status",
       key: "isActive",
       dataIndex: "isActive",
+      width: "10%",
       render: (isActive: boolean) => (
-        <>
-          <Tag color={isActive ? "green" : "volcano"}>{isActive ? "Active" : "Inactive"}</Tag>
-        </>
+        <Switch defaultChecked={isActive} onChange={(checked) => console.log(`switch to ${checked}`)} />
       ),
     },
 
     {
       title: "Action",
-      key: "userId",
-      render: (userId: string) => (
-        <Button type="primary" danger onClick={() => handleDelete(userId)}>
-          Delete
-        </Button>
+      key: "action",
+      render: (record: Instructor) => (
+        <div>
+          <EditOutlined
+            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
+            style={{ fontSize: "20px" }}
+          />
+          <DeleteOutlined
+            onClick={() => handleDelete(record.userId, record.email)}
+            className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
+            style={{ fontSize: "20px" }}
+          />
+        </div>
       ),
     },
   ];
@@ -120,7 +114,7 @@ const AdminManageIntructors: React.FC = () => {
               ),
             },
             {
-              title: "Manage Insntructors",
+              title: "Manage Instructors",
             },
           ]}
         />
