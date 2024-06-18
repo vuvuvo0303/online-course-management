@@ -1,25 +1,32 @@
 import { useEffect, useRef, useState } from "react";
-import { HomeOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import { Breadcrumb, Button, Image, Input, Space, Table } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
 import axios from "axios";
+import { Blog } from "../../../models";
+import { toast } from "react-toastify";
 
-interface DataType {
-  key: string;
-  category: string;
-  time: string;
-  blog_image: string;
-}
-
-type DataIndex = keyof DataType;
+type DataIndex = keyof Blog;
 
 const AdminManageBlogs: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
-  const [dataSource, setDataSource] = useState([]);
+  const [data, setData] = useState<Blog[]>([]);
+
+
+  const handleDelete = async (id: string, title: string) => {
+    try {
+      await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/blogs/${id}`);
+      const updatedData = data.filter(blog => blog.id !== id);
+      setData(updatedData);
+      toast.success(`Delete blog ${title} successfully`);
+    } catch (error) {
+      toast.error(`Delete blog ${title} failed`);
+    }
+  };
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -27,7 +34,7 @@ const AdminManageBlogs: React.FC = () => {
         "https://665fbf245425580055b0b23d.mockapi.io/blogs"
       );
       console.log(response);
-      setDataSource(response.data);
+      setData(response.data);
     };
     fetchBlogs();
   }, []);
@@ -49,7 +56,7 @@ const AdminManageBlogs: React.FC = () => {
 
   const getColumnSearchProps = (
     dataIndex: DataIndex
-  ): TableColumnType<DataType> => ({
+  ): TableColumnType<Blog> => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -138,7 +145,7 @@ const AdminManageBlogs: React.FC = () => {
       ),
   });
 
-  const columns: TableColumnsType<DataType> = [
+  const columns: TableColumnsType<Blog> = [
     {
       title: "Catagory",
       dataIndex: "category",
@@ -180,6 +187,23 @@ const AdminManageBlogs: React.FC = () => {
       key: "blog_image",
       render: (blog_image: string) => <Image src={blog_image} />,
     },
+    {
+      title: "Action",
+      key: "action",
+      render: (record: Blog) => (
+        <div>
+          <EditOutlined
+            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
+            style={{ fontSize: "20px" }}
+          />
+          <DeleteOutlined
+            onClick={() => handleDelete(record.id, record.title)}
+            className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
+            style={{ fontSize: "20px" }}
+          />
+        </div>
+      ),
+    },
   ];
   return (
     <div>
@@ -205,10 +229,10 @@ const AdminManageBlogs: React.FC = () => {
           ]}
         />
         <div className="py-2">
-          <Button type="primary">Add New SBlogs</Button>
+          <Button type="primary">Add New Blogs</Button>
         </div>
       </div>
-      <Table columns={columns} dataSource={dataSource} />;
+      <Table columns={columns} dataSource={data} />;
     </div>
   );
 };

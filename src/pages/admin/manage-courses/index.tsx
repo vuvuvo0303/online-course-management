@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { HomeOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import { Breadcrumb, Button, Image, Input, Space, Table } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
@@ -8,6 +8,8 @@ import Highlighter from "react-highlight-words";
 import { format } from "date-fns";
 import { fetchCourses } from "../../../services/get";
 import { Course } from "../../../models";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 
 type DataIndex = keyof Course;
@@ -17,6 +19,19 @@ const AdminManageCourses: React.FC = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
   const [data, setData] = useState<Course[]>([]);
+
+
+  const handleDelete = async (courseId: string, title: string) => {
+    try {
+      await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/courses/${courseId}`);
+      const updatedData = data.filter(course => course.courseId !== courseId);
+      setData(updatedData);
+      toast.success(`Delete course ${title} successfully`);
+    } catch (error) {
+      toast.error(`Delete course ${title} failed`);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), "dd/MM/yyyy");
   };
@@ -84,7 +99,7 @@ const AdminManageCourses: React.FC = () => {
             size="small"
             onClick={() => {
               confirm({ closeDropdown: false });
-setSearchText((selectedKeys as string[])[0]);
+              setSearchText((selectedKeys as string[])[0]);
               setSearchedColumn(dataIndex);
             }}
           >
@@ -171,6 +186,23 @@ setSearchText((selectedKeys as string[])[0]);
       key: "courseImgUrl",
       render: (courseImgUrl: string) => <Image src={courseImgUrl} width={100} />,
     },
+    {
+      title: "Action",
+      key: "action",
+      render: (record: Course) => (
+        <div>
+          <EditOutlined
+            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
+            style={{ fontSize: "20px" }}
+          />
+          <DeleteOutlined
+            onClick={() => handleDelete(record.courseId, record.title)}
+            className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
+            style={{ fontSize: "20px" }}
+          />
+        </div>
+      ),
+    },
   ];
   return (
     <div>
@@ -196,9 +228,6 @@ setSearchText((selectedKeys as string[])[0]);
             },
           ]}
         />
-        <div className="py-2">
-          <Button type="primary">Add New Course</Button>
-        </div>
       </div>
       {<Table columns={columns} dataSource={data} />}
     </div>

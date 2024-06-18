@@ -1,9 +1,13 @@
+// hooks/index.ts
+
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { paths, roles } from "../consts";
+import { roles } from "../consts";
 
 const useRoleRedirect = () => {
-  const userRole = localStorage.getItem("role");
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;  
+  const userRole = user?.role;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,21 +23,21 @@ const useRoleRedirect = () => {
     switch (userRole) {
       case roles.STUDENT:
         if (path.includes("/instructor") || path.includes("/admin")) {
-          navigate(paths.NOTFOUND);
+          navigate("/");
         }
         break;
       case roles.ADMIN:
         if (!path.includes("/admin")) {
-          navigate(paths.ADMIN_HOME);
+          navigate("/admin/dashboard");
         }
         break;
       case roles.INSTRUCTOR:
         if (!path.includes("/instructor")) {
-          navigate(paths.INSTRUCTOR_HOME);
+          navigate("/instructor/dashboard");
         }
         break;
       default:
-        navigate(paths.NOTFOUND);
+        navigate("/");
         break;
     }
   };

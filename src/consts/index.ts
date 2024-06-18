@@ -45,10 +45,11 @@ export const paths = {
   INSTRUCTOR_PAYMENT_HISTORY: "payment-history",
   INSTRUCTOR_MANAGE_FEEDBACKS: "manage-feedbacks",
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
+  INSTRUCTOR_TOOLS: "tools",
+  INSTRUCTOR_RESOURCES: "resources",
 
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
-  ADMIN_PROFILE: "profile",
   ADMIN_CREATE_COURSE: "create-course",
   ADMIN_MANAGE_LECTURES: "manage-lectures",
   ADMIN_MANAGE_STUDENTS: "manage-students",

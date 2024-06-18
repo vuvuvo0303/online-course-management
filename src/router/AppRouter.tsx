@@ -36,6 +36,8 @@ import {
   AdminManageBlogs,
   AdminManageCourses,
   AdminManageStudents,
+  InstructorTools,
+  InstructorResources,
 } from "../pages";
 import useRoleRedirect from "../hooks/useRoleRedirect";
 import { paths, roles } from "../consts";
@@ -130,6 +132,27 @@ const AppRouter: React.FC = () => {
             )
           }
         />
+        <Route
+          path={paths.INSTRUCTOR_TOOLS}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <InstructorTools />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+
+        <Route
+          path={paths.INSTRUCTOR_RESOURCES}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <InstructorResources />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
 
         {/* <Route
           path="manage-lectures"
@@ -170,7 +193,6 @@ const AppRouter: React.FC = () => {
         element={canAccess([roles.ADMIN]) ? <Dashboard /> : <Navigate to="/" />}
       >
         <Route path={paths.ADMIN_DASHBOARD} element={<AdminDashboard />} />
-        <Route path={paths.ADMIN_PROFILE} element={<Profile />} />
         <Route
           path={paths.ADMIN_PAYMENT_HISTORY}
           element={<PaymentHistory />}

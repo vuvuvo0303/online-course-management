@@ -32,6 +32,8 @@ export { default as InstructorCreateCourse } from "../pages/course/create-course
 export { default as InstructorManageCourses } from "./instructor/manage-course/index";
 export { default as InstructorManageStudents } from "./instructor/manage-students";
 export { default as InstructorManageBlogs } from "./instructor/manage-blogs/index";
+export { default as InstructorResources} from "./instructor/resources";
+export { default as InstructorTools } from "./instructor/tools";
 
 /* Admin Page */
 export { default as AdminDashboard } from "./admin/dashboard";

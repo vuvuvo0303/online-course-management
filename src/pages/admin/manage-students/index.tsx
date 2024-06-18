@@ -3,28 +3,21 @@ import axios from "axios";
 import { Breadcrumb, Button, Image, Switch, Table } from "antd";
 import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
+import { Student } from "../../../models";
+import { toast } from "react-toastify";
 
-interface DataType {
-  key: string;
-  fullName: string;
-  email: string;
-  createdDate: string;
-  updatedDate: string;
-  isActive: boolean;
-  avatarUrl: string;
-  userId: string;
-}
 
 const AdminManageStudents: React.FC = () => {
-  const [data, setData] = useState<DataType[]>([]);
+  const [data, setData] = useState<Student[]>([]);
 
-  const handleDelete = async (userId: string) => {
+  const handleDelete = async (userId: string, email: string) => {
     try {
       await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/students/${userId}`);
       const updatedData = data.filter(student => student.userId !== userId);
       setData(updatedData);
+      toast.success(`Delete user ${email} successfully`);
     } catch (error) {
-      console.error("Error deleting student:", error);
+      toast.error(`Delete user ${email} failed`);
     }
   };
 
@@ -47,13 +40,6 @@ const AdminManageStudents: React.FC = () => {
 
   const columns = [
     {
-      title: "UserID",
-      dataIndex: "userId",
-      key: "userId",
-      render: (text: string) => <a>{text}</a>,
-      width: "5%",
-    },
-    {
       title: "Name",
       dataIndex: "fullName",
       key: "fullName",
@@ -70,13 +56,13 @@ const AdminManageStudents: React.FC = () => {
       title: "Created Date",
       dataIndex: "createdDate",
       render: (createdDate: string) => formatDate(createdDate),
-      width: "10%",
+      width: "15%",
     },
     {
       title: "Updated Date",
       dataIndex: "updatedDate",
       render: (updatedDate: string) => formatDate(updatedDate),
-      width: "10%",
+      width: "15%",
     },
     {
       title: "Image",
@@ -96,14 +82,14 @@ const AdminManageStudents: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      render: (record: DataType) => (
+      render: (record: Student) => (
         <div>
           <EditOutlined
             className="hover:cursor-pointer text-blue-400 hover:opacity-60"
             style={{ fontSize: "20px" }}
           />
           <DeleteOutlined
-            onClick={() => handleDelete(record.userId)}
+            onClick={() => handleDelete(record.userId, record.email)}
             className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
             style={{ fontSize: "20px" }}
           />

@@ -114,16 +114,9 @@
     }
 }
 
-@media (min-width: 1200px) {
-    .my_course_grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-
-}
-
 @media (min-width: 1600px) {
     .my_course_grid {
-        grid-template-columns: repeat(8, 1fr);
+        grid-template-columns: repeat(6, 1fr);
     }
 }
 
