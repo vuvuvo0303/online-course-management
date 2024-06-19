@@ -112,3 +112,4 @@ const AdminManageFeedbacks: React.FC = () => {
 };
 
 export default AdminManageFeedbacks;
+
