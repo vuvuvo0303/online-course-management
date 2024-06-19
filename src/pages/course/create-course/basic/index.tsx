@@ -74,7 +74,7 @@ const BasicStep: React.FC = () => {
             <div className={` container mx-auto mt-10 border-2 border-black p-10 bg-white `}>
                 <div>
                     <p className="mb-2">
-                        Course Title*
+                        Course Title <span className="text-red-300">*</span>
                     </p>
                     <Input placeholder="Course title here" />
                     <p className={`${styles.note} mt-2`}>
@@ -83,7 +83,7 @@ const BasicStep: React.FC = () => {
                 </div>
                 <div className="mt-10">
                     <p>
-                        Short Description*
+                        Short Description <span className="text-red-300">*</span>
                     </p>
                     <TextArea placeholder="Item description here" className="mt-2" rows={4} />
                     <p className={`${styles.note} mt-2`}>
@@ -92,13 +92,13 @@ const BasicStep: React.FC = () => {
                 </div>
                 <div className="mt-10">
                     <p>
-                        Course Description*
+                        Course Description <span className="text-red-300">*</span>
                     </p>
                 </div>
                 <div className="mt-10">
                     <Row gutter={10}>
                         <Col xs={24} sm={12} className="flex flex-col">
-                            <p className="mb-2">What will students learn in your course?*</p>
+                            <p className="mb-2">What will students learn in your course? <span className="text-red-300">*</span></p>
                             <div className="flex-grow">
                                 <Input.TextArea rows={4} className="border border-gray-300 rounded p-2 w-full" />
                             </div>
@@ -107,7 +107,7 @@ const BasicStep: React.FC = () => {
                             </p>
                         </Col>
                         <Col xs={24} sm={12} className="flex flex-col mt-5 sm:mt-0">
-                            <p className="mb-2">Requirements*</p>
+                            <p className="mb-2">Requirements <span className="text-red-300">*</span></p>
                             <div className="flex-grow">
                                 <Input.TextArea rows={4} className="border border-gray-300 rounded p-2 w-full" />
                             </div>
@@ -120,7 +120,7 @@ const BasicStep: React.FC = () => {
                 <div className="mt-10">
                     <Row gutter={10}>
                         <Col span={12}>
-                            Course Level*
+                            Course Level <span className="text-red-300">*</span>
                             <Select className="mt-2"
                                 mode="multiple"
                                 style={{ width: '100%' }}
@@ -139,7 +139,7 @@ const BasicStep: React.FC = () => {
                             />
                         </Col>
                         <Col span={12}>
-                            Audio Language*
+                            Audio Language <span className="text-red-300">*</span>
                             <Select className="mt-2"
                                 mode="multiple"
                                 style={{ width: '100%' }}
@@ -162,7 +162,7 @@ const BasicStep: React.FC = () => {
                 <div className="mt-10">
                     <Row gutter={10}>
                         <Col span={12}>
-                            Close Caption*
+                            Close Caption <span className="text-red-300">*</span>
                             <Select className="mt-2"
                                 mode="multiple"
                                 style={{ width: '100%' }}
@@ -181,7 +181,7 @@ const BasicStep: React.FC = () => {
                             />
                         </Col>
                         <Col span={12}>
-                            Course Category*
+                            Course Category <span className="text-red-300">*</span>
                             <Select className="mt-2"
                                 mode="multiple"
                                 style={{ width: '100%' }}

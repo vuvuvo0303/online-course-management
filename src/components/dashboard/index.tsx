@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
+  CheckOutlined,
   CommentOutlined,
   CopyOutlined,
   DesktopOutlined,
@@ -12,7 +13,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Avatar, Dropdown, Layout, Menu, Space, theme } from 'antd';
+import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from 'antd';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { User } from '../../models/User';
 
@@ -25,7 +26,7 @@ const Dashboard: React.FC = () => {
   const [items, setItems] = useState<MenuItem[]>([]);
   const [role, setRole] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
-
+  const [dataUser, setDataUser] = useState<{ role: string | null, fullName: string | null, email: string | null }>({ role: null, fullName: null, email: null });
   useEffect(() => {
     const userString = localStorage.getItem('user');
     const user: User = userString ? JSON.parse(userString) : null;
@@ -34,6 +35,7 @@ const Dashboard: React.FC = () => {
     if (userRole && user) {
       setRole(userRole);
       setFullName(user.fullName);
+      setDataUser({ role: userRole, fullName: user.fullName, email: user.email });
     } else {
       navigate('/login'); // Redirect to login if role is not found
     }
@@ -43,6 +45,10 @@ const Dashboard: React.FC = () => {
     localStorage.removeItem('user');
     navigate('/');
   };
+  // const [collapsed, setCollapsed] = useState(false);
+  // const {
+  //   token: { colorBgContainer, borderRadiusLG },
+  // } = theme.useToken();
 
   function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
     return {
@@ -52,67 +58,127 @@ const Dashboard: React.FC = () => {
       label: <Link to={String(key)}>{label}</Link>,
     } as MenuItem;
   }
-
-  function loadItems() {
-    if (role === 'Instructor') {
-      setItems([
-        getItem('Dashboard', '/instructor/dashboard', <FundOutlined />),
-        getItem('Manage Feedbacks', '/instructor/manage-feedbacks', <CommentOutlined />),
-        getItem('Manage Courses', '/instructor/manage-courses', <FundProjectionScreenOutlined />),
-        getItem('Manage Students', '/instructor/manage-students', <TeamOutlined />),
-        getItem('Manage Blogs', '/instructor/manage-blogs', <CopyOutlined />),
-        getItem('Payment History', '/instructor/payments-history', <DesktopOutlined />),
-        getItem('Tools', '/instructor/tools', <ToolOutlined />),
-        getItem('Resources', '/instructor/resources', <QuestionCircleOutlined />),
-      ]);
-    } else if (role === 'Admin') {
-      setItems([
-        getItem('Dashboard', '/admin/dashboard', <FundOutlined />),
-        getItem('Manage Students', '/admin/manage-students', <TeamOutlined />),
-        getItem('Manage Instructors', '/admin/manage-instructors', <TeamOutlined />),
-        getItem('Manage Categories', '/admin/manage-categories', <ProfileOutlined />),
-        getItem('Manage Courses', '/admin/manage-courses', <FundProjectionScreenOutlined />),
-        getItem('Manage Blogs', '/admin/manage-blogs', <ProfileOutlined />),
-        getItem('Manage Feedbacks', '/admin/manage-feedbacks', <CommentOutlined />),
-      ]);
+  useEffect(() => {
+    function loadItems() {
+      if (dataUser.role === "Instructor") {
+        setItems([
+          getItem("Dashboard", "/instructor/dashboard", <FundOutlined />),
+          getItem("Manage Feedbacks", "/instructor/manage-feedbacks", <CommentOutlined />),
+          getItem("Manage Courses", "/instructor/manage-courses", <FundProjectionScreenOutlined />),
+          getItem("Manage Students", "/instructor/manage-students", <TeamOutlined />),
+          getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
+          // getItem("My Profile", "/instructor/profile", <UserOutlined />),
+          getItem("Create New Course", "/instructor/create-course", <DesktopOutlined />),
+          getItem("Payment History", "/instructor/payment-history", <DesktopOutlined />),
+        ]);
+      } else if (dataUser.role === "Admin") {
+        setItems([
+          getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
+          getItem("My Profile", "/admin/profile", <UserOutlined />),
+          getItem("Manage Students", "/admin/manage-students", <TeamOutlined />),
+          getItem("Manage Instructors", "/admin/manage-instructors", <TeamOutlined />),
+          getItem("Manage Categories", "/admin/manage-categories", <TeamOutlined />),
+          getItem("Manage Courses", "/admin/manage-courses", <FundProjectionScreenOutlined />),
+          getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
+          getItem("Manage Feedbacks", "/admin/manage-feedbacks", <CommentOutlined />),
+        ]);
+      }
     }
-  }
 
-  useEffect(loadItems, [role]);
+    loadItems();
+  }, [dataUser.role]);
+  // useEffect(loadItems, [role]);
 
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const dropdownItems: MenuProps['items'] = [
-    {
-      label: <p className='text-sm'>Welcome: {fullName}</p>,
-      key: '1',
-    },
-    {
-      label: <p className='text-sm'>Role: {role}</p>,
-      key: '2',
-    },
-    role === 'Instructor'
-      ? {
-        label: (
-          <Link to='/instructor/profile'>
-            <p className='text-sm'>My Profile</p>
-          </Link>
-        ),
-        key: '3',
-      }
-      : null,
+  const dropdownItems: MenuProps["items"] = [
     {
       label: (
-        <p onClick={handleLogout} className='text-sm hover:cursor-pointer hover:text-red-600'>
-          Logout
-        </p>
+        <div className="text-sm">
+          <Row>
+            <Col span={8}>
+              <Avatar
+                src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
+                className="hover:cursor-pointer "
+                size={40}
+                icon={<UserOutlined />}
+              />
+            </Col>
+            <Col span={16}>
+              <Row>
+                <p className='text-lg font-bold font-bold'> {dataUser.fullName}</p>
+                <CheckOutlined className="text-blue-500 ml-2" />
+              </Row>
+              <div>
+                <p className='text-lg'> { }</p>
+              </div>
+            </Col>
+          </Row>
+          <div className="mt-2 text-lg">
+            <Link className=" hover:text-red-600" to={dataUser.role === "Instructor" ? "/instructor/dashboard" : "/admin/dashboard"}>Cursus Dashboard</Link>
+          </div>
+          <div className="mt-2 text-lg">
+            <Link className=" hover:text-red-600" to={dataUser.role === "Instructor" ? "/instructor/profile" : "/admin/profile"}>View Profile</Link>
+          </div>
+          <div className="mt-2 text-lg">
+            <Link className=" hover:text-red-600" to={dataUser.role === "Instructor" ? "/instructor/paidMemberships" : "/admin/paidMemberships"}>Paid Memberships</Link>
+          </div>
+          <div className="mt-2 text-lg">
+            <Link className=" hover:text-red-600" to={dataUser.role === "Instructor" ? "/instructor/setting" : "/admin/setting"}>Setting</Link>
+          </div>
+          <div className="mt-2 text-lg">
+            <Link className=" hover:text-red-600" to={dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"}>Help</Link>
+          </div>
+          <div className="mt-2 text-lg">
+            <Link className=" hover:text-red-600" to={dataUser.role === "Instructor" ? "/instructor/sendFeedBack" : "/admin/sendFeedBack"}>Send Feedback</Link>
+          </div>
+        </div>
       ),
-      key: '4',
+      key: "1",
+    },
+    {
+      label: <p className="text-lg">Role: {dataUser.role}</p>,
+      key: "2",
+    },
+    {
+      label: <p onClick={handleLogout} className="text-lg hover:cursor-pointer hover:text-red-600">Logout</p>,
+      key: "3",
     },
   ];
+
+
+
+  // const dropdownItems: MenuProps['items'] = [
+  //   {
+  //     label: <p className='text-sm'>Welcome: {fullName}</p>,
+  //     key: '1',
+  //   },
+  //   {
+  //     label: <p className='text-sm'>Role: {role}</p>,
+  //     key: '2',
+  //   },
+  //   role === 'Instructor'
+  //     ? {
+  //       label: (
+  //         <Link to='/instructor/profile'>
+  //           <p className='text-sm'>My Profile</p>
+  //         </Link>
+  //       ),
+  //       key: '3',
+  //     }
+  //     : null,
+  //   {
+  //     label: (
+  //       <p onClick={handleLogout} className='text-sm hover:cursor-pointer hover:text-red-600'>
+  //         Logout
+  //       </p>
+  //     ),
+  //     key: '4',
+  //   },
+  // ];
 
   return (
     <>

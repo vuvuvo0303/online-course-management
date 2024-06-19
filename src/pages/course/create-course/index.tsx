@@ -61,8 +61,8 @@ const InstructorCreateCourse: React.FC = () => {
               index === current
                 ? "process"
                 : index < current
-                ? "finish"
-                : "wait"
+                  ? "finish"
+                  : "wait"
             }
             className={index <= current ? "text-red-500" : ""}
           />
@@ -84,6 +84,9 @@ const InstructorCreateCourse: React.FC = () => {
       </div>
       <style>
         {`
+          .ant-steps-icon svg{
+          color: white;
+          }
           .custom-steps .ant-steps-item {
             display: flex;
             flex-direction: column;
