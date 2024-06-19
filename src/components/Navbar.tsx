@@ -4,6 +4,7 @@ import { categoryFilters, categorySubmenu, paths } from '../consts/index';
 import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined, CheckOutlined, MenuOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import SearchTool from './SearchTool';
 const Navbar = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
@@ -286,7 +287,7 @@ const Navbar = () => {
           </>
         )}
       </div>
-      <SearchTool></SearchTool>
+      <SearchTool/>
       {!isLoginOrRegister && (
         <div className="flexCenter gap-10 mr-5">
           {isMobile ? (
