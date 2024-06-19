@@ -437,23 +437,19 @@ const Policy: React.FC = () => {
                         </div>
                         <ul style={{ listStyleType: 'disc', paddingLeft: "1.8rem" }}>
                             <li className={styles.policy_li}>
-                                <u className={styles.policy_u}>With Your Instructors:</u>
-                                We share data that we have about you (except your email address) with instructors or teaching assistants for educational content you access or request information about, so they can improve their content for you and other students. This data may include things like your country, browser language, operating system, device settings, the site that brought you to FLearn, and certain activities on FLearn, like enrolled courses and course review. We will not share your email address with instructors or teaching assistants. (Account Data; System Data; Usage Data; Approximate Geographic Data)
+                                <u className={styles.policy_u}>With Your Instructors:</u> We share data that we have about you (except your email address) with instructors or teaching assistants for educational content you access or request information about, so they can improve their content for you and other students. This data may include things like your country, browser language, operating system, device settings, the site that brought you to FLearn, and certain activities on FLearn, like enrolled courses and course review. We will not share your email address with instructors or teaching assistants. (Account Data; System Data; Usage Data; Approximate Geographic Data)
                             </li>
 
                             <li className={styles.policy_li}>
-                                <u className={styles.policy_u}>With Other Students and Instructors:</u>
-                                Depending on your settings, your shared content and profile data may be publicly viewable, including to other students and instructors. If you ask a question to an instructor or teaching assistant, your information (including your name) may also be publicly viewable. (Account Data; Profile Data; Shared Content)
+                                <u className={styles.policy_u}>With Other Students and Instructors:</u> Depending on your settings, your shared content and profile data may be publicly viewable, including to other students and instructors. If you ask a question to an instructor or teaching assistant, your information (including your name) may also be publicly viewable. (Account Data; Profile Data; Shared Content)
                             </li>
 
                             <li className={styles.policy_li}>
-                                <u className={styles.policy_u}>With Other Students and Instructors:</u>
-                                Depending on your settings, your shared content and profile data may be publicly viewable, including to other students and instructors. If you ask a question to an instructor or teaching assistant, your information (including your name) may also be publicly viewable. (Account Data; Profile Data; Shared Content)
+                                <u className={styles.policy_u}>With Other Students and Instructors:</u> Depending on your settings, your shared content and profile data may be publicly viewable, including to other students and instructors. If you ask a question to an instructor or teaching assistant, your information (including your name) may also be publicly viewable. (Account Data; Profile Data; Shared Content)
                             </li>
 
                             <li className={styles.policy_li}>
-                                <u className={styles.policy_u}>With Credit-Granting Organizations for Continuing Education:</u>
-                                If you take a course to fulfill a continuing professional education requirement, we may share that information upon request of the organization granting the continuing education credit. (Account Data; Learning Data)
+                                <u className={styles.policy_u}>With Credit-Granting Organizations for Continuing Education:</u> If you take a course to fulfill a continuing professional education requirement, we may share that information upon request of the organization granting the continuing education credit. (Account Data; Learning Data)
                             </li>
 
                             <li className={styles.policy_li}>
@@ -461,18 +457,15 @@ const Policy: React.FC = () => {
                             </li>
 
                             <li className={styles.policy_li}>
-                                <u className={styles.policy_u}>During a Change in Control:</u>
-                                If FLearn undergoes a business transaction like a merger, acquisition, corporate divestiture, or dissolution (including bankruptcy), or a sale of all or some of its assets, we may share, disclose, or transfer all of your data to the successor organization during such transition or in contemplation of a transition (including during due diligence). (All data categories)
+                                <u className={styles.policy_u}>During a Change in Control:</u> If FLearn undergoes a business transaction like a merger, acquisition, corporate divestiture, or dissolution (including bankruptcy), or a sale of all or some of its assets, we may share, disclose, or transfer all of your data to the successor organization during such transition or in contemplation of a transition (including during due diligence). (All data categories)
                             </li>
 
                             <li className={styles.policy_li}>
-                                <u className={styles.policy_u}>After Aggregation/De-identification:</u>
-                                We may disclose or use aggregated or de-identified data for any purpose.
+                                <u className={styles.policy_u}>After Aggregation/De-identification:</u> We may disclose or use aggregated or de-identified data for any purpose.
                             </li>
 
                             <li className={styles.policy_li}>
-                                <u className={styles.policy_u}>With Your Permission:</u>
-                                With your consent, we may share data to third parties outside the scope of this Privacy Policy. (All data categories)
+                                <u className={styles.policy_u}>With Your Permission:</u> With your consent, we may share data to third parties outside the scope of this Privacy Policy. (All data categories)
                             </li>
                         </ul>
 

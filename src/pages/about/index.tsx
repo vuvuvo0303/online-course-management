@@ -93,9 +93,9 @@ const About: React.FC = () => {
             </div>
             <div className='container mx-auto mb-10'>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-10'>
-                    <div className='storyteller_desc'>Flearn fit us like a glove. Their team curates fresh, up-to-date courses from their marketplace and makes them available to customers.</div>
+                    <div className='storyteller_desc'>FLearn fit us like a glove. Their team curates fresh, up-to-date courses from their marketplace and makes them available to customers.</div>
                     <div className='storyteller_desc'>In total, it was a big success, I would get emails about what a fantastic resource it was.</div>
-                    <div className='storyteller_desc'>Flearn responds to the needs of the business in an agile and global manner. It’s truly the best solution for our employees and their careers.</div>
+                    <div className='storyteller_desc'>FLearn responds to the needs of the business in an agile and global manner. It’s truly the best solution for our employees and their careers.</div>
                 </div>
             </div>
         </div>

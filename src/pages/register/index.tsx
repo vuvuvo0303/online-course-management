@@ -4,7 +4,7 @@ import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import Vector from "../../assets/Vector.png";
-import Ractangle from "../../assets/Rectangle .jpg";
+import Rectangle from "../../assets/Rectangle .jpg";
 // import { postStudent, postInstructor } from '../../services/post';
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -211,7 +211,7 @@ const RegisterPage: React.FC = () => {
       </div>
       <div className="hidden md:flex w-1/2 pb-12 items-center justify-center">
         <div className="rounded-lg overflow-hidden w-[80%] shadow-pink-300 mt-20">
-          <img className="shadow-xl rounded-xl w-full" src={Ractangle} alt="logo" />
+          <img className="shadow-xl rounded-xl w-full" src={Rectangle} alt="logo" />
         </div>
       </div>
 
@@ -225,20 +225,19 @@ const RegisterPage: React.FC = () => {
           }}
           src={previewImage}
         />
-        )}
-  
-        <Modal
-          title="Policy"
-          visible={isModalOpen}
-          onCancel={handleCancel}
-          onOk={handleOk}
-        >
-          {/* Nội dung của modal ở đây */}
-          <p>This is where your policy content goes.</p>
-        </Modal>
-      </div>
-    );
-  };
-  
-  export default RegisterPage;
-  
+      )}
+
+      <Modal
+        title="Policy"
+        visible={isModalOpen}
+        onCancel={handleCancel}
+        onOk={handleOk}
+      >
+        {/* Nội dung của modal ở đây */}
+        <p>This is where your policy content goes.</p>
+      </Modal>
+    </div>
+  );
+};
+
+export default RegisterPage;

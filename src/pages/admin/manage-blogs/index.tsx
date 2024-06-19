@@ -147,17 +147,17 @@ const AdminManageBlogs: React.FC = () => {
 
   const columns: TableColumnsType<Blog> = [
     {
-      title: "Catagory",
+      title: "Category",
       dataIndex: "category",
       key: "category",
-      width: "30%",
+      width: "15%",
       ...getColumnSearchProps("category"),
     },
     {
       title: "Time",
       dataIndex: "time",
       key: "time",
-      width: "20%",
+      width: "15%",
       sorter: (a, b) => a.time.length - b.time.length,
       sortDirections: ["descend", "ascend"],
     },
@@ -177,6 +177,7 @@ const AdminManageBlogs: React.FC = () => {
       ),
     },
     {
+      width: "20%",
       title: "View",
       dataIndex: "view",
       key: "view",
@@ -189,6 +190,7 @@ const AdminManageBlogs: React.FC = () => {
     },
     {
       title: "Action",
+      width: "15%",
       key: "action",
       render: (record: Blog) => (
         <div>

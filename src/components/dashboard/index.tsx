@@ -36,6 +36,8 @@ const Dashboard: React.FC = () => {
     const user: User = userString ? JSON.parse(userString) : null;
     const userRole = user?.role;
 
+    console.log(role, fullName);
+
     if (userRole && user) {
       setRole(userRole);
       setFullName(user.fullName);
@@ -74,6 +76,8 @@ const Dashboard: React.FC = () => {
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
           getItem("Create New Course", "/instructor/create-course", <DesktopOutlined />),
           getItem("Payment History", "/instructor/payment-history", <DesktopOutlined />),
+          getItem("Tools", "/instructor/tools", <ToolOutlined />),
+          getItem("Resources", "/instructor/resources", <QuestionCircleOutlined />),
         ]);
       } else if (dataUser.role === "Admin") {
         setItems([

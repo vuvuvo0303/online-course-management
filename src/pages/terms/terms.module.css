@@ -28,17 +28,18 @@
     padding: 0;
 }
 
-.list_categories {
+.list_content {
     list-style-type: disc;
     margin-left: 2.5rem;
-    line-height: 1.8rem;
+    line-height: 2rem;
+    font-size: 1.2rem;
 }
 
-.category_color {
+.link_to {
     color: #0073e6;
     text-decoration: none;
 }
 
-.category_color:hover {
+.link_to:hover {
     text-decoration: underline;
 }

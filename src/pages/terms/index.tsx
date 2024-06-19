@@ -28,8 +28,8 @@ const Terms: React.FC = () => {
                         <h2 className={`${styles.categories} text-xl sm:text-2xl mb-5`}>Categories</h2>
                         <ul className={styles.text_without_underline}>
                             {terms.map(term => (
-                                <li className={`${styles.list_categories} md:text-xl text-sm`} key={term.id}>
-                                    <a className={styles.category_color} href={term.link}>{term.name}</a>
+                                <li className={`${styles.list_content}`} key={term.id}>
+                                    <a className={styles.link_to} href={term.link}>{term.name}</a>
                                 </li>
                             ))}
                         </ul>

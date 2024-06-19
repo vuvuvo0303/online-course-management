@@ -1,9 +1,7 @@
 import { Menu, Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover, Button } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { categoryFilters, categorySubmenu, paths } from '../consts/index';
-import SearchTool from './SearchTool';
 import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined, CheckOutlined, MenuOutlined } from '@ant-design/icons';
-// import { useState } from 'react';
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 const Navbar = () => {
@@ -14,16 +12,18 @@ const Navbar = () => {
   const isMobile = useMediaQuery({ maxWidth: 768 }); // Điều kiện màn hình nhỏ
   const navigate = useNavigate();
   // Create a submenu for each categoryFilter
+
   useEffect(() => {
     const user = localStorage.getItem("user");
-
     if (user) {
-      const userData = JSON.parse(user);
-      setDataUser({ role: userData.role, fullName: userData.fullName, email: userData.email });
-    } else {
-      navigate("/login"); // Redirect to login if role is not found
+      try {
+        const userData = JSON.parse(user);
+        setDataUser({ role: userData.role, fullName: userData.fullName, email: userData.email });
+      } catch (error) {
+        console.error("Error parsing user data from localStorage", error);
+      }
     }
-  }, [navigate]);
+  }, []);
   const handleLogout = () => {
     localStorage.removeItem('user');
     navigate('/');
@@ -168,11 +168,11 @@ const Navbar = () => {
               <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
               <Col span={14} className="flex items-center">
                 <div className="truncate">
-                The Complete 2024 Web Development Bootcamp
+                  The Complete 2024 Web Development Bootcamp
                 </div>
               </Col>
               <Col span={4} className="flex items-center justify-end">
-              <span>₫249,000</span>
+                <span>₫249,000</span>
               </Col>
             </Row>
           </Link>
@@ -183,11 +183,11 @@ const Navbar = () => {
               <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
               <Col span={14} className="flex items-center">
                 <div className="truncate">
-                The Complete 2024 Web Development Bootcamp
+                  The Complete 2024 Web Development Bootcamp
                 </div>
               </Col>
               <Col span={4} className="flex items-center justify-end">
-              <span>₫249,000</span>
+                <span>₫249,000</span>
               </Col>
             </Row>
           </Link>
@@ -198,11 +198,11 @@ const Navbar = () => {
               <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
               <Col span={14} className="flex items-center">
                 <div className="truncate">
-                The Complete 2024 Web Development Bootcamp
+                  The Complete 2024 Web Development Bootcamp
                 </div>
               </Col>
               <Col span={4} className="flex items-center justify-end">
-              <span>₫249,000</span>
+                <span>₫249,000</span>
               </Col>
             </Row>
           </Link>
@@ -255,7 +255,7 @@ const Navbar = () => {
       ),
     },
   ];
-  
+
   return (
     <nav className={`flexBetween navbar ${isLoginOrRegister ? 'justify-center' : ''}`}>
       <div className={`flex-1 flexStart gap-10 ${isLoginOrRegister ? 'justify-center' : ''}`}>
@@ -289,7 +289,7 @@ const Navbar = () => {
 
       {!isLoginOrRegister && (
         <div className="flexCenter gap-10 mr-5">
-         {isMobile ? (
+          {isMobile ? (
             <Dropdown overlay={<Menu items={items} />} className='mt-5 mb-44' placement="bottomRight">
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
