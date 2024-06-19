@@ -22,7 +22,7 @@ const LoginPage: React.FC = () => {
     const authResult = await login(email, password);
     if (authResult && "user" in authResult) {
       const { user } = authResult;
-      const userWithoutPassword = removePassword(user); // Loại bỏ mật khẩu
+      const userWithoutPassword = removePassword(user);
       localStorage.setItem('user', JSON.stringify(userWithoutPassword));
 
       switch (user.role) {

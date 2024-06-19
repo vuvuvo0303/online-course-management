@@ -39,8 +39,8 @@ import {
   InstructorTools,
   InstructorResources,
 } from "../pages";
-import useRoleRedirect from "../hooks/useRoleRedirect";
 import { paths, roles } from "../consts";
+import { useRoleRedirect } from "../hooks";
 
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
@@ -142,7 +142,6 @@ const AppRouter: React.FC = () => {
             )
           }
         />
-
         <Route
           path={paths.INSTRUCTOR_RESOURCES}
           element={
@@ -153,7 +152,6 @@ const AppRouter: React.FC = () => {
             )
           }
         />
-
         {/* <Route
           path="manage-lectures"
           element={
@@ -185,6 +183,7 @@ const AppRouter: React.FC = () => {
             )
           }
         />
+        <Route path="*" element={<NotFound />} />
       </Route>
 
       {/* Route for Admin */}
@@ -218,8 +217,8 @@ const AppRouter: React.FC = () => {
           path={paths.ADMIN_MANAGE_FEEDBACKS}
           element={<AdminManageFeedbacks />}
         />
+        <Route path="*" element={<NotFound />} />
       </Route>
-      {/* Catch all other routes */}
       <Route path="*" element={<Navigate to={paths.NOTFOUND} />} />
     </Routes>
   );
