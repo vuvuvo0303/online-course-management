@@ -286,7 +286,7 @@ const Navbar = () => {
           </>
         )}
       </div>
-
+      <SearchTool></SearchTool>
       {!isLoginOrRegister && (
         <div className="flexCenter gap-10 mr-5">
          {isMobile ? (

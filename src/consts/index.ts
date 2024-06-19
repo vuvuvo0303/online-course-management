@@ -47,7 +47,8 @@ export const paths = {
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
-
+  INSTRUCTOR_MANAGE_LECTURE: "lecture",
+  INSTRUCTOR_LECTURES_OF_COURSE: "lectureOfCourse/:courseId",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",

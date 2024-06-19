@@ -38,6 +38,8 @@ import {
   AdminManageStudents,
   InstructorTools,
   InstructorResources,
+  InstructorManageLectures,
+  LectureOfCourse,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
@@ -152,6 +154,16 @@ const AppRouter: React.FC = () => {
             )
           }
         />
+        <Route
+          path={paths.INSTRUCTOR_LECTURES_OF_COURSE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <LectureOfCourse />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
         {/* <Route
           path="manage-lectures"
           element={
@@ -172,6 +184,17 @@ const AppRouter: React.FC = () => {
               <Navigate to="/" />
             )
           }
+        />
+         <Route
+          path={paths.INSTRUCTOR_MANAGE_LECTURE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <InstructorManageLectures />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+          
         />
         <Route
           path={paths.INSTRUCTOR_CREATE_COURSE}
