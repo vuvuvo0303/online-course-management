@@ -4,11 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import Vector from "../../assets/Vector.png";
 import Rectangle from "../../assets/Rectangle .jpg";
 import { login } from "../../services/auth";
-import { removePassword } from '../../utils/validHelper';
+import { removePassword } from "../../utils/validHelper";
 
 import { toast } from "react-toastify";
 import { paths } from "../../consts";
-
+import vutru from "../../assets/vutru.json";
+import Lottie from "lottie-react";
 type FieldType = {
   email: string;
   password: string;
@@ -55,7 +56,11 @@ const LoginPage: React.FC = () => {
 
       <div className="w-full md:w-1/2 flex flex-col justify-center a p-4 md:p-20 bg-white rounded-l-lg">
         <div className="mr-6 ">
-          <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Welcome</h1>
+          <div className="flex justify-center items-center ml-16 ">
+            <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Welcome</h1>
+            <Lottie animationData={vutru} style={{ width: "100px", height: "100px" }}  />
+          </div>
+
           <span className="flex justify-center mb-4">Log in to become a part of FLearn</span>
         </div>
 
