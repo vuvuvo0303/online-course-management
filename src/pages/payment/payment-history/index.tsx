@@ -34,7 +34,7 @@ const columns = [
         key: 'status',
         render: (status: string) => (
             <Tag color={
-                status === 'COMPLETED' ? 'blue' :
+                status === 'COMPLETED' ? 'green' :
                     status === 'REJECTED' ? 'red' :
                         status === 'PENDING' ? 'gold' :
                             'default' // Màu mặc định khi không trùng khớp
