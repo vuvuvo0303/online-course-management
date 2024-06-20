@@ -1,42 +1,84 @@
-import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Table } from "antd";
+import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Modal, Spin, Switch, Table } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
-// Định nghĩa interface cho lecture
-interface Lecture {
-    lectureId: string;
-    title: string;
-    description: string;
-    videoUrl: string;
-    createdDate: string;
-    updatedDate: string;
-    courseId: string;
-}
+import { Link, useParams } from "react-router-dom";
+import { Lecture } from "../../../../models";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
     const { courseId } = useParams<{ courseId: string }>();
+    const [loading, setLoading] = useState<boolean>(true);
+    const [open, setOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [modalText, setModalText] = useState('');
+    const [selectedLectureId, setSelectedLectureId] = useState<string>('');
+
+    const showModal = (lectureId: string) => {
+        setModalText(`Do you want to delete this lecture with id = ${lectureId}`)
+        setSelectedLectureId(lectureId)
+        setOpen(true);
+    };
+
+    const handleOk = async () => {
+        if (selectedLectureId) {
+            setModalText('Deleting...');
+            setConfirmLoading(true);
+            try {
+                await handleDelete(selectedLectureId);
+            } catch (error) {
+                setModalText("Error occurred: " + error);
+            } finally {
+                setTimeout(() => {
+                    setOpen(false);
+                    setConfirmLoading(false);
+                }, 2000);
+            }
+        } else {
+            setOpen(false);
+        }
+    };
+
+    const handleDelete = async (lectureId: string) => {
+        await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/lectures/${lectureId}`);
+        setData(data.filter(lecture => lecture.lectureId !== lectureId));
+    };
+
+    const handleCancel = () => {
+        setOpen(false);
+    };
 
     useEffect(() => {
         const fetchLecture = async () => {
             try {
                 const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
-                console.log("check data: ", res);
                 if (res.data) {
-                    // Lọc các lecture có courseId bằng courseId từ useParams
                     const filteredLectures = res.data.filter(lecture => lecture.courseId === courseId);
                     setData(filteredLectures);
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
+            } finally {
+                setLoading(false);
             }
         };
         if (courseId) {
             fetchLecture();
         }
     }, [courseId]);
+
+    const onChangeStatus = async (checked: boolean, lectureId: string) => {
+        try {
+            const updatedLecture = data.find(lecture => lecture.lectureId === lectureId);
+            if (updatedLecture) {
+                updatedLecture.status = checked;
+                await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/lectures/${lectureId}`, updatedLecture);
+                setData([...data]); // Update state to trigger re-render
+            }
+        } catch (error) {
+            console.error("Error updating status:", error);
+        }
+    };
 
     const columns = [
         {
@@ -70,47 +112,68 @@ const LectureOfCourse: React.FC = () => {
             key: 'courseId',
         },
         {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: boolean, record: Lecture) => (
+                <Switch
+                    checked={status}
+                    onChange={(checked) => onChangeStatus(checked, record.lectureId)}
+                />
+            ),
+        },
+        {
             title: 'Action',
+            dataIndex: 'lectureId',
             key: 'action',
-            render: () => (
+            render: (lectureId: string) => (
                 <>
-                    <Button className="bg-blue-500 m-2"><EditOutlined /></Button>
-                    <Button className="bg-red-500 m-2"><DeleteOutlined /></Button>
+                    <Link to={`/instructor/edit-lecture/${courseId}/${lectureId}`}>
+                        <EditOutlined className="text-blue-500 m-2" />
+
+                    </Link>
+                    <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(lectureId)} />
                 </>
             ),
         },
     ];
 
     return (
-        <div className="">
-            <div>
-                <Button className="bg-yellow-500 float-right">
-                    Add New
-                </Button>
-            </div>
-            <Breadcrumb
-                className="py-2"
-                items={[
-                    {
-                        title: <HomeOutlined />,
-                    },
-                    {
-                        href: "dashboard/",
-                        title: (
-                            <>
-                                <UserOutlined />
-                                <span>Instructor</span>
-                            </>
-                        ),
-                    },
-                    {
-                        title: "Manage Lecture",
-                    },
-                ]}
-            />
-            <Table dataSource={data} columns={columns} rowKey="lectureId" />
+        <div className="flex justify-center items-center h-full">
+            <Modal
+                title="Confirm Delete"
+                visible={open}
+                onOk={handleOk}
+                confirmLoading={confirmLoading}
+                onCancel={handleCancel}
+            >
+                <p>{modalText}</p>
+            </Modal>
+            {loading ? (
+                <div className="flex justify-center items-center h-full w-full">
+                    <Spin size="large" />
+                </div>
+            ) : (
+                <div className="">
+                    <div>
+                        <Link to={`/instructor/create-lecture/${courseId}`}>
+                            <Button className="bg-yellow-500 m-1 float-right">Add New</Button>
+                        </Link>
+                    </div>
+                    <Breadcrumb className="py-2" >
+                        <Breadcrumb.Item href="/dashboard">
+                            <HomeOutlined />
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Item href="/instructor/manage-courses">
+                           Manage Courses
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Item>Manage Lecture</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <Table dataSource={data} columns={columns} rowKey="lectureId" />
+                </div>
+            )}
         </div>
     );
-}
+};
 
 export default LectureOfCourse;

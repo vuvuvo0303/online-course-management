@@ -117,7 +117,7 @@ const Dashboard: React.FC = () => {
             </Col>
             <Col span={16}>
               <Row>
-                <p className="text-lg font-bold font-bold"> {dataUser.fullName}</p>
+                <p className="text-lg font-bold"> {dataUser.fullName}</p>
                 <CheckOutlined className="text-blue-500 ml-2" />
               </Row>
               <div>

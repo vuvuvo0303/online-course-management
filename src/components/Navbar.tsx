@@ -5,6 +5,7 @@ import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOu
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import SearchTool from './SearchTool';
+import "./nav.css"
 const Navbar = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();

@@ -35,6 +35,7 @@ export { default as InstructorManageBlogs } from "./instructor/manage-blogs/inde
 export { default as InstructorResources} from "./instructor/resources";
 export { default as InstructorTools } from "./instructor/tools";
 export { default as LectureOfCourse } from "./instructor/manage-course/lectures-of-course";
+export { default as CreateLecture } from "./instructor/manage-course/lectures-of-course/create-update-page";
 
 /* Admin Page */
 export { default as AdminDashboard } from "./admin/dashboard";

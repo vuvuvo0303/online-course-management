@@ -40,9 +40,11 @@ import {
   InstructorResources,
   InstructorManageLectures,
   LectureOfCourse,
+  CreateLecture,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
+
 
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
@@ -155,6 +157,16 @@ const AppRouter: React.FC = () => {
           }
         />
         <Route
+          path={paths.INSTRUCTOR_CREATE_LECTURE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateLecture />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
           path={paths.INSTRUCTOR_LECTURES_OF_COURSE}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
@@ -185,7 +197,17 @@ const AppRouter: React.FC = () => {
             )
           }
         />
-         <Route
+        <Route
+          path={paths.INSTRUCTOR_CREATE_COURSE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <InstructorCreateCourse />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
           path={paths.INSTRUCTOR_MANAGE_LECTURE}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
@@ -196,11 +218,12 @@ const AppRouter: React.FC = () => {
           }
           
         />
+        
         <Route
-          path={paths.INSTRUCTOR_CREATE_COURSE}
+          path={paths.INSTRUCTOR_EDIT_LECTURE}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
-              <InstructorCreateCourse />
+              <CreateLecture />
             ) : (
               <Navigate to="/" />
             )

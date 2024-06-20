@@ -48,6 +48,9 @@ export const paths = {
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",
+  INSTRUCTOR_CREATE_LECTURE: "create-lecture/:courseId",
+  INSTRUCTOR_EDIT_LECTURE: "edit-lecture/:courseId/:lectureId",
+  INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
   INSTRUCTOR_LECTURES_OF_COURSE: "lectureOfCourse/:courseId",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",

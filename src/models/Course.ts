@@ -11,7 +11,7 @@ export class Course {
     level: string;
     courseImgUrl: string;
     userId: string;
-
+    status: boolean;
     constructor(
         courseId: string = "",
         title: string = "",
@@ -24,7 +24,8 @@ export class Course {
         category: string = "",
         level: string = "",
         courseImgUrl: string = "",
-        userId: string = ""
+        userId: string = "",
+        status: boolean = false
     ) {
         this.courseId = courseId;
         this.title = title;
@@ -38,5 +39,6 @@ export class Course {
         this.level = level;
         this.courseImgUrl = courseImgUrl;
         this.userId = userId;
+        this.status = status;
     }
 }
