@@ -16,6 +16,7 @@ export { default as SiteMap } from "./sitemap";
 export { default as NotFound } from "./notfound";
 export { default as CourseDetail } from "./course-detail";
 export { default as BecomeInstructorPage } from "./teaching";
+export { default as CoursesCategory } from "./courses";
 
 /* Student Page */
 export { default as StudentPaymentHistory } from "./payment/studentPaymentHistory";

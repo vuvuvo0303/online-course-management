@@ -38,9 +38,10 @@ import {
   AdminManageStudents,
   InstructorTools,
   InstructorResources,
-  InstructorManageLectures,
-  LectureOfCourse,
+  CoursesCategory,
   CreateLecture,
+  LectureOfCourse,
+  InstructorManageLectures,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
@@ -67,6 +68,7 @@ const AppRouter: React.FC = () => {
       <Route path={paths.SITEMAP} element={<SiteMap />} />
       <Route path={paths.TEACHING} element={<BecomeInstructorPage />} />
       <Route path={paths.NOTFOUND} element={<NotFound />} />
+      <Route path="/courses/:id" element={<CoursesCategory />} />
 
       {/* Route for Student */}
       <Route
@@ -216,9 +218,9 @@ const AppRouter: React.FC = () => {
               <Navigate to="/" />
             )
           }
-          
+
         />
-        
+
         <Route
           path={paths.INSTRUCTOR_EDIT_LECTURE}
           element={
