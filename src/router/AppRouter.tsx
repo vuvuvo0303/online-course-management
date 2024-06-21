@@ -42,6 +42,7 @@ import {
   CreateLecture,
   LectureOfCourse,
   InstructorManageLectures,
+  ForgotPassword,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
@@ -61,7 +62,7 @@ const AppRouter: React.FC = () => {
       <Route path={paths.POLICY} element={<Policy />} />
       <Route path={paths.GUIDELINES} element={<Guidelines />} />
       <Route path={paths.SUPPORT} element={<Support />} />
-      <Route path={paths.BLOG} element={<BlogList />} />
+      <Route path={paths.BLOGS} element={<BlogList />} />
       <Route path={paths.COURSE} element={<Course />} />
       <Route path={paths.BLOG_DETAIL} element={<BlogDetail />} />
       <Route path={paths.CONTACT} element={<Contact />} />
@@ -69,6 +70,7 @@ const AppRouter: React.FC = () => {
       <Route path={paths.TEACHING} element={<BecomeInstructorPage />} />
       <Route path={paths.NOTFOUND} element={<NotFound />} />
       <Route path="/courses/:id" element={<CoursesCategory />} />
+      <Route path={paths.FORGOT_PASSWORD} element={<ForgotPassword />} />
 
       {/* Route for Student */}
       <Route

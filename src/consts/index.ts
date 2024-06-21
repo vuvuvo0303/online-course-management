@@ -22,7 +22,7 @@ export const paths = {
   POLICY: "/terms/policy",
   GUIDELINES: "/terms/guidelines",
   SUPPORT: "/support",
-  BLOG: "/blog",
+  BLOGS: "/blogs",
   BLOG_DETAIL: "/blog/:id",
   CONTACT: "/contact",
   TEACHING: "/teaching",
@@ -30,6 +30,7 @@ export const paths = {
   SITEMAP: "/sitemap",
   NOTFOUND: "/notfound",
   COURSE_DETAIL: "/course/:id",
+  FORGOT_PASSWORD: "/forgot-password",
 
   /* STUDENT PATHS */
   STUDENT_PROFILE: "/profile",
