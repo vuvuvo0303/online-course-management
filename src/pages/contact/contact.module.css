@@ -6,6 +6,17 @@
   object-fit: cover;
 }
 
+.breadcrumb {
+  margin: 20px 0;
+  padding: 0 20px;
+}
+
+.pageTitle {
+  text-align: left;
+  font-family: "Arial", sans-serif;
+  margin-left: 20px;
+}
+
 .contactContainer {
   display: flex;
   flex-wrap: wrap;
@@ -62,6 +73,7 @@
   font-size: 24px;
   margin-right: 10px;
   color: #1890ff;
+  cursor: pointer;
 }
 
 .socialIcon:hover {
@@ -72,6 +84,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding: 0 20px;
 }
 
 .mapContainer {

@@ -1,4 +1,5 @@
 import {
+  HomeOutlined,
   QuestionCircleOutlined,
   BookOutlined,
   FileDoneOutlined,
@@ -9,19 +10,32 @@ import {
   YoutubeOutlined,
   TwitterOutlined,
 } from "@ant-design/icons";
+import { Breadcrumb } from "antd";
 import styles from "./contact.module.css";
 import ScrollToTopButton from "../../components/ScrollToTopButton";
 
 const Contact: React.FC = () => {
   return (
     <div>
-      <div className={styles.contactImageContainer}>
+      {/* <div className={styles.contactImageContainer}>
         <img
           src="https://www.soho2019.com/wp-content/uploads/2021/11/contact-banner-2.jpg"
           alt="Contact Us"
           className={styles.contactImage}
         />
-      </div>
+      </div> */}
+      <Breadcrumb className={styles.breadcrumb}>
+        <Breadcrumb.Item href="/">
+          <HomeOutlined />
+          <span>Home</span>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <span>Contact Us</span>
+        </Breadcrumb.Item>
+      </Breadcrumb>
+
+      <h1 className={styles.pageTitle}>Contact Us</h1>
+
       <div className={styles.contactContainer}>
         <section
           className={styles.contactSection}
@@ -162,8 +176,8 @@ const Contact: React.FC = () => {
             />
             <p>Xinyi District, Taipei City, Taiwan</p>
           </div>
-          <ScrollToTopButton />
         </div>
+        <ScrollToTopButton />
       </div>
     </div>
   );
