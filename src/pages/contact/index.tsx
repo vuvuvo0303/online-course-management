@@ -51,7 +51,6 @@ const Contact: React.FC = () => {
         <section className={styles.contactSection}>
           <Link to={paths.BLOGS} className={styles.contactLink}>
             <div className={styles.contactCircle}>
-
               <BookOutlined className={styles.contactIcon} />
             </div>
             <h2>
@@ -89,7 +88,9 @@ const Contact: React.FC = () => {
             </h1>
             <hr style={{ width: "250px" }} />
             <p className={styles.contactText}>
-              <EnvironmentOutlined className={`${styles.contactIcon} text-black`} />
+              <EnvironmentOutlined
+                className={`${styles.contactIcon} text-black`}
+              />
               <strong> Main Address:</strong> D1 Street, Tan Phu Ward, Thu Duc
               City, Ho Chi Minh City, Vietnam
             </p>
@@ -118,7 +119,6 @@ const Contact: React.FC = () => {
                   <InstagramFilled className={styles.socialIcon} />
                 </div>
               </Link>
-
             </div>
           </div>
         </div>
@@ -174,7 +174,6 @@ const Contact: React.FC = () => {
             <p>Xinyi District, Taipei City, Taiwan</p>
           </div>
         </div>
-        <ScrollToTopButton />
       </div>
     </div>
   );
