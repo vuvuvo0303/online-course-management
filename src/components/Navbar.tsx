@@ -4,6 +4,8 @@ import { categoryFilters, categorySubmenu, paths } from '../consts/index';
 import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined, CheckOutlined, MenuOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import SearchTool from './SearchTool';
+import "./nav.css"
 const Navbar = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
@@ -33,18 +35,18 @@ const Navbar = () => {
       label: (
         <div className="text-sm">
           <Row>
-            <Col span={8}>
+            <Col span={8} className='pl-3 pt-2 pb-2'>
               <Avatar
                 src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
                 className="hover:cursor-pointer"
-                size={40}
+                size={50}
                 icon={<UserOutlined />}
               />
             </Col>
-            <Col span={16}>
+            <Col span={16} className='pt-3 pr-3'>
               <Row>
                 <p className='text-base font-bold'>{dataUser.fullName}</p>
-                <CheckOutlined className="text-blue-500 ml-2" />
+                <CheckOutlined className="ml-2" />
               </Row>
               <div>
                 <p className='text-base'>{dataUser.email}</p>
@@ -52,31 +54,30 @@ const Navbar = () => {
             </Col>
           </Row>
           <div className="mt-2 text-lg font-bold">
-            <Link className="hover:text-red-600" to={"/profile"}>View Profile</Link>
-          </div>
-          <div className="mt-2 text-lg">
-            <Link className="hover:text-red-600" to={"/payment-history"}>Payment History</Link>
-          </div>
-          <div className="mt-2">
-            <Link className="text-lg hover:text-red-600" to={"/setting"}>Setting</Link>
-          </div>
-          <div className="mt-2">
-            <Link className="text-lg hover:text-red-600" to={"/help"}>Help</Link>
-          </div>
-          <div className="mt-2">
-            <Link className="text-lg hover:text-red-600" to={"/sendFeedBack"}>Send Feedback</Link>
+            <Link className='hover:text-red-600' to={"/profile"}>View {dataUser.role} Profile</Link>
           </div>
         </div>
       ),
       key: "1",
     },
     {
-      label: <p className="text-lg">Role: {dataUser.role}</p>,
+      label:
+        <Link className="text-lg" to={"/payment-history"}>Payment History</Link>,
       key: "2",
     },
     {
-      label: <p onClick={handleLogout} className="text-lg hover:cursor-pointer hover:text-red-600">Logout</p>,
+      label:
+        <Link className="text-lg" to={"/help"}>Help</Link>,
       key: "3",
+    },
+    {
+      label:
+        <Link className="text-lg" to={"/sendFeedBack"}>Send Feedback</Link>,
+      key: "4",
+    },
+    {
+      label: <p onClick={handleLogout} className="text-lg hover:cursor-pointer hover:text-red-600">Logout</p>,
+      key: "5",
     },
   ];
 
@@ -286,7 +287,7 @@ const Navbar = () => {
           </>
         )}
       </div>
-
+      <SearchTool />
       {!isLoginOrRegister && (
         <div className="flexCenter gap-10 mr-5">
           {isMobile ? (

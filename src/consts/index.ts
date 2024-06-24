@@ -22,7 +22,7 @@ export const paths = {
   POLICY: "/terms/policy",
   GUIDELINES: "/terms/guidelines",
   SUPPORT: "/support",
-  BLOG: "/blog",
+  BLOGS: "/blogs",
   BLOG_DETAIL: "/blog/:id",
   CONTACT: "/contact",
   TEACHING: "/teaching",
@@ -30,6 +30,7 @@ export const paths = {
   SITEMAP: "/sitemap",
   NOTFOUND: "/notfound",
   COURSE_DETAIL: "/course/:id",
+  FORGOT_PASSWORD: "/forgot-password",
 
   /* STUDENT PATHS */
   STUDENT_PROFILE: "/profile",
@@ -47,7 +48,11 @@ export const paths = {
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
-
+  INSTRUCTOR_MANAGE_LECTURE: "lecture",
+  INSTRUCTOR_CREATE_LECTURE: "create-lecture/:courseId",
+  INSTRUCTOR_EDIT_LECTURE: "edit-lecture/:courseId/:lectureId",
+  INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
+  INSTRUCTOR_LECTURES_OF_COURSE: "lectureOfCourse/:courseId",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",

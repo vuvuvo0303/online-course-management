@@ -38,9 +38,15 @@ import {
   AdminManageStudents,
   InstructorTools,
   InstructorResources,
+  CoursesCategory,
+  CreateLecture,
+  LectureOfCourse,
+  InstructorManageLectures,
+  ForgotPassword,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
+
 
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
@@ -56,13 +62,15 @@ const AppRouter: React.FC = () => {
       <Route path={paths.POLICY} element={<Policy />} />
       <Route path={paths.GUIDELINES} element={<Guidelines />} />
       <Route path={paths.SUPPORT} element={<Support />} />
-      <Route path={paths.BLOG} element={<BlogList />} />
+      <Route path={paths.BLOGS} element={<BlogList />} />
       <Route path={paths.COURSE} element={<Course />} />
       <Route path={paths.BLOG_DETAIL} element={<BlogDetail />} />
       <Route path={paths.CONTACT} element={<Contact />} />
       <Route path={paths.SITEMAP} element={<SiteMap />} />
       <Route path={paths.TEACHING} element={<BecomeInstructorPage />} />
       <Route path={paths.NOTFOUND} element={<NotFound />} />
+      <Route path="/courses/:id" element={<CoursesCategory />} />
+      <Route path={paths.FORGOT_PASSWORD} element={<ForgotPassword />} />
 
       {/* Route for Student */}
       <Route
@@ -152,6 +160,26 @@ const AppRouter: React.FC = () => {
             )
           }
         />
+        <Route
+          path={paths.INSTRUCTOR_CREATE_LECTURE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateLecture />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path={paths.INSTRUCTOR_LECTURES_OF_COURSE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <LectureOfCourse />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
         {/* <Route
           path="manage-lectures"
           element={
@@ -178,6 +206,28 @@ const AppRouter: React.FC = () => {
           element={
             canAccess([roles.INSTRUCTOR]) ? (
               <InstructorCreateCourse />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path={paths.INSTRUCTOR_MANAGE_LECTURE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <InstructorManageLectures />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+
+        />
+
+        <Route
+          path={paths.INSTRUCTOR_EDIT_LECTURE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateLecture />
             ) : (
               <Navigate to="/" />
             )

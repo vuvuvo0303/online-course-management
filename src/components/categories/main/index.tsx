@@ -117,7 +117,9 @@ const Categories: React.FC = () => {
                             className="category-filter-button"
                             onClick={() => setSelectedCategory(filter)}
                         >
-                            {filter}
+                            <Link to={`/courses/${filter}`}>
+                                {filter}
+                            </Link>
                         </Button>
                     ))}
                 </div>

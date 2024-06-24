@@ -27,26 +27,36 @@
 
 .contactSection {
   text-align: center;
-  border: 2px solid #ccc;
   border-radius: 5px;
   padding: 20px;
   width: calc(32% - 10px);
   margin-bottom: 20px;
   box-sizing: border-box;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0.1, 0.1, 0.1, 0.1);
+
 }
 
 .contactSection:hover {
   transform: translateY(-5px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .contactIcon {
   font-size: 24px;
-  margin-bottom: 10px;
-  color: #1890ff;
-  margin-right: 10px;
+  color: white;
 }
+
+.contactCircle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgb(239 68 68 /1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+}
+
 
 .contactLink {
   text-decoration: none;
@@ -60,7 +70,7 @@
 }
 
 .contactInfo p {
-  margin-bottom: 10px;
+  margin-bottom: 16px;
   margin-top: 10px;
   font-size: 16px;
 }
@@ -70,14 +80,22 @@
 }
 
 .socialIcon {
-  font-size: 24px;
+  font-size: 20px;
+  padding: 10px;
+  color: white;
+}
+
+.icon_container {
+  border-radius: 4px;
+  transition: .5s all ease;
   margin-right: 10px;
   color: #1890ff;
   cursor: pointer;
 }
 
-.socialIcon:hover {
-  color: #40a9ff;
+.icon_container:hover {
+  scale: 1.2;
+
 }
 
 .contactContainerOuter {

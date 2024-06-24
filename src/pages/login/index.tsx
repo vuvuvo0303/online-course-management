@@ -1,4 +1,3 @@
-// pages/LoginPage.tsx
 import { Button, Form, FormProps, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Vector from "../../assets/Vector.png";
@@ -8,8 +7,10 @@ import { removePassword } from "../../utils/validHelper";
 
 import { toast } from "react-toastify";
 import { paths } from "../../consts";
+import { useGoogleLogin } from "@react-oauth/google";
+import Lottie from 'lottie-react';
 import vutru from "../../assets/vutru.json";
-import Lottie from "lottie-react";
+
 type FieldType = {
   email: string;
   password: string;
@@ -50,6 +51,37 @@ const LoginPage: React.FC = () => {
     console.log("Failed:", errorInfo);
   };
 
+  const fetchGoogleUserInfo = async (accessToken: string) => {
+    try {
+      const response = await fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user info');
+      }
+
+      const userInfo = await response.json();
+      console.log(userInfo);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      console.log(tokenResponse);
+      if (tokenResponse.access_token) {
+        await fetchGoogleUserInfo(tokenResponse.access_token);
+      }
+    },
+    onError: () => {
+      console.log('Login Failed');
+    }
+  });
+
   return (
     <div className="flex min-h-screen relative">
       <img src={Vector} alt="" className="absolute bottom-8" />
@@ -58,7 +90,7 @@ const LoginPage: React.FC = () => {
         <div className="mr-6 ">
           <div className="flex justify-center items-center ml-16 ">
             <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Welcome</h1>
-            <Lottie animationData={vutru} style={{ width: "100px", height: "100px" }}  />
+            <Lottie animationData={vutru} style={{ width: "100px", height: "100px" }} />
           </div>
 
           <span className="flex justify-center mb-4">Log in to become a part of FLearn</span>
@@ -138,7 +170,7 @@ const LoginPage: React.FC = () => {
           <hr className="my-8 border-gray-50 w-36" />
         </div>
         <div className="flex justify-center mr-10">
-          <button className="flex justify-center items-center gap-4 border border-black rounded-md px-12 py-3 shadow-xl hover:shadow-orange-200 w-full md:w-2/3 bg-transparent">
+          <button onClick={() => googleLogin()} className="flex justify-center items-center gap-4 border border-black rounded-md px-12 py-3 shadow-xl hover:shadow-orange-200 w-full md:w-2/3 bg-transparent">
             <img src="https://www.pngall.com/wp-content/uploads/13/Google-Logo.png" alt="Google Logo" width={25} />
             <span>Login with Google</span>
           </button>

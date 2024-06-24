@@ -114,7 +114,7 @@ const BlogDetail: React.FC = () => {
                         <em>Page Last Updated: </em>
                         <span className='font-normal'> November 2023</span>
                     </p>
-                    <div className={styles.footer_author_border_top}>
+                    <div className={`${styles.footer_author_border_top} p-10`}>
                         <div className={styles.footer_author_section}>
                             <div className='flex'>
                                 <div className='w-full flex'>
@@ -137,7 +137,7 @@ const BlogDetail: React.FC = () => {
                     </div>
                 </footer>
             </div>
-            <div className={styles.teach_section}>
+            <div className={`${styles.teach_section}`}>
                 <div className={styles.teach_section_container}>
                     <div className='items-center flex flex-wrap mx-[-15px]'>
                         <div className={`${styles.col_md_6} ${styles.padding_2side}`}>

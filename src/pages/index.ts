@@ -16,6 +16,8 @@ export { default as SiteMap } from "./sitemap";
 export { default as NotFound } from "./notfound";
 export { default as CourseDetail } from "./course-detail";
 export { default as BecomeInstructorPage } from "./teaching";
+export { default as CoursesCategory } from "./courses";
+export { default as ForgotPassword } from "./forgot-password";
 
 /* Student Page */
 export { default as StudentPaymentHistory } from "./payment/studentPaymentHistory";
@@ -34,6 +36,8 @@ export { default as InstructorManageStudents } from "./instructor/manage-student
 export { default as InstructorManageBlogs } from "./instructor/manage-blogs/index";
 export { default as InstructorResources} from "./instructor/resources";
 export { default as InstructorTools } from "./instructor/tools";
+export { default as LectureOfCourse } from "./instructor/manage-course/lectures-of-course";
+export { default as CreateLecture } from "./instructor/manage-course/lectures-of-course/create-update-page";
 
 /* Admin Page */
 export { default as AdminDashboard } from "./admin/dashboard";

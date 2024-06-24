@@ -6,7 +6,8 @@ export class Payment{
     status: string = "";
     userId: string = "";
     enrollmentId: string = "";
-
+    courseId: string = "";
+    courseName: string = "";
     constructor(
         paymentId: string = "",
         amount: number = 0,
@@ -15,6 +16,8 @@ export class Payment{
         status: string = "",
         userId: string = "",
         enrollmentId: string = "",
+        courseId: string = "",
+        courseName: string = "",
     ){
         this.paymentId = paymentId;
         this.amount = amount;
@@ -23,5 +26,7 @@ export class Payment{
         this.status = status;
         this.userId = userId;
         this.enrollmentId = enrollmentId;
+        this.courseId = courseId;
+        this.courseName = courseName;
     }
 }

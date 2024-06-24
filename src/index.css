@@ -35,7 +35,7 @@ h1 {
 
 .main_h2 {
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 1.8rem;
   letter-spacing: 0;
   line-height: 1.2;
 }
@@ -145,11 +145,11 @@ h1 {
   @apply flex-col paddings w-full gap-20 bg-light-white;
 }
 
-.footer > .flex:first-child {
+.footer>.flex:first-child {
   @apply flex-row justify-between;
 }
 
-.footer > .flex:first-child > .flex {
+.footer>.flex:first-child>.flex {
   @apply gap-8;
 }
 
@@ -203,7 +203,7 @@ h1 {
     font-size: 0.875rem;
   }
 
-  .flexEvenly > div {
+  .flexEvenly>div {
     max-width: 100%;
     padding: 1rem;
   }

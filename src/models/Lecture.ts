@@ -6,7 +6,7 @@ export class Lecture{
     createdDate: string 
     updatedDate: string 
     courseId: string 
-
+    status: boolean
     constructor(
         lectureId: string = "",
         title: string = "",
@@ -14,7 +14,8 @@ export class Lecture{
         videoUrl: string = "",
         createdDate: string = "",
         updatedDate: string = "",
-        courseId: string = ""
+        courseId: string = "",
+        status: boolean = false
     ){
         this.lectureId = lectureId;
         this.title = title;
@@ -23,5 +24,6 @@ export class Lecture{
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.courseId = courseId; 
+        this.status = status; 
     }
 }
