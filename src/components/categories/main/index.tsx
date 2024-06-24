@@ -3,8 +3,9 @@ import { Card, Popover, Button, Rate } from 'antd';
 import Carousel from "react-multi-carousel";
 import { Link } from 'react-router-dom';
 import "react-multi-carousel/lib/styles.css";
-import { categoryFilters, categorySubmenu } from "../../../consts/index";
+import { categoryFilters, categorySubmenu, paths } from "../../../consts/index";
 import { CheckOutlined, HeartOutlined } from '@ant-design/icons'; // Importing the icon
+import { HashLink } from 'react-router-hash-link';
 import './Categories.css';
 
 const { Meta } = Card;
@@ -47,12 +48,12 @@ const Categories: React.FC = () => {
     };
 
     const handleStartTeaching = useCallback(() => {
-        window.location.href = "/teaching";
+        window.location.href = paths.TEACHING;
     }, []);
 
     const renderPopoverContent = useCallback((filter: string) => {
         const handleGoToCourse = () => {
-            window.location.href = "/cart";
+            window.location.href = paths.STUDENT_CART;
         };
 
         return (
@@ -93,7 +94,7 @@ const Categories: React.FC = () => {
                     >
                         Go to cart
                     </Button>
-                    <Link to='/enrollment' className="ml-4 mt-[0.4rem]">
+                    <Link to={paths.STUDENT_ENROLLMENT} className="ml-4 mt-[0.4rem]">
                         <HeartOutlined className="text-black text-2xl" />
                     </Link>
                 </div>
@@ -154,20 +155,20 @@ const Categories: React.FC = () => {
                                     style={{ margin: '10px' }}
                                     cover={
                                         <div className="avatar-container">
-                                            <Link to='/course'>
+                                            <HashLink smooth to={`${paths.COURSE}#top`}>
                                                 <img
                                                     alt="example"
                                                     src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
                                                     style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
                                                 />
-                                            </Link>
+                                            </HashLink>
                                             <div className="best-seller-label text-yellow-200 text-base">Best Seller</div>
                                         </div>
                                     }
                                 >
                                     <Meta
                                         className="card-meta"
-                                        title={filter}
+                                        title={<HashLink smooth to={`${paths.COURSE}#top`}>{filter}</HashLink>}
                                         description="This is the description"
                                     />
                                     <div className="rating-container card-meta">
