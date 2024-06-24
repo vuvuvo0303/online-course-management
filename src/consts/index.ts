@@ -77,13 +77,6 @@ export const roles = {
   ADMIN: "Admin",
 };
 
-// /* NAV LINKs */
-// export const NavLinks = [
-//   // { href: "/enrollment", key: "Saved Courses", text: "Saved Courses" },
-//   // { href: "/teaching", key: "Be an Instructors", text: "Be an Instructors" },
-// ];
-
-
 /* CATEGORIES */
 export const categoryFilters = [
   "Development",
