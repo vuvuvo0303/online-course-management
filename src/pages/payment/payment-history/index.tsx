@@ -3,7 +3,7 @@ import PaymentSubscriptions from '../studentPaymentHistory/subscriptions';
 import { Breadcrumb, Tabs, TabsProps } from 'antd';
 import ManagePaymentCourse from './courses';
 import ManagePaymentRefund from './refunds';
-import { HomeOutlined} from '@ant-design/icons';
+import { HomeOutlined } from '@ant-design/icons';
 
 const PaymentHistory: React.FC = () => {
     const [selectComponent, setSelectComponent] = useState("default");
@@ -14,6 +14,8 @@ const PaymentHistory: React.FC = () => {
             case "subscriptions":
                 return <PaymentSubscriptions />
             case "courses":
+                return <ManagePaymentCourse />
+            default:
                 return <ManagePaymentCourse />
         }
     }
@@ -43,7 +45,7 @@ const PaymentHistory: React.FC = () => {
                         title: <HomeOutlined />,
                     },
                     {
-                        
+
                         title: (
                             <>
                                 <span>Payment History</span>

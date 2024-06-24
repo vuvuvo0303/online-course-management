@@ -1,12 +1,12 @@
-import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Modal, Spin, Switch, Table, TableProps } from "antd";
+import { DeleteOutlined, HomeOutlined } from "@ant-design/icons";
+import { Breadcrumb, Modal, Spin, Switch, Table, TableProps } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import { Lecture } from "../../../../../models";
 import { toast } from "react-toastify";
 
-const LectureOfCourse: React.FC = () => {
+const AdminMangeLecture: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
     const { courseId , sessionId} = useParams<{ courseId: string , sessionId: string}>();
     const [loading, setLoading] = useState<boolean>(true);
@@ -125,6 +125,17 @@ const LectureOfCourse: React.FC = () => {
             key: 'courseId',
         },
         {
+            title: 'Ban',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: boolean, record: Lecture) => (
+                <Switch
+                    checked={status}
+                    onChange={(checked) => onChangeStatus(checked, record.lectureId)}
+                />
+            ),
+        },
+        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
@@ -141,10 +152,7 @@ const LectureOfCourse: React.FC = () => {
             key: 'action',
             render: (lectureId: string) => (
                 <>
-                    <Link to={`/instructor/manage-course/${courseId}/manage-session/${sessionId}/lecture/edit-lecture/${lectureId}`}>
-                        <EditOutlined className="text-blue-500 m-2" />
-
-                    </Link>
+                    
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(lectureId)} />
                 </>
             ),
@@ -174,20 +182,15 @@ const LectureOfCourse: React.FC = () => {
                         <Breadcrumb.Item href="/dashboard">
                             <HomeOutlined />
                         </Breadcrumb.Item>
-                        <Breadcrumb.Item href="/instructor/manage-courses">
+                        <Breadcrumb.Item href="/admin/manage-courses">
                             Manage Courses
                         </Breadcrumb.Item>
-                        <Breadcrumb.Item href={`/instructor/manage-course/${courseId}/manage-session`}>
-                            Manage Session
+                        <Breadcrumb.Item href={`/admin/manage-course/${courseId}/manage-session`}>
+                            Manage Session 
                         </Breadcrumb.Item>
                         <Breadcrumb.Item>Manage Lecture</Breadcrumb.Item>
                     </Breadcrumb>
                     <h1 className="text-center m-10">Manage Lecture</h1>
-                    <div>
-                        <Link to={`/instructor/manage-course/${courseId}/manage-session/${sessionId}/lecture/create-lecture`}>
-                            <Button className="bg-yellow-500 mb-10 float-right">Add New</Button>
-                        </Link>
-                    </div>
                     <Table dataSource={data} columns={columns} rowKey="lectureId" />
                 </div>
             )}
@@ -195,4 +198,4 @@ const LectureOfCourse: React.FC = () => {
     );
 };
 
-export default LectureOfCourse;
+export default AdminMangeLecture;
