@@ -33,11 +33,12 @@ export { default as InstructorCreateCourse } from "../pages/course/create-course
 export { default as InstructorManageCourses } from "./instructor/manage-course/index";
 export { default as InstructorManageStudents } from "./instructor/manage-students";
 export { default as InstructorManageBlogs } from "./instructor/manage-blogs/index";
-export { default as InstructorResources} from "./instructor/resources";
+export { default as InstructorResources } from "./instructor/resources";
 export { default as InstructorTools } from "./instructor/tools";
-export { default as LectureOfCourse } from "./instructor/manage-course/lectures-of-course";
-export { default as CreateLecture } from "./instructor/manage-course/lectures-of-course/create-update-page";
-
+export { default as LectureOfCourse } from "./instructor/manage-course/manage-session/lectures-of-course";
+export { default as CreateLecture } from "./instructor/manage-course/manage-session/lectures-of-course/create-update-page";
+export { default as ManageSession } from "./instructor/manage-course/manage-session/";
+export { default as CreateUpdateSession } from "./instructor/manage-course/manage-session/create-update-session";
 /* Admin Page */
 export { default as AdminDashboard } from "./admin/dashboard";
 export { default as AdminManageStudents } from "./admin/manage-students";

@@ -3,7 +3,6 @@ import AppRouter from './router/AppRouter';
 import { Footer, Navbar } from './components';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import config from './secret/config';
-
 function App() {
   const location = useLocation();
 
@@ -14,7 +13,6 @@ function App() {
   if (!clientId) {
     throw new Error('Google OAuth Client ID is not defined');
   }
-
   return (
     <>
       <GoogleOAuthProvider clientId={clientId}>
@@ -25,5 +23,4 @@ function App() {
     </>
   );
 }
-
 export default App;

@@ -1,9 +1,9 @@
 
-import PaymentCourses from "../courses";
-import PaymentSubscriptions from "../subscriptions";
-import PaymentRefunds from "../refunds";
+import PaymentCourses from "./courses";
+import PaymentSubscriptions from "./subscriptions";
+import PaymentRefunds from "./refunds";
 
-import {Tabs, TabsProps} from "antd";
+import { Tabs, TabsProps } from "antd";
 import { useState } from "react";
 
 
@@ -49,11 +49,11 @@ const StudentPaymentHistory: React.FC = () => {
       </Tabs>
       {renderComponent()}
     </div>
-   
+
   );
 
 
-  
+
 };
 
 export default StudentPaymentHistory;

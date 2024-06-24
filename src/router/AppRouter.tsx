@@ -42,6 +42,8 @@ import {
   CreateLecture,
   LectureOfCourse,
   InstructorManageLectures,
+  ManageSession,
+  CreateUpdateSession,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
@@ -226,6 +228,36 @@ const AppRouter: React.FC = () => {
           element={
             canAccess([roles.INSTRUCTOR]) ? (
               <CreateLecture />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+         <Route
+          path={paths.INSTRUCTOR_MANAGE_SESSION_OF_COURSE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <ManageSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+         <Route
+          path={paths.INSTRUCTOR_CREATE_SESSION}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateUpdateSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path={paths.INSTRUCTOR_UPDATE_SESSION}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateUpdateSession />
             ) : (
               <Navigate to="/" />
             )

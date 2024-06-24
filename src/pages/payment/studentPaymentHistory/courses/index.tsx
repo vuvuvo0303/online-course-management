@@ -1,16 +1,54 @@
-import styles from "../paymentHistory.module.css"
+
+
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Table, Tag } from "antd";
-import { Payment } from "../../../models";
-
-const PaymentRefunds = ()=>{
+import { Button, Modal, Table, Tag } from "antd";
+import { Payment } from "../../../../models";
+const PaymentCourses: React.FC = () => {
     const [payments, setPayments] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
   
-
-
+    const [open, setOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [modalText, setModalText] = useState<string>('');
+    const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  
+    const showModal = (courseId: string) => {
+      setModalText("Do you want to refund this course?");
+      setSelectedCourseId(courseId);
+      setOpen(true);
+    };
+  
+    const handleCancel = () => {
+      console.log('Clicked cancel button');
+      setOpen(false);
+    };
+  
+    const handleOk = async () => {
+      if (selectedCourseId) {
+        setModalText('Refunding...');
+        setConfirmLoading(true);
+        await handleSetStatusRefund(selectedCourseId);
+        setConfirmLoading(false);
+        setOpen(false);
+      }
+    };
+  
+    const handleSetStatusRefund = async (courseId: string) => {
+      const findCourse = payments.find(payment => payment.courseId === courseId);
+      if (findCourse) {
+        findCourse.status = "REFUND";
+        try {
+          await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/payments/${findCourse.paymentId}`, findCourse);
+          setPayments([...payments]); // Force re-render
+        } catch (error) {
+          console.log("Error: ", error);
+          setError("An error occurred while processing the refund.");
+        }
+      }
+    };
+  
     const columns = [
       {
         title: "Amount",
@@ -55,6 +93,21 @@ const PaymentRefunds = ()=>{
         dataIndex: "enrollmentId",
         key: "enrollmentId",
       },
+      {
+        title: "Action",
+        key: "action",
+        render: (record: Payment) => (
+          <>
+            {
+              record.status === "COMPLETED" ?
+                <Button type="primary" onClick={() => showModal(record.courseId)}>
+                  Refund Course
+                </Button>
+                : null
+            }
+          </>
+        ),
+      },
     ];
     useEffect(() => {
       const fetchPayments = async () => {
@@ -74,7 +127,7 @@ const PaymentRefunds = ()=>{
         try {
           const res = await axios.get<Payment[]>(`https://665fbf245425580055b0b23d.mockapi.io/payments`);
           if (res) {
-            setPayments(res.data.filter(payment => payment.userId === userId && payment.status === "REFUND"));
+            setPayments(res.data.filter(payment => payment.userId === userId && payment.status !== "REFUND"));
           }
         } catch (error: unknown) {
           if (error instanceof Error) {
@@ -93,7 +146,7 @@ const PaymentRefunds = ()=>{
    
   
     if (loading) {
-      return <p className={styles.loading}>Loading...</p>;
+      return <p className="loading">Loading...</p>;
     }
   
     if (error) {
@@ -106,8 +159,19 @@ const PaymentRefunds = ()=>{
 
 
         <Table columns={columns} dataSource={payments || []} rowKey="paymentId" />
+        
+        <Modal
+          title="Refund Course"
+          open={open}
+          onOk={handleOk}
+          confirmLoading={confirmLoading}
+          onCancel={handleCancel}
+        >
+          <p>{modalText}</p>
+        </Modal>
       </div>
     );
+  
 }
 
-export default PaymentRefunds;
+export default PaymentCourses;
