@@ -7,6 +7,7 @@ export class User {
     createdDate: string;
     updatedDate: string;
     role: string;
+    status: boolean;
 
     constructor(
         userId: string = "",
@@ -17,6 +18,7 @@ export class User {
         createdDate: string = "",
         updatedDate: string = "",
         role: string = "",
+        status: boolean = false
     ) {
         this.userId = userId;
         this.fullName = fullName;
@@ -25,12 +27,12 @@ export class User {
         this.avatarUrl = avatarUrl;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
-        this.role = role
+        this.role = role;
+        this.status = status;
     }
 }
 
 export class Student extends User {
-    isActive: boolean;
 
     constructor(
         userId: string = "",
@@ -40,10 +42,10 @@ export class Student extends User {
         avatarUrl: string = "",
         createdDate: string = "",
         updatedDate: string = "",
-        isActive: boolean = true
+        role: string = "Student",
+        status: boolean = false
     ) {
-        super(userId, fullName, email, password, avatarUrl, createdDate, updatedDate);
-        this.isActive = isActive;
+        super(userId, fullName, email, password, avatarUrl, createdDate, updatedDate, role, status);
     }
 
 }
@@ -59,9 +61,10 @@ export class Admin extends User {
         avatarUrl: string = "",
         createdDate: string = "",
         updatedDate: string = "",
+        role: string = "Admin",
         lastLogin: string = ""
     ) {
-        super(userId, fullName, email, password, avatarUrl, createdDate, updatedDate);
+        super(userId, fullName, email, password, avatarUrl, createdDate, updatedDate, role);
         this.lastLogin = lastLogin;
     }
 }
@@ -69,7 +72,6 @@ export class Admin extends User {
 export class Instructor extends User {
     description: string;
     degree: string;
-    status: string;
 
     constructor(
         userId: string = "",
@@ -79,13 +81,13 @@ export class Instructor extends User {
         avatarUrl: string = "",
         createdDate: string = "",
         updatedDate: string = "",
+        role: string = "Instructor",
+        status: boolean = false,
         description: string = "",
         degree: string = "",
-        status: string = ""
     ) {
-        super(userId, fullName, email, password, avatarUrl, createdDate, updatedDate);
+        super(userId, fullName, email, password, avatarUrl, createdDate, updatedDate, role, status);
         this.description = description;
         this.degree = degree;
-        this.status = status;
     }
 }

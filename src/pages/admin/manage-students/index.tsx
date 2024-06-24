@@ -72,11 +72,11 @@ const AdminManageStudents: React.FC = () => {
     },
     {
       title: "Status",
-      key: "isActive",
-      dataIndex: "isActive",
+      key: "status",
+      dataIndex: "status",
       width: "10%",
-      render: (isActive: boolean) => (
-        <Switch defaultChecked={isActive} onChange={(checked) => console.log(`switch to ${checked}`)} />
+      render: (status: boolean) => (
+        <Switch defaultChecked={status} onChange={(checked) => console.log(`switch to ${checked}`)} />
       ),
     },
     {
