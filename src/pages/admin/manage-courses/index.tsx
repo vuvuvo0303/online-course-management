@@ -19,6 +19,13 @@ const AdminManageCourses: React.FC = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
   const [data, setData] = useState<Course[]>([]);
+  const [sortOrder, setSortOrder] = useState<{ [key: string]: "ascend" | "descend" }>({
+    duration: "ascend",
+    createdDate: "ascend",
+    updatedDate: "ascend",
+  });
+
+
 
 
   const handleDelete = async (courseId: string, title: string) => {
@@ -43,6 +50,49 @@ const AdminManageCourses: React.FC = () => {
       return dateB - dateA;
     })
   }
+
+  const sortColumn = (columnKey: keyof Course) => {
+    const newOrder = sortOrder[columnKey] === "ascend" ? "descend" : "ascend";
+    const sortedData = [...data].sort((a, b) => {
+      let aValue: string | number | boolean = a[columnKey];
+      let bValue: string | number | boolean = b[columnKey];
+
+      // Chuyển đổi giá trị thành số nếu đó là ngày tháng hoặc duration
+      if (columnKey === "createdDate" || columnKey === "updatedDate") {
+        // @ts-ignore
+        aValue = new Date(aValue).getTime();
+        // @ts-ignore
+        bValue = new Date(bValue).getTime();
+      } else if (columnKey === "duration") {
+        aValue = Number(aValue);
+        bValue = Number(bValue);
+      }
+
+      // Đảm bảo rằng cả aValue và bValue đều là số hoặc chuỗi trước khi so sánh
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        if (newOrder === "ascend") {
+          return aValue - bValue;
+        } else {
+          return bValue - aValue;
+        }
+      } else if (typeof aValue === "string" && typeof bValue === "string") {
+        if (newOrder === "ascend") {
+          return aValue.localeCompare(bValue);
+        } else {
+          return bValue.localeCompare(aValue);
+        }
+      } else {
+        return 0; // Trường hợp không so sánh được
+      }
+    });
+
+    setData(sortedData);
+    setSortOrder((prev) => ({ ...prev, [columnKey]: newOrder }));
+  };
+
+
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -161,24 +211,40 @@ const AdminManageCourses: React.FC = () => {
       dataIndex: "duration",
       key: "duration",
       width: "10%",
-      sorter: (a, b) => a.duration.length - b.duration.length,
+      sorter: true,
       sortDirections: ["descend", "ascend"],
+      render: (text) => `${text} hours`,
+      onHeaderCell: () => ({
+        onClick: () => sortColumn("duration"),
+      }),
     },
     {
       title: "Created Date",
       dataIndex: "createdDate",
+      key: "createdDate",
+      sorter: true,
+      sortDirections: ["descend", "ascend"],
       render: (createdDate: string) => formatDate(createdDate),
+      onHeaderCell: () => ({
+        onClick: () => sortColumn("createdDate"),
+      }),
     },
     {
       title: "Updated Date",
       dataIndex: "updatedDate",
+      key: "updatedDate",
+      sorter: true,
+      sortDirections: ["descend", "ascend"],
       render: (updatedDate: string) => formatDate(updatedDate),
+      onHeaderCell: () => ({
+        onClick: () => sortColumn("updatedDate"),
+      }),
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
-      width: "30%",
+      width: "25%",
     },
     {
       title: "Image",
@@ -190,20 +256,21 @@ const AdminManageCourses: React.FC = () => {
       title: "Action",
       key: "action",
       render: (record: Course) => (
-        <div>
-          <EditOutlined
-            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
-            style={{ fontSize: "20px" }}
-          />
-          <DeleteOutlined
-            onClick={() => handleDelete(record.courseId, record.title)}
-            className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
-            style={{ fontSize: "20px" }}
-          />
-        </div>
+          <div>
+            <EditOutlined
+                className="hover:cursor-pointer text-blue-400 hover:opacity-60"
+                style={{ fontSize: "20px" }}
+            />
+            <DeleteOutlined
+                onClick={() => handleDelete(record.courseId, record.title)}
+                className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
+                style={{ fontSize: "20px" }}
+            />
+          </div>
       ),
     },
   ];
+
   return (
     <div>
       <div className="flex justify-between">

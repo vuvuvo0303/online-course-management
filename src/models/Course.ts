@@ -2,7 +2,7 @@ export class Course {
     courseId: string;
     title: string;
     description: string;
-    duration: string;
+    duration: number;
     createdDate: string;
     updatedDate: string;
     price: number;
@@ -16,7 +16,7 @@ export class Course {
         courseId: string = "",
         title: string = "",
         description: string = "",
-        duration: string = "",
+        duration: number = 0,
         createdDate: string = "",
         updatedDate: string = "",
         price: number = 0,

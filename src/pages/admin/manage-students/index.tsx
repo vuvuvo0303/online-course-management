@@ -1,14 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Breadcrumb, Button, Image, Switch, Table } from "antd";
-import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Image, Input, Space, Switch, Table } from "antd";
+import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
-import { Student } from "../../../models";
 import { toast } from "react-toastify";
+import Highlighter from "react-highlight-words";
+import type { InputRef, TableColumnsType, TableColumnType } from "antd";
+import type { FilterDropdownProps } from "antd/es/table/interface";
+import { Student } from "../../../models";
 
+type DataIndex = keyof Student;
 
 const AdminManageStudents: React.FC = () => {
   const [data, setData] = useState<Student[]>([]);
+  const [sortOrder, setSortOrder] = useState<{ [key: string]: "ascend" | "descend" }>({
+    createdDate: "ascend",
+    updatedDate: "ascend",
+  });
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef<InputRef>(null);
 
   const handleDelete = async (userId: string, email: string) => {
     try {
@@ -38,30 +49,151 @@ const AdminManageStudents: React.FC = () => {
     return format(new Date(dateString), "dd/MM/yyyy");
   };
 
-  const columns = [
+  const sortColumn = (columnKey: keyof Student) => {
+    const newOrder = sortOrder[columnKey] === "ascend" ? "descend" : "ascend";
+    const sortedData = [...data].sort((a, b) => {
+      let aValue: string | number | boolean = a[columnKey];
+      let bValue: string | number | boolean = b[columnKey];
+
+      if (columnKey === "createdDate" || columnKey === "updatedDate") {
+        // @ts-ignore
+        aValue = new Date(aValue).getTime();
+        // @ts-ignore
+        bValue = new Date(bValue).getTime();
+      }
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
+      } else if (typeof aValue === "string" && typeof bValue === "string") {
+        return newOrder === "ascend" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        return 0;
+      }
+    });
+
+    setData(sortedData);
+    setSortOrder((prev) => ({ ...prev, [columnKey]: newOrder }));
+  };
+
+  const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Student> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+        <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+          <Input
+              ref={searchInput}
+              placeholder={`Search ${dataIndex}`}
+              value={selectedKeys[0]}
+              onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+              onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+              style={{ marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+                type="primary"
+                onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+            <Button
+                type="link"
+                size="small"
+                onClick={() => {
+                  confirm({ closeDropdown: false });
+                  setSearchText((selectedKeys as string[])[0]);
+                  setSearchedColumn(dataIndex);
+                }}
+            >
+              Filter
+            </Button>
+            <Button
+                type="link"
+                size="small"
+                onClick={() => {
+                  close();
+                }}
+            >
+              close
+            </Button>
+          </Space>
+        </div>
+    ),
+    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
+    onFilter: (value, record) =>
+        record[dataIndex]
+            .toString()
+            .toLowerCase()
+            .includes((value as string).toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+        searchedColumn === dataIndex ? (
+            <Highlighter
+                highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+                searchWords={[searchText]}
+                autoEscape
+                textToHighlight={text ? text.toString() : ""}
+            />
+        ) : (
+            text
+        ),
+  });
+
+  const columns: TableColumnsType<Student> = [
     {
       title: "Name",
       dataIndex: "fullName",
       key: "fullName",
-      render: (text: string) => <a>{text}</a>,
       width: "20%",
+      ...getColumnSearchProps("fullName"),
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
       width: "20%",
+      ...getColumnSearchProps("email"),
     },
     {
       title: "Created Date",
       dataIndex: "createdDate",
+      key: "createdDate",
       render: (createdDate: string) => formatDate(createdDate),
+      sorter: true,
+      sortDirections: ["descend", "ascend"],
+      onHeaderCell: () => ({
+        onClick: () => sortColumn("createdDate"),
+      }),
       width: "15%",
     },
     {
       title: "Updated Date",
       dataIndex: "updatedDate",
+      key: "updatedDate",
       render: (updatedDate: string) => formatDate(updatedDate),
+      sorter: true,
+      sortDirections: ["descend", "ascend"],
+      onHeaderCell: () => ({
+        onClick: () => sortColumn("updatedDate"),
+      }),
       width: "15%",
     },
     {
@@ -76,59 +208,58 @@ const AdminManageStudents: React.FC = () => {
       dataIndex: "status",
       width: "10%",
       render: (status: boolean) => (
-        <Switch defaultChecked={status} onChange={(checked) => console.log(`switch to ${checked}`)} />
+          <Switch defaultChecked={status} onChange={(checked) => console.log(`switch to ${checked}`)} />
       ),
     },
     {
       title: "Action",
       key: "action",
       render: (record: Student) => (
-        <div>
-          <EditOutlined
-            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
-            style={{ fontSize: "20px" }}
-          />
-          <DeleteOutlined
-            onClick={() => handleDelete(record.userId, record.email)}
-            className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
-            style={{ fontSize: "20px" }}
-          />
-        </div>
+          <div>
+            <EditOutlined
+                className="hover:cursor-pointer text-blue-400 hover:opacity-60"
+                style={{ fontSize: "20px" }}
+            />
+            <DeleteOutlined
+                onClick={() => handleDelete(record.userId, record.email)}
+                className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
+                style={{ fontSize: "20px" }}
+            />
+          </div>
       ),
     },
   ];
 
   return (
-    <div>
-      <div className="flex justify-between">
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              href: "/",
-              title: <HomeOutlined />,
-            },
-            {
-              href: "/dashboard/admin",
-              title: (
-                <>
-                  <UserOutlined />
-                  <span>Admin</span>
-                </>
-              ),
-            },
-            {
-              title: "Manage Students",
-            },
-          ]}
-        />
-        <div className="py-2">
-          <Button type="primary">Add New Students</Button>
+      <div>
+        <div className="flex justify-between">
+          <Breadcrumb
+              className="py-2"
+              items={[
+                {
+                  href: "/",
+                  title: <HomeOutlined />,
+                },
+                {
+                  href: "/dashboard/admin",
+                  title: (
+                      <>
+                        <UserOutlined />
+                        <span>Admin</span>
+                      </>
+                  ),
+                },
+                {
+                  title: "Manage Students",
+                },
+              ]}
+          />
+          <div className="py-2">
+            <Button type="primary">Add New Students</Button>
+          </div>
         </div>
+        <Table columns={columns} dataSource={data} />
       </div>
-
-      <Table columns={columns} dataSource={data} />
-    </div>
   );
 };
 
