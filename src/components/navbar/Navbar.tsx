@@ -258,92 +258,95 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <nav className={`flexBetween navbar ${isLoginOrRegister ? 'justify-center' : ''}`}>
-      <div className={`flex-1 flexStart gap-10 ${isLoginOrRegister ? 'justify-center' : ''}`}>
-        <Link to="/">
-          <h1 className={`${isLoginOrRegister ? 'text-center' : ''}`}>FLearn</h1>
-        </Link>
-        {!isLoginOrRegister && (
-          <>
-            <Dropdown overlay={<Menu>{submenus}</Menu>} placement="bottomLeft">
-              <a
-                className="ant-dropdown-link"
-                onMouseEnter={handleMouseEnter}
-                style={{ fontSize: '14px', cursor: 'pointer' }}
-              >
-                Categories
-              </a>
-            </Dropdown>
-            <Link to='/enrollment?activeTab=1'>
-              <p className="link" style={{ fontSize: '14px' }}>
-                Saved Courses
-              </p>
-            </Link>
-            <Link to='/teaching'>
-              <p className="link" style={{ fontSize: '14px' }}>
-                Be an Instructors
-              </p>
-            </Link>
-          </>
-        )}
-      </div>
-      <SearchTool />
-      {!isLoginOrRegister && (
-        <div className="flexCenter gap-10 mr-5">
-          {isMobile ? (
-            <Dropdown overlay={<Menu items={items} />} className='mt-5 mb-44' placement="bottomRight">
-              <p onClick={(e) => e.preventDefault()}>
-                <Space>
-                  <MenuOutlined className="text-gray-400 text-3xl" />
-                </Space>
-              </p>
-            </Dropdown>
-          ) : (
+    !isLoginOrRegister && (
+      <nav className={`flexBetween navbar ${isLoginOrRegister ? 'justify-center' : ''}`}>
+        <div className={`flex-1 flexStart gap-10 ${isLoginOrRegister ? 'justify-center' : ''}`}>
+          <Link to="/">
+            <h1 className={`${isLoginOrRegister ? 'text-center' : ''}`}>FLearn</h1>
+          </Link>
+          {!isLoginOrRegister && (
             <>
-              <Link to={paths.STUDENT_ENROLLMENT}>
-                <Popover content={heartContent} title="Wish List" overlayClassName="cart-popover border-2">
-                  <Badge count={4}>
-                    <HeartOutlined className="text-gray-400 text-3xl" />
-                  </Badge>
-                </Popover>
+              <Dropdown overlay={<Menu>{submenus}</Menu>} placement="bottomLeft">
+                <a
+                  className="ant-dropdown-link"
+                  onMouseEnter={handleMouseEnter}
+                  style={{ fontSize: '14px', cursor: 'pointer' }}
+                >
+                  Categories
+                </a>
+              </Dropdown>
+              <Link to='/enrollment?activeTab=1'>
+                <p className="link" style={{ fontSize: '14px' }}>
+                  Saved Courses
+                </p>
               </Link>
-              <Badge count={2}>
-                <MailOutlined className="text-gray-400 text-3xl" />
-              </Badge>
-              <Badge count={3}>
-                <BellOutlined className="text-gray-400 text-3xl" />
-              </Badge>
-              <Link to={paths.STUDENT_CART}>
-                <Popover content={shopCartContent} title="Selected Course" overlayClassName="cart-popover border-2">
-                  <Badge count={2}>
-                    <ShoppingCartOutlined className="text-gray-400 text-3xl" />
-                  </Badge>
-                </Popover>
+              <Link to='/teaching'>
+                <p className="link" style={{ fontSize: '14px' }}>
+                  Be an Instructor
+                </p>
               </Link>
-              {avatarUrl ? (
-                <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
-                  <p onClick={(e) => e.preventDefault()}>
-                    <Space>
-                      <Avatar
-                        src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
-                        className="hover:cursor-pointer"
-                        size={40}
-                        icon={<UserOutlined />}
-                      />
-                    </Space>
-                  </p>
-                </Dropdown>
-              ) : (
-                <Link to={paths.LOGIN}>
-                  <UserOutlined className="text-gray-400 text-3xl cursor-pointer" />
-                </Link>
-              )}
             </>
           )}
         </div>
-      )}
-    </nav>
+        <SearchTool />
+        {!isLoginOrRegister && (
+          <div className="flexCenter gap-10 mr-5">
+            {isMobile ? (
+              <Dropdown overlay={<Menu items={items} />} className='mt-5 mb-44' placement="bottomRight">
+                <p onClick={(e) => e.preventDefault()}>
+                  <Space>
+                    <MenuOutlined className="text-gray-400 text-3xl" />
+                  </Space>
+                </p>
+              </Dropdown>
+            ) : (
+              <>
+                <Link to={paths.STUDENT_ENROLLMENT}>
+                  <Popover content={heartContent} title="Wish List" overlayClassName="cart-popover border-2">
+                    <Badge count={4}>
+                      <HeartOutlined className="text-gray-400 text-3xl" />
+                    </Badge>
+                  </Popover>
+                </Link>
+                <Badge count={2}>
+                  <MailOutlined className="text-gray-400 text-3xl" />
+                </Badge>
+                <Badge count={3}>
+                  <BellOutlined className="text-gray-400 text-3xl" />
+                </Badge>
+                <Link to={paths.STUDENT_CART}>
+                  <Popover content={shopCartContent} title="Selected Course" overlayClassName="cart-popover border-2">
+                    <Badge count={2}>
+                      <ShoppingCartOutlined className="text-gray-400 text-3xl" />
+                    </Badge>
+                  </Popover>
+                </Link>
+                {avatarUrl ? (
+                  <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
+                    <p onClick={(e) => e.preventDefault()}>
+                      <Space>
+                        <Avatar
+                          src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
+                          className="hover:cursor-pointer"
+                          size={40}
+                          icon={<UserOutlined />}
+                        />
+                      </Space>
+                    </p>
+                  </Dropdown>
+                ) : (
+                  <Link to={paths.LOGIN}>
+                    <UserOutlined className="text-gray-400 text-3xl cursor-pointer" />
+                  </Link>
+                )}
+              </>
+            )}
+          </div>
+        )}
+      </nav>
+    )
   );
+  
 };
 
 export default Navbar;

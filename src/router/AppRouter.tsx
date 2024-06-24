@@ -43,6 +43,8 @@ import {
   LectureOfCourse,
   InstructorManageLectures,
   ForgotPassword,
+  ManageSession,
+  CreateUpdateSession,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";

@@ -3,7 +3,7 @@ import { Button, Form, Input, DatePicker, Breadcrumb } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import { Lecture } from "../../../../../models";
+import { Lecture } from "../../../../../../models";
 import { HomeOutlined } from "@ant-design/icons";
 
 const formItemLayout = {
@@ -18,7 +18,7 @@ const formItemLayout = {
 };
 
 const CreateLecture = () => {
-  const { lectureId, courseId } = useParams<{ lectureId: string; courseId: string }>();
+  const { lectureId, courseId , sessionId} = useParams<{ lectureId: string; courseId: string , sessionId: string}>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
@@ -63,7 +63,7 @@ const CreateLecture = () => {
       } else {
         await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/lectures`, { ...values, courseId: courseId2 });
       }
-      navigate(`/instructor/lectureOfCourse/${courseId}`);
+      navigate(`/instructor/manage-course/${courseId}/manage-session/${sessionId}/lecture`);
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
