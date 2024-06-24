@@ -1,12 +1,12 @@
 import { Menu, Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover, Button } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { categoryFilters, categorySubmenu, paths } from '../consts/index';
+import { categoryFilters, categorySubmenu, paths } from '../../consts/index';
 import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined, CheckOutlined, MenuOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import SearchTool from './SearchTool';
+import SearchTool from '../SearchTool';
 import "./nav.css"
-const Navbar = () => {
+const Navbar: React.FC = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
   const [dataUser, setDataUser] = useState<{ role: string | null, fullName: string | null, email: string | null }>({ role: null, fullName: null, email: null });

@@ -88,11 +88,8 @@ const Contact: React.FC = () => {
             </h1>
             <hr style={{ width: "250px" }} />
             <p className={styles.contactText}>
-              <EnvironmentOutlined
-                className={`${styles.contactIcon} text-black`}
-              />
-              <strong> Main Address:</strong> D1 Street, Tan Phu Ward, Thu Duc
-              City, Ho Chi Minh City, Vietnam
+              <EnvironmentOutlined className={`${styles.contactIcon} text-black`} />
+              <strong> Main Address:</strong> D1 Street, Tan Phu Ward, Thu Duc City, Ho Chi Minh City, Vietnam
             </p>
             <p className={styles.contactText}>
               <MailOutlined className={`${styles.contactIcon} text-black`} />
@@ -133,10 +130,7 @@ const Contact: React.FC = () => {
               src="https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Office 1"
             />
-            <p>
-              Tan Thuan, Tan Thuan Dong Ward, District 7, Ho Chi Minh City,
-              Vietnam
-            </p>
+            <p>Tan Thuan, Tan Thuan Dong Ward, District 7, Ho Chi Minh City, Vietnam</p>
           </div>
           <div className={styles.officeImage}>
             <img
