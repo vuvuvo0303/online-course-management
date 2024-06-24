@@ -23,23 +23,19 @@ const responsive = {
 
 const List = () => {
     const topics = [
-        "HTML5",
-        "CSS3",
-        "JavaScript",
-        "Bootstrap 4",
-        "SemanticUI",
-        "DOM Manipulation",
-        "jQuery",
-        "Unix(Command Line)",
-        "NodeJS",
-        "NPM",
-        "ExpressJS",
-        "REST",
-        "MongoDB",
-        "Database Associations",
-        "Authentication",
-        "PassportJS",
-        "Authorization",
+        "Development",
+        "Business",
+        "Finance & Accounting",
+        "IT & Software",
+        "Office Productivity",
+        "Personal Development",
+        "Design",
+        "Marketing",
+        "Lifestyle",
+        "Photography & Video",
+        "Health & Fitness",
+        "Music",
+        "Teaching & Academics",
     ];
 
     const splitTopics = [];

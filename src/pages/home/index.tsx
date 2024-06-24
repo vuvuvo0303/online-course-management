@@ -17,7 +17,7 @@ const Home: React.FC = () => {
             <section className='flexStart paddings mb-16'>
                 <Categories />
             </section>
-            <h2 className='flex-1 flexStart gap-10 ml-[50px] text-[20px] mb-[1px]'>Outstanding lecturers</h2>
+            <span className='flex-1 flexStart gap-10 ml-[50px] text-[20px] mb-[1px]'></span>
             <section className='flexStart paddings mb-16'>
                 <TeacherCategories />
             </section>

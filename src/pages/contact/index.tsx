@@ -1,60 +1,72 @@
 import {
+  HomeOutlined,
   QuestionCircleOutlined,
   BookOutlined,
   FileDoneOutlined,
   EnvironmentOutlined,
   MailOutlined,
   PhoneOutlined,
-  FacebookOutlined,
-  YoutubeOutlined,
-  TwitterOutlined,
+  YoutubeFilled,
+  FacebookFilled,
+  InstagramFilled,
 } from "@ant-design/icons";
+import { Breadcrumb } from "antd";
 import styles from "./contact.module.css";
-import ScrollToTopButton from "../../components/ScrollToTopButton";
+import { Link } from "react-router-dom";
+import { paths } from "../../consts";
 
 const Contact: React.FC = () => {
   return (
     <div>
-      <div className={styles.contactImageContainer}>
+      {/* <div className={styles.contactImageContainer}>
         <img
           src="https://www.soho2019.com/wp-content/uploads/2021/11/contact-banner-2.jpg"
           alt="Contact Us"
           className={styles.contactImage}
         />
-      </div>
+      </div> */}
+      <Breadcrumb className={styles.breadcrumb}>
+        <Breadcrumb.Item href="/">
+          <HomeOutlined />
+          <span>Home</span>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <span>Contact Us</span>
+        </Breadcrumb.Item>
+      </Breadcrumb>
+
+      <h1 className={styles.pageTitle}>Contact Us</h1>
+
       <div className={styles.contactContainer}>
-        <section
-          className={styles.contactSection}
-          onClick={() => (window.location.href = "/support")}
-        >
-          <div className={styles.contactLink}>
-            <QuestionCircleOutlined className={styles.contactIcon} />
+        <section className={styles.contactSection}>
+          <Link to={paths.SUPPORT} className={styles.contactLink}>
+            <div className={styles.contactCircle}>
+              <QuestionCircleOutlined className={styles.contactIcon} />
+            </div>
             <h2>
               <strong>Support & Help</strong>
             </h2>
-          </div>
+          </Link>
         </section>
-        <section
-          className={styles.contactSection}
-          onClick={() => (window.location.href = "/blogs")}
-        >
-          <div className={styles.contactLink}>
-            <BookOutlined className={styles.contactIcon} />
+        <section className={styles.contactSection}>
+          <Link to={paths.BLOGS} className={styles.contactLink}>
+            <div className={styles.contactCircle}>
+              <BookOutlined className={styles.contactIcon} />
+            </div>
             <h2>
               <strong>Blogs</strong>
             </h2>
-          </div>
+          </Link>
         </section>
-        <section
-          className={styles.contactSection}
-          onClick={() => (window.location.href = "/terms")}
-        >
-          <div className={styles.contactLink}>
-            <FileDoneOutlined className={styles.contactIcon} />
+        <section className={styles.contactSection}>
+          <Link to={paths.TERMS} className={styles.contactLink}>
+            <div className={styles.contactCircle}>
+              <FileDoneOutlined className={styles.contactIcon} />
+            </div>
             <h2>
               <strong>Policy & Terms</strong>
             </h2>
-          </div>
+          </Link>
         </section>
       </div>
 
@@ -75,39 +87,35 @@ const Contact: React.FC = () => {
               <strong>Contact Information</strong>
             </h1>
             <hr style={{ width: "250px" }} />
-            <p>
-              <EnvironmentOutlined className={styles.contactIcon} />
-              <strong> Main Address:</strong> D1 Street, Tan Phu Ward, Thu Duc
-              City, Ho Chi Minh City, Vietnam
+            <p className={styles.contactText}>
+              <EnvironmentOutlined className={`${styles.contactIcon} text-black`} />
+              <strong> Main Address:</strong> D1 Street, Tan Phu Ward, Thu Duc City, Ho Chi Minh City, Vietnam
             </p>
-            <p>
-              <MailOutlined className={styles.contactIcon} />
+            <p className={styles.contactText}>
+              <MailOutlined className={`${styles.contactIcon} text-black`} />
               <strong> Email Address:</strong> flearncontact@gmail.com
             </p>
-            <p>
-              <PhoneOutlined className={styles.contactIcon} />
+            <p className={styles.contactText}>
+              <PhoneOutlined className={`${styles.contactIcon} text-black`} />
               <strong> Phone Number:</strong> (+84) 766710603
             </p>
             <div className={styles.socialIconsContainer}>
-              <div
-                onClick={() =>
-                  (window.location.href = "https://www.facebook.com")
-                }
-              >
-                <FacebookOutlined className={styles.socialIcon} />
-              </div>
-              <div
-                onClick={() =>
-                  (window.location.href = "https://www.youtube.com")
-                }
-              >
-                <YoutubeOutlined className={styles.socialIcon} />
-              </div>
-              <div
-                onClick={() => (window.location.href = "https://twitter.com")}
-              >
-                <TwitterOutlined className={styles.socialIcon} />
-              </div>
+              <Link to="https://www.facebook.com" target="_blank">
+                <div className={`${styles.icon_container} bg-blue-700`}>
+                  <FacebookFilled className={styles.socialIcon} />
+                </div>
+              </Link>
+              <Link to="https://www.youtube.com" target="_blank">
+                <div className={`${styles.icon_container} bg-red-500`}>
+                  <YoutubeFilled className={styles.socialIcon} />
+                </div>
+              </Link>
+
+              <Link to="https://www.instagram.com" target="_blank">
+                <div className={`${styles.icon_container} bg-purple-700`}>
+                  <InstagramFilled className={styles.socialIcon} />
+                </div>
+              </Link>
             </div>
           </div>
         </div>
@@ -122,10 +130,7 @@ const Contact: React.FC = () => {
               src="https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Office 1"
             />
-            <p>
-              Tan Thuan, Tan Thuan Dong Ward, District 7, Ho Chi Minh City,
-              Vietnam
-            </p>
+            <p>Tan Thuan, Tan Thuan Dong Ward, District 7, Ho Chi Minh City, Vietnam</p>
           </div>
           <div className={styles.officeImage}>
             <img
@@ -162,7 +167,6 @@ const Contact: React.FC = () => {
             />
             <p>Xinyi District, Taipei City, Taiwan</p>
           </div>
-          <ScrollToTopButton />
         </div>
       </div>
     </div>

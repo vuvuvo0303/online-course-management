@@ -82,7 +82,6 @@ const Dashboard: React.FC = () => {
       } else if (dataUser.role === "Admin") {
         setItems([
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
-          getItem("My Profile", "/admin/profile", <UserOutlined />),
           getItem("Manage Students", "/admin/manage-students", <TeamOutlined />),
           getItem("Manage Instructors", "/admin/manage-instructors", <TeamOutlined />),
           getItem("Manage Categories", "/admin/manage-categories", <TeamOutlined />),
@@ -107,79 +106,66 @@ const Dashboard: React.FC = () => {
       label: (
         <div className="text-sm">
           <Row>
-            <Col span={8}>
+            <Col span={8} className='pl-3 pt-2 pb-2'>
               <Avatar
                 src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
-                className="hover:cursor-pointer "
-                size={40}
+                className="hover:cursor-pointer"
+                size={50}
                 icon={<UserOutlined />}
               />
             </Col>
-            <Col span={16}>
+            <Col span={16} className='pt-3 pr-3'>
               <Row>
-                <p className="text-lg font-bold"> {dataUser.fullName}</p>
-                <CheckOutlined className="text-blue-500 ml-2" />
+                <p className='text-base font-bold'>{dataUser.fullName}</p>
+                <CheckOutlined className="ml-2" />
               </Row>
               <div>
-                <p className="text-lg"> {}</p>
+                <p className='text-md'>{dataUser.email}</p>
               </div>
             </Col>
           </Row>
-          <div className="mt-2 text-lg">
-            <Link
-              className=" hover:text-red-600"
-              to={dataUser.role === "Instructor" ? "/instructor/dashboard" : "/admin/dashboard"}
-            >
-              Cursus Dashboard
-            </Link>
-          </div>
-          <div className="mt-2 text-lg">
-            <Link
-              className=" hover:text-red-600"
-              to={dataUser.role === "Instructor" ? "/instructor/profile" : "/admin/profile"}
-            >
-              View Profile
-            </Link>
-          </div>
-          <div className="mt-2 text-lg">
-            <Link
-              className=" hover:text-red-600"
-              to={dataUser.role === "Instructor" ? "/instructor/paidMemberships" : "/admin/paidMemberships"}
-            >
-              Paid Memberships
-            </Link>
-          </div>
-          <div className="mt-2 text-lg">
-            <Link
-              className=" hover:text-red-600"
-              to={dataUser.role === "Instructor" ? "/instructor/setting" : "/admin/setting"}
-            >
-              Setting
-            </Link>
-          </div>
-          <div className="mt-2 text-lg">
-            <Link
-              className=" hover:text-red-600"
-              to={dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"}
-            >
-              Help
-            </Link>
-          </div>
-          <div className="mt-2 text-lg">
-            <Link
-              className=" hover:text-red-600"
-              to={dataUser.role === "Instructor" ? "/instructor/sendFeedBack" : "/admin/sendFeedBack"}
-            >
-              Send Feedback
-            </Link>
+          <div className="mt-2 text-lg font-bold">
+            <Link className="hover:text-red-600" to={"/profile"}>View {dataUser.role} Profile</Link>
           </div>
         </div>
       ),
       key: "1",
     },
     {
-      label: <p className="text-lg">Role: {dataUser.role}</p>,
+      label: <Link
+        className="mt-2 text-lg"
+        to={dataUser.role === "Instructor" ? "/instructor/paidMemberships" : "/admin/paidMemberships"}
+      >
+        Paid Memberships
+      </Link>,
       key: "2",
+    },
+    {
+      label: <Link
+        className="text-lg"
+        to={dataUser.role === "Instructor" ? "/instructor/setting" : "/admin/setting"}
+      >
+        Setting
+      </Link>,
+      key: "3",
+    },
+    {
+      label: <Link
+        className="text-lg"
+        to={dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"}
+      >
+        Help
+      </Link>,
+      key: "4",
+    },
+    {
+      label: <Link
+        className="text-lg"
+        to={dataUser.role === "Instructor" ? "/instructor/sendFeedBack" : "/admin/sendFeedBack"}
+      >
+        Send Feedback
+      </Link>,
+      key: "5",
     },
     {
       label: (
@@ -187,38 +173,10 @@ const Dashboard: React.FC = () => {
           Logout
         </p>
       ),
-      key: "3",
+      key: "6",
     },
   ];
 
-  // const dropdownItems: MenuProps['items'] = [
-  //   {
-  //     label: <p className='text-sm'>Welcome: {fullName}</p>,
-  //     key: '1',
-  //   },
-  //   {
-  //     label: <p className='text-sm'>Role: {role}</p>,
-  //     key: '2',
-  //   },
-  //   role === 'Instructor'
-  //     ? {
-  //       label: (
-  //         <Link to='/instructor/profile'>
-  //           <p className='text-sm'>My Profile</p>
-  //         </Link>
-  //       ),
-  //       key: '3',
-  //     }
-  //     : null,
-  //   {
-  //     label: (
-  //       <p onClick={handleLogout} className='text-sm hover:cursor-pointer hover:text-red-600'>
-  //         Logout
-  //       </p>
-  //     ),
-  //     key: '4',
-  //   },
-  // ];
 
   return (
     <>

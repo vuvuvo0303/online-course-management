@@ -40,10 +40,10 @@ const WishList = () => {
           <WishListCard />
           <WishListCard />
           <WishListCard />
-          <WishListCard />
-          <WishListCard />
-          <WishListCard />
-          <WishListCard />
+          {/*<WishListCard />*/}
+          {/*<WishListCard />*/}
+          {/*<WishListCard />*/}
+          {/*<WishListCard />*/}
         </div>
       </div>
     </div>

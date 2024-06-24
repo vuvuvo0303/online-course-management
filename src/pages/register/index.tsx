@@ -94,7 +94,7 @@ const RegisterPage: React.FC = () => {
               autoComplete="off"
             >
               <Form.Item
-                label="Email"
+                // label="Email"
                 name="email"
                 rules={[
                   { required: true, message: "Please input your email!" },
@@ -104,11 +104,12 @@ const RegisterPage: React.FC = () => {
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 className="mb-1"
+                
               >
-                <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Email"/>
               </Form.Item>
               <Form.Item
-                label="Username"
+                // label="Username"
                 name="username"
                 rules={[
                   { required: true, message: "Please input your username!" },
@@ -119,7 +120,7 @@ const RegisterPage: React.FC = () => {
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
               >
-                <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="User Name"/>
               </Form.Item>
 
               <Form.Item
