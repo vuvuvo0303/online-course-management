@@ -83,10 +83,10 @@ const LoginPage: React.FC = () => {
   });
 
   return (
-    <div className="flex min-h-screen relative">
+    <div className="flex min-h-screen relative ">
       <img src={Vector} alt="" className="absolute bottom-8" />
 
-      <div className="w-full md:w-1/2 flex flex-col justify-center a p-4 md:p-20 bg-white rounded-l-lg">
+      <div className="w-full md:w-1/2 flex flex-col justify-center a p-4 md:p-20 bg-white rounded-l-lg ">
         <div className="mr-6 ">
           <div className="flex justify-center items-center ml-16 ">
             <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Welcome</h1>
@@ -135,7 +135,7 @@ const LoginPage: React.FC = () => {
             </div>
 
             <div className="flex justify-center">
-              <Link className="md:mr-40 hover:text-green-600" to={paths.FORGOT_PASSWORD}>
+              <Link  className="md:mr-40 hover:text-green-600" to={paths.FORGOT_PASSWORD}>
                 Forget Password
               </Link>
             </div>
