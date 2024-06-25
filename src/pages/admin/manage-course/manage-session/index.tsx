@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
 
-const ManageSession = () => {
+const AdminManageSession = () => {
     const { courseId } = useParams<{ courseId: string }>();
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -146,4 +146,4 @@ const ManageSession = () => {
     );
 };
 
-export default ManageSession;
+export default AdminManageSession;

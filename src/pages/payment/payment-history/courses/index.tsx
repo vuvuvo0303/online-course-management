@@ -2,7 +2,7 @@ import { Table, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { Payment } from "../../../../models";
 
-const ManagePaymentCourse = ()=>{
+const ManagePaymentCourse = () => {
     const columns = [
         {
             title: 'User ID',
@@ -34,13 +34,15 @@ const ManagePaymentCourse = ()=>{
                     status === 'COMPLETED' ? 'green' :
                         status === 'REJECTED' ? 'red' :
                             status === 'PENDING' ? 'gold' :
-                                status === 'REFUND' ? 'blue' :
-                                    'default' // Màu mặc định khi không trùng khớp
+                                status === "PENDING REFUND"
+                                    ? "orange" :
+                                    status === 'REFUND' ? 'blue' :
+                                        'default' // Màu mặc định khi không trùng khớp
                 }>
                     {status.toUpperCase()}
                 </Tag>
             ),
-    
+
         },
         {
             title: 'Enrollment ID',
@@ -48,7 +50,7 @@ const ManagePaymentCourse = ()=>{
             key: 'enrollmentId',
         }
     ];
-    
+
     const [payments, setPayments] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -77,7 +79,7 @@ const ManagePaymentCourse = ()=>{
         fetchPayments();
     }, []);
 
-    
+
     if (loading) {
         return <p className="loading">Loading...</p>;
     }
@@ -87,10 +89,10 @@ const ManagePaymentCourse = ()=>{
     }
 
 
-    
-    return(
+
+    return (
         <div>
-             <Table columns={columns} dataSource={payments} rowKey="paymentId" />
+            <Table columns={columns} dataSource={payments} rowKey="paymentId" />
         </div>
     )
 }

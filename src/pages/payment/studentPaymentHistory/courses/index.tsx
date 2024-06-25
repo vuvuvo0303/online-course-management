@@ -15,7 +15,7 @@ const PaymentCourses: React.FC = () => {
     const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   
     const showModal = (courseId: string) => {
-      setModalText("Do you want to refund this course?");
+      setModalText("Do you want to request a refund for this course?");
       setSelectedCourseId(courseId);
       setOpen(true);
     };
@@ -29,16 +29,16 @@ const PaymentCourses: React.FC = () => {
       if (selectedCourseId) {
         setModalText('Refunding...');
         setConfirmLoading(true);
-        await handleSetStatusRefund(selectedCourseId);
+        await handleSetStatusPendingRefund(selectedCourseId);
         setConfirmLoading(false);
         setOpen(false);
       }
     };
-  
-    const handleSetStatusRefund = async (courseId: string) => {
+    
+    const handleSetStatusPendingRefund = async (courseId: string) => {
       const findCourse = payments.find(payment => payment.courseId === courseId);
       if (findCourse) {
-        findCourse.status = "REFUND";
+        findCourse.status = "PENDING REFUND";
         try {
           await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/payments/${findCourse.paymentId}`, findCourse);
           setPayments([...payments]); // Force re-render
@@ -48,6 +48,8 @@ const PaymentCourses: React.FC = () => {
         }
       }
     };
+
+   
   
     const columns = [
       {
@@ -67,6 +69,11 @@ const PaymentCourses: React.FC = () => {
         key: "paymentMethod",
       },
       {
+        title: "Course Price",
+        dataIndex: "coursePrice",
+        key: "coursePrice",
+      },
+      {
         title: "Status",
         dataIndex: "status",
         key: "status",
@@ -79,6 +86,8 @@ const PaymentCourses: React.FC = () => {
                   ? "red"
                   : status === "PENDING"
                     ? "gold"
+                    : status === "PENDING REFUND"
+                    ? "orange"
                     : status === "REFUND"
                       ? "blue"
                       : "default"
