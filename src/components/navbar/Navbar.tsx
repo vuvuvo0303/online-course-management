@@ -260,7 +260,7 @@ const Navbar: React.FC = () => {
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
-            className={` ${isLoginOrRegister ? 'text-center ' : ''} max-h-30px`}
+            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} max-h-30px`}
             style={{ maxHeight: '40px' }}
           />
         </Link>

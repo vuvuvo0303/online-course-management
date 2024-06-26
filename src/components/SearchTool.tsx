@@ -29,7 +29,7 @@ const SearchTool = () => {
         },
         {
             key: '3',
-            label: 'Theme',
+            label: 'Category',
             icon: <ImportOutlined />,
         },
         {
