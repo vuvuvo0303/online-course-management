@@ -39,9 +39,6 @@ const LoginPage: React.FC = () => {
         case "Instructor":
           navigate(paths.INSTRUCTOR_HOME);
           break;
-        case "Admin":
-          navigate(paths.ADMIN_HOME);
-          break;
         default:
           navigate(paths.HOME);
           break;
