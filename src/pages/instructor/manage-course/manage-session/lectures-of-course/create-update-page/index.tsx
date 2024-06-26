@@ -67,7 +67,7 @@ const CreateLecture = () => {
         await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/lectures`, { ...values, courseId: courseId2, sessionId: sessionId2 });
         toast.success("Create Lecture Successfully!")
       }
-      navigate(`/instructor/manage-course/${courseId}/manage-session/${sessionId}/lecture`);
+      navigate(`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`);
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -86,7 +86,8 @@ const CreateLecture = () => {
               <HomeOutlined />
             </Breadcrumb.Item>
             <Breadcrumb.Item href="/instructor/manage-courses">Manage Courses</Breadcrumb.Item>
-            <Breadcrumb.Item href={`/instructor/lectureOfCourse/${courseId}`}>Manage Lecture</Breadcrumb.Item>
+            <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>Manage Sessions</Breadcrumb.Item>
+            <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}>Manage Lecture</Breadcrumb.Item>
             <Breadcrumb.Item>{lectureId ? "Update Lecture" : "Create Lecture"}</Breadcrumb.Item>
           </Breadcrumb>
           <h1 className="text-center mb-8">{lectureId ? "Update Lecture" : "Create Lecture"}</h1>

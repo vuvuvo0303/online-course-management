@@ -68,7 +68,7 @@ const CreateUpdateSession = () => {
                 await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/session`, { ...values, courseId: courseId2 });
                 toast.success("Create Session Successfully!")
             }
-            navigate(`/instructor/manage-course/${courseId}/manage-session`);
+            navigate(`/instructor/manage-courses/${courseId}/manage-sessions`);
         } catch (error) {
             console.error("Error submitting form:", error);
         } finally {
@@ -90,11 +90,9 @@ const CreateUpdateSession = () => {
                             Manage Courses
                         </Breadcrumb.Item>
                         <Breadcrumb.Item
-                            href={`/instructor/manage-course/${courseId}/manage-session`}
+                            href={`/instructor/manage-courses/${courseId}/manage-sessions`}
                         >Manage Session</Breadcrumb.Item>
-                        <Breadcrumb.Item
-                            href={`/instructor/manage-course/${courseId}/manage-session/${sessionId}/lecture`}
-                        >Manage Lecture</Breadcrumb.Item>
+                    
                         <Breadcrumb.Item >
                             {sessionId ? "Update Session" : "Create Session"}
                         </Breadcrumb.Item>

@@ -41,7 +41,7 @@ const StudentPaymentHistory: React.FC = () => {
 
   return (
     <div className="container mx-auto mt-10">
-      <h1>Payment History</h1>
+      <h1 className="text-center my-10">Payment History</h1>
       <Tabs defaultActiveKey="courses" onChange={onChange}>
         {items.map((item) => (
           <Tabs.TabPane key={item.key} tab={item.label} />
