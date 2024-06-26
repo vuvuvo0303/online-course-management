@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { Children, useEffect, useState } from "react";
 import {
+  AppstoreOutlined,
   CheckOutlined,
   CommentOutlined,
+  ContainerOutlined,
   CopyOutlined,
   DesktopOutlined,
   FundOutlined,
   FundProjectionScreenOutlined,
+  MailOutlined,
+  PieChartOutlined,
   ProfileOutlined,
   QuestionCircleOutlined,
   TeamOutlined,
@@ -77,6 +81,48 @@ const Dashboard: React.FC = () => {
       label: <Link to={String(key)}>{label}</Link>,
     } as MenuItem;
   }
+  const test: MenuItem[] = [
+    { key: '1', icon: <PieChartOutlined />, label: 'Option 1' },
+    { key: '2', icon: <DesktopOutlined />, label: 'Option 2' },
+    { key: '3', icon: <ContainerOutlined />, label: 'Option 3' },
+    {
+      key: 'sub1',
+      label: 'Navigation One',
+      icon: <MailOutlined />,
+      children: [
+        { key: '5', label: 'Option 5' },
+        { key: '6', label: 'Option 6' },
+        { key: '7', label: 'Option 7' },
+        { key: '8', label: 'Option 8' },
+      ],
+    },
+    {
+      key: 'sub2',
+      label: 'Navigation Two',
+      icon: <AppstoreOutlined />,
+      children: [
+        { key: '9', label: 'Option 9' },
+        { key: '10', label: 'Option 10' },
+        {
+          key: 'sub3',
+          label: 'Submenu',
+          children: [
+            { key: '11', label: 'Option 11' },
+            { key: '12', label: 'Option 12' },
+          ],
+        },
+      ],
+    },
+  ];
+  const a = () => (
+    <Menu
+      defaultSelectedKeys={['1']}
+      defaultOpenKeys={['sub1']}
+      mode="inline"
+      theme="dark"
+      items={test}
+    />
+  )
   useEffect(() => {
     function loadItems() {
       if (dataUser.role === "Instructor") {
@@ -85,24 +131,31 @@ const Dashboard: React.FC = () => {
           getItem(
             "Manage Feedbacks",
             "/instructor/manage-feedbacks",
-            <CommentOutlined />
+            <CommentOutlined />,
+
           ),
           getItem(
             "Manage Courses",
             "/instructor/manage-courses",
-            <FundProjectionScreenOutlined />
+            <FundProjectionScreenOutlined />,
+          ),
+          getItem(
+            "Manage All Sessions",
+            "/instructor/manage-all-sessions",
+            <DesktopOutlined />,
           ),
           getItem(
             "Manage Students",
             "/instructor/manage-students",
-            <TeamOutlined />
+            <TeamOutlined />,
           ),
           getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
           getItem(
             "Create New Course",
             "/instructor/create-course",
-            <DesktopOutlined />
+            <DesktopOutlined />,
+
           ),
           getItem(
             "Payment History",

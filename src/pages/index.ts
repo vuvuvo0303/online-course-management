@@ -41,6 +41,7 @@ export { default as CreateLecture } from "./instructor/manage-course/manage-sess
 export { default as ManageSession } from "./instructor/manage-course/manage-session/";
 export { default as CreateUpdateSession } from "./instructor/manage-course/manage-session/create-update-session";
 export { default as InstructorManageCoursesDetail } from "./instructor/manage-course/course-detail";
+export { default as ManageAllSession } from "../pages/manage-all-session";
 /* Admin Page */
 export { default as AdminDashboard } from "./admin/dashboard";
 export { default as AdminManageStudents } from "./admin/manage-students";

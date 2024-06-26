@@ -6,16 +6,29 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Breadcrumb, Button, Switch, Table, TableProps } from "antd";
 import { Course } from "../../../models";
+import { User } from "../../../models/User";
 
 const InstructorManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [userId, setUserId] = useState<string>('');
+
+  useEffect(() => {
+    const userString = localStorage.getItem("user");
+    const user: User = userString ? JSON.parse(userString) : null;
+    setUserId(user?.userId);
+    console.log("check userId: ", userId);
+   
+  }, []);
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get(`https://665fbf245425580055b0b23d.mockapi.io/courses`);
+        const res = await axios.get<Course[]>(`https://665fbf245425580055b0b23d.mockapi.io/courses`);
         if (res.data) {
-          setCourses(res.data);
+          console.log("check res: ", res);
+          setCourses(res.data.filter(course => course.userId === userId));
+          console.log("check courses: ", courses);
         }
       } catch (error) {
         console.log("Error: ", error);
@@ -24,7 +37,7 @@ const InstructorManageCourses: React.FC = () => {
       }
     };
     fetchCourses();
-  }, [])
+  }, [userId])
 
   if (loading) {
     return <p className="flex justify-center items-center">Loading ...</p>

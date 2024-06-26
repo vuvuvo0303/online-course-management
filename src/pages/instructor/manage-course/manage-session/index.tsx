@@ -104,11 +104,6 @@ const ManageSession = () => {
             key: 'title',
         },
         {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
-        },
-        {
             title: 'Created Date',
             dataIndex: 'createdDate',
             key: 'createdDate',

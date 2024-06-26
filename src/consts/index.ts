@@ -57,6 +57,8 @@ export const paths = {
   INSTRUCTOR_CREATE_SESSION: "manage-courses/:courseId/manage-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION: "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:courseId",
+  INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
+  INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSION: "manage-all-sessions/create-session",
 
 
   /* ADMIN PATHS */
