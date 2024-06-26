@@ -82,7 +82,6 @@ const Dashboard: React.FC = () => {
       } else if (dataUser.role === "Admin") {
         setItems([
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
-          getItem("My Profile", "/admin/profile", <UserOutlined />),
           getItem("Manage Students", "/admin/manage-students", <TeamOutlined />),
           getItem("Manage Instructors", "/admin/manage-instructors", <TeamOutlined />),
           getItem("Manage Categories", "/admin/manage-categories", <TeamOutlined />),

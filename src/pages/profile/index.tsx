@@ -163,7 +163,7 @@ const Profile: React.FC = () => {
                   <div>
                     <p className={styles.profileDetailItem}>
                       <strong>Status: </strong>
-                      {user.isActive ? "Active" : "Inactive"}
+                      {user.status ? "Active" : "Inactive"}
                     </p>
                   </div>
                 )}

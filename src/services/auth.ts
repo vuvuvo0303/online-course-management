@@ -1,8 +1,7 @@
-// services/auth.ts
 import { fetchStudents, fetchInstructors, fetchAdmins } from './get';
-import { Student, Instructor, Admin } from '../models/User';
+import { Student, Instructor, Admin } from '../models';
 
-export async function login(email: string, password: string): Promise<{ user: Student | Instructor | Admin } | null> {
+export async function login(email: string, password: string): Promise<{ user: Student | Instructor | Admin } | { status: string } | null> {
   try {
     const [students, instructors, admins] = await Promise.all([
       fetchStudents(),
@@ -12,17 +11,23 @@ export async function login(email: string, password: string): Promise<{ user: St
 
     const student = students.find(student => student.email === email && student.password === password);
     if (student) {
+      if (!student.status) {
+        return { status: "Account is disabled" };
+      }
       return { user: student };
     }
 
     const instructor = instructors.find(instructor => instructor.email === email && instructor.password === password);
     if (instructor) {
-      return { user: instructor};
+      if (!instructor.status) {
+        return { status: "Account is disabled" };
+      }
+      return { user: instructor };
     }
 
     const admin = admins.find(admin => admin.email === email && admin.password === password);
     if (admin) {
-      return { user: admin};
+      return { user: admin };
     }
 
     return null;
@@ -31,4 +36,3 @@ export async function login(email: string, password: string): Promise<{ user: St
     return null;
   }
 }
-
