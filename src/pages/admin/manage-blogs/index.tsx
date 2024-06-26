@@ -15,6 +15,7 @@ const AdminManageBlogs: React.FC = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
   const [data, setData] = useState<Blog[]>([]);
+  const [sortOrder, setSortOrder] = useState<"ascend" | "descend">("ascend");
 
 
   const handleDelete = async (id: string, title: string) => {
@@ -52,6 +53,17 @@ const AdminManageBlogs: React.FC = () => {
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText("");
+  };
+
+  const sortColumn = () => {
+    const newOrder = sortOrder === "ascend" ? "descend" : "ascend";
+    const sortedData = [...data].sort((a, b) => {
+      const timeA = new Date(a.time).getTime();
+      const timeB = new Date(b.time).getTime();
+      return newOrder === "ascend" ? timeA - timeB : timeB - timeA;
+    });
+    setData(sortedData);
+    setSortOrder(newOrder);
   };
 
   const getColumnSearchProps = (
@@ -158,8 +170,12 @@ const AdminManageBlogs: React.FC = () => {
       dataIndex: "time",
       key: "time",
       width: "15%",
-      sorter: (a, b) => a.time.length - b.time.length,
+      sorter: true,
+      sortOrder: sortOrder,
       sortDirections: ["descend", "ascend"],
+      onHeaderCell: () => ({
+        onClick: () => sortColumn(),
+      }),
     },
     {
       title: "Title",

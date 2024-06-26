@@ -24,14 +24,12 @@ const LoginPage: React.FC = () => {
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     const { email, password } = values;
     const authResult = await login(email, password);
-    console.log(authResult);
 
     if (authResult && "status" in authResult) {
       setAccountLockedMsg(authResult.status);
       toast.error(authResult.status);
     } else if (authResult && "user" in authResult) {
       const { user } = authResult;
-      console.log(user);
       const userWithoutPassword = removePassword(user);
       localStorage.setItem("user", JSON.stringify(userWithoutPassword));
       switch (user.role) {

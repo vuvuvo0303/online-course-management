@@ -49,10 +49,15 @@ export const paths = {
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",
-  INSTRUCTOR_CREATE_LECTURE: "create-lecture/:courseId",
-  INSTRUCTOR_EDIT_LECTURE: "edit-lecture/:courseId/:lectureId",
+  INSTRUCTOR_CREATE_LECTURE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/create-lecture",
+  INSTRUCTOR_EDIT_LECTURE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
-  INSTRUCTOR_LECTURES_OF_COURSE: "lectureOfCourse/:courseId",
+  INSTRUCTOR_LECTURES_OF_COURSE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures",
+  INSTRUCTOR_MANAGE_SESSION_OF_COURSE: "manage-courses/:courseId/manage-sessions",
+  INSTRUCTOR_CREATE_SESSION: "manage-courses/:courseId/manage-sessions/create-session",
+  INSTRUCTOR_UPDATE_SESSION: "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
+
+
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",
@@ -64,7 +69,9 @@ export const paths = {
   ADMIN_MANAGE_COURSES: "manage-courses",
   ADMIN_MANAGE_FEEDBACKS: "manage-feedbacks",
   ADMIN_PAYMENT_HISTORY: "payment-history",
-
+  ADMIN_MANAGE_SESSION_OF_COURSE: "manage-course/:courseId/manage-session",
+  ADMIN_MANAGE_LECTURES_OF_COURSE:
+    "manage-course/:courseId/manage-session/:sessionId/lecture",
   /* SPECIAL PATHS */
   INSTRUCTOR_HOME: "/instructor/dashboard",
   ADMIN_HOME: "/admin/dashboard",

@@ -8,3 +8,7 @@
   /* or any suitable height */
   overflow-y: auto;
 }
+
+.ant-drawer .ant-drawer-mask {
+  background: none
+}

@@ -203,7 +203,7 @@ const Navbar: React.FC = () => {
         </div>
       </div>
       <div className='mt-4'>
-        <Button><Link to={"/enrollment"}>View Cart</Link></Button>
+        <Button><Link to={paths.STUDENT_ENROLLMENT}>View Cart</Link></Button>
       </div>
     </div>
   );
@@ -272,11 +272,11 @@ const Navbar: React.FC = () => {
         <div className="flexCenter gap-10 mr-5">
           {isMobile ? (
             <Dropdown overlay={<Menu items={items} />} className='mt-5 mb-44' placement="bottomRight">
-              <a onClick={(e) => e.preventDefault()}>
+              <p onClick={(e) => e.preventDefault()}>
                 <Space>
                   <MenuOutlined className="text-gray-400 text-3xl" />
                 </Space>
-              </a>
+              </p>
             </Dropdown>
           ) : (
             <>
@@ -302,7 +302,7 @@ const Navbar: React.FC = () => {
               </Link>
               {avatarUrl ? (
                 <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
-                  <a onClick={(e) => e.preventDefault()}>
+                  <p onClick={(e) => e.preventDefault()}>
                     <Space>
                       <Avatar
                         src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
@@ -311,7 +311,7 @@ const Navbar: React.FC = () => {
                         icon={<UserOutlined />}
                       />
                     </Space>
-                  </a>
+                  </p>
                 </Dropdown>
               ) : (
                 <Link to={paths.LOGIN}>

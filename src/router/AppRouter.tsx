@@ -24,7 +24,7 @@ import {
   SiteMap,
   CourseDetail,
   AdminManageFeedbacks,
-  InstrutorDashboard,
+  InstructorDashboard,
   AdminDashboard,
   InstructorManageBlogs,
   InstructorManageStudents,
@@ -43,10 +43,13 @@ import {
   LectureOfCourse,
   InstructorManageLectures,
   ForgotPassword,
+  ManageSession,
+  CreateUpdateSession,
+  AdminManageSession,
+  AdminManageLecture,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
-
 
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
@@ -134,7 +137,7 @@ const AppRouter: React.FC = () => {
           path={paths.INSTRUCTOR_DASHBOARD}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
-              <InstrutorDashboard />
+              <InstructorDashboard />
             ) : (
               <Navigate to="/" />
             )
@@ -220,7 +223,6 @@ const AppRouter: React.FC = () => {
               <Navigate to="/" />
             )
           }
-
         />
 
         <Route
@@ -228,6 +230,36 @@ const AppRouter: React.FC = () => {
           element={
             canAccess([roles.INSTRUCTOR]) ? (
               <CreateLecture />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path={paths.INSTRUCTOR_MANAGE_SESSION_OF_COURSE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <ManageSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path={paths.INSTRUCTOR_CREATE_SESSION}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateUpdateSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path={paths.INSTRUCTOR_UPDATE_SESSION}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateUpdateSession />
             ) : (
               <Navigate to="/" />
             )
@@ -266,6 +298,14 @@ const AppRouter: React.FC = () => {
         <Route
           path={paths.ADMIN_MANAGE_FEEDBACKS}
           element={<AdminManageFeedbacks />}
+        />
+        <Route
+          path={paths.ADMIN_MANAGE_SESSION_OF_COURSE}
+          element={<AdminManageSession />}
+        />
+        <Route
+          path={paths.ADMIN_MANAGE_LECTURES_OF_COURSE}
+          element={<AdminManageLecture />}
         />
         <Route path="*" element={<NotFound />} />
       </Route>
