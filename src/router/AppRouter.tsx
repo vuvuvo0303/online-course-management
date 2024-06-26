@@ -51,7 +51,6 @@ import {
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
 
-
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
 
@@ -224,7 +223,6 @@ const AppRouter: React.FC = () => {
               <Navigate to="/" />
             )
           }
-
         />
 
         <Route
@@ -237,7 +235,7 @@ const AppRouter: React.FC = () => {
             )
           }
         />
-         <Route
+        <Route
           path={paths.INSTRUCTOR_MANAGE_SESSION_OF_COURSE}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
@@ -247,7 +245,7 @@ const AppRouter: React.FC = () => {
             )
           }
         />
-         <Route
+        <Route
           path={paths.INSTRUCTOR_CREATE_SESSION}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
@@ -301,11 +299,11 @@ const AppRouter: React.FC = () => {
           path={paths.ADMIN_MANAGE_FEEDBACKS}
           element={<AdminManageFeedbacks />}
         />
-         <Route
+        <Route
           path={paths.ADMIN_MANAGE_SESSION_OF_COURSE}
           element={<AdminManageSession />}
         />
-         <Route
+        <Route
           path={paths.ADMIN_MANAGE_LECTURES_OF_COURSE}
           element={<AdminManageLecture />}
         />

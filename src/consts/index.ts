@@ -49,14 +49,18 @@ export const paths = {
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",
-  INSTRUCTOR_CREATE_LECTURE: "manage-course/:courseId/manage-session/:sessionId/lecture/create-lecture",
-  INSTRUCTOR_EDIT_LECTURE: "manage-course/:courseId/manage-session/:sessionId/lecture/edit-lecture/:lectureId",
+  INSTRUCTOR_CREATE_LECTURE:
+    "manage-course/:courseId/manage-session/:sessionId/lecture/create-lecture",
+  INSTRUCTOR_EDIT_LECTURE:
+    "manage-course/:courseId/manage-session/:sessionId/lecture/edit-lecture/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
-  INSTRUCTOR_LECTURES_OF_COURSE: "manage-course/:courseId/manage-session/:sessionId/lecture",
+  INSTRUCTOR_LECTURES_OF_COURSE:
+    "manage-course/:courseId/manage-session/:sessionId/lecture",
   INSTRUCTOR_MANAGE_SESSION_OF_COURSE: "manage-course/:courseId/manage-session",
-  INSTRUCTOR_CREATE_SESSION: "manage-course/:courseId/manage-session/create-session",
-  INSTRUCTOR_UPDATE_SESSION: "manage-course/:courseId/manage-session/update-session/:sessionId",
-
+  INSTRUCTOR_CREATE_SESSION:
+    "manage-course/:courseId/manage-session/create-session",
+  INSTRUCTOR_UPDATE_SESSION:
+    "manage-course/:courseId/manage-session/update-session/:sessionId",
 
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
@@ -70,7 +74,8 @@ export const paths = {
   ADMIN_MANAGE_FEEDBACKS: "manage-feedbacks",
   ADMIN_PAYMENT_HISTORY: "payment-history",
   ADMIN_MANAGE_SESSION_OF_COURSE: "manage-course/:courseId/manage-session",
-  ADMIN_MANAGE_LECTURES_OF_COURSE: "manage-course/:courseId/manage-session/:sessionId/lecture",
+  ADMIN_MANAGE_LECTURES_OF_COURSE:
+    "manage-course/:courseId/manage-session/:sessionId/lecture",
   /* SPECIAL PATHS */
   INSTRUCTOR_HOME: "/instructor/dashboard",
   ADMIN_HOME: "/admin/dashboard",
