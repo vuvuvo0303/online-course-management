@@ -49,6 +49,7 @@ import {
   AdminManageLecture,
   InstructorManageCoursesDetail,
   ManageAllSession,
+  AdminLoginPage,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
