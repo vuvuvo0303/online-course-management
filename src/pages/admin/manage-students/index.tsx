@@ -1,15 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Breadcrumb, Button, Image, Input, Space, Switch, Table } from "antd";
-import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
-import { format } from "date-fns";
-import { toast } from "react-toastify";
+
 import Highlighter from "react-highlight-words";
 import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import type { FormProps, PopconfirmProps } from "antd";
-import { Breadcrumb, Form, Button, Image, Input, Modal, Switch, Table, Upload, Popconfirm, message } from "antd";
-import { DeleteOutlined, EditOutlined, HomeOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
+import { Breadcrumb, Form, Button, Image, Input, Modal, Switch, Table, Upload, Popconfirm, message, Space } from "antd";
+import { DeleteOutlined, EditOutlined, HomeOutlined, PlusOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
 import { format, formatISO } from "date-fns";
 import { Student } from "../../../models";
 import { toast } from "react-toastify";
@@ -433,35 +430,8 @@ const AdminManageStudents: React.FC = () => {
 
       <Table columns={columns} dataSource={data} />
     </div>
-      <div>
-        <div className="flex justify-between">
-          <Breadcrumb
-              className="py-2"
-              items={[
-                {
-                  href: "/",
-                  title: <HomeOutlined />,
-                },
-                {
-                  href: "/dashboard/admin",
-                  title: (
-                      <>
-                        <UserOutlined />
-                        <span>Admin</span>
-                      </>
-                  ),
-                },
-                {
-                  title: "Manage Students",
-                },
-              ]}
-          />
-          <div className="py-2">
-            <Button type="primary">Add New Students</Button>
-          </div>
-        </div>
-        <Table columns={columns} dataSource={data} />
-      </div>
+    
+      
   );
 };
 
