@@ -1,12 +1,14 @@
 .cart-popover .ant-popover-inner {
-  width: 500px; /* or any suitable width */
+  width: 500px;
+  /* or any suitable width */
 }
 
 .cart-popover .ant-popover-content {
-  max-height: 800px; /* or any suitable height */
+  max-height: 800px;
+  /* or any suitable height */
   overflow-y: auto;
 }
 
-.ant-drawer .ant-drawer-mask{
-  background:none
+.ant-drawer .ant-drawer-mask {
+  background: none
 }

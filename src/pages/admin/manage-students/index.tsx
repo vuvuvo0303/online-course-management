@@ -368,7 +368,7 @@ const AdminManageStudents: React.FC = () => {
         />
         <div className="py-2">
           <Button onClick={showModal} type="primary">
-            Add New Students
+            Add New Student
           </Button>
           <Modal title="Add New Student" visible={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
             <Form

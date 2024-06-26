@@ -232,9 +232,11 @@ const Dashboard: React.FC = () => {
             </Col>
           </Row>
           <div className="mt-2 text-lg font-bold">
-            <Link className="hover:text-red-600" to={"/instructor/profile"}>
-              View {dataUser.role} Profile
-            </Link>
+            {dataUser.role === "Admin" ? "" :
+                <Link className="hover:text-red-600" to={"/instructor/profile"}>
+                  View {dataUser.role} Profile
+                </Link>
+            }
           </div>
         </div>
       ),

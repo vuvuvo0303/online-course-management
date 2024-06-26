@@ -43,6 +43,7 @@ export { default as CreateUpdateSession } from "./instructor/manage-course/manag
 export { default as InstructorManageCoursesDetail } from "./instructor/manage-course/course-detail";
 export { default as ManageAllSession } from "../pages/manage-all-session";
 /* Admin Page */
+export { default as AdminLoginPage } from "./admin/login"
 export { default as AdminDashboard } from "./admin/dashboard";
 export { default as AdminManageStudents } from "./admin/manage-students";
 export { default as AdminManageInstructors } from "./admin/manage-instructors";

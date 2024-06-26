@@ -301,6 +301,7 @@ const AppRouter: React.FC = () => {
       </Route>
 
       {/* Route for Admin */}
+        <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route
         path="/admin/*"
         element={canAccess([roles.ADMIN]) ? <Dashboard /> : <Navigate to="/" />}

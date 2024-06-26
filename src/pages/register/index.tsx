@@ -1,4 +1,14 @@
-import { Button, Checkbox, Form, FormProps, Image, Input, Modal, Radio, Upload } from "antd";
+import {
+  Button,
+  Checkbox,
+  Form,
+  FormProps,
+  Image,
+  Input,
+  Modal,
+  Radio,
+  Upload,
+} from "antd";
 import { Link } from "react-router-dom";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState } from "react";
@@ -40,7 +50,9 @@ const RegisterPage: React.FC = () => {
     }
   };
 
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
+  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
+    errorInfo
+  ) => {
     console.log("Failed:", errorInfo);
   };
 
@@ -65,7 +77,8 @@ const RegisterPage: React.FC = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
+    setFileList(newFileList);
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -82,11 +95,18 @@ const RegisterPage: React.FC = () => {
         <div className="mr-4">
           <div className="flex justify-center ml-20 items-center">
             {" "}
-            <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Register </h1>
-            <Lottie animationData={register} style={{ width: "100px", height: "100px" }} />
+            <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">
+              Register{" "}
+            </h1>
+            <Lottie
+              animationData={register}
+              style={{ width: "100px", height: "100px" }}
+            />
           </div>
 
-          <span className="flex justify-center mb-4">Learn from top experts. Sign up for FLearn now!</span>
+          <span className="flex justify-center mb-4">
+            Learn from top experts. Sign up for FLearn now!
+          </span>
         </div>
         <div className="mb-6">
           <div className=" flex justify-center ">
@@ -104,8 +124,14 @@ const RegisterPage: React.FC = () => {
                 name="email"
                 rules={[
                   { required: true, message: "Please input your email!" },
-                  { type: "email", message: "Please enter the correct email format!" },
-                  { pattern: /^\S*$/, message: "Email must not contain spaces!" },
+                  {
+                    type: "email",
+                    message: "Please enter the correct email format!",
+                  },
+                  {
+                    pattern: /^\S*$/,
+                    message: "Email must not contain spaces!",
+                  },
                 ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
@@ -121,9 +147,19 @@ const RegisterPage: React.FC = () => {
                 name="username"
                 rules={[
                   { required: true, message: "Please input your username!" },
-                  { pattern: /^\S*$/, message: "Username must not contain spaces!" },
-                  { min: 4, message: "Username must be at least 4 characters!" },
-                  { max: 20, message: "Username must be at most 20 characters!" },
+                  {
+                    min: 4,
+                    message: "Username must be at least 4 characters!",
+                  },
+                  {
+                    max: 20,
+                    message: "Username must be at most 20 characters!",
+                  },
+                  {
+                    pattern: /^[a-zA-Z0-9]*$/,
+                    message:
+                      "Username must not contain any special characters!",
+                  },
                 ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
@@ -141,8 +177,14 @@ const RegisterPage: React.FC = () => {
                 name="password"
                 rules={[
                   { required: true, message: "Please input your password!" },
-                  { min: 6, message: "Password must be at least 6 characters!" },
-                  { pattern: /^\S*$/, message: "Password must not contain spaces!" },
+                  {
+                    min: 6,
+                    message: "Password must have at least 6 characters!",
+                  },
+                  {
+                    pattern: /^\S*$/,
+                    message: "Password must not contain space!",
+                  },
                 ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
@@ -157,8 +199,15 @@ const RegisterPage: React.FC = () => {
                 // label="Phone Number"
                 name="phonenumber"
                 rules={[
-                  { required: true, message: "Please input your Phone Number!" },
-                  { pattern: /^\d{10}$/, message: "Phone Number must be exactly 10 digits!" },
+                  {
+                    required: true,
+                    message: "Please input your phone number!",
+                  },
+                  {
+                    pattern: /^0\d{9}$/,
+                    message:
+                      "Phone number must start with 0 and be exactly 10 digits!",
+                  },
                 ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
@@ -166,20 +215,21 @@ const RegisterPage: React.FC = () => {
               >
                 <Input
                   placeholder="Phone Number"
-                  type="number"
+                  type="string"
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
               </Form.Item>
               <Form.Item<FieldType>
                 // label="Avatar"
                 name="avatar"
-                rules={[{ required: true, message: "Please upload your Avatar!" }]}
+                rules={[
+                  { required: true, message: "Please upload your Avatar!" },
+                ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 className="mb-5"
               >
                 <Upload
-                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                   listType="picture-card"
                   fileList={fileList}
                   onPreview={handlePreview}
@@ -191,7 +241,9 @@ const RegisterPage: React.FC = () => {
               <Form.Item<FieldType>
                 // label="Role"
                 name="role"
-                rules={[{ required: true, message: "Please select your role!" }]}
+                rules={[
+                  { required: true, message: "Please select your role!" },
+                ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 className="mb-5"
@@ -204,15 +256,31 @@ const RegisterPage: React.FC = () => {
               <Form.Item<FieldType>
                 name="policy"
                 valuePropName="checked"
-                rules={[{ required: true, message: "Please accept Policy!" }]}
+                rules={[
+                  {
+                    required: true,
+                    message:
+                      "Please agree to the Policy before creating an account.",
+                  },
+                ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
               >
-                <Checkbox className="mt-2">Agree to Terms and Conditions</Checkbox>
-                <span onClick={openModal} className="hover:cursor-pointer font-bold hover:text-red-400">
+                <Checkbox className="mt-2">
+                  Agree to Terms and Conditions
+                </Checkbox>
+                <span
+                  onClick={openModal}
+                  className="hover:cursor-pointer font-bold hover:text-red-400"
+                >
                   (See Policy)
                 </span>
-                <Modal title="Policy" open={isModalOpen} onCancel={handleCancel} onOk={handleOk}></Modal>
+                <Modal
+                  title="Policy"
+                  open={isModalOpen}
+                  onCancel={handleCancel}
+                  onOk={handleOk}
+                ></Modal>
               </Form.Item>
               <Form.Item wrapperCol={{ span: 24 }}>
                 <Button
@@ -226,10 +294,13 @@ const RegisterPage: React.FC = () => {
             </Form>
           </div>
           <span className="mt-4 block text-center">
-            Do you have an account?{" "}
+            Do you already have an account?{" "}
             <strong>
-              <Link to={"/login"} className="hover:cursor-pointer hover:text-red-400">
-                Sign In here
+              <Link
+                to={"/login"}
+                className="hover:cursor-pointer hover:text-red-400"
+              >
+                Back to Sign in
               </Link>
             </strong>
           </span>
@@ -237,7 +308,11 @@ const RegisterPage: React.FC = () => {
       </div>
       <div className="hidden md:flex w-1/2 pb-12 items-center justify-center">
         <div className="rounded-lg overflow-hidden w-[80%] shadow-pink-300 mt-20">
-          <img className="shadow-xl rounded-xl w-full" src={Rectangle} alt="logo" />
+          <img
+            className="shadow-xl rounded-xl w-full"
+            src={Rectangle}
+            alt="logo"
+          />
         </div>
       </div>
 
@@ -253,8 +328,12 @@ const RegisterPage: React.FC = () => {
         />
       )}
 
-      <Modal title="Policy" visible={isModalOpen} onCancel={handleCancel} onOk={handleOk}>
-        {/* Nội dung của modal ở đây */}
+      <Modal
+        title="Policy"
+        visible={isModalOpen}
+        onCancel={handleCancel}
+        onOk={handleOk}
+      >
         <p>This is where your policy content goes.</p>
       </Modal>
     </div>

@@ -1,12 +1,11 @@
 import { fetchStudents, fetchInstructors, fetchAdmins } from './get';
 import { Student, Instructor, Admin } from '../models';
 
-export async function login(email: string, password: string): Promise<{ user: Student | Instructor | Admin } | { status: string } | null> {
+export async function login(email: string, password: string): Promise<{ user: Student | Instructor } | { status: string } | null> {
   try {
-    const [students, instructors, admins] = await Promise.all([
+    const [students, instructors] = await Promise.all([
       fetchStudents(),
       fetchInstructors(),
-      fetchAdmins()
     ]);
 
     const student = students.find(student => student.email === email && student.password === password);
@@ -25,14 +24,23 @@ export async function login(email: string, password: string): Promise<{ user: St
       return { user: instructor };
     }
 
+    return null;
+  } catch (error) {
+    console.error('Error logging in:', error);
+    return null;
+  }
+}
+
+export async function loginAdmin(email: string, password: string): Promise<{ user: Admin } | { status: string } | null> {
+  try {
+    const admins = await fetchAdmins();
     const admin = admins.find(admin => admin.email === email && admin.password === password);
     if (admin) {
       return { user: admin };
     }
-
     return null;
   } catch (error) {
-    console.error('Error logging in:', error);
+    console.error('Error logging in as admin:', error);
     return null;
   }
 }
