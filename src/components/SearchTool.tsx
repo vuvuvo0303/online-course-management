@@ -8,19 +8,23 @@ const SearchTool = () => {
 
     const handleSearch = () => {
         // Implement your search logic here
-        const results = categoryFilters.filter(filter => filter.toLowerCase().includes(searchTerm.toLowerCase()));
+        const results = categoryFilters.filter(filter =>
+            filter.toLowerCase().includes(searchTerm.toLowerCase())
+        );
         console.log(results);
     };
 
     return (
-        <Input
-            placeholder="Search categories"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onPressEnter={handleSearch}
-            prefix={<SearchOutlined />}
-            style={{ width: 300 }}
-        />
+        <div className="flex items-center">
+            <Input
+                className="w-full"
+                placeholder="Search categories"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onPressEnter={handleSearch}
+                prefix={<SearchOutlined />}
+            />
+        </div>
     );
 };
 

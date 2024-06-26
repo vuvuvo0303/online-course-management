@@ -260,9 +260,16 @@ const Navbar: React.FC = () => {
   return (
     <nav className={`flexBetween navbar ${isLoginOrRegister ? 'justify-center' : ''}`}>
       <div className={`flex-1 flexStart gap-10 ${isLoginOrRegister ? 'justify-center' : ''}`}>
+        <MenuOutlined />
         <Link to="/">
-          <h1 className={`${isLoginOrRegister ? 'text-center' : ''}`}>FLearn</h1>
+          <img
+            src="/logo.jpg"  // Đường dẫn đến hình ảnh trong thư mục public
+            alt="FLearn Logo" // Text mô tả cho hình ảnh, hỗ trợ cho trình duyệt
+            className={` ${isLoginOrRegister ? 'text-center ' : ''} max-h-30px`}
+            style={{ maxHeight: '30px' }}  // Áp dụng maxHeight bằng CSS inline
+          />
         </Link>
+
         {!isLoginOrRegister && (
           <>
             <Dropdown overlay={<Menu>{submenus}</Menu>} placement="bottomLeft">
