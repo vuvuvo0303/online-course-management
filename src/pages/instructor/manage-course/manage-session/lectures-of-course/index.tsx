@@ -178,11 +178,11 @@ const LectureOfCourse: React.FC = () => {
                             Manage Courses
                         </Breadcrumb.Item>
                         <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>
-                            Manage Session
+                            Manage Sessions
                         </Breadcrumb.Item>
-                        <Breadcrumb.Item>Manage Lecture</Breadcrumb.Item>
+                        <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
                     </Breadcrumb>
-                    <h1 className="text-center m-10">Manage Lecture</h1>
+                    <h1 className="text-center m-10">Manage Lectures</h1>
                     <div>
                         <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/create-lecture`}>
                             <Button className="bg-yellow-500 mb-10 float-right">Add New</Button>

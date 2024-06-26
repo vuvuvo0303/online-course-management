@@ -47,6 +47,7 @@ import {
   CreateUpdateSession,
   AdminManageSession,
   AdminManageLecture,
+  InstructorManageCoursesDetail,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
@@ -268,6 +269,16 @@ const AppRouter: React.FC = () => {
           }
         />
         <Route path="*" element={<NotFound />} />
+        <Route
+          path={paths.INSTRUCTOR_MANAGE_COURSE_DETAIL}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <InstructorManageCoursesDetail />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
       </Route>
 
       {/* Route for Admin */}

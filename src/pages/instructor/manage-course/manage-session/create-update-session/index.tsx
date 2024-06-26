@@ -91,7 +91,7 @@ const CreateUpdateSession = () => {
                         </Breadcrumb.Item>
                         <Breadcrumb.Item
                             href={`/instructor/manage-courses/${courseId}/manage-sessions`}
-                        >Manage Session</Breadcrumb.Item>
+                        >Manage Sessions</Breadcrumb.Item>
                     
                         <Breadcrumb.Item >
                             {sessionId ? "Update Session" : "Create Session"}
