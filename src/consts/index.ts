@@ -84,22 +84,40 @@ export const roles = {
   ADMIN: "Admin",
 };
 
-/* CATEGORIES */
+// Define the structure of the submenu
+interface categoryCourse {
+  [key: string]: string[];
+}
+
+// Example data
 export const categoryFilters = [
-  "Development",
-  "Business",
-  "Finance & Accounting",
-  "IT & Software",
-  "Office Productivity",
-  "Personal Development",
-  "Design",
-  "Marketing",
-  "Lifestyle",
-  "Photography & Video",
-  "Health & Fitness",
-  "Music",
-  "Teaching & Academics",
+  "Web Development",
+  "Mobile Development",
+  "Game Development",
+  "Entrepreneurship",
+  "Business Analytics & Intelligence",
+  "Finance",
+  "IT Certifications",
+  "Personal Transformation",
+  "Graphic Design & Illustration",
+  "Digital Marketing",
+  // Add other categories as needed
 ];
+
+export const categoryCourse: categoryCourse = {
+  "Web Development": ["JavaScript", "React JS", "Angular", "Next.js", "CSS", "HTML", "ASP.NET Core", "Node.Js", "Microservices"],
+  "Mobile Development": ["iOS", "Android", "Flutter", "React Native"],
+  "Game Development": ["Unity", "Unreal Engine", "Godot"],
+  "Entrepreneurship": ["Startup", "Business Planning", "Marketing"],
+  "Business Analytics & Intelligence": ["Data Analysis", "Power BI", "Data Science", "Data Visualization"],
+  "Finance": ["Investing", "Trading", "Accounting", "Cryptocurrency"],
+  "IT Certifications": ["AWS", "CompTIA", "Cisco", "Microsoft"],
+  "Personal Transformation": ["Leadership", "Personal Productivity", "Communication Skills", "Confidence"],
+  "Graphic Design & Illustration": ["Photoshop", "Illustrator", "InDesign", "Drawing"],
+  "Digital Marketing": ["SEO", "Social Media Marketing", "Google Analytics", "Content Marketing"],
+  // Add other subcategories as needed
+};
+
 
 /* SUB CATEGORIES */
 export const categorySubmenu = [
