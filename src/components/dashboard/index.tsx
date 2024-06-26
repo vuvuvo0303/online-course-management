@@ -140,11 +140,8 @@ const Dashboard: React.FC = () => {
             <FundProjectionScreenOutlined />
           ),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
-          getItem(
-            "Manage Feedbacks",
-            "/admin/manage-feedbacks",
-            <CommentOutlined />
-          ),
+          getItem("Manage Feedbacks", "/admin/manage-feedbacks", <CommentOutlined />),
+          getItem("Payment History", "/admin/payment-history", <DesktopOutlined />),
         ]);
       }
     }

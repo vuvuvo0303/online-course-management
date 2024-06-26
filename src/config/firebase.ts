@@ -1,15 +1,7 @@
-import { initializeApp, FirebaseApp } from "firebase/app";
-import { getStorage, FirebaseStorage } from "firebase/storage";
+import { initializeApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
 
-const firebaseConfig: {
-  apiKey: string;
-  authDomain: string;
-  projectId: string;
-  storageBucket: string;
-  messagingSenderId: string;
-  appId: string;
-  measurementId: string;
-} = {
+const firebaseConfig = {
   apiKey: "AIzaSyCZThpep6oxVIAjO0PNJxFoupkPOENt1Ps",
   authDomain: "online-course-management-e9629.firebaseapp.com",
   projectId: "online-course-management-e9629",
@@ -19,7 +11,7 @@ const firebaseConfig: {
   measurementId: "G-PHTVH7Z96B",
 };
 
-const app: FirebaseApp = initializeApp(firebaseConfig);
-const storage: FirebaseStorage = getStorage(app);
+const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
 
 export { storage };

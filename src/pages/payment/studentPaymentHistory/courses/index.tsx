@@ -38,7 +38,7 @@ const PaymentCourses: React.FC = () => {
     const handleSetStatusPendingRefund = async (courseId: string) => {
       const findCourse = payments.find(payment => payment.courseId === courseId);
       if (findCourse) {
-        findCourse.status = "PENDING REFUND";
+        findCourse.status = "WAITING FOR REFUND";
         try {
           await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/payments/${findCourse.paymentId}`, findCourse);
           setPayments([...payments]); // Force re-render
@@ -86,7 +86,7 @@ const PaymentCourses: React.FC = () => {
                   ? "red"
                   : status === "PENDING"
                     ? "gold"
-                    : status === "PENDING REFUND"
+                    : status === "WAITING FOR REFUND"
                     ? "orange"
                     : status === "REFUND"
                       ? "blue"

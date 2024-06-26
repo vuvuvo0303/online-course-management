@@ -8,6 +8,54 @@ const ManagePaymentRefund = () => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
     const role = user?.role;
+
+    const handleSetStatusRefund = async (paymentId: string) => {
+        const findCourse = payments.find(payment => payment.paymentId === paymentId);
+        if (findCourse) {
+            findCourse.status = "REFUND";
+            try {
+                const res = await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/payments/${findCourse.paymentId}`, findCourse);
+                console.log("check res: ", res)
+                setPayments([...payments]); // Force re-render
+            } catch (error) {
+                console.log("Error: ", error);
+                setError("An error occurred while processing the refund.");
+            }
+        }
+    };
+
+    const renderRequest = (paymentId: string, record: Payment) => {
+        if (role === "Instructor") {
+            if (record.status === "WAITING FOR REFUND") {
+                return (
+                    <div>
+                        <Button onClick={() => handleSetStatusRefund(paymentId)} type="primary">Accept Request</Button>
+                    </div>
+                );
+            } else {
+                return (
+                    <div>
+                        <Tag color="orange">REFUND COMPLETED</Tag>
+                    </div>
+                );
+            }
+        } else {
+            if (record.status === "WAITING FOR REFUND") {
+                return (
+                    <div>
+                        <Tag color="orange">INSTRUCTOR IS PROCESSING</Tag>
+                    </div>
+                );
+            } else {
+                return (
+                    <div>
+                        <Tag color="orange">REFUND COMPLETED</Tag>
+                    </div>
+                );
+            }
+        }
+    };
+
     const columns = [
         {
             title: 'User ID',
@@ -19,7 +67,6 @@ const ManagePaymentRefund = () => {
             dataIndex: 'courseId',
             key: 'courseId',
         },
-
         {
             title: 'Amount',
             dataIndex: 'amount',
@@ -35,29 +82,11 @@ const ManagePaymentRefund = () => {
             title: 'Payment Method',
             dataIndex: 'paymentMethod',
             key: 'paymentMethod',
-        },
+        },    
         {
-            title: 'Request',
-            dataIndex: 'courseId',
-            key: 'courseId',
-            render: (courseId: string, record: Payment) => (
-                role === "Instructor" ?
-                    record.status === "PENDING REFUND" ?
-                        (<div>
-                            <Button onClick={() => handleSetStatusRefund(courseId)} type="primary">Accept Request</Button>
-                        </div>)
-                        : (
-                            <div><Tag color="orange">REFUND COMPLETED</Tag></div>
-
-                        )
-                        : record.status === "PENDING REFUND" ?
-                        (
-                            <div><Tag color="orange">INSTRUCTOR IS PROCESSING</Tag></div>
-
-                        ) :
-                        <div><Tag color="orange">REFUND COMPLETED</Tag></div>
-
-            )
+            title: 'Enrollment ID',
+            dataIndex: 'enrollmentId',
+            key: 'enrollmentId',
         },
         {
             title: 'Status',
@@ -65,35 +94,21 @@ const ManagePaymentRefund = () => {
             key: 'status',
             render: (status: string) => (
                 <Tag color={
-                    status === 'PENDING REFUND' ? 'orange' :
+                    status === 'WAITING FOR REFUND' ? 'orange' :
                         status === 'REFUND' ? 'blue' :
-                            'default' // Màu mặc định khi không trùng khớp
+                            'default' // Default color for unmatched statuses
                 }>
                     {status.toUpperCase()}
                 </Tag>
             ),
-
         },
         {
-            title: 'Enrollment ID',
-            dataIndex: 'enrollmentId',
-            key: 'enrollmentId',
+            title: 'Request',
+            dataIndex: 'paymentId',
+            key: 'paymentId',
+            render: renderRequest,
         }
     ];
-
-    const handleSetStatusRefund = async (courseId: string) => {
-        const findCourse = payments.find(payment => payment.courseId === courseId);
-        if (findCourse) {
-            findCourse.status = "REFUND";
-            try {
-                await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/payments/${findCourse.paymentId}`, findCourse);
-                setPayments([...payments]); // Force re-render
-            } catch (error) {
-                console.log("Error: ", error);
-                setError("An error occurred while processing the refund.");
-            }
-        }
-    };
 
     const [payments, setPayments] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -104,7 +119,7 @@ const ManagePaymentRefund = () => {
             try {
                 const response = await axios.get<Payment[]>('https://665fbf245425580055b0b23d.mockapi.io/payments');
                 if (response) {
-                    setPayments(response.data.filter(payment => payment.status === "REFUND" || payment.status === "PENDING REFUND"));
+                    setPayments(response.data.filter(payment => payment.status === "REFUND" || payment.status === "WAITING FOR REFUND"));
                 }
             } catch (error: unknown) {
                 if (error instanceof Error) {
@@ -120,7 +135,6 @@ const ManagePaymentRefund = () => {
         fetchPayments();
     }, []);
 
-
     if (loading) {
         return <p className="loading">Loading...</p>;
     }
@@ -133,7 +147,7 @@ const ManagePaymentRefund = () => {
         <div>
             <Table columns={columns} dataSource={payments} rowKey="paymentId" />
         </div>
-    )
-}
+    );
+};
 
 export default ManagePaymentRefund;

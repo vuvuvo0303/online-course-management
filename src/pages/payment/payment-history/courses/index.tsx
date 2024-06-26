@@ -34,7 +34,7 @@ const ManagePaymentCourse = () => {
                     status === 'COMPLETED' ? 'green' :
                         status === 'REJECTED' ? 'red' :
                             status === 'PENDING' ? 'gold' :
-                                status === "PENDING REFUND"
+                                status === "WAITING FOR REFUND"
                                     ? "orange" :
                                     status === 'REFUND' ? 'blue' :
                                         'default' // Màu mặc định khi không trùng khớp
