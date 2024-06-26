@@ -56,23 +56,7 @@ const CreateUpdateSession = () => {
     }
   }, [courseId, form, sessionId]);
 
-  const onFinish = async (values: Session) => {
-    setLoading(true);
-    try {
-      if (sessionId) {
-        await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`, values);
-        toast.success("Update Session Successfully!");
-      } else {
-        await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/session`, { ...values, courseId: courseId2 });
-        toast.success("Create Session Successfully!");
-      }
-      navigate(`/instructor/manage-course/${courseId}/manage-session`);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  
     const onFinish = async (values: Session) => {
         setLoading(true);
         try {
