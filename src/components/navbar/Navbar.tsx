@@ -1,11 +1,13 @@
 import { Menu, Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover, Button } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { categoryFilters, categorySubmenu, paths } from '../../consts/index';
+import { paths } from '../../consts/index';
 import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined, CheckOutlined, MenuOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import SearchTool from '../SearchTool';
 import "./nav.css"
+import Drawer from '../Drawer';
+
 const Navbar: React.FC = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
@@ -13,6 +15,9 @@ const Navbar: React.FC = () => {
   const isLoginOrRegister = location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
   const isMobile = useMediaQuery({ maxWidth: 768 }); // Điều kiện màn hình nhỏ
   const navigate = useNavigate();
+  const isLoginPage = location.pathname === '/login';
+  const isRegisterPage = location.pathname === '/register';
+  const isForgotPassword = location.pathname === '/forgot-password';
   // Create a submenu for each categoryFilter
 
   useEffect(() => {
@@ -81,16 +86,6 @@ const Navbar: React.FC = () => {
     },
   ];
 
-  const submenus = categoryFilters.map((filter, index) => (
-    <Menu.SubMenu key={index} title={filter}>
-      {categorySubmenu.map((submenu, subIndex) => (
-        <Menu.Item key={subIndex}>
-          <Link to={`/submenu/${submenu}`}>{submenu}</Link>
-        </Menu.Item>
-      ))}
-    </Menu.SubMenu>
-  ));
-
   // Get user data from localStorage
   const userData = JSON.parse(localStorage.getItem('user') || '{}');
   const { avatarUrl } = userData;
@@ -99,65 +94,63 @@ const Navbar: React.FC = () => {
   //   setMobileMenuVisible(!mobileMenuVisible);
   // };
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-  };
-
-
   const shopCartContent = (
-    <div className='p-1'>
-      <div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
-            <Row className="mb-4">
-              <Col span={6}><img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" /></Col>
-              <Col span={12} className="flex items-center">
-                <div className="truncate">
-                  The Complete Python Bootcamp From Zero to Hero in Python
+    <div className="p-4">
+      <div className="bg-white p-5 rounded-lg shadow-lg">
+        <div className="hover:bg-slate-300 p-5 mb-4 rounded-lg transition-all duration-200 ease-in-out">
+          <Link to={"/"}>
+            <Row className="mb-4 items-center">
+              <div className="flex items-start space-x-4">
+                <div className="w-1/4">
+                  <img
+                    src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg"
+                    alt=""
+                    className="w-full rounded-lg mb-2"
+                  />
                 </div>
-              </Col>
-              <Col span={6} className="flex items-center justify-end">
-                <span>₫349,000</span>
+                <div className="w-3/4 mt-2">
+                  <div className="truncate">
+                    100 Days of Code: The Complete Python Pro...
+                  </div>
+                </div>
+              </div>
+              <Col span={6} className="flex justify-end">
+                <span>₫2,199,000</span>
               </Col>
             </Row>
           </Link>
         </div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
-            <Row className="mb-4">
-              <Col span={6}><img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" /></Col>
-              <Col span={12} className="flex items-center">
+        <div className="hover:bg-slate-300 p-5 mb-4 rounded-lg transition-all duration-200 ease-in-out">
+          <Link to={"/"}>
+            <Row className="mb-4 items-center">
+              <Col span={6}>
+                <img
+                  src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg"
+                  alt=""
+                  className="w-full rounded-lg"
+                />
+              </Col>
+              <Col span={12}>
                 <div className="truncate">
-                  The Complete Python Bootcamp From Zero to Hero in Python
+                  The Complete 2024 Web Development Bootcamp
                 </div>
               </Col>
-              <Col span={6} className="flex items-center justify-end">
-                <span>₫349,000</span>
+              <Col span={6} className="flex justify-end">
+                <span>₫1,499,000</span>
               </Col>
             </Row>
           </Link>
         </div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
-            <Row className="mb-4">
-              <Col span={6}><img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" /></Col>
-              <Col span={12} className="flex items-center">
-                <div className="truncate">
-                  The Complete Python Bootcamp From Zero to Hero in Python
-                </div>
-              </Col>
-              <Col span={6} className="flex items-center justify-end">
-                <span>₫349,000</span>
-              </Col>
-            </Row>
-          </Link>
+        <div className="mt-4 text-xl font-bold">
+          <span>Total: ₫3,698,000</span>
         </div>
-      </div>
-      <div className='mt-4 '>
-        <Button><Link to={"/cart"}>View Cart</Link></Button>
+        <div className="mt-4">
+          <Button className="w-full bg-blue-600 text-white py-2 rounded-lg">
+            <Link to={"/cart"} className="w-full h-full block text-center">Go to cart</Link>
+          </Button>
+        </div>
       </div>
     </div>
-
   );
 
   const heartContent = (
@@ -260,42 +253,22 @@ const Navbar: React.FC = () => {
   return (
     <nav className={`flexBetween navbar ${isLoginOrRegister ? 'justify-center' : ''}`}>
       <div className={`flex-1 flexStart gap-10 ${isLoginOrRegister ? 'justify-center' : ''}`}>
-        <MenuOutlined />
+        <div>
+          {!isLoginPage && !isRegisterPage && !isForgotPassword && <Drawer />}
+        </div>
         <Link to="/">
           <img
-            src="/logo.jpg"  // Đường dẫn đến hình ảnh trong thư mục public
-            alt="FLearn Logo" // Text mô tả cho hình ảnh, hỗ trợ cho trình duyệt
+            src="/logo.jpg"
+            alt="FLearn Logo"
             className={` ${isLoginOrRegister ? 'text-center ' : ''} max-h-30px`}
-            style={{ maxHeight: '30px' }}  // Áp dụng maxHeight bằng CSS inline
+            style={{ maxHeight: '40px' }}
           />
         </Link>
-
-        {!isLoginOrRegister && (
-          <>
-            <Dropdown overlay={<Menu>{submenus}</Menu>} placement="bottomLeft">
-              <a
-                className="ant-dropdown-link"
-                onMouseEnter={handleMouseEnter}
-                style={{ fontSize: '14px', cursor: 'pointer' }}
-              >
-                Categories
-              </a>
-            </Dropdown>
-            <Link to='/enrollment?activeTab=1'>
-              <a className="link" style={{ fontSize: '14px' }}>
-                Saved Courses
-              </a>
-            </Link>
-            <Link to='/teaching'>
-              <a className="link" style={{ fontSize: '14px' }}>
-                Be an Instructors
-              </a>
-            </Link>
-          </>
-        )}
+        <div>
+          {!isLoginPage && !isRegisterPage && !isForgotPassword && <SearchTool />}
+        </div>
       </div>
-      <SearchTool />
-      {!isLoginOrRegister && (
+      {!isLoginOrRegister && !isForgotPassword && (
         <div className="flexCenter gap-10 mr-5">
           {isMobile ? (
             <Dropdown overlay={<Menu items={items} />} className='mt-5 mb-44' placement="bottomRight">
@@ -308,7 +281,7 @@ const Navbar: React.FC = () => {
           ) : (
             <>
               <Link to={paths.STUDENT_ENROLLMENT}>
-                <Popover content={heartContent} title="Wish List" overlayClassName="cart-popover border-2">
+                <Popover content={heartContent} overlayClassName="cart-popover">
                   <Badge count={4}>
                     <HeartOutlined className="text-gray-400 text-3xl" />
                   </Badge>
@@ -321,7 +294,7 @@ const Navbar: React.FC = () => {
                 <BellOutlined className="text-gray-400 text-3xl" />
               </Badge>
               <Link to={paths.STUDENT_CART}>
-                <Popover content={shopCartContent} title="Selected Course" overlayClassName="cart-popover border-2">
+                <Popover content={shopCartContent} overlayClassName="cart-popover">
                   <Badge count={2}>
                     <ShoppingCartOutlined className="text-gray-400 text-3xl" />
                   </Badge>
