@@ -43,6 +43,10 @@ import {
   LectureOfCourse,
   InstructorManageLectures,
   ForgotPassword,
+  ManageSession,
+  CreateUpdateSession,
+  AdminManageSession,
+  AdminManageLecture,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
@@ -233,6 +237,36 @@ const AppRouter: React.FC = () => {
             )
           }
         />
+         <Route
+          path={paths.INSTRUCTOR_MANAGE_SESSION_OF_COURSE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <ManageSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+         <Route
+          path={paths.INSTRUCTOR_CREATE_SESSION}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateUpdateSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path={paths.INSTRUCTOR_UPDATE_SESSION}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateUpdateSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Route>
 
@@ -266,6 +300,14 @@ const AppRouter: React.FC = () => {
         <Route
           path={paths.ADMIN_MANAGE_FEEDBACKS}
           element={<AdminManageFeedbacks />}
+        />
+         <Route
+          path={paths.ADMIN_MANAGE_SESSION_OF_COURSE}
+          element={<AdminManageSession />}
+        />
+         <Route
+          path={paths.ADMIN_MANAGE_LECTURES_OF_COURSE}
+          element={<AdminManageLecture />}
         />
         <Route path="*" element={<NotFound />} />
       </Route>

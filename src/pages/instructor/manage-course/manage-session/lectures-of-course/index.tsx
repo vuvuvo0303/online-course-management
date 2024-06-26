@@ -1,13 +1,14 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Modal, Spin, Switch, Table } from "antd";
+import { Breadcrumb, Button, Modal, Spin, Switch, Table, TableProps } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Lecture } from "../../../../models";
+import { Lecture } from "../../../../../models";
+import { toast } from "react-toastify";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
-    const { courseId } = useParams<{ courseId: string }>();
+    const { courseId , sessionId} = useParams<{ courseId: string , sessionId: string}>();
     const [loading, setLoading] = useState<boolean>(true);
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -42,6 +43,7 @@ const LectureOfCourse: React.FC = () => {
     const handleDelete = async (lectureId: string) => {
         await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/lectures/${lectureId}`);
         setData(data.filter(lecture => lecture.lectureId !== lectureId));
+        toast.success("Delete Lecture Successfully!")
     };
 
     const handleCancel = () => {
@@ -53,7 +55,7 @@ const LectureOfCourse: React.FC = () => {
             try {
                 const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
                 if (res.data) {
-                    const filteredLectures = res.data.filter(lecture => lecture.courseId === courseId);
+                    const filteredLectures = res.data.filter(lecture => lecture.courseId === courseId && lecture.sessionId === sessionId);
                     setData(filteredLectures);
                 }
             } catch (error) {
@@ -65,7 +67,7 @@ const LectureOfCourse: React.FC = () => {
         if (courseId) {
             fetchLecture();
         }
-    }, [courseId]);
+    }, [courseId, sessionId]);
 
     const onChangeStatus = async (checked: boolean, lectureId: string) => {
         try {
@@ -80,11 +82,16 @@ const LectureOfCourse: React.FC = () => {
         }
     };
 
-    const columns = [
+    const columns:TableProps<Lecture>["columns"] = [
         {
             title: 'Lecture Id',
             dataIndex: 'lectureId',
             key: 'lectureId',
+        },
+        {
+            title: 'Session Id',
+            dataIndex: 'sessionId',
+            key: 'sessionId',
         },
         {
             title: 'Title',
@@ -100,11 +107,17 @@ const LectureOfCourse: React.FC = () => {
             title: 'Created Date',
             dataIndex: 'createdDate',
             key: 'createdDate',
+            defaultSortOrder: 'descend',
+            sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
+            render: (date: string) => new Date(date).toLocaleDateString(),
         },
         {
             title: 'Updated Date',
             dataIndex: 'updatedDate',
             key: 'updatedDate',
+            defaultSortOrder: 'descend',
+            sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
+            render: (date: string) => new Date(date).toLocaleDateString(),
         },
         {
             title: 'Course Id',
@@ -128,7 +141,7 @@ const LectureOfCourse: React.FC = () => {
             key: 'action',
             render: (lectureId: string) => (
                 <>
-                    <Link to={`/instructor/edit-lecture/${courseId}/${lectureId}`}>
+                    <Link to={`/instructor/manage-course/${courseId}/manage-session/${sessionId}/lecture/edit-lecture/${lectureId}`}>
                         <EditOutlined className="text-blue-500 m-2" />
 
                     </Link>
@@ -139,7 +152,8 @@ const LectureOfCourse: React.FC = () => {
     ];
 
     return (
-        <div className="flex justify-center items-center h-full">
+        <div className="">
+
             <Modal
                 title="Confirm Delete"
                 visible={open}
@@ -155,20 +169,25 @@ const LectureOfCourse: React.FC = () => {
                 </div>
             ) : (
                 <div className="">
-                    <div>
-                        <Link to={`/instructor/create-lecture/${courseId}`}>
-                            <Button className="bg-yellow-500 m-1 float-right">Add New</Button>
-                        </Link>
-                    </div>
+
                     <Breadcrumb className="py-2" >
                         <Breadcrumb.Item href="/dashboard">
                             <HomeOutlined />
                         </Breadcrumb.Item>
                         <Breadcrumb.Item href="/instructor/manage-courses">
-                           Manage Courses
+                            Manage Courses
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Item href={`/instructor/manage-course/${courseId}/manage-session`}>
+                            Manage Session
                         </Breadcrumb.Item>
                         <Breadcrumb.Item>Manage Lecture</Breadcrumb.Item>
                     </Breadcrumb>
+                    <h1 className="text-center m-10">Manage Lecture</h1>
+                    <div>
+                        <Link to={`/instructor/manage-course/${courseId}/manage-session/${sessionId}/lecture/create-lecture`}>
+                            <Button className="bg-yellow-500 mb-10 float-right">Add New</Button>
+                        </Link>
+                    </div>
                     <Table dataSource={data} columns={columns} rowKey="lectureId" />
                 </div>
             )}

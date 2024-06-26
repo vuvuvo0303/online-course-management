@@ -14,7 +14,6 @@ function App() {
   if (!clientId) {
     throw new Error('Google OAuth Client ID is not defined');
   }
-
   return (
     <>
       <GoogleOAuthProvider clientId={clientId}>
@@ -25,5 +24,4 @@ function App() {
     </>
   );
 }
-
 export default App;

@@ -1,32 +1,26 @@
-export class Lecture{
-    lectureId: string
+export class Session{
+    sessionId: string 
     title: string
     description: string
-    videoUrl: string 
     createdDate: string 
     updatedDate: string 
     courseId: string 
     status: boolean
-    sessionId: string
     constructor(
-        lectureId: string = "",
+        sessionId: string = "",
         title: string = "",
         description: string = "",
-        videoUrl: string = "",
         createdDate: string = "",
         updatedDate: string = "",
         courseId: string = "",
-        status: boolean = false,
-        sessionId: string = "",
+        status: boolean = false
     ){
-        this.lectureId = lectureId;
+        this.sessionId = sessionId;
         this.title = title;
         this.description = description;
-        this.videoUrl = videoUrl;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
         this.courseId = courseId; 
         this.status = status; 
-        this.sessionId = sessionId; 
     }
 }

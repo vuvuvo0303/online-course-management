@@ -3,8 +3,9 @@ import { Button, Form, Input, DatePicker, Breadcrumb } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
-import { Lecture } from "../../../../../models";
+import { Lecture } from "../../../../../../models";
 import { HomeOutlined } from "@ant-design/icons";
+import { toast } from "react-toastify";
 
 const formItemLayout = {
   labelCol: {
@@ -18,15 +19,16 @@ const formItemLayout = {
 };
 
 const CreateLecture = () => {
-  const { lectureId, courseId } = useParams<{ lectureId: string; courseId: string }>();
+  const { lectureId, courseId , sessionId} = useParams<{ lectureId: string; courseId: string , sessionId: string}>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const [courseId2, setCourseId2] = useState<string>("");
-
+  const [sessionId2, setSessionId2] = useState<string>("");
   useEffect(() => {
-    if (courseId) {
+    if (courseId && sessionId) {
       setCourseId2(courseId);
+      setSessionId2(sessionId);
     }
     if (lectureId) {
       const fetchData = async () => {
@@ -53,17 +55,19 @@ const CreateLecture = () => {
       });
       setLoading(false);
     }
-  }, [lectureId, courseId, form]);
+  }, [lectureId, courseId, form, sessionId]);
 
   const onFinish = async (values: Lecture) => {
     setLoading(true);
     try {
       if (lectureId) {
         await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/lectures/${lectureId}`, values);
+        toast.success("Update Lecture Successfully!")
       } else {
-        await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/lectures`, { ...values, courseId: courseId2 });
+        await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/lectures`, { ...values, courseId: courseId2, sessionId: sessionId2 });
+        toast.success("Create Lecture Successfully!")
       }
-      navigate(`/instructor/lectureOfCourse/${courseId}`);
+      navigate(`/instructor/manage-course/${courseId}/manage-session/${sessionId}/lecture`);
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
