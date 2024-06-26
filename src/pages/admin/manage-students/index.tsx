@@ -6,7 +6,14 @@ import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import type { FormProps, PopconfirmProps } from "antd";
 import { Breadcrumb, Form, Button, Image, Input, Modal, Switch, Table, Upload, Popconfirm, message, Space } from "antd";
-import { DeleteOutlined, EditOutlined, HomeOutlined, PlusOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  HomeOutlined,
+  PlusOutlined,
+  SearchOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { format, formatISO } from "date-fns";
 import { Student } from "../../../models";
 import { toast } from "react-toastify";
@@ -15,15 +22,16 @@ import { useForm } from "antd/es/form/Form";
 import uploadFile from "../../../utils/upload";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-
+type DataIndex = keyof Student;
 type FieldType = {
-  fullName: string;
-  avatarUrl: string;
   email: string;
-  role: string;
+  fullName: string;
+  password: string;
+  avatarUrl: string;
   createdAt: string;
-  password:string;
+  role: string;
 };
+
 const AdminManageStudents: React.FC = () => {
   const [data, setData] = useState<Student[]>([]);
   const [sortOrder, setSortOrder] = useState<{ [key: string]: "ascend" | "descend" }>({
@@ -66,12 +74,12 @@ const AdminManageStudents: React.FC = () => {
       toast.error(`Delete user ${email} failed`);
     }
   };
-  const handleSubmit = async (values ) => {
+  const handleSubmit = async (values: FieldType) => {
     try {
       console.log(values);
-      console.log(values.avatarUrl.file.originFileObj);
 
-      const url = await uploadFile(values.avatarUrl.file.originFileObj);
+      const file = fileList[0].originFileObj as File;
+      const url = await uploadFile(file);
       console.log(url);
       values.avatarUrl = url;
 
@@ -87,8 +95,6 @@ const AdminManageStudents: React.FC = () => {
 
       toast.success("Student added successfully");
 
-    
-      // fetchStudents();
     } catch (error) {
       console.error("Error adding student:", error);
       toast.error("Failed to add student");
@@ -127,9 +133,11 @@ const AdminManageStudents: React.FC = () => {
       let bValue: string | number | boolean = b[columnKey];
 
       if (columnKey === "createdDate" || columnKey === "updatedDate") {
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         aValue = new Date(aValue).getTime();
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-expect-error
         bValue = new Date(bValue).getTime();
       }
 
@@ -159,73 +167,73 @@ const AdminManageStudents: React.FC = () => {
 
   const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Student> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-        <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-          <Input
-              ref={searchInput}
-              placeholder={`Search ${dataIndex}`}
-              value={selectedKeys[0]}
-              onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-              onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-              style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <Button
-                type="primary"
-                onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-                icon={<SearchOutlined />}
-                size="small"
-                style={{ width: 90 }}
-            >
-              Search
-            </Button>
-            <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
-              Reset
-            </Button>
-            <Button
-                type="link"
-                size="small"
-                onClick={() => {
-                  confirm({ closeDropdown: false });
-                  setSearchText((selectedKeys as string[])[0]);
-                  setSearchedColumn(dataIndex);
-                }}
-            >
-              Filter
-            </Button>
-            <Button
-                type="link"
-                size="small"
-                onClick={() => {
-                  close();
-                }}
-            >
-              close
-            </Button>
-          </Space>
-        </div>
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          style={{ marginBottom: 8, display: "block" }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
     ),
     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
     onFilter: (value, record) =>
-        record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes((value as string).toLowerCase()),
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()),
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
     render: (text) =>
-        searchedColumn === dataIndex ? (
-            <Highlighter
-                highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-                searchWords={[searchText]}
-                autoEscape
-                textToHighlight={text ? text.toString() : ""}
-            />
-        ) : (
-            text
-        ),
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
   });
 
   const columns: TableColumnsType<Student> = [
@@ -279,7 +287,7 @@ const AdminManageStudents: React.FC = () => {
       dataIndex: "status",
       width: "10%",
       render: (status: boolean) => (
-          <Switch defaultChecked={status} onChange={(checked) => console.log(`switch to ${checked}`)} />
+        <Switch defaultChecked={status} onChange={(checked) => console.log(`switch to ${checked}`)} />
       ),
     },
     {
@@ -430,8 +438,6 @@ const AdminManageStudents: React.FC = () => {
 
       <Table columns={columns} dataSource={data} />
     </div>
-    
-      
   );
 };
 
