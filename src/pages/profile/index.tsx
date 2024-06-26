@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Student, Admin, Instructor } from "../../models";
 import { Modal, Button, Form, Input, Tabs, Empty } from "antd";
 import styles from "./profile.module.css";
+import axios from "axios";
 
 const { TabPane } = Tabs;
 
@@ -10,12 +11,36 @@ const Profile: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [forceUpdateFlag, setForceUpdateFlag] = useState(false);
-  const [role, setRole] = useState<string | null>(null);
+  const [courses, setCourses] = useState<any[]>([]);
 
   useEffect(() => {
-    const storedRole = localStorage.getItem("role");
-    setRole(storedRole);
-  }, []);
+    const storedUser = localStorage.getItem("user");
+
+    if (!storedUser) {
+      console.error("User data not found in localStorage");
+      return;
+    }
+
+    const userObj = JSON.parse(storedUser);
+    setUser(userObj);
+  }, [forceUpdateFlag]);
+
+  useEffect(() => {
+    if (user && user.role === "Student") {
+      fetchCourses();
+    }
+  }, [user]);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await axios.get(
+        "https://665fbf245425580055b0b23d.mockapi.io/courses"
+      );
+      setCourses(response.data);
+    } catch (error) {
+      console.error("Failed to fetch courses:", error);
+    }
+  };
 
   const showEditModal = () => {
     setIsModalVisible(true);
@@ -33,7 +58,7 @@ const Profile: React.FC = () => {
     try {
       const formValues = await form.validateFields();
 
-      const updatedUser: any = { ...user };
+      const updatedUser = { ...user };
 
       if (formValues.fullName) {
         updatedUser.fullName = formValues.fullName;
@@ -53,70 +78,57 @@ const Profile: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-
-    if (!storedUser) {
-      console.error("User data not found in localStorage");
-      return;
-    }
-
-    const userObj = JSON.parse(storedUser);
-
-    const storedUserId = userObj.userId;
-    const storedFullName = userObj.fullName;
-    const storedEmail = userObj.email;
-    const storedAvatarUrl = userObj.avatarUrl;
-    const storedCreatedDate = new Date(userObj.createdDate).toUTCString();
-    const storedDegree = userObj.degree;
-    const storedDescription = userObj.description;
-    let storedLastLogin = userObj.lastLogin;
-
-    // Convert storedLastLogin to UTC format
-    if (role === "Admin" && storedLastLogin) {
-      storedLastLogin = new Date(storedLastLogin).toUTCString();
-    }
-
-    let newUser: any = null;
-    if (role === "Student") {
-      newUser = new Student(
-        storedUserId,
-        storedFullName,
-        storedEmail,
-        "",
-        storedAvatarUrl,
-        storedCreatedDate
-      );
-    } else if (role === "Admin") {
-      newUser = new Admin(
-        storedUserId,
-        storedFullName,
-        storedEmail,
-        "",
-        storedAvatarUrl,
-        storedCreatedDate,
-        "",
-        storedLastLogin
-      );
-    } else if (role === "Instructor") {
-      newUser = new Instructor(
-        storedUserId,
-        storedFullName,
-        storedEmail,
-        "",
-        storedAvatarUrl,
-        storedCreatedDate,
-        "",
-        storedDescription,
-        storedDegree
-      );
-    }
-
-    setUser(newUser);
-  }, [role, forceUpdateFlag]);
-
   if (!user) {
     return <div>Loading...</div>;
+  }
+
+  const { role } = user;
+
+  let displayUser;
+  const storedCreatedDate = new Date(user.createdDate).toUTCString();
+  let storedLastLogin = user.lastLogin;
+
+  // Convert storedLastLogin to UTC format
+  if (role === "Admin" && storedLastLogin) {
+    storedLastLogin = new Date(storedLastLogin).toUTCString();
+  }
+
+  if (role === "Student") {
+    displayUser = new Student(
+      user.userId,
+      user.fullName,
+      user.email,
+      "",
+      user.avatarUrl,
+      storedCreatedDate
+    );
+  } else if (role === "Admin") {
+    displayUser = new Admin(
+      user.userId,
+      user.fullName,
+      user.email,
+      "",
+      user.avatarUrl,
+      storedCreatedDate,
+      "",
+      storedLastLogin
+    );
+  } else if (role === "Instructor") {
+    displayUser = new Instructor(
+      user.userId,
+      user.fullName,
+      user.email,
+      "",
+      user.avatarUrl,
+      storedCreatedDate,
+      "",
+      user.description,
+      user.degree
+    );
+  }
+
+  if (!displayUser) {
+    return <div>Error: User role is not recognized.</div>;
   }
 
   return (
@@ -148,42 +160,42 @@ const Profile: React.FC = () => {
                 </Button>
                 <p className={styles.profileDetailItem}>
                   <strong>Full Name: </strong>
-                  {user.fullName}
+                  {displayUser.fullName}
                 </p>
                 <p className={styles.profileDetailItem}>
                   <strong>Email: </strong>
-                  {user.email}
+                  {displayUser.email}
                 </p>
                 <p className={styles.profileDetailItem}>
                   <strong>Created Date: </strong>
-                  {user.createdDate}
+                  {displayUser.createdDate}
                 </p>
 
-                {user instanceof Student && (
+                {displayUser instanceof Student && (
                   <div>
                     <p className={styles.profileDetailItem}>
                       <strong>Status: </strong>
-                      {user.status ? "Active" : "Inactive"}
+                      {displayUser.status ? "Active" : "Inactive"}
                     </p>
                   </div>
                 )}
-                {user instanceof Admin && (
+                {displayUser instanceof Admin && (
                   <div>
                     <p className={styles.profileDetailItem}>
-                      <strong>Last Login:</strong> {user.lastLogin}
+                      <strong>Last Login:</strong> {displayUser.lastLogin}
                     </p>
                   </div>
                 )}
-                {user instanceof Instructor && (
+                {displayUser instanceof Instructor && (
                   <div>
                     <p className={styles.profileDetailItem}>
-                      <strong>Description:</strong> {user.description}
+                      <strong>Description:</strong> {displayUser.description}
                     </p>
                     <p className={styles.profileDetailItem}>
                       <strong>Degree:</strong>
                       <br />
                       <img
-                        src={user.degree}
+                        src={displayUser.degree}
                         alt="Degree Certificate"
                         className={styles.degreeImage}
                       />
@@ -196,9 +208,9 @@ const Profile: React.FC = () => {
               <TabPane tab="Purchased Courses" key="2">
                 <div className={styles.coursesContainer}>
                   <h1 className={styles.coursesHeader}>My Courses</h1>
-                  {user.courses && user.courses.length > 0 ? (
+                  {courses.length > 0 ? (
                     <ul className={styles.coursesList}>
-                      {user.courses.map((course: any, index: number) => (
+                      {courses.map((course: any, index: number) => (
                         <li key={index} className={styles.courseItem}>
                           {course.name}
                         </li>

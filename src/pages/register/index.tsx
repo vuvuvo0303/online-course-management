@@ -6,7 +6,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import Vector from "../../assets/Vector.png";
 import Rectangle from "../../assets/Rectangle .jpg";
 // import { postStudent, postInstructor } from '../../services/post';
-
+import register from "../../assets/register.json";
+import Lottie from "lottie-react";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type FieldType = {
   username?: string;
@@ -32,9 +33,9 @@ const RegisterPage: React.FC = () => {
 
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log("Success:", values);
-    if (values.role === 'student') {
+    if (values.role === "student") {
       // postStudent(values);
-    } else if (values.role === 'instructor') {
+    } else if (values.role === "instructor") {
       // postInstructor(values);
     }
   };
@@ -79,16 +80,21 @@ const RegisterPage: React.FC = () => {
 
       <div className="w-full md:w-1/2 flex flex-col justify-center  pt-5 bg-white rounded-l-lg">
         <div className="mr-4">
-          <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Register </h1>
+          <div className="flex justify-center ml-20 items-center">
+            {" "}
+            <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Register </h1>
+            <Lottie animationData={register} style={{ width: "100px", height: "100px" }} />
+          </div>
+
           <span className="flex justify-center mb-4">Learn from top experts. Sign up for FLearn now!</span>
         </div>
         <div className="mb-6">
-          <div className="mt- flex justify-center ">
+          <div className=" flex justify-center ">
             <Form
               name="basic"
-              className="space-y-0"
+              className="flex flex-col gap-1"
               style={{ maxWidth: 600 }}
-              initialValues={{ remember: true, role: 'student' }} // Set default role here
+              initialValues={{ remember: true, role: "student" }} // Set default role here
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
               autoComplete="off"
@@ -103,10 +109,12 @@ const RegisterPage: React.FC = () => {
                 ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                className="mb-1"
-                
+                className="mb-3"
               >
-                <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Email"/>
+                <Input
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Email"
+                />
               </Form.Item>
               <Form.Item
                 // label="Username"
@@ -119,12 +127,17 @@ const RegisterPage: React.FC = () => {
                 ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
+                className="mb-5"
               >
-                <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="User Name"/>
+                <Input
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm "
+                  placeholder="User Name"
+                />
               </Form.Item>
 
               <Form.Item
-                label="Password"
+                // label="Password"
+
                 name="password"
                 rules={[
                   { required: true, message: "Please input your password!" },
@@ -133,11 +146,15 @@ const RegisterPage: React.FC = () => {
                 ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
+                className="mb-5"
               >
-                <Input.Password className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                <Input.Password
+                  placeholder="Password"
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                />
               </Form.Item>
               <Form.Item
-                label="Phone Number"
+                // label="Phone Number"
                 name="phonenumber"
                 rules={[
                   { required: true, message: "Please input your Phone Number!" },
@@ -145,18 +162,21 @@ const RegisterPage: React.FC = () => {
                 ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
+                className="mb-5"
               >
                 <Input
+                  placeholder="Phone Number"
                   type="number"
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
               </Form.Item>
               <Form.Item<FieldType>
-                label="Avatar"
+                // label="Avatar"
                 name="avatar"
                 rules={[{ required: true, message: "Please upload your Avatar!" }]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
+                className="mb-5"
               >
                 <Upload
                   action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
@@ -169,11 +189,12 @@ const RegisterPage: React.FC = () => {
                 </Upload>
               </Form.Item>
               <Form.Item<FieldType>
-                label="Role"
+                // label="Role"
                 name="role"
                 rules={[{ required: true, message: "Please select your role!" }]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
+                className="mb-5"
               >
                 <Radio.Group>
                   <Radio value="student">Student</Radio>
@@ -194,7 +215,11 @@ const RegisterPage: React.FC = () => {
                 <Modal title="Policy" open={isModalOpen} onCancel={handleCancel} onOk={handleOk}></Modal>
               </Form.Item>
               <Form.Item wrapperCol={{ span: 24 }}>
-                <Button type="primary" htmlType="submit" className="mt-2 w-full shadow-xl hover:shadow-sky-600 bg-black">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="mt-2 w-full shadow-xl hover:shadow-sky-600 bg-black"
+                >
                   Create Account
                 </Button>
               </Form.Item>
@@ -228,12 +253,7 @@ const RegisterPage: React.FC = () => {
         />
       )}
 
-      <Modal
-        title="Policy"
-        visible={isModalOpen}
-        onCancel={handleCancel}
-        onOk={handleOk}
-      >
+      <Modal title="Policy" visible={isModalOpen} onCancel={handleCancel} onOk={handleOk}>
         {/* Nội dung của modal ở đây */}
         <p>This is where your policy content goes.</p>
       </Modal>

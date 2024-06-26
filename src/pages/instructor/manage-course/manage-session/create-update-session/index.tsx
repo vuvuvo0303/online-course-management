@@ -1,63 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, DatePicker, Breadcrumb } from 'antd';
-import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
-import moment from 'moment';
+import { useEffect, useState } from "react";
+import { Button, Form, Input, DatePicker, Breadcrumb } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import moment from "moment";
 
-import { HomeOutlined } from '@ant-design/icons';
-import { Session } from '../../../../../models';
-import { toast } from 'react-toastify';
+import { HomeOutlined } from "@ant-design/icons";
+import { Session } from "../../../../../models";
+import { toast } from "react-toastify";
 
 const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 14, offset: 5 },
-    },
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14, offset: 5 },
+  },
 };
 
 const CreateUpdateSession = () => {
-    const { courseId, sessionId } = useParams<{ courseId: string, sessionId: string }>();
-    const [form] = Form.useForm();
-    const [loading, setLoading] = useState<boolean>(true);
-    const navigate = useNavigate();
-    const [courseId2, setCourseId2] = useState<string>('');
-    useEffect(() => {
-        if (courseId) {
-            setCourseId2(courseId);
+  const { courseId, sessionId } = useParams<{ courseId: string; sessionId: string }>();
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
+  const [courseId2, setCourseId2] = useState<string>("");
+  useEffect(() => {
+    if (courseId) {
+      setCourseId2(courseId);
+    }
+    if (sessionId) {
+      const fetchData = async () => {
+        try {
+          const res = await axios.get(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`);
+          const data = res.data;
+          form.setFieldsValue({
+            title: data.title,
+            description: data.description,
+            updatedDate: moment(),
+            courseId: data.courseId,
+            sessionId: data.sessionId,
+          });
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
         }
-        if (sessionId) {
-            const fetchData = async () => {
-                try {
-                    const res = await axios.get(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`);
-                    const data = res.data;
-                    form.setFieldsValue({
-                        title: data.title,
-                        description: data.description,
-                        updatedDate: moment(),
-                        courseId: data.courseId,
-                        sessionId: data.sessionId
-                    });
-                } catch (error) {
-                    console.error("Error fetching data:", error);
-                } finally {
-                    setLoading(false);
+      };
+      fetchData();
+    } else {
+      form.setFieldsValue({
+        createdDate: moment(),
+      });
+      setLoading(false);
+    }
+  }, [courseId, form, sessionId]);
 
-                }
-            };
-            fetchData();
-        } else {
-            form.setFieldsValue({
-                createdDate: moment()
-            })
-            setLoading(false);
-
-        }
-    }, [courseId, form, sessionId]);
-
+  
     const onFinish = async (values: Session) => {
         setLoading(true);
         try {
@@ -103,39 +102,47 @@ const CreateUpdateSession = () => {
                             <Input />
                         </Form.Item>
 
-                        <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input description!' }]}>
-                            <Input.TextArea />
-                        </Form.Item>
-                        {
-                            !sessionId && (
-                                <Form.Item label="Created Date" name="createdDate" rules={[{ required: true, message: 'Please select created date!' }]}>
-                                    <DatePicker defaultValue={moment()} disabled />
-                                </Form.Item>
-                            )
-                        }
-
-                        {
-                            sessionId && (
-                                <Form.Item label="Updated Date" name="updatedDate" rules={[{ required: true, message: 'Please select updated date!' }]}>
-                                    <DatePicker defaultValue={moment()} disabled />
-                                </Form.Item>
-                            )
-                        }
-
-                        <Form.Item hidden label="Course Id" name="courseId" initialValue={courseId2}>
-                            <Input />
-                        </Form.Item>
-
-                        <Form.Item wrapperCol={{ span: 24, offset: 6 }}>
-                            <Button type="primary" htmlType="submit" loading={loading}>
-                                Submit
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </div>
+            <Form.Item
+              label="Description"
+              name="description"
+              rules={[{ required: true, message: "Please input description!" }]}
+            >
+              <Input.TextArea />
+            </Form.Item>
+            {!sessionId && (
+              <Form.Item
+                label="Created Date"
+                name="createdDate"
+                rules={[{ required: true, message: "Please select created date!" }]}
+              >
+                <DatePicker defaultValue={moment()} disabled />
+              </Form.Item>
             )}
+
+            {sessionId && (
+              <Form.Item
+                label="Updated Date"
+                name="updatedDate"
+                rules={[{ required: true, message: "Please select updated date!" }]}
+              >
+                <DatePicker defaultValue={moment()} disabled />
+              </Form.Item>
+            )}
+
+            <Form.Item hidden label="Course Id" name="courseId" initialValue={courseId2}>
+              <Input />
+            </Form.Item>
+
+            <Form.Item wrapperCol={{ span: 24, offset: 6 }}>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default CreateUpdateSession;
