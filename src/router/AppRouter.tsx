@@ -24,7 +24,7 @@ import {
   SiteMap,
   CourseDetail,
   AdminManageFeedbacks,
-  InstrutorDashboard,
+  InstructorDashboard,
   AdminDashboard,
   InstructorManageBlogs,
   InstructorManageStudents,
@@ -137,7 +137,7 @@ const AppRouter: React.FC = () => {
           path={paths.INSTRUCTOR_DASHBOARD}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
-              <InstrutorDashboard />
+              <InstructorDashboard />
             ) : (
               <Navigate to="/" />
             )

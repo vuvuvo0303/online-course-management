@@ -26,7 +26,7 @@ export { default as Profile } from "./profile";
 export { default as Cart } from "./cart";
 
 /* Instructor Page */
-export { default as InstrutorDashboard } from "./instructor/instructor-dashboard/index";
+export { default as InstructorDashboard } from "./instructor/instructor-dashboard/index";
 export { default as InstructorManageLectures } from "./instructor/manage-lectures";
 export { default as InstructorManageFeedbacks } from "./instructor/manage-feedback";
 export { default as PaymentHistory } from "./payment/payment-history";
