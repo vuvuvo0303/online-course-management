@@ -35,7 +35,7 @@ const PaymentRefunds = () => {
       render: (status: string) => (
         <Tag
           color={
-            status === "PENDING REFUND"
+            status === "WAITING FOR REFUND"
               ? "orange"
               : status === "REFUND"
                 ? "blue"
@@ -70,7 +70,7 @@ const PaymentRefunds = () => {
       try {
         const res = await axios.get<Payment[]>(`https://665fbf245425580055b0b23d.mockapi.io/payments`);
         if (res) {
-          setPayments(res.data.filter(payment => payment.userId === userId && (payment.status === "REFUND" ||payment.status === "PENDING REFUND")));
+          setPayments(res.data.filter(payment => payment.userId === userId && (payment.status === "REFUND" || payment.status === "WAITING FOR REFUND")));
         }
       } catch (error: unknown) {
         if (error instanceof Error) {

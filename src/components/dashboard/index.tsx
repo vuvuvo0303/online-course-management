@@ -88,6 +88,7 @@ const Dashboard: React.FC = () => {
           getItem("Manage Courses", "/admin/manage-courses", <FundProjectionScreenOutlined />),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
           getItem("Manage Feedbacks", "/admin/manage-feedbacks", <CommentOutlined />),
+          getItem("Payment History", "/admin/payment-history", <DesktopOutlined />),
         ]);
       }
     }

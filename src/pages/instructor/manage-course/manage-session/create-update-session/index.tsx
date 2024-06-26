@@ -73,6 +73,23 @@ const CreateUpdateSession = () => {
       setLoading(false);
     }
   };
+    const onFinish = async (values: Session) => {
+        setLoading(true);
+        try {
+            if (sessionId) {
+                await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`, values);
+                toast.success("Update Session Successfully!")
+            } else {
+                await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/session`, { ...values, courseId: courseId2 });
+                toast.success("Create Session Successfully!")
+            }
+            navigate(`/instructor/manage-courses/${courseId}/manage-sessions`);
+        } catch (error) {
+            console.error("Error submitting form:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
   return (
     <div className="flex justify-center items-center h-full mt-10">

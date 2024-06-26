@@ -141,7 +141,7 @@ const LectureOfCourse: React.FC = () => {
             key: 'action',
             render: (lectureId: string) => (
                 <>
-                    <Link to={`/instructor/manage-course/${courseId}/manage-session/${sessionId}/lecture/edit-lecture/${lectureId}`}>
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/edit-lecture/${lectureId}`}>
                         <EditOutlined className="text-blue-500 m-2" />
 
                     </Link>
@@ -177,14 +177,14 @@ const LectureOfCourse: React.FC = () => {
                         <Breadcrumb.Item href="/instructor/manage-courses">
                             Manage Courses
                         </Breadcrumb.Item>
-                        <Breadcrumb.Item href={`/instructor/manage-course/${courseId}/manage-session`}>
+                        <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>
                             Manage Session
                         </Breadcrumb.Item>
                         <Breadcrumb.Item>Manage Lecture</Breadcrumb.Item>
                     </Breadcrumb>
                     <h1 className="text-center m-10">Manage Lecture</h1>
                     <div>
-                        <Link to={`/instructor/manage-course/${courseId}/manage-session/${sessionId}/lecture/create-lecture`}>
+                        <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/create-lecture`}>
                             <Button className="bg-yellow-500 mb-10 float-right">Add New</Button>
                         </Link>
                     </div>

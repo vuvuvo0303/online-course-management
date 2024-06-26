@@ -117,7 +117,7 @@ const InstructorManageCourses: React.FC = () => {
       render: (courseId: string) => (
 
         <>
-          <Link to={`/instructor/manage-course/${courseId}/manage-session`}><EyeOutlined className="text-purple-500 m-2" /></Link>
+          <Link to={`/instructor/manage-courses/${courseId}/manage-sessions`}><EyeOutlined className="text-purple-500 m-2" /></Link>
           <EditOutlined className="mt-2 text-blue-500" />
           <DeleteOutlined className=" text-red-500 m-2" />
 

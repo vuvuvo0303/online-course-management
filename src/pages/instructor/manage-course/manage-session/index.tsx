@@ -1,16 +1,63 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Switch, Table, TableProps } from "antd";
+import { Breadcrumb, Button, Modal, Switch, Table, TableProps } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Session } from "../../../../models";
+import { Lecture, Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ManageSession = () => {
     const { courseId } = useParams<{ courseId: string }>();
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [modalText, setModalText] = useState('');
+    const [open, setOpen] = useState(false);
+    const [selectedSessionID, setSelectedSessionID] = useState<string>('');
+    const showModal = (sessionId: string) => {
+        setModalText(`Do you want to delete this session with id = ${sessionId} and the lessons of this session `)
+        setSelectedSessionID(sessionId)
+        setOpen(true);
+    };
 
+    const handleOk = async () => {
+        if (selectedSessionID) {
+            setModalText('Deleting...');
+            setConfirmLoading(true);
+            try {
+                await handleDelete(selectedSessionID);
+            } catch (error) {
+                setModalText("Error occurred: " + error);
+            } finally {
+                setTimeout(() => {
+                    setOpen(false);
+                    setConfirmLoading(false);
+                }, 2000);
+            }
+        } else {
+            setOpen(false);
+        }
+    };
+    const handleDelete = async (sessionId: string) => {
+        try {
+            // Xóa session trước
+            await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`);
+            const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
+            const lecturesOfSessionNeedToDelete = res.data.filter(lecture => lecture.sessionId === sessionId);
+            await Promise.all(lecturesOfSessionNeedToDelete.map(lecture => 
+                axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/lectures/${lecture.lectureId}`)
+            ));
+            setSessions(sessions.filter(session => session.sessionId !== sessionId));
+            toast.success("Delete Session Successfully!");
+        } catch (error) {
+            toast.error("Failed to delete session. Please try again.");
+        }
+    };
+     
+    const handleCancel = () => {
+        setOpen(false);
+    };
     useEffect(() => {
         const fetchSession = async () => {
             try {
@@ -45,7 +92,7 @@ const ManageSession = () => {
         }
     };
 
-    const columns:TableProps<Session>["columns"]= [
+    const columns: TableProps<Session>["columns"] = [
         {
             title: 'Session Id',
             dataIndex: 'sessionId',
@@ -99,9 +146,9 @@ const ManageSession = () => {
             key: 'sessionId',
             render: (sessionId: string) => (
                 <>
-                    <Link to={`/instructor/manage-course/${courseId}/manage-session/${sessionId}/lecture`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-                    <Link to={`/instructor/manage-course/${courseId}/manage-session/update-session/${sessionId}`}><EditOutlined className="mt-2 text-blue-500" /></Link>
-                    <DeleteOutlined className=" text-red-500 m-2" />
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/update-session/${sessionId}`}><EditOutlined className="mt-2 text-blue-500" /></Link>
+                    <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(sessionId)} />
                 </>
             )
         },
@@ -117,7 +164,15 @@ const ManageSession = () => {
 
     return (
         <div>
-
+            <Modal
+                title="Confirm Delete"
+                visible={open}
+                onOk={handleOk}
+                confirmLoading={confirmLoading}
+                onCancel={handleCancel}
+            >
+                <p>{modalText}</p>
+            </Modal>
             <Breadcrumb>
                 <Breadcrumb.Item href="/instructor/dashboard">
                     <HomeOutlined />
@@ -130,7 +185,7 @@ const ManageSession = () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
             <h1 className="text-center mt-10">Manage Session</h1>
-            <Link to={`/instructor/manage-course/${courseId}/manage-session/create-session`}><Button type="primary" className="float-right my-10">Add New</Button></Link>
+            <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New</Button></Link>
             <Table dataSource={sessions} columns={columns} rowKey="sessionId" />
         </div>
     );
