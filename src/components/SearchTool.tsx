@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Input, Dropdown, Typography, Button } from 'antd';
 import type { MenuProps } from 'antd';
 import { SearchOutlined, TagOutlined, FileTextOutlined, ImportOutlined } from '@ant-design/icons';
-import { categoryFilters } from '../consts/index';
+import { categoryFilters } from '../consts';
 
 const SearchTool = () => {
     const [searchTerm, setSearchTerm] = useState('');

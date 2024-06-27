@@ -25,7 +25,7 @@ const ManagePaymentRefund = () => {
     };
 
     const renderRequest = (paymentId: string, record: Payment) => {
-        if (role === "Instructor") {
+        if (role === "instructor") {
             if (record.status === "WAITING FOR REFUND") {
                 return (
                     <div>

@@ -42,14 +42,12 @@ const Dashboard: React.FC = () => {
     const user: User = userString ? JSON.parse(userString) : null;
     const userRole = user?.role;
 
-    console.log(role, fullName);
-
     if (userRole && user) {
       setRole(userRole);
-      setFullName(user.fullName);
+      setFullName(user.name);
       setDataUser({
         role: userRole,
-        fullName: user.fullName,
+        fullName: user.name,
         email: user.email,
       });
     } else {
@@ -61,10 +59,6 @@ const Dashboard: React.FC = () => {
     localStorage.removeItem("user");
     navigate("/");
   };
-  // const [collapsed, setCollapsed] = useState(false);
-  // const {
-  //   token: { colorBgContainer, borderRadiusLG },
-  // } = theme.useToken();
 
   function getItem(
     label: React.ReactNode,
@@ -167,7 +161,7 @@ const Dashboard: React.FC = () => {
             <QuestionCircleOutlined />
           ),
         ]);
-      } else if (dataUser.role === "Admin") {
+      } else if (dataUser.role === "admin") {
         setItems([
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
           getItem(

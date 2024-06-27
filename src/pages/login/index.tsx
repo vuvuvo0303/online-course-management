@@ -33,10 +33,10 @@ const LoginPage: React.FC = () => {
       const userWithoutPassword = removePassword(user);
       localStorage.setItem("user", JSON.stringify(userWithoutPassword));
       switch (user.role) {
-        case "Student":
+        case "student":
           navigate(paths.HOME);
           break;
-        case "Instructor":
+        case "instructor":
           navigate(paths.INSTRUCTOR_HOME);
           break;
         default:

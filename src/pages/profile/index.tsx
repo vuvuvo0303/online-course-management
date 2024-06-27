@@ -98,7 +98,7 @@ const Profile: React.FC = () => {
       user.userId,
       user.fullName,
       user.email,
-      "",
+      "student",
       user.avatarUrl,
       storedCreatedDate
     );
@@ -107,7 +107,7 @@ const Profile: React.FC = () => {
       user.userId,
       user.fullName,
       user.email,
-      "",
+      "admin",
       user.avatarUrl,
       storedCreatedDate,
       "",
@@ -118,7 +118,7 @@ const Profile: React.FC = () => {
       user.userId,
       user.fullName,
       user.email,
-      "",
+      "instructor",
       user.avatarUrl,
       storedCreatedDate,
       "",
@@ -160,7 +160,7 @@ const Profile: React.FC = () => {
                 </Button>
                 <p className={styles.profileDetailItem}>
                   <strong>Full Name: </strong>
-                  {displayUser.fullName}
+                  {displayUser.name}
                 </p>
                 <p className={styles.profileDetailItem}>
                   <strong>Email: </strong>
@@ -168,7 +168,7 @@ const Profile: React.FC = () => {
                 </p>
                 <p className={styles.profileDetailItem}>
                   <strong>Created Date: </strong>
-                  {displayUser.createdDate}
+                  {displayUser.cr}
                 </p>
 
                 {displayUser instanceof Student && (
