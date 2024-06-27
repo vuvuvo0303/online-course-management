@@ -168,7 +168,7 @@ const Profile: React.FC = () => {
                 </p>
                 <p className={styles.profileDetailItem}>
                   <strong>Created Date: </strong>
-                  {displayUser.cr}
+                  {displayUser.created_at}
                 </p>
 
                 {displayUser instanceof Student && (
