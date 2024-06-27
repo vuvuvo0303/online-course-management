@@ -85,8 +85,8 @@ export const paths = {
 
 /* ROLE */
 export const roles = {
-  STUDENT: "Student",
-  INSTRUCTOR: "Instructor",
+  STUDENT: "student",
+  INSTRUCTOR: "instructor",
   ADMIN: "admin",
 };
 

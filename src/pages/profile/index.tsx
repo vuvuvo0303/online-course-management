@@ -93,7 +93,7 @@ const Profile: React.FC = () => {
     storedLastLogin = new Date(storedLastLogin).toUTCString();
   }
 
-  if (role === "Student") {
+  if (role === "student") {
     displayUser = new Student(
       user.userId,
       user.fullName,
@@ -102,7 +102,7 @@ const Profile: React.FC = () => {
       user.avatarUrl,
       storedCreatedDate
     );
-  } else if (role === "Admin") {
+  } else if (role === "admin") {
     displayUser = new Admin(
       user.userId,
       user.fullName,
@@ -113,7 +113,7 @@ const Profile: React.FC = () => {
       "",
       storedLastLogin
     );
-  } else if (role === "Instructor") {
+  } else if (role === "instructor") {
     displayUser = new Instructor(
       user.userId,
       user.fullName,

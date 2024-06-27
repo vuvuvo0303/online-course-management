@@ -35,6 +35,14 @@ const AdminLoginPage: React.FC = () => {
             localStorage.setItem("user", JSON.stringify(response.data.data));
         } catch (error) {
             console.error('Error fetching user data:', error);
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            if(error.response && error.response.status === 401) {
+                // Token expired or unauthorized
+                localStorage.removeItem("token"); // Remove expired token
+                // Redirect to login or handle expired token scenario
+
+            }
             toast.error("Failed to fetch user data");
         }
     };
