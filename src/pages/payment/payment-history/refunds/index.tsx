@@ -113,13 +113,22 @@ const ManagePaymentRefund = () => {
     const [payments, setPayments] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [userId, setUserId] = useState<string>('');
+
+    useEffect(() => {
+        const userString = localStorage.getItem("user");
+        const user: User = userString ? JSON.parse(userString) : null;
+        setUserId(user?.userId);
+        console.log("check userId: ", userId);
+
+    }, []);
 
     useEffect(() => {
         const fetchPayments = async () => {
             try {
                 const response = await axios.get<Payment[]>('https://665fbf245425580055b0b23d.mockapi.io/payments');
                 if (response) {
-                    setPayments(response.data.filter(payment => payment.status === "REFUND" || payment.status === "WAITING FOR REFUND"));
+                    setPayments(response.data.filter(payment => payment.userId ===  userId && (payment.status === "REFUND" || payment.status === "WAITING FOR REFUND")));
                 }
             } catch (error: unknown) {
                 if (error instanceof Error) {
@@ -133,7 +142,7 @@ const ManagePaymentRefund = () => {
         };
 
         fetchPayments();
-    }, []);
+    }, [userId]);
 
     if (loading) {
         return <p className="loading">Loading...</p>;

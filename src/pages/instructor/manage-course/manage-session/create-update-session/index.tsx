@@ -185,9 +185,9 @@ const CreateUpdateSession = () => {
 
             {
               !courseId && (
-                <Form.Item label="Course Id" name="courseId" >
+                <Form.Item label="Course Id" name="courseId" rules={[{ required: true, message: 'Please input course!' }]}>
                   <Select
-                    defaultValue="Select course"
+                    
                     onChange={handleChange}
                     options={courses.map(course=>(
                       {

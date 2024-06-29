@@ -1,8 +1,8 @@
-import {  HomeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Switch, Table, TableProps } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import {  Session } from  "../../models";
+import { Session } from "../../models";
 import { Link } from "react-router-dom";
 import { User } from "../../models/User";
 
@@ -14,13 +14,13 @@ const ManageAllSession = () => {
     const [userId, setUserId] = useState<string>('');
 
     useEffect(() => {
-      const userString = localStorage.getItem("user");
-      const user: User = userString ? JSON.parse(userString) : null;
-      setUserId(user?.userId);
-      console.log("check userId: ", userId);
-     
+        const userString = localStorage.getItem("user");
+        const user: User = userString ? JSON.parse(userString) : null;
+        setUserId(user?.userId);
+        console.log("check userId: ", userId);
+
     }, []);
-  
+
     useEffect(() => {
         const fetchSession = async () => {
             try {
@@ -100,7 +100,12 @@ const ManageAllSession = () => {
             title: 'Action',
             dataIndex: 'sessionId',
             key: 'sessionId',
-           
+            render: () => (
+                <>
+                    <EditOutlined className="m-2 text-blue-500" />
+                    <DeleteOutlined className="text-red-500 m-2" />
+                </>
+            )
         },
     ];
 
@@ -114,7 +119,7 @@ const ManageAllSession = () => {
 
     return (
         <div>
-            
+
             <Breadcrumb>
                 <Breadcrumb.Item href="/instructor/dashboard">
                     <HomeOutlined />
