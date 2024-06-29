@@ -46,10 +46,10 @@ const Dashboard: React.FC = () => {
 
     if (userRole && user) {
       setRole(userRole);
-      setFullName(user.fullName);
+      setFullName(user.name);
       setDataUser({
         role: userRole,
-        fullName: user.fullName,
+        fullName: user.name,
         email: user.email,
       });
     } else {
@@ -61,10 +61,6 @@ const Dashboard: React.FC = () => {
     localStorage.removeItem("user");
     navigate("/");
   };
-  // const [collapsed, setCollapsed] = useState(false);
-  // const {
-  //   token: { colorBgContainer, borderRadiusLG },
-  // } = theme.useToken();
 
   function getItem(
     label: React.ReactNode,
@@ -79,51 +75,9 @@ const Dashboard: React.FC = () => {
       label: <Link to={String(key)}>{label}</Link>,
     } as MenuItem;
   }
-  // const test: MenuItem[] = [
-  //   { key: '1', icon: <PieChartOutlined />, label: 'Option 1' },
-  //   { key: '2', icon: <DesktopOutlined />, label: 'Option 2' },
-  //   { key: '3', icon: <ContainerOutlined />, label: 'Option 3' },
-  //   {
-  //     key: 'sub1',
-  //     label: 'Navigation One',
-  //     icon: <MailOutlined />,
-  //     children: [
-  //       { key: '5', label: 'Option 5' },
-  //       { key: '6', label: 'Option 6' },
-  //       { key: '7', label: 'Option 7' },
-  //       { key: '8', label: 'Option 8' },
-  //     ],
-  //   },
-  //   {
-  //     key: 'sub2',
-  //     label: 'Navigation Two',
-  //     icon: <AppstoreOutlined />,
-  //     children: [
-  //       { key: '9', label: 'Option 9' },
-  //       { key: '10', label: 'Option 10' },
-  //       {
-  //         key: 'sub3',
-  //         label: 'Submenu',
-  //         children: [
-  //           { key: '11', label: 'Option 11' },
-  //           { key: '12', label: 'Option 12' },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  // ];
-  // const a = () => (
-  //   <Menu
-  //     defaultSelectedKeys={['1']}
-  //     defaultOpenKeys={['sub1']}
-  //     mode="inline"
-  //     theme="dark"
-  //     items={test}
-  //   />
-  // )
   useEffect(() => {
     function loadItems() {
-      if (dataUser.role === "Instructor") {
+      if (dataUser.role === "instructor") {
         setItems([
           getItem("Dashboard", "/instructor/dashboard", <FundOutlined />),
           getItem(
@@ -167,7 +121,7 @@ const Dashboard: React.FC = () => {
             <QuestionCircleOutlined />
           ),
         ]);
-      } else if (dataUser.role === "Admin") {
+      } else if (dataUser.role === "admin") {
         setItems([
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
           getItem(
@@ -230,7 +184,7 @@ const Dashboard: React.FC = () => {
             </Col>
           </Row>
           <div className="mt-2 text-lg font-bold">
-            {dataUser.role === "Admin" ? "" :
+            {dataUser.role === "admin" ? "" :
                 <Link className="hover:text-red-600" to={"/instructor/profile"}>
                   View {dataUser.role} Profile
                 </Link>

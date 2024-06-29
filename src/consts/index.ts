@@ -1,4 +1,4 @@
-/* API */
+/* Fake API */
 const BASE_URL = "https://665fbf245425580055b0b23d.mockapi.io";
 export const API_STUDENT_URL = `${BASE_URL}/students`;
 export const API_INSTRUCTOR_URL = `${BASE_URL}/instructors`;
@@ -10,6 +10,9 @@ export const API_LECTURE_URL = `${BASE_URL}/lectures`;
 export const API_PAYMENT_URL = `${BASE_URL}/payments`;
 export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 export const API_BLOGS_URL = `${BASE_URL}/blogs`;
+
+/* API */
+export const host_main = "https://api-ojt-hcm24-react06-group01.vercel.app";
 
 /* PATHS */
 export const paths = {
@@ -82,9 +85,9 @@ export const paths = {
 
 /* ROLE */
 export const roles = {
-  STUDENT: "Student",
-  INSTRUCTOR: "Instructor",
-  ADMIN: "Admin",
+  STUDENT: "student",
+  INSTRUCTOR: "instructor",
+  ADMIN: "admin",
 };
 
 // Define the structure of the submenu

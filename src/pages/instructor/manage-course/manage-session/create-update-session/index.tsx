@@ -31,7 +31,7 @@ const CreateUpdateSession = () => {
     useEffect(() => {
       const userString = localStorage.getItem("user");
       const user: User = userString ? JSON.parse(userString) : null;
-      setUserId(user?.userId);
+      setUserId(user?._id);
       console.log("check userId: ", userId);
      
     }, []);
