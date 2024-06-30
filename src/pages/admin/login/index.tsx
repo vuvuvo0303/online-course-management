@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Button, Form, FormProps, Input } from "antd";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Vector from "../../../assets/Vector.png";
 import Rectangle from "../../../assets/Rectangle .jpg";
 import { toast } from "react-toastify";
 import Lottie from "lottie-react";
-import {loginAdmin} from "../../../services/auth.ts";
-import {removePassword} from "../../../utils/validHelper";
-import {paths} from "../../../consts";
+import { loginAdmin } from "../../../services/auth.ts";
+import { host_main, paths } from "../../../consts";
 import vutru from "../../../assets/vutru.json";
+import axios from 'axios';
+import { User } from "../../../models/User.ts";
 
 type FieldType = {
     email: string;
@@ -18,23 +19,52 @@ type FieldType = {
 const AdminLoginPage: React.FC = () => {
     const navigate = useNavigate();
     const [accountLockedMsg, setAccountLockedMsg] = useState<string | null>(null);
+    const [userData, setUserData] = useState<User | undefined>(undefined);
+    const [loading, setLoading] = useState<boolean>(false); // Add loading state
+
+    const fetchUserData = async (token: string, userId: string) => {
+        try {
+            const response = await axios.get(`${host_main}/api/users/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log(response);
+            console.log(userData);
+            setUserData(response.data.data);
+            localStorage.setItem("user", JSON.stringify(response.data.data));
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            if(error.response && error.response.status === 401) {
+                // Token expired or unauthorized
+                localStorage.removeItem("token"); // Remove expired token
+                // Redirect to login or handle expired token scenario
+
+            }
+            toast.error("Failed to fetch user data");
+        }
+    };
 
     const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
         const { email, password } = values;
+        setLoading(true); // Set loading to true when login starts
         const authResult = await loginAdmin(email, password);
 
         if (authResult && "status" in authResult) {
             setAccountLockedMsg(authResult.status);
             toast.error(authResult.status);
-        } else if (authResult && "user" in authResult) {
-            const { user } = authResult;
-            const userWithoutPassword = removePassword(user);
-            localStorage.setItem("user", JSON.stringify(userWithoutPassword));
+        } else if (authResult && "token" in authResult) {
+            const { token, userId } = authResult;
+            localStorage.setItem("token", token);
+            await fetchUserData(token, userId);
             navigate(paths.ADMIN_HOME);
             toast.success("Login successfully");
         } else {
             toast.error("Login failed");
         }
+        setLoading(false); // Set loading to false when login ends
     };
 
     const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
@@ -97,6 +127,7 @@ const AdminLoginPage: React.FC = () => {
                                 size="large"
                                 htmlType="submit"
                                 className="w-full md:w-2/3 shadow-xl hover:shadow-sky-600 bg-black"
+                                loading={loading} // Add loading property
                             >
                                 Login
                             </Button>
@@ -104,12 +135,6 @@ const AdminLoginPage: React.FC = () => {
                     </Form>
                 </div>
 
-                <div className="flex justify-center items-center mr-10">
-                    <hr className="my-8 border-gray-50 w-36" />
-                    <span className="text-center">
-          </span>
-                    <hr className="my-8 border-gray-50 w-36" />
-                </div>
             </div>
             <div className="hidden md:flex w-1/2 items-center justify-center">
                 <div className="rounded-lg overflow-hidden w-[80%] shadow-pink-300">

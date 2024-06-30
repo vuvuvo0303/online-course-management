@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import {
+
   CheckOutlined,
   CommentOutlined,
+
   CopyOutlined,
   DesktopOutlined,
   FundOutlined,
@@ -44,10 +46,10 @@ const Dashboard: React.FC = () => {
 
     if (userRole && user) {
       setRole(userRole);
-      setFullName(user.fullName);
+      setFullName(user.name);
       setDataUser({
         role: userRole,
-        fullName: user.fullName,
+        fullName: user.name,
         email: user.email,
       });
     } else {
@@ -59,10 +61,6 @@ const Dashboard: React.FC = () => {
     localStorage.removeItem("user");
     navigate("/");
   };
-  // const [collapsed, setCollapsed] = useState(false);
-  // const {
-  //   token: { colorBgContainer, borderRadiusLG },
-  // } = theme.useToken();
 
   function getItem(
     label: React.ReactNode,
@@ -79,30 +77,37 @@ const Dashboard: React.FC = () => {
   }
   useEffect(() => {
     function loadItems() {
-      if (dataUser.role === "Instructor") {
+      if (dataUser.role === "instructor") {
         setItems([
           getItem("Dashboard", "/instructor/dashboard", <FundOutlined />),
           getItem(
             "Manage Feedbacks",
             "/instructor/manage-feedbacks",
-            <CommentOutlined />
+            <CommentOutlined />,
+
           ),
           getItem(
             "Manage Courses",
             "/instructor/manage-courses",
-            <FundProjectionScreenOutlined />
+            <FundProjectionScreenOutlined />,
+          ),
+          getItem(
+            "Manage All Sessions",
+            "/instructor/manage-all-sessions",
+            <DesktopOutlined />,
           ),
           getItem(
             "Manage Students",
             "/instructor/manage-students",
-            <TeamOutlined />
+            <TeamOutlined />,
           ),
           getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
           getItem(
             "Create New Course",
             "/instructor/create-course",
-            <DesktopOutlined />
+            <DesktopOutlined />,
+
           ),
           getItem(
             "Payment History",
@@ -116,7 +121,7 @@ const Dashboard: React.FC = () => {
             <QuestionCircleOutlined />
           ),
         ]);
-      } else if (dataUser.role === "Admin") {
+      } else if (dataUser.role === "admin") {
         setItems([
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
           getItem(
@@ -179,7 +184,7 @@ const Dashboard: React.FC = () => {
             </Col>
           </Row>
           <div className="mt-2 text-lg font-bold">
-            {dataUser.role === "Admin" ? "" :
+            {dataUser.role === "admin" ? "" :
                 <Link className="hover:text-red-600" to={"/instructor/profile"}>
                   View {dataUser.role} Profile
                 </Link>

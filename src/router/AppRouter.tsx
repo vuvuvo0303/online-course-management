@@ -1,53 +1,55 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import {
-    Home,
-    LoginPage,
-    RegisterPage,
-    Terms,
-    Policy,
-    Guidelines,
-    Support,
-    BlogList,
-    BlogDetail,
-    Course,
-    Dashboard,
-    BecomeInstructorPage,
-    Cart,
-    Profile,
-    PaymentHistory,
-    Enrollment,
-    NotFound,
-    About,
-    StudentPaymentHistory,
-    Contact,
-    Checkout,
-    SiteMap,
-    CourseDetail,
-    AdminManageFeedbacks,
-    InstructorDashboard,
-    AdminDashboard,
-    InstructorManageBlogs,
-    InstructorManageStudents,
-    InstructorManageCourses,
-    InstructorCreateCourse,
-    InstructorManageFeedbacks,
-    AdminManageInstructors,
-    AdminManageCategories,
-    AdminManageBlogs,
-    AdminManageCourses,
-    AdminManageStudents,
-    InstructorTools,
-    InstructorResources,
-    CoursesCategory,
-    CreateLecture,
-    LectureOfCourse,
-    InstructorManageLectures,
-    ForgotPassword,
-    ManageSession,
-    CreateUpdateSession,
-    AdminManageSession,
-    AdminManageLecture,
-    AdminLoginPage,
+  Home,
+  LoginPage,
+  RegisterPage,
+  Terms,
+  Policy,
+  Guidelines,
+  Support,
+  BlogList,
+  BlogDetail,
+  Course,
+  Dashboard,
+  BecomeInstructorPage,
+  Cart,
+  Profile,
+  PaymentHistory,
+  Enrollment,
+  NotFound,
+  About,
+  StudentPaymentHistory,
+  Contact,
+  Checkout,
+  SiteMap,
+  CourseDetail,
+  AdminManageFeedbacks,
+  InstructorDashboard,
+  AdminDashboard,
+  InstructorManageBlogs,
+  InstructorManageStudents,
+  InstructorManageCourses,
+  InstructorCreateCourse,
+  InstructorManageFeedbacks,
+  AdminManageInstructors,
+  AdminManageCategories,
+  AdminManageBlogs,
+  AdminManageCourses,
+  AdminManageStudents,
+  InstructorTools,
+  InstructorResources,
+  CoursesCategory,
+  CreateLecture,
+  LectureOfCourse,
+  InstructorManageLectures,
+  ForgotPassword,
+  ManageSession,
+  CreateUpdateSession,
+  AdminManageSession,
+  AdminManageLecture,
+  InstructorManageCoursesDetail,
+  ManageAllSession,
+  AdminLoginPage,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
@@ -267,6 +269,36 @@ const AppRouter: React.FC = () => {
           }
         />
         <Route path="*" element={<NotFound />} />
+        <Route
+          path={paths.INSTRUCTOR_MANAGE_COURSE_DETAIL}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <InstructorManageCoursesDetail />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path={paths.INSTRUCTOR_MANAGE_ALL_SESSION}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <ManageAllSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path={paths.INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSION}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateUpdateSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
       </Route>
 
       {/* Route for Admin */}

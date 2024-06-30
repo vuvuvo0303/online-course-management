@@ -21,10 +21,10 @@ const AdminManageInstructors: React.FC = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
 
-  const handleDelete = async (userId: string, email: string) => {
+  const handleDelete = async (_id: string, email: string) => {
     try {
-      await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/instructors/${userId}`);
-      const listAfterDelete = data.filter((instructor) => instructor.userId !== userId);
+      await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/instructors/${_id}`);
+      const listAfterDelete = data.filter((instructor) => instructor._id !== _id);
       setData(listAfterDelete);
       toast.success(`Deleted user ${email} successfully`);
     } catch (error) {
@@ -52,13 +52,15 @@ const AdminManageInstructors: React.FC = () => {
   const sortColumn = (columnKey: keyof Instructor) => {
     const newOrder = sortOrder[columnKey] === "ascend" ? "descend" : "ascend";
     const sortedData = [...data].sort((a, b) => {
-      let aValue: string | number | boolean = a[columnKey];
-      let bValue: string | number | boolean = b[columnKey];
+      let aValue: string | undefined | "admin" | "instructor" | "student" | boolean | Date = a[columnKey];
+      let bValue: string | undefined | "admin" | "instructor" | "student" | boolean | Date = b[columnKey];
 
-      if (columnKey === "createdDate" || columnKey === "updatedDate") {
-        // @ts-ignore
+      if (columnKey === "created_at" || columnKey === "updated_at") {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         aValue = new Date(aValue).getTime();
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         bValue = new Date(bValue).getTime();
       }
 
@@ -135,10 +137,7 @@ const AdminManageInstructors: React.FC = () => {
     ),
     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
     onFilter: (value, record) =>
-        record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes((value as string).toLowerCase()),
+        (record[dataIndex]?.toString().toLowerCase().includes((value as string).toLowerCase())) || false,
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
@@ -163,7 +162,7 @@ const AdminManageInstructors: React.FC = () => {
       dataIndex: "fullName",
       key: "fullName",
       width: "20%",
-      ...getColumnSearchProps("fullName"),
+      ...getColumnSearchProps("name"),
     },
     {
       title: "Email",
@@ -180,7 +179,7 @@ const AdminManageInstructors: React.FC = () => {
       sorter: true,
       sortDirections: ["descend", "ascend"],
       onHeaderCell: () => ({
-        onClick: () => sortColumn("createdDate"),
+        onClick: () => sortColumn("created_at"),
       }),
       width: "15%",
     },
@@ -192,7 +191,7 @@ const AdminManageInstructors: React.FC = () => {
       sorter: true,
       sortDirections: ["descend", "ascend"],
       onHeaderCell: () => ({
-        onClick: () => sortColumn("updatedDate"),
+        onClick: () => sortColumn("updated_at"),
       }),
       width: "15%",
     },
@@ -221,7 +220,7 @@ const AdminManageInstructors: React.FC = () => {
                 style={{ fontSize: "20px" }}
             />
             <DeleteOutlined
-                onClick={() => handleDelete(record.userId, record.email)}
+                onClick={() => handleDelete(record._id, record.email)}
                 className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
                 style={{ fontSize: "20px" }}
             />

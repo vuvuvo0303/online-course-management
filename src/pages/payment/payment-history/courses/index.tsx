@@ -1,6 +1,8 @@
 import { Table, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { Payment } from "../../../../models";
+import { User } from "../../../../models/User";
+import axios from "axios";
 
 const ManagePaymentCourse = () => {
     const columns = [
@@ -54,17 +56,24 @@ const ManagePaymentCourse = () => {
     const [payments, setPayments] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [userId, setUserId] = useState<string>('');
+
+    useEffect(() => {
+        const userString = localStorage.getItem("user");
+        const user: User = userString ? JSON.parse(userString) : null;
+        setUserId(user?.userId);
+        console.log("check userId: ", userId);
+
+    }, []);
 
     useEffect(() => {
         const fetchPayments = async () => {
             try {
-                const response = await fetch('https://665fbf245425580055b0b23d.mockapi.io/payments');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                const response = await axios.get<Payment[]>('https://665fbf245425580055b0b23d.mockapi.io/payments');
+                if (response) {
+                    setPayments(response.data.filter(payment => payment.userId === userId));
+                    console.log("check p: ", response)
                 }
-                const data = await response.json();
-                setPayments(data);
-                console.log("check setPayments(data): ", setPayments(data))
             } catch (error: unknown) {
                 if (error instanceof Error) {
                     setError(error.message);
@@ -77,7 +86,7 @@ const ManagePaymentCourse = () => {
         };
 
         fetchPayments();
-    }, []);
+    }, [userId]);
 
 
     if (loading) {

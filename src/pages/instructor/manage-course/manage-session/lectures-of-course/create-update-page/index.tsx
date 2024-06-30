@@ -87,7 +87,7 @@ const CreateLecture = () => {
             </Breadcrumb.Item>
             <Breadcrumb.Item href="/instructor/manage-courses">Manage Courses</Breadcrumb.Item>
             <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>Manage Sessions</Breadcrumb.Item>
-            <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}>Manage Lecture</Breadcrumb.Item>
+            <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}>Manage Lectures</Breadcrumb.Item>
             <Breadcrumb.Item>{lectureId ? "Update Lecture" : "Create Lecture"}</Breadcrumb.Item>
           </Breadcrumb>
           <h1 className="text-center mb-8">{lectureId ? "Update Lecture" : "Create Lecture"}</h1>
