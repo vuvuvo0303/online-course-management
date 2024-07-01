@@ -11,7 +11,6 @@ import { GoogleLogin } from "@react-oauth/google";
 import Lottie from "lottie-react";
 import vutru from "../../assets/vutru.json";
 import { jwtDecode } from "jwt-decode";
-import fullogo from "../../assets/fulllogo.jpg";
 
 type FieldType = {
   email: string;
@@ -56,12 +55,6 @@ const LoginPage: React.FC = () => {
 
   return (
     <>
-      <header>
-        <div className="flex justify-center py-4">
-          <img src={fullogo} alt="" width={100} />
-        </div>
-        {/* <hr className="text-stone-400 " /> */}
-      </header>
       <div className="flex min-h-screen relative">
         <img src={Vector} alt="" className="absolute bottom-8" />
 

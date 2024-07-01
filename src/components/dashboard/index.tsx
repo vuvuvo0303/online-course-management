@@ -6,6 +6,7 @@ import {
 
   CopyOutlined,
   DesktopOutlined,
+  FolderViewOutlined,
   FundOutlined,
   FundProjectionScreenOutlined,
   ProfileOutlined,
@@ -13,6 +14,7 @@ import {
   TeamOutlined,
   ToolOutlined,
   UserOutlined,
+  WalletOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
@@ -107,13 +109,13 @@ const Dashboard: React.FC = () => {
           getItem(
             "Create New Course",
             "/instructor/create-course",
-            <DesktopOutlined />,
+            <FolderViewOutlined />,
 
           ),
           getItem(
             "Payment History",
             "/instructor/payment-history",
-            <DesktopOutlined />
+            <WalletOutlined  />
           ),
           getItem("Tools", "/instructor/tools", <ToolOutlined />),
           getItem(
