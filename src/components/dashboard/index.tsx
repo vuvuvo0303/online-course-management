@@ -16,6 +16,7 @@ import type { MenuProps } from "antd";
 import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
+import logo2 from "../../assets/logo2.jpg";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -107,7 +108,7 @@ const Dashboard: React.FC = () => {
       label: (
         <div className="text-sm">
           <Row>
-            <Col span={8} className='pl-3 pt-2 pb-2'>
+            <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
                 src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
                 className="hover:cursor-pointer"
@@ -115,57 +116,61 @@ const Dashboard: React.FC = () => {
                 icon={<UserOutlined />}
               />
             </Col>
-            <Col span={16} className='pt-3 pr-3'>
+            <Col span={16} className="pt-3 pr-3">
               <Row>
-                <p className='text-base font-bold'>{dataUser.fullName}</p>
+                <p className="text-base font-bold">{dataUser.fullName}</p>
                 <CheckOutlined className="ml-2" />
               </Row>
               <div>
-                <p className='text-md'>{dataUser.email}</p>
+                <p className="text-md">{dataUser.email}</p>
               </div>
             </Col>
           </Row>
           <div className="mt-2 text-lg font-bold">
-            <Link className="hover:text-red-600" to={"/profile"}>View {dataUser.role} Profile</Link>
+            <Link className="hover:text-red-600" to={"/profile"}>
+              View {dataUser.role} Profile
+            </Link>
           </div>
         </div>
       ),
       key: "1",
     },
     {
-      label: <Link
-        className="mt-2 text-lg"
-        to={dataUser.role === "Instructor" ? "/instructor/paidMemberships" : "/admin/paidMemberships"}
-      >
-        Paid Memberships
-      </Link>,
+      label: (
+        <Link
+          className="mt-2 text-lg"
+          to={dataUser.role === "Instructor" ? "/instructor/paidMemberships" : "/admin/paidMemberships"}
+        >
+          Paid Memberships
+        </Link>
+      ),
       key: "2",
     },
     {
-      label: <Link
-        className="text-lg"
-        to={dataUser.role === "Instructor" ? "/instructor/setting" : "/admin/setting"}
-      >
-        Setting
-      </Link>,
+      label: (
+        <Link className="text-lg" to={dataUser.role === "Instructor" ? "/instructor/setting" : "/admin/setting"}>
+          Setting
+        </Link>
+      ),
       key: "3",
     },
     {
-      label: <Link
-        className="text-lg"
-        to={dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"}
-      >
-        Help
-      </Link>,
+      label: (
+        <Link className="text-lg" to={dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"}>
+          Help
+        </Link>
+      ),
       key: "4",
     },
     {
-      label: <Link
-        className="text-lg"
-        to={dataUser.role === "Instructor" ? "/instructor/sendFeedBack" : "/admin/sendFeedBack"}
-      >
-        Send Feedback
-      </Link>,
+      label: (
+        <Link
+          className="text-lg"
+          to={dataUser.role === "Instructor" ? "/instructor/sendFeedBack" : "/admin/sendFeedBack"}
+        >
+          Send Feedback
+        </Link>
+      ),
       key: "5",
     },
     {
@@ -178,7 +183,6 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
@@ -188,12 +192,9 @@ const Dashboard: React.FC = () => {
         </Sider>
         <Layout className="bg-stone-100">
           <Header className="flex justify-between items-center drop-shadow-xl bg-white ">
-            <img
-              className=""
-              src="https://th.bing.com/th/id/OIG1.AGaZbxlA_0MPJqC3KzeN?w=270&h=270&c=6&r=0&o=5&pid=ImgGn&fbclid=IwZXh0bgNhZW0CMTAAAR2mjW6RtojaN9vEo4rqlabcTxGB8SgLyPDBFuYQkrjrtV6Y-grTpfAFNfU_aem_AeDCUfxM5_fs-2v7HvGAmbOqmKCoSm3yqxolCEq2L3VhfsTEpP6R4EchWpg36dMdIMwS0hSCc_V3GDRIrdhhWCxz"
-              alt=" logo"
-              width={50}
-            />
+            
+              <img className="" src={logo2} alt=" logo" width={60} />
+            
 
             <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
               <a onClick={(e) => e.preventDefault()}>

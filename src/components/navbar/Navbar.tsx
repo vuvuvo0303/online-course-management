@@ -1,15 +1,28 @@
-import { Menu, Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover, Button } from 'antd';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { categoryFilters, categorySubmenu, paths } from '../../consts/index';
-import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined, CheckOutlined, MenuOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
-import { useMediaQuery } from 'react-responsive';
-import SearchTool from '../SearchTool';
-import "./nav.css"
+import { Menu, Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover, Button } from "antd";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { categoryFilters, categorySubmenu, paths } from "../../consts/index";
+import {
+  ShoppingCartOutlined,
+  UserOutlined,
+  MailOutlined,
+  BellOutlined,
+  HeartOutlined,
+  CheckOutlined,
+  MenuOutlined,
+} from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { useMediaQuery } from "react-responsive";
+import SearchTool from "../SearchTool";
+import "./nav.css";
+import logo2 from "../../assets/logo2.jpg";
 const Navbar: React.FC = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
-  const [dataUser, setDataUser] = useState<{ role: string | null, fullName: string | null, email: string | null }>({ role: null, fullName: null, email: null });
+  const [dataUser, setDataUser] = useState<{ role: string | null; fullName: string | null; email: string | null }>({
+    role: null,
+    fullName: null,
+    email: null,
+  });
   const isLoginOrRegister = location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
   const isMobile = useMediaQuery({ maxWidth: 768 }); // Điều kiện màn hình nhỏ
   const navigate = useNavigate();
@@ -27,15 +40,15 @@ const Navbar: React.FC = () => {
     }
   }, []);
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/');
+    localStorage.removeItem("user");
+    navigate("/");
   };
   const dropdownItems: MenuProps["items"] = [
     {
       label: (
         <div className="text-sm">
           <Row>
-            <Col span={8} className='pl-3 pt-2 pb-2'>
+            <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
                 src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
                 className="hover:cursor-pointer"
@@ -43,40 +56,55 @@ const Navbar: React.FC = () => {
                 icon={<UserOutlined />}
               />
             </Col>
-            <Col span={16} className='pt-3 pr-3'>
+            <Col span={16} className="pt-3 pr-3">
               <Row>
-                <p className='text-base font-bold'>{dataUser.fullName}</p>
+                <p className="text-base font-bold">{dataUser.fullName}</p>
                 <CheckOutlined className="ml-2" />
               </Row>
               <div>
-                <p className='text-base'>{dataUser.email}</p>
+                <p className="text-base">{dataUser.email}</p>
               </div>
             </Col>
           </Row>
           <div className="mt-2 text-lg font-bold">
-            <Link className='hover:text-red-600' to={"/profile"}>View {dataUser.role} Profile</Link>
+            <Link className="hover:text-red-600" to={"/profile"}>
+              View {dataUser.role} Profile
+            </Link>
           </div>
         </div>
       ),
       key: "1",
     },
     {
-      label:
-        <Link className="text-lg" to={"/payment-history"}>Payment History</Link>,
+      label: (
+        <Link className="text-lg" to={"/payment-history"}>
+          Payment History
+        </Link>
+      ),
       key: "2",
     },
     {
-      label:
-        <Link className="text-lg" to={"/help"}>Help</Link>,
+      label: (
+        <Link className="text-lg" to={"/help"}>
+          Help
+        </Link>
+      ),
       key: "3",
     },
     {
-      label:
-        <Link className="text-lg" to={"/sendFeedBack"}>Send Feedback</Link>,
+      label: (
+        <Link className="text-lg" to={"/sendFeedBack"}>
+          Send Feedback
+        </Link>
+      ),
       key: "4",
     },
     {
-      label: <p onClick={handleLogout} className="text-lg hover:cursor-pointer hover:text-red-600">Logout</p>,
+      label: (
+        <p onClick={handleLogout} className="text-lg hover:cursor-pointer hover:text-red-600">
+          Logout
+        </p>
+      ),
       key: "5",
     },
   ];
@@ -92,7 +120,7 @@ const Navbar: React.FC = () => {
   ));
 
   // Get user data from localStorage
-  const userData = JSON.parse(localStorage.getItem('user') || '{}');
+  const userData = JSON.parse(localStorage.getItem("user") || "{}");
   const { avatarUrl } = userData;
 
   // const handleMenuClick = () => {
@@ -103,18 +131,17 @@ const Navbar: React.FC = () => {
     e.preventDefault();
   };
 
-
   const shopCartContent = (
-    <div className='p-1'>
+    <div className="p-1">
       <div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
+        <div className="hover:bg-slate-300 p-5">
+          <Link className="hover:bg-white" to={"/"}>
             <Row className="mb-4">
-              <Col span={6}><img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" /></Col>
+              <Col span={6}>
+                <img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" />
+              </Col>
               <Col span={12} className="flex items-center">
-                <div className="truncate">
-                  The Complete Python Bootcamp From Zero to Hero in Python
-                </div>
+                <div className="truncate">The Complete Python Bootcamp From Zero to Hero in Python</div>
               </Col>
               <Col span={6} className="flex items-center justify-end">
                 <span>₫349,000</span>
@@ -122,14 +149,14 @@ const Navbar: React.FC = () => {
             </Row>
           </Link>
         </div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
+        <div className="hover:bg-slate-300 p-5">
+          <Link className="hover:bg-white" to={"/"}>
             <Row className="mb-4">
-              <Col span={6}><img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" /></Col>
+              <Col span={6}>
+                <img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" />
+              </Col>
               <Col span={12} className="flex items-center">
-                <div className="truncate">
-                  The Complete Python Bootcamp From Zero to Hero in Python
-                </div>
+                <div className="truncate">The Complete Python Bootcamp From Zero to Hero in Python</div>
               </Col>
               <Col span={6} className="flex items-center justify-end">
                 <span>₫349,000</span>
@@ -137,14 +164,14 @@ const Navbar: React.FC = () => {
             </Row>
           </Link>
         </div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
+        <div className="hover:bg-slate-300 p-5">
+          <Link className="hover:bg-white" to={"/"}>
             <Row className="mb-4">
-              <Col span={6}><img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" /></Col>
+              <Col span={6}>
+                <img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" />
+              </Col>
               <Col span={12} className="flex items-center">
-                <div className="truncate">
-                  The Complete Python Bootcamp From Zero to Hero in Python
-                </div>
+                <div className="truncate">The Complete Python Bootcamp From Zero to Hero in Python</div>
               </Col>
               <Col span={6} className="flex items-center justify-end">
                 <span>₫349,000</span>
@@ -153,24 +180,25 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
       </div>
-      <div className='mt-4 '>
-        <Button><Link to={"/cart"}>View Cart</Link></Button>
+      <div className="mt-4 ">
+        <Button>
+          <Link to={"/cart"}>View Cart</Link>
+        </Button>
       </div>
     </div>
-
   );
 
   const heartContent = (
-    <div className='p-1'>
+    <div className="p-1">
       <div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
+        <div className="hover:bg-slate-300 p-5">
+          <Link className="hover:bg-white" to={"/"}>
             <Row className="mb-4">
-              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
+              <Col span={6}>
+                <img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" />
+              </Col>
               <Col span={14} className="flex items-center">
-                <div className="truncate">
-                  The Complete 2024 Web Development Bootcamp
-                </div>
+                <div className="truncate">The Complete 2024 Web Development Bootcamp</div>
               </Col>
               <Col span={4} className="flex items-center justify-end">
                 <span>₫249,000</span>
@@ -178,14 +206,14 @@ const Navbar: React.FC = () => {
             </Row>
           </Link>
         </div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
+        <div className="hover:bg-slate-300 p-5">
+          <Link className="hover:bg-white" to={"/"}>
             <Row className="mb-4">
-              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
+              <Col span={6}>
+                <img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" />
+              </Col>
               <Col span={14} className="flex items-center">
-                <div className="truncate">
-                  The Complete 2024 Web Development Bootcamp
-                </div>
+                <div className="truncate">The Complete 2024 Web Development Bootcamp</div>
               </Col>
               <Col span={4} className="flex items-center justify-end">
                 <span>₫249,000</span>
@@ -193,14 +221,14 @@ const Navbar: React.FC = () => {
             </Row>
           </Link>
         </div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
+        <div className="hover:bg-slate-300 p-5">
+          <Link className="hover:bg-white" to={"/"}>
             <Row className="mb-4">
-              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
+              <Col span={6}>
+                <img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" />
+              </Col>
               <Col span={14} className="flex items-center">
-                <div className="truncate">
-                  The Complete 2024 Web Development Bootcamp
-                </div>
+                <div className="truncate">The Complete 2024 Web Development Bootcamp</div>
               </Col>
               <Col span={4} className="flex items-center justify-end">
                 <span>₫249,000</span>
@@ -209,15 +237,17 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
       </div>
-      <div className='mt-4'>
-        <Button><Link to={"/enrollment"}>View Cart</Link></Button>
+      <div className="mt-4">
+        <Button>
+          <Link to={"/enrollment"}>View Cart</Link>
+        </Button>
       </div>
     </div>
   );
 
-  const items: MenuProps['items'] = [
+  const items: MenuProps["items"] = [
     {
-      key: '1',
+      key: "1",
       label: (
         <Link to={paths.STUDENT_ENROLLMENT}>
           <Badge count={4}>
@@ -227,7 +257,7 @@ const Navbar: React.FC = () => {
       ),
     },
     {
-      key: '2',
+      key: "2",
       label: (
         <Badge count={2}>
           <MailOutlined className="text-gray-400 text-3xl" />
@@ -236,7 +266,7 @@ const Navbar: React.FC = () => {
       disabled: true,
     },
     {
-      key: '3',
+      key: "3",
       label: (
         <Badge count={3}>
           <BellOutlined className="text-gray-400 text-3xl" />
@@ -245,7 +275,7 @@ const Navbar: React.FC = () => {
       disabled: true,
     },
     {
-      key: '4',
+      key: "4",
       danger: true,
       label: (
         <Link to={paths.STUDENT_CART}>
@@ -259,10 +289,11 @@ const Navbar: React.FC = () => {
 
   return (
     !isLoginOrRegister && (
-      <nav className={`flexBetween navbar ${isLoginOrRegister ? 'justify-center' : ''}`}>
-        <div className={`flex-1 flexStart gap-10 ${isLoginOrRegister ? 'justify-center' : ''}`}>
+      <nav className={`flexBetween navbar ${isLoginOrRegister ? "justify-center" : ""}`}>
+        <div className={`flex-1 flexStart gap-10 ${isLoginOrRegister ? "justify-center" : ""}`}>
           <Link to="/">
-            <h1 className={`${isLoginOrRegister ? 'text-center' : ''}`}>FLearn</h1>
+            {/* <h1 className={`${isLoginOrRegister ? 'text-center' : ''}`}></h1> */}
+            <img src={logo2} alt="" width={70} />
           </Link>
           {!isLoginOrRegister && (
             <>
@@ -270,18 +301,18 @@ const Navbar: React.FC = () => {
                 <a
                   className="ant-dropdown-link"
                   onMouseEnter={handleMouseEnter}
-                  style={{ fontSize: '14px', cursor: 'pointer' }}
+                  style={{ fontSize: "14px", cursor: "pointer" }}
                 >
                   Categories
                 </a>
               </Dropdown>
-              <Link to='/enrollment?activeTab=1'>
-                <p className="link" style={{ fontSize: '14px' }}>
+              <Link to="/enrollment?activeTab=1">
+                <p className="link" style={{ fontSize: "14px" }}>
                   Saved Courses
                 </p>
               </Link>
-              <Link to='/teaching'>
-                <p className="link" style={{ fontSize: '14px' }}>
+              <Link to="/teaching">
+                <p className="link" style={{ fontSize: "14px" }}>
                   Be an Instructor
                 </p>
               </Link>
@@ -292,7 +323,7 @@ const Navbar: React.FC = () => {
         {!isLoginOrRegister && (
           <div className="flexCenter gap-10 mr-5">
             {isMobile ? (
-              <Dropdown overlay={<Menu items={items} />} className='mt-5 mb-44' placement="bottomRight">
+              <Dropdown overlay={<Menu items={items} />} className="mt-5 mb-44" placement="bottomRight">
                 <p onClick={(e) => e.preventDefault()}>
                   <Space>
                     <MenuOutlined className="text-gray-400 text-3xl" />
@@ -322,7 +353,12 @@ const Navbar: React.FC = () => {
                   </Popover>
                 </Link>
                 {avatarUrl ? (
-                  <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
+                  <Dropdown
+                    className="mb-2"
+                    menu={{ items: dropdownItems }}
+                    trigger={["click"]}
+                    overlayClassName="w-72"
+                  >
                     <p onClick={(e) => e.preventDefault()}>
                       <Space>
                         <Avatar
@@ -346,7 +382,6 @@ const Navbar: React.FC = () => {
       </nav>
     )
   );
-  
 };
 
 export default Navbar;

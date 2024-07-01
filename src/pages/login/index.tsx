@@ -11,6 +11,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import Lottie from "lottie-react";
 import vutru from "../../assets/vutru.json";
 import { jwtDecode } from "jwt-decode";
+import fullogo from "../../assets/fulllogo.jpg";
 
 type FieldType = {
   email: string;
@@ -57,6 +58,13 @@ const LoginPage: React.FC = () => {
   };
 
   return (
+    <>
+      <header>
+        <div className="flex justify-center py-4">
+          <img src={fullogo} alt="" width={100} />
+        </div>
+        {/* <hr className="text-stone-400 " /> */}
+      </header>
       <div className="flex min-h-screen relative">
         <img src={Vector} alt="" className="absolute bottom-8" />
 
@@ -72,39 +80,45 @@ const LoginPage: React.FC = () => {
 
           <div className="mt-6 flex justify-end">
             <Form
-                name="basic"
-                className="space-y-2 w-full md:w-[80%]"
-                initialValues={{ remember: true }}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
+              name="basic"
+              className="space-y-2 w-full md:w-[80%]"
+              initialValues={{ remember: true }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
             >
               <div className="pb-2">
                 <Form.Item
-                    name="email"
-                    rules={[
-                      { required: true, message: "Please input your email!" },
-                      { type: "email", message: "Please enter the correct email format!" },
-                      { pattern: /^\S*$/, message: "Password must not contain spaces!" },
-                    ]}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                    className="mb-1"
+                  name="email"
+                  rules={[
+                    { required: true, message: "Please input your email!" },
+                    { type: "email", message: "Please enter the correct email format!" },
+                    { pattern: /^\S*$/, message: "Password must not contain spaces!" },
+                  ]}
+                  labelCol={{ span: 24 }}
+                  wrapperCol={{ span: 24 }}
+                  className="mb-1"
                 >
-                  <Input placeholder="Email" className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                  <Input
+                    placeholder="Email"
+                    className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
                 </Form.Item>
                 <Form.Item
-                    name="password"
-                    rules={[
-                      { required: true, message: "Please input your password!" },
-                      { min: 6, message: "Password must be at least 6 characters!" },
-                      { pattern: /^\S*$/, message: "Password must not contain spaces!" },
-                    ]}
-                    labelCol={{ span: 24 }}
-                    wrapperCol={{ span: 24 }}
-                    className="mb-1 mt-5"
+                  name="password"
+                  rules={[
+                    { required: true, message: "Please input your password!" },
+                    { min: 6, message: "Password must be at least 6 characters!" },
+                    { pattern: /^\S*$/, message: "Password must not contain spaces!" },
+                  ]}
+                  labelCol={{ span: 24 }}
+                  wrapperCol={{ span: 24 }}
+                  className="mb-1 mt-5"
                 >
-                  <Input.Password placeholder="Password" className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                  <Input.Password
+                    placeholder="Password"
+                    className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
                 </Form.Item>
               </div>
 
@@ -118,10 +132,10 @@ const LoginPage: React.FC = () => {
 
               <Form.Item>
                 <Button
-                    type="primary"
-                    size="large"
-                    htmlType="submit"
-                    className="w-full md:w-2/3 shadow-xl hover:shadow-sky-600 bg-black"
+                  type="primary"
+                  size="large"
+                  htmlType="submit"
+                  className="w-full md:w-2/3 shadow-xl hover:shadow-sky-600 bg-black"
                 >
                   Login
                 </Button>
@@ -129,31 +143,31 @@ const LoginPage: React.FC = () => {
             </Form>
           </div>
           <span className="mt-4 block text-center">
-          Do you have an account?{" "}
+            Do you have an account?{" "}
             <strong>
-            <Link to="/register" className="hover:cursor-pointer hover:text-red-400">
-              Sign up here
-            </Link>
-          </strong>
-        </span>
+              <Link to="/register" className="hover:cursor-pointer hover:text-red-400">
+                Sign up here
+              </Link>
+            </strong>
+          </span>
           <div className="flex justify-center items-center mr-10">
             <hr className="my-8 border-gray-50 w-36" />
             <span className="text-center">
-            <strong>Login</strong> with others
-          </span>
+              <strong>Login</strong> with others
+            </span>
             <hr className="my-8 border-gray-50 w-36" />
           </div>
           <div className="flex justify-center mr-10">
             <GoogleLogin
-                onSuccess={(credentialResponse) => {
-                  console.log(credentialResponse);
-                  const credentialResponseDecoded = jwtDecode(credentialResponse.credential as string);
+              onSuccess={(credentialResponse) => {
+                console.log(credentialResponse);
+                const credentialResponseDecoded = jwtDecode(credentialResponse.credential as string);
 
-                  console.log(credentialResponseDecoded);
-                }}
-                onError={() => {
-                  console.log("Login Failed");
-                }}
+                console.log(credentialResponseDecoded);
+              }}
+              onError={() => {
+                console.log("Login Failed");
+              }}
             />
           </div>
         </div>
@@ -163,6 +177,7 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </div>
+    </>
   );
 };
 

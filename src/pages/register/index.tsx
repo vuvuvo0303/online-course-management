@@ -241,6 +241,10 @@ const RegisterPage: React.FC = () => {
         </div>
       </div>
 
+      <Modal title="Policy" visible={isModalOpen} onCancel={handleCancel} onOk={handleOk}>
+        {/* Nội dung của modal ở đây */}
+        <p>This is where your policy content goes.</p>
+      </Modal>
       {previewImage && (
         <Image
           wrapperStyle={{ display: "none" }}
@@ -252,11 +256,6 @@ const RegisterPage: React.FC = () => {
           src={previewImage}
         />
       )}
-
-      <Modal title="Policy" visible={isModalOpen} onCancel={handleCancel} onOk={handleOk}>
-        {/* Nội dung của modal ở đây */}
-        <p>This is where your policy content goes.</p>
-      </Modal>
     </div>
   );
 };
