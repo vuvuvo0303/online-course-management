@@ -1,11 +1,10 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-
   CheckOutlined,
   CommentOutlined,
-
   CopyOutlined,
   DesktopOutlined,
+  FolderViewOutlined,
   FundOutlined,
   FundProjectionScreenOutlined,
   ProfileOutlined,
@@ -13,11 +12,13 @@ import {
   TeamOutlined,
   ToolOutlined,
   UserOutlined,
+  WalletOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
+import logo2 from "../../assets/logo2.jpg";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -62,12 +63,7 @@ const Dashboard: React.FC = () => {
     navigate("/");
   };
 
-  function getItem(
-    label: React.ReactNode,
-    key: React.Key,
-    icon?: React.ReactNode,
-    children?: MenuItem[]
-  ): MenuItem {
+  function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
     return {
       key,
       icon,
@@ -97,53 +93,29 @@ const Dashboard: React.FC = () => {
             <DesktopOutlined />,
           ),
           getItem(
+            "Manage All Lectures",
+            "/instructor/manage-all-lectures",
+            <DesktopOutlined />,
+          ),
+          getItem(
             "Manage Students",
             "/instructor/manage-students",
             <TeamOutlined />,
           ),
           getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
-          getItem(
-            "Create New Course",
-            "/instructor/create-course",
-            <DesktopOutlined />,
-
-          ),
-          getItem(
-            "Payment History",
-            "/instructor/payment-history",
-            <DesktopOutlined />
-          ),
+          getItem("Create New Course", "/instructor/create-course", <FolderViewOutlined />),
+          getItem("Payment History", "/instructor/payment-history", <WalletOutlined />),
           getItem("Tools", "/instructor/tools", <ToolOutlined />),
-          getItem(
-            "Resources",
-            "/instructor/resources",
-            <QuestionCircleOutlined />
-          ),
+          getItem("Resources", "/instructor/resources", <QuestionCircleOutlined />),
         ]);
       } else if (dataUser.role === "admin") {
         setItems([
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
-          getItem(
-            "Manage Students",
-            "/admin/manage-students",
-            <TeamOutlined />
-          ),
-          getItem(
-            "Manage Instructors",
-            "/admin/manage-instructors",
-            <TeamOutlined />
-          ),
-          getItem(
-            "Manage Categories",
-            "/admin/manage-categories",
-            <TeamOutlined />
-          ),
-          getItem(
-            "Manage Courses",
-            "/admin/manage-courses",
-            <FundProjectionScreenOutlined />
-          ),
+          getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
+
+          getItem("Manage Categories", "/admin/manage-categories", <TeamOutlined />),
+          getItem("Manage Courses", "/admin/manage-courses", <FundProjectionScreenOutlined />),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
           getItem("Manage Feedbacks", "/admin/manage-feedbacks", <CommentOutlined />),
           getItem("Payment History", "/admin/payment-history", <DesktopOutlined />),
@@ -184,11 +156,13 @@ const Dashboard: React.FC = () => {
             </Col>
           </Row>
           <div className="mt-2 text-lg font-bold">
-            {dataUser.role === "admin" ? "" :
-                <Link className="hover:text-red-600" to={"/instructor/profile"}>
-                  View {dataUser.role} Profile
-                </Link>
-            }
+            {dataUser.role === "admin" ? (
+              ""
+            ) : (
+              <Link className="hover:text-red-600" to={"/instructor/profile"}>
+                View {dataUser.role} Profile
+              </Link>
+            )}
           </div>
         </div>
       ),
@@ -198,11 +172,7 @@ const Dashboard: React.FC = () => {
       label: (
         <Link
           className="mt-2 text-lg"
-          to={
-            dataUser.role === "Instructor"
-              ? "/instructor/paidMemberships"
-              : "/admin/paidMemberships"
-          }
+          to={dataUser.role === "Instructor" ? "/instructor/paidMemberships" : "/admin/paidMemberships"}
         >
           Paid Memberships
         </Link>
@@ -211,14 +181,7 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <Link
-          className="text-lg"
-          to={
-            dataUser.role === "Instructor"
-              ? "/instructor/setting"
-              : "/admin/setting"
-          }
-        >
+        <Link className="text-lg" to={dataUser.role === "Instructor" ? "/instructor/setting" : "/admin/setting"}>
           Setting
         </Link>
       ),
@@ -226,12 +189,7 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <Link
-          className="text-lg"
-          to={
-            dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"
-          }
-        >
+        <Link className="text-lg" to={dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"}>
           Help
         </Link>
       ),
@@ -241,11 +199,7 @@ const Dashboard: React.FC = () => {
       label: (
         <Link
           className="text-lg"
-          to={
-            dataUser.role === "Instructor"
-              ? "/instructor/sendFeedBack"
-              : "/admin/sendFeedBack"
-          }
+          to={dataUser.role === "Instructor" ? "/instructor/sendFeedBack" : "/admin/sendFeedBack"}
         >
           Send Feedback
         </Link>
@@ -254,10 +208,7 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <p
-          onClick={handleLogout}
-          className="text-lg hover:cursor-pointer hover:text-red-600"
-        >
+        <p onClick={handleLogout} className="text-lg hover:cursor-pointer hover:text-red-600">
           Logout
         </p>
       ),
@@ -268,27 +219,13 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
-        >
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
           <div className="demo-logo-vertical" />
-          <Menu
-            className="py-4 bg-white-50 h-full"
-            defaultSelectedKeys={["1"]}
-            mode="vertical"
-            items={items}
-          />
+          <Menu className="py-4 bg-white-50 h-full" defaultSelectedKeys={["1"]} mode="vertical" items={items} />
         </Sider>
         <Layout className="bg-stone-100">
           <Header className="flex justify-between items-center drop-shadow-xl bg-white ">
-            <img
-              className=""
-              src="https://th.bing.com/th/id/OIG1.AGaZbxlA_0MPJqC3KzeN?w=270&h=270&c=6&r=0&o=5&pid=ImgGn&fbclid=IwZXh0bgNhZW0CMTAAAR2mjW6RtojaN9vEo4rqlabcTxGB8SgLyPDBFuYQkrjrtV6Y-grTpfAFNfU_aem_AeDCUfxM5_fs-2v7HvGAmbOqmKCoSm3yqxolCEq2L3VhfsTEpP6R4EchWpg36dMdIMwS0hSCc_V3GDRIrdhhWCxz"
-              alt=" logo"
-              width={50}
-            />
+            <img className="" src={logo2} alt=" logo" width={60} />
 
             <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
               <a onClick={(e) => e.preventDefault()}>
@@ -315,9 +252,7 @@ const Dashboard: React.FC = () => {
               <Outlet />
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>
-            @ 2024 FLearn. All rights reserved
-          </Footer>
+          <Footer style={{ textAlign: "center" }}>@ 2024 FLearn. All rights reserved</Footer>
         </Layout>
       </Layout>
     </>

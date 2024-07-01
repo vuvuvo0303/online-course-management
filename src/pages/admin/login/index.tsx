@@ -29,7 +29,6 @@ const AdminLoginPage: React.FC = () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-            console.log(response);
             console.log(userData);
             setUserData(response.data.data);
             localStorage.setItem("user", JSON.stringify(response.data.data));
@@ -39,8 +38,7 @@ const AdminLoginPage: React.FC = () => {
             // @ts-expect-error
             if(error.response && error.response.status === 401) {
                 // Token expired or unauthorized
-                localStorage.removeItem("token"); // Remove expired token
-                // Redirect to login or handle expired token scenario
+                localStorage.removeItem("token");
 
             }
             toast.error("Failed to fetch user data");
