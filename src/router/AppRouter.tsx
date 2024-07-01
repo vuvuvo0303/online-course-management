@@ -176,11 +176,12 @@ const AppRouter: React.FC = () => {
             )
           }
         />
+        
         <Route
-          path={paths.INSTRUCTOR_LECTURES_OF_COURSE}
+          path={paths.INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
-              <LectureOfCourse />
+              <CreateLecture />
             ) : (
               <Navigate to="/" />
             )
@@ -290,7 +291,7 @@ const AppRouter: React.FC = () => {
           }
         />
         <Route
-          path={paths.INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSION}
+          path={paths.INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
               <CreateUpdateSession />
@@ -298,6 +299,18 @@ const AppRouter: React.FC = () => {
               <Navigate to="/" />
             )
           }
+          
+        />
+         <Route
+          path={paths.INSTRUCTOR_MANAGE_ALL_LECTURES}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <LectureOfCourse />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+          
         />
       </Route>
 

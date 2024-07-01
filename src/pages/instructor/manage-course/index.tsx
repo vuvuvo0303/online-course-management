@@ -15,9 +15,11 @@ const InstructorManageCourses: React.FC = () => {
 
   useEffect(() => {
     const userString = localStorage.getItem("user");
+   
     const user: User = userString ? JSON.parse(userString) : null;
+    console.log("check user: ", user);
     setUserId(user?._id);
-    console.log("check userId: ", userId);
+    console.log("check userId: ", user?._id);
    
   }, []);
 

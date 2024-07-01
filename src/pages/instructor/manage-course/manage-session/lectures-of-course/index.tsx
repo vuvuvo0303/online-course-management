@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
-    const { courseId , sessionId} = useParams<{ courseId: string , sessionId: string}>();
+    const { courseId, sessionId } = useParams<{ courseId: string, sessionId: string }>();
     const [loading, setLoading] = useState<boolean>(true);
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -51,20 +51,35 @@ const LectureOfCourse: React.FC = () => {
     };
 
     useEffect(() => {
-        const fetchLecture = async () => {
-            try {
-                const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
-                if (res.data) {
-                    const filteredLectures = res.data.filter(lecture => lecture.courseId === courseId && lecture.sessionId === sessionId);
-                    setData(filteredLectures);
-                }
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+
         if (courseId) {
+            const fetchLecture = async () => {
+                try {
+                    const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
+                    if (res.data) {
+                        const filteredLectures = res.data.filter(lecture => lecture.courseId === courseId && lecture.sessionId === sessionId);
+                        setData(filteredLectures);
+                    }
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchLecture();
+        } else {
+            const fetchLecture = async () => {
+                try {
+                    const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
+                    if (res.data) {
+                        setData(res.data);
+                    }
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                } finally {
+                    setLoading(false);
+                }
+            };
             fetchLecture();
         }
     }, [courseId, sessionId]);
@@ -82,7 +97,7 @@ const LectureOfCourse: React.FC = () => {
         }
     };
 
-    const columns:TableProps<Lecture>["columns"] = [
+    const columns: TableProps<Lecture>["columns"] = [
         {
             title: 'Lecture Id',
             dataIndex: 'lectureId',
@@ -170,23 +185,49 @@ const LectureOfCourse: React.FC = () => {
             ) : (
                 <div className="">
 
-                    <Breadcrumb className="py-2" >
-                        <Breadcrumb.Item href="/dashboard">
-                            <HomeOutlined />
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item href="/instructor/manage-courses">
-                            Manage Courses
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>
-                            Manage Sessions
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <h1 className="text-center m-10">Manage Lectures</h1>
+                    {
+                        courseId && sessionId ? (
+                            <>
+                                <Breadcrumb className="py-2" >
+                                    <Breadcrumb.Item href="/dashboard">
+                                        <HomeOutlined />
+                                    </Breadcrumb.Item>
+                                    <Breadcrumb.Item href="/instructor/manage-courses">
+                                        Manage Courses
+                                    </Breadcrumb.Item>
+                                    <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>
+                                        Manage Sessions
+                                    </Breadcrumb.Item>
+                                    <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
+                                </Breadcrumb>
+                                <h1 className="text-center m-10">Manage Lectures</h1>
+                            </>
+                        ) : (
+                            <>
+                                <Breadcrumb className="py-2" >
+                                    <Breadcrumb.Item href="/dashboard">
+                                        <HomeOutlined />
+                                    </Breadcrumb.Item>
+                                    <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
+                                </Breadcrumb>
+                                <h1 className="text-center m-10">Manage All Lectures</h1>
+                            </>
+                        )
+                    }
+
                     <div>
-                        <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/create-lecture`}>
-                            <Button className="bg-yellow-500 mb-10 float-right">Add New</Button>
-                        </Link>
+                        {
+                            courseId && sessionId ? (
+                                <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/create-lecture`}>
+                                    <Button className="bg-yellow-500 mb-10 float-right">Add New</Button>
+                                </Link>
+                            ) :
+                                (
+                                    <Link to={`/instructor/manage-all-lectures/create-lecture`}>
+                                        <Button className="bg-yellow-500 mb-10 float-right">Add New</Button>
+                                    </Link>
+                                )
+                        }
                     </div>
                     <Table dataSource={data} columns={columns} rowKey="lectureId" />
                 </div>

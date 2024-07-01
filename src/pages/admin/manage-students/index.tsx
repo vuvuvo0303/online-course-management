@@ -1,48 +1,80 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import {Breadcrumb, Button, Image, Input, Space, Switch, Table, Modal, Form} from "antd";
+import { Breadcrumb, Button, Image, Input, Space, Switch, Table, Modal, Form, Spin, message } from "antd";
 import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Student } from "../../../models";
 import { toast } from "react-toastify";
 import Highlighter from "react-highlight-words";
+import axiosInstance from "../../../services/api.ts";
 import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
-import {host_main} from "../../../consts";
+import { User } from "../../../models/User.ts";
 
+type AxiosResponse = {
+    success: boolean,
+    data: any,
+    message?: string,
+    error?: [],
+}
 type DataIndex = keyof Student;
 
 const AdminManageStudent: React.FC = () => {
-    const [data, setData] = useState<Student[]>([]);
+    const [data, setData] = useState<User[]>([]);
     const [sortOrder, setSortOrder] = useState<{ [key: string]: "ascend" | "descend" }>({
-        createdDate: "ascend",
-        updatedDate: "ascend",
+        created_at: "ascend",
+        updated_at: "ascend",
     });
     const [searchText, setSearchText] = useState("");
-    const [searchedColumn, setSearchedColumn] = useState("");
+    const [searchedColumn, setSearchedColumn] = useState<DataIndex | "">("");
     const searchInput = useRef<InputRef>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [form] = Form.useForm();
-    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        fetchStudents();
+    }, []);
+
+    const fetchStudents = async () => {
+        setLoading(true);
+        try {
+            const response:AxiosResponse = await axiosInstance.post('/api/users/search', {
+                searchCondition: {
+                    role: "all",
+                    status: true,
+                    is_delete: false,
+                },
+                pageInfo: {
+                    pageNum: 1,
+                    pageSize: 10,
+                },
+            });
+
+            console.log(response)
+            console.log(response.data.pageData);
+            if (response.data && response.data.pageData) {
+                setData(response.data.pageData);
+            } else {
+                message.error("Failed to fetch students");
+            }
+        } catch (error) {
+            message.error("Error fetching students: " + error.message);
+        }
+        setLoading(false);
+    };
 
     const handleDelete = async (_id: string, email: string) => {
         try {
-            await axios.delete(`${host_main}/api/users/${_id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            const listAfterDelete = data.filter((student) => student._id !== _id);
-            setData(listAfterDelete);
+            await axiosInstance.delete(`/api/users/${_id}`);
+            setData((prevData) => prevData.filter((student) => student._id !== _id));
             toast.success(`Deleted user ${email} successfully`);
         } catch (error) {
             toast.error(`Failed to delete user ${email}`);
         }
     };
+
     const addNewUser = async (values: Student) => {
         try {
-            // Check if email already exists
             const searchBody = {
                 searchCondition: {
                     keyword: values.email,
@@ -57,84 +89,39 @@ const AdminManageStudent: React.FC = () => {
             };
 
             setLoading(true);
-            const searchResponse = await axios.post(`${host_main}/api/users/search`, searchBody, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
+            const searchResponse = await axiosInstance.post(`/api/users/search`, searchBody);
 
-            if (searchResponse.data && searchResponse.data.data.pageData.length > 0) {
+            if (searchResponse.data && searchResponse.data.pageData.length > 0) {
                 setLoading(false);
                 return toast.error("Email already exists in the database.");
-
             }
 
-            // Add new user if email does not exist
-            const response = await axios.post(`${host_main}/api/users/create`, values, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            if (response.data.status === false) {
-                return toast.error(response.data.message);
+            const response: AxiosResponse = await axiosInstance.post(`/api/users/create`, values);
+            console.log(response)
+            if (response.success === false) {
+                setLoading(false);
+                return toast.error(response.message);
             }
-
-            setData([...data, response.data.data]);
-            toast.success("Create new student successfully");
+            const newUser = response.data;
+            setData(prevData => [...prevData, newUser]);
+            toast.success("Created new student successfully");
             setIsModalVisible(false);
             form.resetFields();
             setLoading(false);
         } catch (error) {
-            toast.error("Failed to add user: " + error);
+            toast.error("Failed to add user: " + (error as any).message);
+            setLoading(false);
         }
-        setIsModalVisible(false);
     };
-
-
-
-    useEffect(() => {
-        const fetchStudents = async () => {
-            try {
-                const searchBody = {
-                    searchCondition: {
-                        keyword: "",
-                        role: "all",
-                        status: true,
-                        is_delete: false
-                    },
-                    pageInfo: {
-                        pageNum: 1,
-                        pageSize: 10
-                    }
-                };
-
-                const response = await axios.post(`${host_main}/api/users/search`, searchBody, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                setData(response.data.data.pageData);
-            } catch (error) {
-                console.error("Error fetching students:", error);
-            }
-        };
-
-        fetchStudents();
-    }, [token]);
 
     const formatDate = (dateString: string) => {
         try {
-            return format(new Date(dateString), "dd/MM/yyyy");
+            return format(new Date(dateString), "dd/MM/yyyy HH:mm:ss");
         } catch (error) {
             console.error("Invalid date:", dateString);
             return "Invalid date";
         }
     };
-
 
     const sortColumn = (columnKey: keyof Student) => {
         const newOrder = sortOrder[columnKey] === "ascend" ? "descend" : "ascend";
@@ -256,7 +243,7 @@ const AdminManageStudent: React.FC = () => {
         {
             title: "Created Date",
             dataIndex: "created_at",
-            key: "create_at",
+            key: "created_at",
             render: (created_at: string) => formatDate(created_at),
             sorter: true,
             sortDirections: ["descend", "ascend"],
@@ -279,9 +266,9 @@ const AdminManageStudent: React.FC = () => {
         },
         {
             title: "Image",
-            dataIndex: "avatarUrl",
-            key: "avatarUrl",
-            render: (avatarUrl: string) => <Image src={avatarUrl} width={50} />,
+            dataIndex: "avatar",
+            key: "avatar",
+            render: (avatar: string) => <Image src={avatar} width={50} />,
         },
         {
             title: "Status",
@@ -325,7 +312,9 @@ const AdminManageStudent: React.FC = () => {
                     Add New Student
                 </Button>
             </div>
-            <Table columns={columns} dataSource={data} rowKey="_id" />
+            <Spin spinning={loading}>
+                <Table columns={columns} dataSource={data} rowKey="_id" />
+            </Spin>
             <Modal
                 title="Add New Student"
                 visible={isModalVisible}
