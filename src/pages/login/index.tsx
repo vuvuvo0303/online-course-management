@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form, FormProps, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Vector from "../../assets/Vector.png";
@@ -11,7 +11,6 @@ import { GoogleLogin } from "@react-oauth/google";
 import Lottie from "lottie-react";
 import vutru from "../../assets/vutru.json";
 import { jwtDecode } from "jwt-decode";
-import fullogo from "../../assets/fulllogo.jpg";
 
 type FieldType = {
   email: string;
@@ -21,6 +20,14 @@ type FieldType = {
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [accountLockedMsg, setAccountLockedMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const user = localStorage.getItem("user");
+    if (user) {
+      navigate(paths.HOME);
+    }
+  }, [navigate]);
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     const { email, password } = values;
@@ -36,6 +43,7 @@ const LoginPage: React.FC = () => {
       switch (user.role) {
         case "student":
           navigate(paths.HOME);
+          // window.location.reload();
           break;
         case "instructor":
           navigate(paths.INSTRUCTOR_HOME);
@@ -56,12 +64,6 @@ const LoginPage: React.FC = () => {
 
   return (
     <>
-      <header>
-        <div className="flex justify-center py-4">
-          <img src={fullogo} alt="" width={100} />
-        </div>
-        {/* <hr className="text-stone-400 " /> */}
-      </header>
       <div className="flex min-h-screen relative">
         <img src={Vector} alt="" className="absolute bottom-8" />
 

@@ -1,6 +1,9 @@
 type UserRole = "admin" | "instructor" | "student";
 
 export class User {
+    userId(userId: any) {
+        throw new Error("Method not implemented.");
+    }
     _id: string;
     google_id?: string;
     name: string;

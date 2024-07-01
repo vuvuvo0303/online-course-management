@@ -52,13 +52,19 @@ export const paths = {
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",
-  INSTRUCTOR_CREATE_LECTURE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/create-lecture",
-  INSTRUCTOR_EDIT_LECTURE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
+  INSTRUCTOR_CREATE_LECTURE:
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/create-lecture",
+  INSTRUCTOR_EDIT_LECTURE:
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
-  INSTRUCTOR_LECTURES_OF_COURSE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures",
-  INSTRUCTOR_MANAGE_SESSION_OF_COURSE: "manage-courses/:courseId/manage-sessions",
-  INSTRUCTOR_CREATE_SESSION: "manage-courses/:courseId/manage-sessions/create-session",
-  INSTRUCTOR_UPDATE_SESSION: "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
+  INSTRUCTOR_LECTURES_OF_COURSE:
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures",
+  INSTRUCTOR_MANAGE_SESSION_OF_COURSE:
+    "manage-courses/:courseId/manage-sessions",
+  INSTRUCTOR_CREATE_SESSION:
+    "manage-courses/:courseId/manage-sessions/create-session",
+  INSTRUCTOR_UPDATE_SESSION:
+    "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:courseId",
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
   INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
@@ -70,16 +76,15 @@ export const paths = {
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",
   ADMIN_MANAGE_LECTURES: "manage-lectures",
-  ADMIN_MANAGE_STUDENTS: "manage-students",
-  ADMIN_MANAGE_INSTRUCTORS: "manage-instructors",
+  ADMIN_MANAGE_USERS: "manage-users",
+
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_MANAGE_BLOGS: "manage-blogs",
   ADMIN_MANAGE_COURSES: "manage-courses",
   ADMIN_MANAGE_FEEDBACKS: "manage-feedbacks",
   ADMIN_PAYMENT_HISTORY: "payment-history",
   ADMIN_MANAGE_SESSION_OF_COURSE: "manage-course/:courseId/manage-session",
-  ADMIN_MANAGE_LECTURES_OF_COURSE:
-    "manage-course/:courseId/manage-session/:sessionId/lecture",
+  ADMIN_MANAGE_LECTURES_OF_COURSE: "manage-course/:courseId/manage-session/:sessionId/lecture",
   /* SPECIAL PATHS */
   INSTRUCTOR_HOME: "/instructor/dashboard",
   ADMIN_HOME: "/admin/dashboard",
@@ -113,19 +118,48 @@ export const categoryFilters = [
 ];
 
 export const categoryCourse: categoryCourse = {
-  "Web Development": ["JavaScript", "React JS", "Angular", "Next.js", "CSS", "HTML", "ASP.NET Core", "Node.Js", "Microservices"],
+  "Web Development": [
+    "JavaScript",
+    "React JS",
+    "Angular",
+    "Next.js",
+    "CSS",
+    "HTML",
+    "ASP.NET Core",
+    "Node.Js",
+    "Microservices",
+  ],
   "Mobile Development": ["iOS", "Android", "Flutter", "React Native"],
   "Game Development": ["Unity", "Unreal Engine", "Godot"],
-  "Entrepreneurship": ["Startup", "Business Planning", "Marketing"],
-  "Business Analytics & Intelligence": ["Data Analysis", "Power BI", "Data Science", "Data Visualization"],
-  "Finance": ["Investing", "Trading", "Accounting", "Cryptocurrency"],
+  Entrepreneurship: ["Startup", "Business Planning", "Marketing"],
+  "Business Analytics & Intelligence": [
+    "Data Analysis",
+    "Power BI",
+    "Data Science",
+    "Data Visualization",
+  ],
+  Finance: ["Investing", "Trading", "Accounting", "Cryptocurrency"],
   "IT Certifications": ["AWS", "CompTIA", "Cisco", "Microsoft"],
-  "Personal Transformation": ["Leadership", "Personal Productivity", "Communication Skills", "Confidence"],
-  "Graphic Design & Illustration": ["Photoshop", "Illustrator", "InDesign", "Drawing"],
-  "Digital Marketing": ["SEO", "Social Media Marketing", "Google Analytics", "Content Marketing"],
+  "Personal Transformation": [
+    "Leadership",
+    "Personal Productivity",
+    "Communication Skills",
+    "Confidence",
+  ],
+  "Graphic Design & Illustration": [
+    "Photoshop",
+    "Illustrator",
+    "InDesign",
+    "Drawing",
+  ],
+  "Digital Marketing": [
+    "SEO",
+    "Social Media Marketing",
+    "Google Analytics",
+    "Content Marketing",
+  ],
   // Add other subcategories as needed
 };
-
 
 /* SUB CATEGORIES */
 export const categorySubmenu = [
@@ -276,8 +310,7 @@ export const topic_student = [
   {
     id: 4,
     name: "Purchase/Refunds",
-    description:
-      "Learn about purchasing courses, how to send gifts, and refunds",
+    description: "Learn about purchasing courses, how to send gifts, and refunds",
     img: "https://support.udemy.com/hc/theming_assets/01HZP8FJB5Y47293NZF0220ZKY",
     link: "#section1",
   },
@@ -349,7 +382,7 @@ export const footerLinks = [
     title: "Community",
     links: [
       { name: "Teach on FLearn", url: "/teaching" },
-      { name: "Blog", url: "/blog" },
+      { name: "Blog", url: "/blogs" },
       { name: "Help and Supports", url: "/contact" },
     ],
   },

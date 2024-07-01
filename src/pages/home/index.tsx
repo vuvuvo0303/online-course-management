@@ -2,7 +2,7 @@ import Categories from "../../components/categories/main";
 import TeacherCategories from "../../components/categories/teacher";
 import Banner from "../../components/categories/banner";
 import LogoCategories from "../../components/categories/logo";
-import NewSection from "../../components/news/NewSection";
+import NewSection from "../../components/categories/news/NewSection";
 import List from "../../components/categories/list";
 
 const Home: React.FC = () => {

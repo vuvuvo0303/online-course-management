@@ -31,20 +31,23 @@ const InstructorDashboard: React.FC = () => {
       />
       <div className="flex justify-between drop-shadow-xl gap-3">
         <Badge.Ribbon text="Flearn" color="blue">
-          <Card title="Total courses " bordered={false} style={{ width: 300 }}>
-            <div className="flex justify-between items-center px-5">
-              {" "}
-              <div className="flex justify-center gap-2">
-                <h1>50</h1>
-                <PlaySquareOutlined style={{ fontSize: "20px", color: "red" }} />
+          <Link to="/instructor/manage-courses">
+            {" "}
+            <Card title="Total courses " bordered={false} style={{ width: 300 }}>
+              <div className="flex justify-between items-center px-5">
+                {" "}
+                <div className="flex justify-center gap-2">
+                  <h1>50</h1>
+                  <PlaySquareOutlined style={{ fontSize: "20px", color: "red" }} />
+                </div>
+                <img src="https://cdn-icons-png.freepik.com/512/4762/4762311.png" width={50} />
               </div>
-              <img src="https://cdn-icons-png.freepik.com/512/4762/4762311.png" width={50} />
-            </div>
-          </Card>
+            </Card>
+          </Link>
         </Badge.Ribbon>
 
         <Badge.Ribbon text="Flearn" color="orange">
-          <Link to={"manage-students"}>
+          <Link to="/instructor/manage-students">
             <Card title="Total Student " bordered={false} style={{ width: 300 }}>
               <div className="flex justify-between items-center px-1">
                 <div className="flex justify-center gap-2">
@@ -114,7 +117,9 @@ const InstructorDashboard: React.FC = () => {
             </Card>
           </Col>
           <Col span={8}>
-            <Card title="Profile Overview" bordered={false}><ProfileOverview /></Card>
+            <Card title="Profile Overview" bordered={false}>
+              <ProfileOverview />
+            </Card>
           </Col>
         </Row>
       </div>
