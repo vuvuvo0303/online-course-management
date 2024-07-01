@@ -18,6 +18,7 @@ import type { MenuProps } from "antd";
 import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
+import logo2 from "../../assets/logo2.jpg";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -288,12 +289,9 @@ const Dashboard: React.FC = () => {
         </Sider>
         <Layout className="bg-stone-100">
           <Header className="flex justify-between items-center drop-shadow-xl bg-white ">
-            <img
-              className=""
-              src="https://th.bing.com/th/id/OIG1.AGaZbxlA_0MPJqC3KzeN?w=270&h=270&c=6&r=0&o=5&pid=ImgGn&fbclid=IwZXh0bgNhZW0CMTAAAR2mjW6RtojaN9vEo4rqlabcTxGB8SgLyPDBFuYQkrjrtV6Y-grTpfAFNfU_aem_AeDCUfxM5_fs-2v7HvGAmbOqmKCoSm3yqxolCEq2L3VhfsTEpP6R4EchWpg36dMdIMwS0hSCc_V3GDRIrdhhWCxz"
-              alt=" logo"
-              width={50}
-            />
+            
+              <img className="" src={logo2} alt=" logo" width={60} />
+            
 
             <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
               <a onClick={(e) => e.preventDefault()}>

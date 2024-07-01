@@ -1,19 +1,18 @@
-import { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Card, Popover, Button, Rate } from 'antd';
 import Carousel from "react-multi-carousel";
 import { Link } from 'react-router-dom';
-import "react-multi-carousel/lib/styles.css";
-import { categoryFilters, categorySubmenu, paths } from "../../../consts/index";
-import { CheckOutlined, HeartOutlined } from '@ant-design/icons'; // Importing the icon
+import { categoryFilters, categoryCourse, paths } from "../../../consts/index";
+import { CheckOutlined, HeartOutlined } from '@ant-design/icons';
 import { HashLink } from 'react-router-hash-link';
 import './Categories.css';
 
 const { Meta } = Card;
 
 const Categories: React.FC = () => {
-    const [selectedCategory, setSelectedCategory] = useState('IT & Software');
-    const [isDesktop, setIsDesktop] = useState(window.innerWidth > 464);
-    const [ratings, setRatings] = useState(Array(categorySubmenu.length).fill(3));
+    const [selectedCategory, setSelectedCategory] = useState<string>('Web Development');
+    const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 464);
+    const [ratings, setRatings] = useState<number[]>(Array.from({ length: categoryCourse[selectedCategory].length }, () => 3));
 
     const handleResize = useCallback(() => {
         setIsDesktop(window.innerWidth > 464);
@@ -47,11 +46,22 @@ const Categories: React.FC = () => {
         }
     };
 
+    const handleFilterClick = (filter: string) => {
+        setSelectedCategory(filter);
+        setRatings(Array.from({ length: categoryCourse[filter].length }, () => 3));
+    };
+
+    const handleExploreClick = () => {
+        if (selectedCategory) {
+            window.location.href = `/courses/${encodeURIComponent(selectedCategory)}`;
+        }
+    };
+
     const handleStartTeaching = useCallback(() => {
         window.location.href = paths.TEACHING;
     }, []);
 
-    const renderPopoverContent = useCallback((filter: string) => {
+    const renderPopoverContent = (course: string) => {
         const handleGoToCourse = () => {
             window.location.href = paths.STUDENT_CART;
         };
@@ -59,21 +69,21 @@ const Categories: React.FC = () => {
         return (
             <div className="popover-content">
                 <Meta
-                    title={filter}
+                    title={course}
                     description={
                         <div className="max-w-[350px] max-h-[410px] flex flex-col justify-between p-4 text-left">
                             <div>
-                                <h3 className="text-green-600 text-[1rem] mb-2">The Complete Python Bootcamp From Zero to Hero in Python</h3>
+                                <h3 className="text-green-600 text-[1rem] mb-2">Course Title</h3>
                                 <p className="text-black text-[0.8rem] mb-2">Updated at 7/2023</p>
                             </div>
                             <div>
-                                <p className="text-black text-[1rem] mb-2">Learn Python like a Professional Start from the basics and go all the way to creating your own applications and games</p>
+                                <p className="text-black text-[1rem] mb-2">Course description goes here.</p>
                             </div>
                             <div>
                                 <ul className="list-none">
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />You will learn how to leverage the power of Python to solve tasks.</li>
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />You will build games and programs that use Python libraries.</li>
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />You will be able to use Python for your own work problems or personal projects.</li>
+                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 1</li>
+                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 2</li>
+                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 3</li>
                                 </ul>
                             </div>
                         </div>
@@ -100,7 +110,7 @@ const Categories: React.FC = () => {
                 </div>
             </div>
         );
-    }, []);
+    };
 
     const handleRatingChange = (index: number, value: number) => {
         const newRatings = [...ratings];
@@ -116,11 +126,9 @@ const Categories: React.FC = () => {
                         <Button
                             key={filter}
                             className="category-filter-button"
-                            onClick={() => setSelectedCategory(filter)}
+                            onClick={() => handleFilterClick(filter)}
                         >
-                            <Link to={`/courses/${filter}`}>
-                                {filter}
-                            </Link>
+                            {filter}
                         </Button>
                     ))}
                 </div>
@@ -128,6 +136,8 @@ const Categories: React.FC = () => {
                 <Button
                     type="primary"
                     className="categories-button"
+                    onClick={handleExploreClick}
+                    disabled={!selectedCategory}
                 >
                     Explore Course
                 </Button>
@@ -142,10 +152,10 @@ const Categories: React.FC = () => {
                     infinite={true}
                     className="categories-carousel"
                 >
-                    {categorySubmenu.map((filter, index) => (
-                        <div key={filter} className="category-card">
+                    {categoryCourse[selectedCategory].map((course, index) => (
+                        <div key={course} className="category-card">
                             <Popover
-                                content={renderPopoverContent(filter)}
+                                content={renderPopoverContent(course)}
                                 title="Category Info"
                                 trigger="hover"
                                 placement="right"
@@ -168,7 +178,7 @@ const Categories: React.FC = () => {
                                 >
                                     <Meta
                                         className="card-meta"
-                                        title={<HashLink smooth to={`${paths.COURSE}#top`}>{filter}</HashLink>}
+                                        title={<HashLink smooth to={`${paths.COURSE}#top`}>{course}</HashLink>}
                                         description="This is the description"
                                     />
                                     <div className="rating-container card-meta">
