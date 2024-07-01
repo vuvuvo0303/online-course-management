@@ -109,7 +109,11 @@ const CreateLecture = () => {
         await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/lectures`, { ...values, courseId: courseId2, sessionId: sessionId2 });
         toast.success("Create Lecture Successfully!")
       }
-      navigate(`/instructor/manage-courses/${courseId2}/manage-sessions/${sessionId2}/manage-lectures`);
+      if (sessionId && courseId) {
+        navigate(`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`);
+      } else {
+        navigate(`/instructor/manage-all-lectures`);
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -124,7 +128,7 @@ const CreateLecture = () => {
       ) : (
         <div className="w-full max-w-2xl bg-white p-8 rounded shadow">
           {
-            courseId && sessionId ? (
+            courseId && sessionId != undefined ? (
               <Breadcrumb className="py-2">
                 <Breadcrumb.Item href="/dashboard">
                   <HomeOutlined />
@@ -205,7 +209,7 @@ const CreateLecture = () => {
                 </Form.Item>
               )
             }
-            {
+            {!sessionId &&
               <Form.Item label="Session Id" name="sessionId" rules={[{ required: true, message: 'Please input session!' }]}>
                 <Select
                   disabled={!courseId2}

@@ -1,17 +1,61 @@
-import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Switch, Table, TableProps } from "antd";
+import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Modal, Switch, Table, TableProps } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Session } from "../../models";
+import { Lecture, Session } from "../../models";
 import { Link } from "react-router-dom";
 import { User } from "../../models/User";
+import { toast } from "react-toastify";
 
 const ManageAllSession = () => {
-
+    const [open, setOpen] = useState(false);
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [confirmLoading, setConfirmLoading] = useState(false);
     const [userId, setUserId] = useState<string>('');
+    const [modalText, setModalText] = useState('');
+    const [selectedSessionID, setSelectedSessionID] = useState<string>('');
+    const showModal = (sessionId: string) => {
+        setModalText(`Do you want to delete this session with id = ${sessionId} and the lessons of this session `)
+        setSelectedSessionID(sessionId)
+        setOpen(true);
+    };
+
+    const handleOk = async () => {
+        if (selectedSessionID) {
+            setModalText('Deleting...');
+            setConfirmLoading(true);
+            try {
+                await handleDelete(selectedSessionID);
+            } catch (error) {
+                setModalText("Error occurred: " + error);
+            } finally {
+                setTimeout(() => {
+                    setOpen(false);
+                    setConfirmLoading(false);
+                }, 2000);
+            }
+        } else {
+            setOpen(false);
+        }
+    };
+    const handleDelete = async (sessionId: string) => {
+        try {
+            // Xóa session trước
+            await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`);
+            const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
+            const lecturesOfSessionNeedToDelete = res.data.filter(lecture => lecture.sessionId === sessionId);
+            await Promise.all(lecturesOfSessionNeedToDelete.map(lecture =>
+                axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/lectures/${lecture.lectureId}`)
+            ));
+            setSessions(sessions.filter(session => session.sessionId !== sessionId));
+            toast.success("Delete Session Successfully!");
+        } catch (error) {
+            toast.error("Failed to delete session. Please try again.");
+        }
+    };
+
 
     useEffect(() => {
         const userString = localStorage.getItem("user");
@@ -100,10 +144,11 @@ const ManageAllSession = () => {
             title: 'Action',
             dataIndex: 'sessionId',
             key: 'sessionId',
-            render: () => (
+            render: (sessionId:string ,record: Session) => (
                 <>
-                    <EditOutlined className="m-2 text-blue-500" />
-                    <DeleteOutlined className="text-red-500 m-2" />
+                    <Link to={`/instructor/manage-courses/${record.courseId}/manage-sessions/${sessionId}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
+                    <Link to={`/instructor/manage-all-sessions/update-session/${sessionId}`}><EditOutlined className="m-2 text-blue-500" /></Link>
+                    <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(sessionId)} />
                 </>
             )
         },
@@ -116,10 +161,20 @@ const ManageAllSession = () => {
     if (error) {
         return <div>{error}</div>;
     }
-
+    const handleCancel = () => {
+        setOpen(false);
+    };
     return (
         <div>
-
+            <Modal
+                title="Confirm Delete"
+                visible={open}
+                onOk={handleOk}
+                confirmLoading={confirmLoading}
+                onCancel={handleCancel}
+            >
+                <p>{modalText}</p>
+            </Modal>
             <Breadcrumb>
                 <Breadcrumb.Item href="/instructor/dashboard">
                     <HomeOutlined />

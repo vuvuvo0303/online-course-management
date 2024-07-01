@@ -156,10 +156,21 @@ const LectureOfCourse: React.FC = () => {
             key: 'action',
             render: (lectureId: string) => (
                 <>
-                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/edit-lecture/${lectureId}`}>
+                    {
+                        courseId && sessionId ? (
+                            <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/edit-lecture/${lectureId}`}>
                         <EditOutlined className="text-blue-500 m-2" />
 
                     </Link>
+                        )
+                        :
+                        (
+                            <Link to={`/instructor/manage-all-lectures/update-lecture/${lectureId}`}>
+                        <EditOutlined className="text-blue-500 m-2" />
+
+                    </Link>
+                        )
+                    }
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(lectureId)} />
                 </>
             ),
