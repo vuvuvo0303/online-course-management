@@ -1,12 +1,14 @@
-import { Menu, Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover, Button } from 'antd';
+import { Menu, Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { paths } from '../../consts/index';
-import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined, CheckOutlined, MenuOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined, MenuOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import SearchTool from '../SearchTool';
-import "./nav.css"
 import Drawer from '../Drawer';
+import PopoverContent from '../PopoverContent';
+import Popup from '../Popup';
+
 
 const Navbar: React.FC = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
@@ -31,10 +33,12 @@ const Navbar: React.FC = () => {
       }
     }
   }, []);
+
   const handleLogout = () => {
     localStorage.removeItem('user');
     navigate('/');
   };
+
   const dropdownItems: MenuProps["items"] = [
     {
       label: (
@@ -43,7 +47,7 @@ const Navbar: React.FC = () => {
             <Col span={8} className='pl-3 pt-2 pb-2'>
               <Avatar
                 src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
-                className="hover:cursor-pointer"
+                className="hover:cursor-pointer mt-1"
                 size={50}
                 icon={<UserOutlined />}
               />
@@ -51,7 +55,6 @@ const Navbar: React.FC = () => {
             <Col span={16} className='pt-3 pr-3'>
               <Row>
                 <p className='text-base font-bold'>{dataUser.fullName}</p>
-                <CheckOutlined className="ml-2" />
               </Row>
               <div>
                 <p className='text-base'>{dataUser.email}</p>
@@ -93,116 +96,6 @@ const Navbar: React.FC = () => {
   // const handleMenuClick = () => {
   //   setMobileMenuVisible(!mobileMenuVisible);
   // };
-
-  const shopCartContent = (
-    <div className='p-1'>
-      <div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
-            <Row className="mb-4">
-              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
-              <Col span={14} className="flex items-center">
-                <div className="truncate">
-                  The Complete 2024 Web Development Bootcamp
-                </div>
-              </Col>
-              <Col span={4} className="flex items-center justify-end">
-                <span>₫249,000</span>
-              </Col>
-            </Row>
-          </Link>
-        </div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
-            <Row className="mb-4">
-              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
-              <Col span={14} className="flex items-center">
-                <div className="truncate">
-                  The Complete 2024 Web Development Bootcamp
-                </div>
-              </Col>
-              <Col span={4} className="flex items-center justify-end">
-                <span>₫249,000</span>
-              </Col>
-            </Row>
-          </Link>
-        </div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
-            <Row className="mb-4">
-              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
-              <Col span={14} className="flex items-center">
-                <div className="truncate">
-                  The Complete 2024 Web Development Bootcamp
-                </div>
-              </Col>
-              <Col span={4} className="flex items-center justify-end">
-                <span>₫249,000</span>
-              </Col>
-            </Row>
-          </Link>
-        </div>
-      </div>
-      <div className='mt-4'>
-        <Button><Link to={paths.STUDENT_ENROLLMENT}>View Cart</Link></Button>
-      </div>
-    </div>
-  );
-
-  const heartContent = (
-    <div className='p-1'>
-      <div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
-            <Row className="mb-4">
-              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
-              <Col span={14} className="flex items-center">
-                <div className="truncate">
-                  The Complete 2024 Web Development Bootcamp
-                </div>
-              </Col>
-              <Col span={4} className="flex items-center justify-end">
-                <span>₫249,000</span>
-              </Col>
-            </Row>
-          </Link>
-        </div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
-            <Row className="mb-4">
-              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
-              <Col span={14} className="flex items-center">
-                <div className="truncate">
-                  The Complete 2024 Web Development Bootcamp
-                </div>
-              </Col>
-              <Col span={4} className="flex items-center justify-end">
-                <span>₫249,000</span>
-              </Col>
-            </Row>
-          </Link>
-        </div>
-        <div className='hover:bg-slate-300 p-5'>
-          <Link className='hover:bg-white' to={"/"}>
-            <Row className="mb-4">
-              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
-              <Col span={14} className="flex items-center">
-                <div className="truncate">
-                  The Complete 2024 Web Development Bootcamp
-                </div>
-              </Col>
-              <Col span={4} className="flex items-center justify-end">
-                <span>₫249,000</span>
-              </Col>
-            </Row>
-          </Link>
-        </div>
-      </div>
-      <div className='mt-4'>
-        <Button><Link to={paths.STUDENT_ENROLLMENT}>View Cart</Link></Button>
-      </div>
-    </div>
-  );
 
   const items: MenuProps['items'] = [
     {
@@ -276,26 +169,54 @@ const Navbar: React.FC = () => {
             </Dropdown>
           ) : (
             <>
-              <Link to={paths.STUDENT_ENROLLMENT}>
-                <Popover content={heartContent} overlayClassName="cart-popover">
+              <Popover
+                content={<PopoverContent />}
+                overlayInnerStyle={{ padding: 0 }}
+                trigger="hover"
+                placement="bottom"
+              >
+                <Link to={paths.STUDENT_ENROLLMENT}>
                   <Badge count={4}>
                     <HeartOutlined className="text-gray-400 text-3xl" />
                   </Badge>
-                </Popover>
-              </Link>
-              <Badge count={2}>
-                <MailOutlined className="text-gray-400 text-3xl" />
-              </Badge>
-              <Badge count={3}>
-                <BellOutlined className="text-gray-400 text-3xl" />
-              </Badge>
-              <Link to={paths.STUDENT_CART}>
-                <Popover content={shopCartContent} overlayClassName="cart-popover">
+                </Link>
+              </Popover>
+
+              <Popover
+                content={<Popup />}
+                overlayInnerStyle={{ padding: 0 }}
+                trigger="click"
+                placement="bottom"
+              >
+                <Badge count={2}>
+                  <MailOutlined className="text-gray-400 text-3xl" />
+                </Badge>
+              </Popover>
+
+              <Popover
+                content={<Popup />}
+                overlayInnerStyle={{ padding: 0 }}
+                trigger="click"
+                placement="bottom"
+              >
+                <Badge count={3}>
+                  <BellOutlined className="text-gray-400 text-3xl" />
+                </Badge>
+              </Popover>
+
+              <Popover
+                content={<PopoverContent />}
+                overlayInnerStyle={{ padding: 0 }}
+                trigger="hover"
+                placement="bottom"
+              >
+                <Link to={paths.STUDENT_CART}>
                   <Badge count={2}>
                     <ShoppingCartOutlined className="text-gray-400 text-3xl" />
                   </Badge>
-                </Popover>
-              </Link>
+                </Link>
+              </Popover>
+
               {avatarUrl ? (
                 <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
                   <p onClick={(e) => e.preventDefault()}>
