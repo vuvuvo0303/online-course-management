@@ -22,7 +22,7 @@ import { Student } from "../../../models";
 import { toast } from "react-toastify";
 import Highlighter from "react-highlight-words";
 import axiosInstance from "../../../services/api.ts";
-import type { InputRef, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
+import type { GetProp, InputRef, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
