@@ -6,6 +6,7 @@ export class Session{
     updatedDate: string 
     courseId: string 
     status: boolean
+    userId: string 
     constructor(
         sessionId: string = "",
         title: string = "",
@@ -13,6 +14,7 @@ export class Session{
         createdDate: string = "",
         updatedDate: string = "",
         courseId: string = "",
+        userId: string = "",
         status: boolean = false
     ){
         this.sessionId = sessionId;
@@ -22,5 +24,6 @@ export class Session{
         this.updatedDate = updatedDate;
         this.courseId = courseId; 
         this.status = status; 
+        this.userId = userId;
     }
 }

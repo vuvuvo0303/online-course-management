@@ -1,20 +1,13 @@
-import { Menu, Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover, Button } from "antd";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { categoryFilters, categorySubmenu, paths } from "../../consts/index";
-import {
-  ShoppingCartOutlined,
-  UserOutlined,
-  MailOutlined,
-  BellOutlined,
-  HeartOutlined,
-  CheckOutlined,
-  MenuOutlined,
-} from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import { useMediaQuery } from "react-responsive";
-import SearchTool from "../SearchTool";
-import "./nav.css";
-import logo2 from "../../assets/logo2.jpg";
+import { Menu, Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover, Button } from 'antd';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { paths } from '../../consts/index';
+import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined, CheckOutlined, MenuOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
+import SearchTool from '../SearchTool';
+import "./nav.css"
+import Drawer from '../Drawer';
+
 const Navbar: React.FC = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
@@ -24,8 +17,11 @@ const Navbar: React.FC = () => {
     email: null,
   });
   const isLoginOrRegister = location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
-  const isMobile = useMediaQuery({ maxWidth: 768 }); // Điều kiện màn hình nhỏ
+  const isMobile = useMediaQuery({ maxWidth: 768 });
   const navigate = useNavigate();
+  const isLoginPage = location.pathname === '/login';
+  const isRegisterPage = location.pathname === '/register';
+  const isForgotPassword = location.pathname === '/forgot-password';
   // Create a submenu for each categoryFilter
 
   useEffect(() => {
@@ -109,16 +105,6 @@ const Navbar: React.FC = () => {
     },
   ];
 
-  const submenus = categoryFilters.map((filter, index) => (
-    <Menu.SubMenu key={index} title={filter}>
-      {categorySubmenu.map((submenu, subIndex) => (
-        <Menu.Item key={subIndex}>
-          <Link to={`/submenu/${submenu}`}>{submenu}</Link>
-        </Menu.Item>
-      ))}
-    </Menu.SubMenu>
-  ));
-
   // Get user data from localStorage
   const userData = JSON.parse(localStorage.getItem("user") || "{}");
   const { avatarUrl } = userData;
@@ -127,39 +113,20 @@ const Navbar: React.FC = () => {
   //   setMobileMenuVisible(!mobileMenuVisible);
   // };
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-  };
-
   const shopCartContent = (
     <div className="p-1">
       <div>
         <div className="hover:bg-slate-300 p-5">
           <Link className="hover:bg-white" to={"/"}>
             <Row className="mb-4">
-              <Col span={6}>
-                <img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" />
+              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
+              <Col span={14} className="flex items-center">
+                <div className="truncate">
+                  The Complete 2024 Web Development Bootcamp
+                </div>
               </Col>
-              <Col span={12} className="flex items-center">
-                <div className="truncate">The Complete Python Bootcamp From Zero to Hero in Python</div>
-              </Col>
-              <Col span={6} className="flex items-center justify-end">
-                <span>₫349,000</span>
-              </Col>
-            </Row>
-          </Link>
-        </div>
-        <div className="hover:bg-slate-300 p-5">
-          <Link className="hover:bg-white" to={"/"}>
-            <Row className="mb-4">
-              <Col span={6}>
-                <img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" />
-              </Col>
-              <Col span={12} className="flex items-center">
-                <div className="truncate">The Complete Python Bootcamp From Zero to Hero in Python</div>
-              </Col>
-              <Col span={6} className="flex items-center justify-end">
-                <span>₫349,000</span>
+              <Col span={4} className="flex items-center justify-end">
+                <span>₫249,000</span>
               </Col>
             </Row>
           </Link>
@@ -167,23 +134,36 @@ const Navbar: React.FC = () => {
         <div className="hover:bg-slate-300 p-5">
           <Link className="hover:bg-white" to={"/"}>
             <Row className="mb-4">
-              <Col span={6}>
-                <img src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg" alt="" className="w-full" />
+              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
+              <Col span={14} className="flex items-center">
+                <div className="truncate">
+                  The Complete 2024 Web Development Bootcamp
+                </div>
               </Col>
-              <Col span={12} className="flex items-center">
-                <div className="truncate">The Complete Python Bootcamp From Zero to Hero in Python</div>
+              <Col span={4} className="flex items-center justify-end">
+                <span>₫249,000</span>
               </Col>
-              <Col span={6} className="flex items-center justify-end">
-                <span>₫349,000</span>
+            </Row>
+          </Link>
+        </div>
+        <div className="hover:bg-slate-300 p-5">
+          <Link className="hover:bg-white" to={"/"}>
+            <Row className="mb-4">
+              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
+              <Col span={14} className="flex items-center">
+                <div className="truncate">
+                  The Complete 2024 Web Development Bootcamp
+                </div>
+              </Col>
+              <Col span={4} className="flex items-center justify-end">
+                <span>₫249,000</span>
               </Col>
             </Row>
           </Link>
         </div>
       </div>
-      <div className="mt-4 ">
-        <Button>
-          <Link to={"/cart"}>View Cart</Link>
-        </Button>
+      <div className='mt-4'>
+        <Button><Link to={paths.STUDENT_ENROLLMENT}>View Cart</Link></Button>
       </div>
     </div>
   );
@@ -237,10 +217,8 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
       </div>
-      <div className="mt-4">
-        <Button>
-          <Link to={"/enrollment"}>View Cart</Link>
-        </Button>
+      <div className='mt-4'>
+        <Button><Link to={paths.STUDENT_ENROLLMENT}>View Cart</Link></Button>
       </div>
     </div>
   );
@@ -288,99 +266,78 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    !isLoginOrRegister && (
-      <nav className={`flexBetween navbar ${isLoginOrRegister ? "justify-center" : ""}`}>
-        <div className={`flex-1 flexStart gap-10 ${isLoginOrRegister ? "justify-center" : ""}`}>
-          <Link to="/">
-            {/* <h1 className={`${isLoginOrRegister ? 'text-center' : ''}`}></h1> */}
-            <img src={logo2} alt="" width={70} />
-          </Link>
-          {!isLoginOrRegister && (
+    <nav className={`flexBetween navbar ${isLoginOrRegister ? 'justify-center' : ''}`}>
+      <div className={`flex-1 flexStart gap-10 ${isLoginOrRegister ? 'justify-center' : ''}`}>
+        <div>
+          {!isLoginPage && !isRegisterPage && !isForgotPassword && <Drawer />}
+        </div>
+        <Link to="/">
+          <img
+            src="/logo.jpg"
+            alt="FLearn Logo"
+            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} max-h-30px`}
+            style={{ maxHeight: '40px' }}
+          />
+        </Link>
+        <div>
+          {!isLoginPage && !isRegisterPage && !isForgotPassword && <SearchTool />}
+        </div>
+      </div>
+      {!isLoginOrRegister && !isForgotPassword && (
+        <div className="flexCenter gap-10 mr-5">
+          {isMobile ? (
+            <Dropdown overlay={<Menu items={items} />} className='mt-5 mb-44' placement="bottomRight">
+              <p onClick={(e) => e.preventDefault()}>
+                <Space>
+                  <MenuOutlined className="text-gray-400 text-3xl" />
+                </Space>
+              </p>
+            </Dropdown>
+          ) : (
             <>
-              <Dropdown overlay={<Menu>{submenus}</Menu>} placement="bottomLeft">
-                <a
-                  className="ant-dropdown-link"
-                  onMouseEnter={handleMouseEnter}
-                  style={{ fontSize: "14px", cursor: "pointer" }}
-                >
-                  Categories
-                </a>
-              </Dropdown>
-              <Link to="/enrollment?activeTab=1">
-                <p className="link" style={{ fontSize: "14px" }}>
-                  Saved Courses
-                </p>
+              <Link to={paths.STUDENT_ENROLLMENT}>
+                <Popover content={heartContent} overlayClassName="cart-popover">
+                  <Badge count={4}>
+                    <HeartOutlined className="text-gray-400 text-3xl" />
+                  </Badge>
+                </Popover>
               </Link>
-              <Link to="/teaching">
-                <p className="link" style={{ fontSize: "14px" }}>
-                  Be an Instructor
-                </p>
+              <Badge count={2}>
+                <MailOutlined className="text-gray-400 text-3xl" />
+              </Badge>
+              <Badge count={3}>
+                <BellOutlined className="text-gray-400 text-3xl" />
+              </Badge>
+              <Link to={paths.STUDENT_CART}>
+                <Popover content={shopCartContent} overlayClassName="cart-popover">
+                  <Badge count={2}>
+                    <ShoppingCartOutlined className="text-gray-400 text-3xl" />
+                  </Badge>
+                </Popover>
               </Link>
+              {avatarUrl ? (
+                <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
+                  <p onClick={(e) => e.preventDefault()}>
+                    <Space>
+                      <Avatar
+                        src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
+                        className="hover:cursor-pointer"
+                        size={40}
+                        icon={<UserOutlined />}
+                      />
+                    </Space>
+                  </p>
+                </Dropdown>
+              ) : (
+                <Link to={paths.LOGIN}>
+                  <UserOutlined className="text-gray-400 text-3xl cursor-pointer" />
+                </Link>
+              )}
             </>
           )}
         </div>
-        <SearchTool />
-        {!isLoginOrRegister && (
-          <div className="flexCenter gap-10 mr-5">
-            {isMobile ? (
-              <Dropdown overlay={<Menu items={items} />} className="mt-5 mb-44" placement="bottomRight">
-                <p onClick={(e) => e.preventDefault()}>
-                  <Space>
-                    <MenuOutlined className="text-gray-400 text-3xl" />
-                  </Space>
-                </p>
-              </Dropdown>
-            ) : (
-              <>
-                <Link to={paths.STUDENT_ENROLLMENT}>
-                  <Popover content={heartContent} title="Wish List" overlayClassName="cart-popover border-2">
-                    <Badge count={4}>
-                      <HeartOutlined className="text-gray-400 text-3xl" />
-                    </Badge>
-                  </Popover>
-                </Link>
-                <Badge count={2}>
-                  <MailOutlined className="text-gray-400 text-3xl" />
-                </Badge>
-                <Badge count={3}>
-                  <BellOutlined className="text-gray-400 text-3xl" />
-                </Badge>
-                <Link to={paths.STUDENT_CART}>
-                  <Popover content={shopCartContent} title="Selected Course" overlayClassName="cart-popover border-2">
-                    <Badge count={2}>
-                      <ShoppingCartOutlined className="text-gray-400 text-3xl" />
-                    </Badge>
-                  </Popover>
-                </Link>
-                {avatarUrl ? (
-                  <Dropdown
-                    className="mb-2"
-                    menu={{ items: dropdownItems }}
-                    trigger={["click"]}
-                    overlayClassName="w-72"
-                  >
-                    <p onClick={(e) => e.preventDefault()}>
-                      <Space>
-                        <Avatar
-                          src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
-                          className="hover:cursor-pointer"
-                          size={40}
-                          icon={<UserOutlined />}
-                        />
-                      </Space>
-                    </p>
-                  </Dropdown>
-                ) : (
-                  <Link to={paths.LOGIN}>
-                    <UserOutlined className="text-gray-400 text-3xl cursor-pointer" />
-                  </Link>
-                )}
-              </>
-            )}
-          </div>
-        )}
-      </nav>
-    )
+      )}
+    </nav>
   );
 };
 

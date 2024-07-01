@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import {
+
   CheckOutlined,
   CommentOutlined,
+
   CopyOutlined,
   DesktopOutlined,
   FundOutlined,
@@ -27,7 +29,11 @@ const Dashboard: React.FC = () => {
   const [items, setItems] = useState<MenuItem[]>([]);
   const [role, setRole] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
-  const [dataUser, setDataUser] = useState<{ role: string | null; fullName: string | null; email: string | null }>({
+  const [dataUser, setDataUser] = useState<{
+    role: string | null;
+    fullName: string | null;
+    email: string | null;
+  }>({
     role: null,
     fullName: null,
     email: null,
@@ -41,8 +47,12 @@ const Dashboard: React.FC = () => {
 
     if (userRole && user) {
       setRole(userRole);
-      setFullName(user.fullName);
-      setDataUser({ role: userRole, fullName: user.fullName, email: user.email });
+      setFullName(user.name);
+      setDataUser({
+        role: userRole,
+        fullName: user.name,
+        email: user.email,
+      });
     } else {
       navigate("/login"); // Redirect to login if role is not found
     }
@@ -52,12 +62,13 @@ const Dashboard: React.FC = () => {
     localStorage.removeItem("user");
     navigate("/");
   };
-  // const [collapsed, setCollapsed] = useState(false);
-  // const {
-  //   token: { colorBgContainer, borderRadiusLG },
-  // } = theme.useToken();
 
-  function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
+  function getItem(
+    label: React.ReactNode,
+    key: React.Key,
+    icon?: React.ReactNode,
+    children?: MenuItem[]
+  ): MenuItem {
     return {
       key,
       icon,
@@ -67,26 +78,73 @@ const Dashboard: React.FC = () => {
   }
   useEffect(() => {
     function loadItems() {
-      if (dataUser.role === "Instructor") {
+      if (dataUser.role === "instructor") {
         setItems([
           getItem("Dashboard", "/instructor/dashboard", <FundOutlined />),
-          getItem("Manage Feedbacks", "/instructor/manage-feedbacks", <CommentOutlined />),
-          getItem("Manage Courses", "/instructor/manage-courses", <FundProjectionScreenOutlined />),
-          getItem("Manage Students", "/instructor/manage-students", <TeamOutlined />),
+          getItem(
+            "Manage Feedbacks",
+            "/instructor/manage-feedbacks",
+            <CommentOutlined />,
+
+          ),
+          getItem(
+            "Manage Courses",
+            "/instructor/manage-courses",
+            <FundProjectionScreenOutlined />,
+          ),
+          getItem(
+            "Manage All Sessions",
+            "/instructor/manage-all-sessions",
+            <DesktopOutlined />,
+          ),
+          getItem(
+            "Manage Students",
+            "/instructor/manage-students",
+            <TeamOutlined />,
+          ),
           getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
-          getItem("Create New Course", "/instructor/create-course", <DesktopOutlined />),
-          getItem("Payment History", "/instructor/payment-history", <DesktopOutlined />),
+          getItem(
+            "Create New Course",
+            "/instructor/create-course",
+            <DesktopOutlined />,
+
+          ),
+          getItem(
+            "Payment History",
+            "/instructor/payment-history",
+            <DesktopOutlined />
+          ),
           getItem("Tools", "/instructor/tools", <ToolOutlined />),
-          getItem("Resources", "/instructor/resources", <QuestionCircleOutlined />),
+          getItem(
+            "Resources",
+            "/instructor/resources",
+            <QuestionCircleOutlined />
+          ),
         ]);
-      } else if (dataUser.role === "Admin") {
+      } else if (dataUser.role === "admin") {
         setItems([
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
-          getItem("Manage Students", "/admin/manage-students", <TeamOutlined />),
-          getItem("Manage Instructors", "/admin/manage-instructors", <TeamOutlined />),
-          getItem("Manage Categories", "/admin/manage-categories", <TeamOutlined />),
-          getItem("Manage Courses", "/admin/manage-courses", <FundProjectionScreenOutlined />),
+          getItem(
+            "Manage Students",
+            "/admin/manage-students",
+            <TeamOutlined />
+          ),
+          getItem(
+            "Manage Instructors",
+            "/admin/manage-instructors",
+            <TeamOutlined />
+          ),
+          getItem(
+            "Manage Categories",
+            "/admin/manage-categories",
+            <TeamOutlined />
+          ),
+          getItem(
+            "Manage Courses",
+            "/admin/manage-courses",
+            <FundProjectionScreenOutlined />
+          ),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
           getItem("Manage Feedbacks", "/admin/manage-feedbacks", <CommentOutlined />),
           getItem("Payment History", "/admin/payment-history", <DesktopOutlined />),
@@ -127,9 +185,11 @@ const Dashboard: React.FC = () => {
             </Col>
           </Row>
           <div className="mt-2 text-lg font-bold">
-            <Link className="hover:text-red-600" to={"/profile"}>
-              View {dataUser.role} Profile
-            </Link>
+            {dataUser.role === "admin" ? "" :
+                <Link className="hover:text-red-600" to={"/instructor/profile"}>
+                  View {dataUser.role} Profile
+                </Link>
+            }
           </div>
         </div>
       ),
@@ -139,7 +199,11 @@ const Dashboard: React.FC = () => {
       label: (
         <Link
           className="mt-2 text-lg"
-          to={dataUser.role === "Instructor" ? "/instructor/paidMemberships" : "/admin/paidMemberships"}
+          to={
+            dataUser.role === "Instructor"
+              ? "/instructor/paidMemberships"
+              : "/admin/paidMemberships"
+          }
         >
           Paid Memberships
         </Link>
@@ -148,7 +212,14 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={dataUser.role === "Instructor" ? "/instructor/setting" : "/admin/setting"}>
+        <Link
+          className="text-lg"
+          to={
+            dataUser.role === "Instructor"
+              ? "/instructor/setting"
+              : "/admin/setting"
+          }
+        >
           Setting
         </Link>
       ),
@@ -156,7 +227,12 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"}>
+        <Link
+          className="text-lg"
+          to={
+            dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"
+          }
+        >
           Help
         </Link>
       ),
@@ -166,7 +242,11 @@ const Dashboard: React.FC = () => {
       label: (
         <Link
           className="text-lg"
-          to={dataUser.role === "Instructor" ? "/instructor/sendFeedBack" : "/admin/sendFeedBack"}
+          to={
+            dataUser.role === "Instructor"
+              ? "/instructor/sendFeedBack"
+              : "/admin/sendFeedBack"
+          }
         >
           Send Feedback
         </Link>
@@ -175,7 +255,10 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <p onClick={handleLogout} className="text-lg hover:cursor-pointer hover:text-red-600">
+        <p
+          onClick={handleLogout}
+          className="text-lg hover:cursor-pointer hover:text-red-600"
+        >
           Logout
         </p>
       ),
@@ -186,9 +269,18 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
           <div className="demo-logo-vertical" />
-          <Menu className="py-4 bg-white-50 h-full" defaultSelectedKeys={["1"]} mode="vertical" items={items} />
+          <Menu
+            className="py-4 bg-white-50 h-full"
+            defaultSelectedKeys={["1"]}
+            mode="vertical"
+            items={items}
+          />
         </Sider>
         <Layout className="bg-stone-100">
           <Header className="flex justify-between items-center drop-shadow-xl bg-white ">
@@ -221,7 +313,9 @@ const Dashboard: React.FC = () => {
               <Outlet />
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>@ 2024 FLearn. All rights reserved</Footer>
+          <Footer style={{ textAlign: "center" }}>
+            @ 2024 FLearn. All rights reserved
+          </Footer>
         </Layout>
       </Layout>
     </>

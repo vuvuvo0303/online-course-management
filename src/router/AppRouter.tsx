@@ -24,7 +24,7 @@ import {
   SiteMap,
   CourseDetail,
   AdminManageFeedbacks,
-  InstrutorDashboard,
+  InstructorDashboard,
   AdminDashboard,
   InstructorManageBlogs,
   InstructorManageStudents,
@@ -47,10 +47,12 @@ import {
   CreateUpdateSession,
   AdminManageSession,
   AdminManageLecture,
+  InstructorManageCoursesDetail,
+  ManageAllSession,
+  AdminLoginPage,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
-
 
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
@@ -138,7 +140,7 @@ const AppRouter: React.FC = () => {
           path={paths.INSTRUCTOR_DASHBOARD}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
-              <InstrutorDashboard />
+              <InstructorDashboard />
             ) : (
               <Navigate to="/" />
             )
@@ -224,7 +226,6 @@ const AppRouter: React.FC = () => {
               <Navigate to="/" />
             )
           }
-
         />
 
         <Route
@@ -237,7 +238,7 @@ const AppRouter: React.FC = () => {
             )
           }
         />
-         <Route
+        <Route
           path={paths.INSTRUCTOR_MANAGE_SESSION_OF_COURSE}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
@@ -247,7 +248,7 @@ const AppRouter: React.FC = () => {
             )
           }
         />
-         <Route
+        <Route
           path={paths.INSTRUCTOR_CREATE_SESSION}
           element={
             canAccess([roles.INSTRUCTOR]) ? (
@@ -268,9 +269,40 @@ const AppRouter: React.FC = () => {
           }
         />
         <Route path="*" element={<NotFound />} />
+        <Route
+          path={paths.INSTRUCTOR_MANAGE_COURSE_DETAIL}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <InstructorManageCoursesDetail />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path={paths.INSTRUCTOR_MANAGE_ALL_SESSION}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <ManageAllSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path={paths.INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSION}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateUpdateSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
       </Route>
 
       {/* Route for Admin */}
+        <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route
         path="/admin/*"
         element={canAccess([roles.ADMIN]) ? <Dashboard /> : <Navigate to="/" />}
@@ -301,11 +333,11 @@ const AppRouter: React.FC = () => {
           path={paths.ADMIN_MANAGE_FEEDBACKS}
           element={<AdminManageFeedbacks />}
         />
-         <Route
+        <Route
           path={paths.ADMIN_MANAGE_SESSION_OF_COURSE}
           element={<AdminManageSession />}
         />
-         <Route
+        <Route
           path={paths.ADMIN_MANAGE_LECTURES_OF_COURSE}
           element={<AdminManageLecture />}
         />

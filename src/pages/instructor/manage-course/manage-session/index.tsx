@@ -104,11 +104,6 @@ const ManageSession = () => {
             key: 'title',
         },
         {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
-        },
-        {
             title: 'Created Date',
             dataIndex: 'createdDate',
             key: 'createdDate',
@@ -178,10 +173,10 @@ const ManageSession = () => {
                     <HomeOutlined />
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href="/instructor/manage-courses">
-                    <span>Manage Course</span>
+                    <span>Manage Courses</span>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                    <span>Manage Session</span>
+                    <span>Manage Sessions</span>
                 </Breadcrumb.Item>
             </Breadcrumb>
             <h1 className="text-center mt-10">Manage Session</h1>

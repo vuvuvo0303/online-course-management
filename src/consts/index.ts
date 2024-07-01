@@ -1,4 +1,4 @@
-/* API */
+/* Fake API */
 const BASE_URL = "https://665fbf245425580055b0b23d.mockapi.io";
 export const API_STUDENT_URL = `${BASE_URL}/students`;
 export const API_INSTRUCTOR_URL = `${BASE_URL}/instructors`;
@@ -10,6 +10,9 @@ export const API_LECTURE_URL = `${BASE_URL}/lectures`;
 export const API_PAYMENT_URL = `${BASE_URL}/payments`;
 export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 export const API_BLOGS_URL = `${BASE_URL}/blogs`;
+
+/* API */
+export const host_main = "https://api-ojt-hcm24-react06-group01.vercel.app";
 
 /* PATHS */
 export const paths = {
@@ -56,6 +59,9 @@ export const paths = {
   INSTRUCTOR_MANAGE_SESSION_OF_COURSE: "manage-courses/:courseId/manage-sessions",
   INSTRUCTOR_CREATE_SESSION: "manage-courses/:courseId/manage-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION: "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
+  INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:courseId",
+  INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
+  INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSION: "manage-all-sessions/create-session",
 
 
   /* ADMIN PATHS */
@@ -70,7 +76,8 @@ export const paths = {
   ADMIN_MANAGE_FEEDBACKS: "manage-feedbacks",
   ADMIN_PAYMENT_HISTORY: "payment-history",
   ADMIN_MANAGE_SESSION_OF_COURSE: "manage-course/:courseId/manage-session",
-  ADMIN_MANAGE_LECTURES_OF_COURSE: "manage-course/:courseId/manage-session/:sessionId/lecture",
+  ADMIN_MANAGE_LECTURES_OF_COURSE:
+    "manage-course/:courseId/manage-session/:sessionId/lecture",
   /* SPECIAL PATHS */
   INSTRUCTOR_HOME: "/instructor/dashboard",
   ADMIN_HOME: "/admin/dashboard",
@@ -78,27 +85,45 @@ export const paths = {
 
 /* ROLE */
 export const roles = {
-  STUDENT: "Student",
-  INSTRUCTOR: "Instructor",
-  ADMIN: "Admin",
+  STUDENT: "student",
+  INSTRUCTOR: "instructor",
+  ADMIN: "admin",
 };
 
-/* CATEGORIES */
+// Define the structure of the submenu
+interface categoryCourse {
+  [key: string]: string[];
+}
+
+// Example data
 export const categoryFilters = [
-  "Development",
-  "Business",
-  "Finance & Accounting",
-  "IT & Software",
-  "Office Productivity",
-  "Personal Development",
-  "Design",
-  "Marketing",
-  "Lifestyle",
-  "Photography & Video",
-  "Health & Fitness",
-  "Music",
-  "Teaching & Academics",
+  "Web Development",
+  "Mobile Development",
+  "Game Development",
+  "Entrepreneurship",
+  "Business Analytics & Intelligence",
+  "Finance",
+  "IT Certifications",
+  "Personal Transformation",
+  "Graphic Design & Illustration",
+  "Digital Marketing",
+  // Add other categories as needed
 ];
+
+export const categoryCourse: categoryCourse = {
+  "Web Development": ["JavaScript", "React JS", "Angular", "Next.js", "CSS", "HTML", "ASP.NET Core", "Node.Js", "Microservices"],
+  "Mobile Development": ["iOS", "Android", "Flutter", "React Native"],
+  "Game Development": ["Unity", "Unreal Engine", "Godot"],
+  "Entrepreneurship": ["Startup", "Business Planning", "Marketing"],
+  "Business Analytics & Intelligence": ["Data Analysis", "Power BI", "Data Science", "Data Visualization"],
+  "Finance": ["Investing", "Trading", "Accounting", "Cryptocurrency"],
+  "IT Certifications": ["AWS", "CompTIA", "Cisco", "Microsoft"],
+  "Personal Transformation": ["Leadership", "Personal Productivity", "Communication Skills", "Confidence"],
+  "Graphic Design & Illustration": ["Photoshop", "Illustrator", "InDesign", "Drawing"],
+  "Digital Marketing": ["SEO", "Social Media Marketing", "Google Analytics", "Content Marketing"],
+  // Add other subcategories as needed
+};
+
 
 /* SUB CATEGORIES */
 export const categorySubmenu = [
