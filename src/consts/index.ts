@@ -61,9 +61,11 @@ export const paths = {
   INSTRUCTOR_UPDATE_SESSION: "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:courseId",
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
-  INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSION: "manage-all-sessions/create-session",
-
-
+  INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
+  INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/update-session/:sessionId",
+  INSTRUCTOR_MANAGE_ALL_LECTURES: "manage-all-lectures",
+  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/create-lecture",
+  INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",

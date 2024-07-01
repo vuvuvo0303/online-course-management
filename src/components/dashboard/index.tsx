@@ -97,6 +97,11 @@ const Dashboard: React.FC = () => {
             <DesktopOutlined />,
           ),
           getItem(
+            "Manage All Lectures",
+            "/instructor/manage-all-lectures",
+            <DesktopOutlined />,
+          ),
+          getItem(
             "Manage Students",
             "/instructor/manage-students",
             <TeamOutlined />,
