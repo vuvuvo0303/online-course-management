@@ -10,6 +10,12 @@ import type { InputRef, TableColumnsType, TableColumnType } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 
+type AxiosResponse = {
+    success: boolean,
+    data: any,
+    message?: string,
+    error?: [],
+}
 type DataIndex = keyof Student;
 
 const AdminManageStudent: React.FC = () => {
@@ -32,7 +38,7 @@ const AdminManageStudent: React.FC = () => {
     const fetchStudents = async () => {
         setLoading(true);
         try {
-            const response = await axiosInstance.post('/api/users/search', {
+            const response:AxiosResponse = await axiosInstance.post('/api/users/search', {
                 searchCondition: {
                     role: "all",
                     status: true,
@@ -90,14 +96,13 @@ const AdminManageStudent: React.FC = () => {
                 return toast.error("Email already exists in the database.");
             }
 
-            const response = await axiosInstance.post(`/api/users/create`, values);
-
-            if (response.data.status === false) {
+            const response: AxiosResponse = await axiosInstance.post(`/api/users/create`, values);
+            console.log(response)
+            if (response.success === false) {
                 setLoading(false);
-                return toast.error(response.data.message);
+                return toast.error(response.message);
             }
-
-            const newUser = response.data.data;
+            const newUser = response.data;
             setData(prevData => [...prevData, newUser]);
             toast.success("Created new student successfully");
             setIsModalVisible(false);
