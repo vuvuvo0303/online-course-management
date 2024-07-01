@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const [dataUser, setDataUser] = useState<{ role: string | null, fullName: string | null, email: string | null }>({ role: null, fullName: null, email: null });
   const isLoginOrRegister = location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
-  const isMobile = useMediaQuery({ maxWidth: 768 }); // Điều kiện màn hình nhỏ
+  const isMobile = useMediaQuery({ maxWidth: 768 });
   const navigate = useNavigate();
   const isLoginPage = location.pathname === '/login';
   const isRegisterPage = location.pathname === '/register';
@@ -95,60 +95,56 @@ const Navbar: React.FC = () => {
   // };
 
   const shopCartContent = (
-    <div className="p-4">
-      <div className="bg-white p-5 rounded-lg shadow-lg">
-        <div className="hover:bg-slate-300 p-5 mb-4 rounded-lg transition-all duration-200 ease-in-out">
-          <Link to={"/"}>
-            <Row className="mb-4 items-center">
-              <div className="flex items-start space-x-4">
-                <div className="w-1/4">
-                  <img
-                    src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg"
-                    alt=""
-                    className="w-full rounded-lg mb-2"
-                  />
-                </div>
-                <div className="w-3/4 mt-2">
-                  <div className="truncate">
-                    100 Days of Code: The Complete Python Pro...
-                  </div>
-                </div>
-              </div>
-              <Col span={6} className="flex justify-end">
-                <span>₫2,199,000</span>
-              </Col>
-            </Row>
-          </Link>
-        </div>
-        <div className="hover:bg-slate-300 p-5 mb-4 rounded-lg transition-all duration-200 ease-in-out">
-          <Link to={"/"}>
-            <Row className="mb-4 items-center">
-              <Col span={6}>
-                <img
-                  src="https://img-b.udemycdn.com/course/480x270/567828_67d0.jpg"
-                  alt=""
-                  className="w-full rounded-lg"
-                />
-              </Col>
-              <Col span={12}>
+    <div className='p-1'>
+      <div>
+        <div className='hover:bg-slate-300 p-5'>
+          <Link className='hover:bg-white' to={"/"}>
+            <Row className="mb-4">
+              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
+              <Col span={14} className="flex items-center">
                 <div className="truncate">
                   The Complete 2024 Web Development Bootcamp
                 </div>
               </Col>
-              <Col span={6} className="flex justify-end">
-                <span>₫1,499,000</span>
+              <Col span={4} className="flex items-center justify-end">
+                <span>₫249,000</span>
               </Col>
             </Row>
           </Link>
         </div>
-        <div className="mt-4 text-xl font-bold">
-          <span>Total: ₫3,698,000</span>
+        <div className='hover:bg-slate-300 p-5'>
+          <Link className='hover:bg-white' to={"/"}>
+            <Row className="mb-4">
+              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
+              <Col span={14} className="flex items-center">
+                <div className="truncate">
+                  The Complete 2024 Web Development Bootcamp
+                </div>
+              </Col>
+              <Col span={4} className="flex items-center justify-end">
+                <span>₫249,000</span>
+              </Col>
+            </Row>
+          </Link>
         </div>
-        <div className="mt-4">
-          <Button className="w-full bg-blue-600 text-white py-2 rounded-lg">
-            <Link to={"/cart"} className="w-full h-full block text-center">Go to cart</Link>
-          </Button>
+        <div className='hover:bg-slate-300 p-5'>
+          <Link className='hover:bg-white' to={"/"}>
+            <Row className="mb-4">
+              <Col span={6}><img src="https://img-c.udemycdn.com/course/480x270/1565838_e54e_18.jpg" alt="" className="w-full" /></Col>
+              <Col span={14} className="flex items-center">
+                <div className="truncate">
+                  The Complete 2024 Web Development Bootcamp
+                </div>
+              </Col>
+              <Col span={4} className="flex items-center justify-end">
+                <span>₫249,000</span>
+              </Col>
+            </Row>
+          </Link>
         </div>
+      </div>
+      <div className='mt-4'>
+        <Button><Link to={paths.STUDENT_ENROLLMENT}>View Cart</Link></Button>
       </div>
     </div>
   );
