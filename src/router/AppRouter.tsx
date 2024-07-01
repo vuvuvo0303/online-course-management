@@ -117,11 +117,24 @@ const AppRouter: React.FC = () => {
         />
         <Route
           path={paths.INSTRUCTOR_CREATE_LECTURE}
-          element={canAccess([roles.INSTRUCTOR]) ? <CreateLecture /> : <Navigate to="/" />}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateLecture />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
         />
+        
         <Route
-          path={paths.INSTRUCTOR_LECTURES_OF_COURSE}
-          element={canAccess([roles.INSTRUCTOR]) ? <LectureOfCourse /> : <Navigate to="/" />}
+          path={paths.INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateLecture />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
         />
         {/* <Route
           path="manage-lectures"
@@ -170,8 +183,26 @@ const AppRouter: React.FC = () => {
           element={canAccess([roles.INSTRUCTOR]) ? <ManageAllSession /> : <Navigate to="/" />}
         />
         <Route
-          path={paths.INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSION}
-          element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to="/" />}
+          path={paths.INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateUpdateSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+          
+        />
+         <Route
+          path={paths.INSTRUCTOR_MANAGE_ALL_LECTURES}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <LectureOfCourse />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+          
         />
       </Route>
 

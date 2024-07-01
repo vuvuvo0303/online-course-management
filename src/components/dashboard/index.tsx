@@ -76,10 +76,32 @@ const Dashboard: React.FC = () => {
       if (dataUser.role === "instructor") {
         setItems([
           getItem("Dashboard", "/instructor/dashboard", <FundOutlined />),
-          getItem("Manage Feedbacks", "/instructor/manage-feedbacks", <CommentOutlined />),
-          getItem("Manage Courses", "/instructor/manage-courses", <FundProjectionScreenOutlined />),
-          getItem("Manage All Sessions", "/instructor/manage-all-sessions", <DesktopOutlined />),
-          getItem("Manage Students", "/instructor/manage-students", <TeamOutlined />),
+          getItem(
+            "Manage Feedbacks",
+            "/instructor/manage-feedbacks",
+            <CommentOutlined />,
+
+          ),
+          getItem(
+            "Manage Courses",
+            "/instructor/manage-courses",
+            <FundProjectionScreenOutlined />,
+          ),
+          getItem(
+            "Manage All Sessions",
+            "/instructor/manage-all-sessions",
+            <DesktopOutlined />,
+          ),
+          getItem(
+            "Manage All Lectures",
+            "/instructor/manage-all-lectures",
+            <DesktopOutlined />,
+          ),
+          getItem(
+            "Manage Students",
+            "/instructor/manage-students",
+            <TeamOutlined />,
+          ),
           getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
           getItem("Create New Course", "/instructor/create-course", <FolderViewOutlined />),

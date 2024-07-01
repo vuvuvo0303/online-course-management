@@ -52,18 +52,26 @@ export const paths = {
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",
-  INSTRUCTOR_CREATE_LECTURE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/create-lecture",
+  INSTRUCTOR_CREATE_LECTURE:
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/create-lecture",
   INSTRUCTOR_EDIT_LECTURE:
     "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
-  INSTRUCTOR_LECTURES_OF_COURSE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures",
-  INSTRUCTOR_MANAGE_SESSION_OF_COURSE: "manage-courses/:courseId/manage-sessions",
-  INSTRUCTOR_CREATE_SESSION: "manage-courses/:courseId/manage-sessions/create-session",
-  INSTRUCTOR_UPDATE_SESSION: "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
+  INSTRUCTOR_LECTURES_OF_COURSE:
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures",
+  INSTRUCTOR_MANAGE_SESSION_OF_COURSE:
+    "manage-courses/:courseId/manage-sessions",
+  INSTRUCTOR_CREATE_SESSION:
+    "manage-courses/:courseId/manage-sessions/create-session",
+  INSTRUCTOR_UPDATE_SESSION:
+    "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:courseId",
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
-  INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSION: "manage-all-sessions/create-session",
-
+  INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
+  INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/update-session/:sessionId",
+  INSTRUCTOR_MANAGE_ALL_LECTURES: "manage-all-lectures",
+  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/create-lecture",
+  INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",
@@ -124,12 +132,32 @@ export const categoryCourse: categoryCourse = {
   "Mobile Development": ["iOS", "Android", "Flutter", "React Native"],
   "Game Development": ["Unity", "Unreal Engine", "Godot"],
   Entrepreneurship: ["Startup", "Business Planning", "Marketing"],
-  "Business Analytics & Intelligence": ["Data Analysis", "Power BI", "Data Science", "Data Visualization"],
+  "Business Analytics & Intelligence": [
+    "Data Analysis",
+    "Power BI",
+    "Data Science",
+    "Data Visualization",
+  ],
   Finance: ["Investing", "Trading", "Accounting", "Cryptocurrency"],
   "IT Certifications": ["AWS", "CompTIA", "Cisco", "Microsoft"],
-  "Personal Transformation": ["Leadership", "Personal Productivity", "Communication Skills", "Confidence"],
-  "Graphic Design & Illustration": ["Photoshop", "Illustrator", "InDesign", "Drawing"],
-  "Digital Marketing": ["SEO", "Social Media Marketing", "Google Analytics", "Content Marketing"],
+  "Personal Transformation": [
+    "Leadership",
+    "Personal Productivity",
+    "Communication Skills",
+    "Confidence",
+  ],
+  "Graphic Design & Illustration": [
+    "Photoshop",
+    "Illustrator",
+    "InDesign",
+    "Drawing",
+  ],
+  "Digital Marketing": [
+    "SEO",
+    "Social Media Marketing",
+    "Google Analytics",
+    "Content Marketing",
+  ],
   // Add other subcategories as needed
 };
 
@@ -354,7 +382,7 @@ export const footerLinks = [
     title: "Community",
     links: [
       { name: "Teach on FLearn", url: "/teaching" },
-      { name: "Blog", url: "/blog" },
+      { name: "Blog", url: "/blogs" },
       { name: "Help and Supports", url: "/contact" },
     ],
   },
