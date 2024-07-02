@@ -48,6 +48,7 @@ import {
   InstructorManageCoursesDetail,
   ManageAllSession,
   AdminLoginPage,
+  AdminCategoryDetail,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
@@ -170,6 +171,16 @@ const AppRouter: React.FC = () => {
           element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to="/" />}
         />
         <Route
+          path={paths.INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateUpdateSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
           path={paths.INSTRUCTOR_UPDATE_SESSION}
           element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to="/" />}
         />
@@ -187,6 +198,28 @@ const AppRouter: React.FC = () => {
           element={
             canAccess([roles.INSTRUCTOR]) ? (
               <CreateUpdateSession />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+          
+        />
+        <Route
+          path={paths.INSTRUCTOR_LECTURES_OF_COURSE}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <LectureOfCourse />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+          
+        />
+        <Route
+          path={paths.INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <CreateLecture />
             ) : (
               <Navigate to="/" />
             )
@@ -218,6 +251,11 @@ const AppRouter: React.FC = () => {
         <Route path={paths.ADMIN_MANAGE_FEEDBACKS} element={<AdminManageFeedbacks />} />
         <Route path={paths.ADMIN_MANAGE_SESSION_OF_COURSE} element={<AdminManageSession />} />
         <Route path={paths.ADMIN_MANAGE_LECTURES_OF_COURSE} element={<AdminManageLecture />} />
+        <Route path={paths.ADMIN_MANAGE_ALL_SESSION} element={<ManageAllSession />} />
+        <Route path={paths.ADMIN_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS} element={<CreateUpdateSession />} />
+        <Route path={paths.ADMIN_MANAGE_ALL_LECTURES} element={<AdminManageLecture />} />
+        <Route path={paths.ADMIN_MANAGE_LECTURES_OF_MANAGE_ALL_SESSIONS} element={<AdminManageLecture/>} />
+        <Route path={paths.ADMIN_CATEGORY_DETAIL} element={<AdminCategoryDetail/>} />
         <Route path="*" element={<NotFound />} />
       </Route>
       <Route path="*" element={<Navigate to={paths.NOTFOUND} />} />

@@ -2,13 +2,13 @@ import { DeleteOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Modal, Spin, Switch, Table, TableProps } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import {  useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Lecture } from "../../../../../models";
 import { toast } from "react-toastify";
 
 const AdminMangeLecture: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
-    const { courseId , sessionId} = useParams<{ courseId: string , sessionId: string}>();
+    const { courseId, sessionId } = useParams<{ courseId: string, sessionId: string }>();
     const [loading, setLoading] = useState<boolean>(true);
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -53,10 +53,20 @@ const AdminMangeLecture: React.FC = () => {
     useEffect(() => {
         const fetchLecture = async () => {
             try {
-                const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
-                if (res.data) {
-                    const filteredLectures = res.data.filter(lecture => lecture.courseId === courseId && lecture.sessionId === sessionId);
-                    setData(filteredLectures);
+             
+                if (sessionId) {
+                    const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
+                    if (res.data) {
+                        const filteredLectures = res.data.filter(lecture => lecture.courseId === courseId && lecture.sessionId === sessionId);
+                        setData(filteredLectures);
+                    }
+                }  else {
+                    // manage all lectures
+                    const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
+                    console.log("check res all lectures: ", res)
+                    if (res.data) {
+                        setData(res.data);
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -64,9 +74,7 @@ const AdminMangeLecture: React.FC = () => {
                 setLoading(false);
             }
         };
-        if (courseId) {
-            fetchLecture();
-        }
+        fetchLecture();
     }, [courseId, sessionId]);
 
     const onChangeStatus = async (checked: boolean, lectureId: string) => {
@@ -82,7 +90,7 @@ const AdminMangeLecture: React.FC = () => {
         }
     };
 
-    const columns:TableProps<Lecture>["columns"] = [
+    const columns: TableProps<Lecture>["columns"] = [
         {
             title: 'Lecture Id',
             dataIndex: 'lectureId',
@@ -135,24 +143,14 @@ const AdminMangeLecture: React.FC = () => {
                 />
             ),
         },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: boolean, record: Lecture) => (
-                <Switch
-                    checked={status}
-                    onChange={(checked) => onChangeStatus(checked, record.lectureId)}
-                />
-            ),
-        },
+
         {
             title: 'Action',
             dataIndex: 'lectureId',
             key: 'action',
             render: (lectureId: string) => (
                 <>
-                    
+
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(lectureId)} />
                 </>
             ),
@@ -177,20 +175,33 @@ const AdminMangeLecture: React.FC = () => {
                 </div>
             ) : (
                 <div className="">
-
-                    <Breadcrumb className="py-2" >
-                        <Breadcrumb.Item href="/dashboard">
-                            <HomeOutlined />
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item href="/admin/manage-courses">
-                            Manage Courses
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item href={`/admin/manage-course/${courseId}/manage-session`}>
-                            Manage Session 
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item>Manage Lecture</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <h1 className="text-center m-10">Manage Lecture</h1>
+                    {   //manage courses > manage sessions > manage lectures
+                        courseId && sessionId ?
+                            (
+                                <Breadcrumb className="py-2" >
+                                    <Breadcrumb.Item href="instructor/dashboard">
+                                        <HomeOutlined />
+                                    </Breadcrumb.Item>
+                                    <Breadcrumb.Item href="/admin/manage-courses">
+                                        Manage Courses
+                                    </Breadcrumb.Item>
+                                    <Breadcrumb.Item href={`/admin/manage-course/${courseId}/manage-session`}>
+                                        Manage Session
+                                    </Breadcrumb.Item>
+                                    <Breadcrumb.Item>Manage Lecture</Breadcrumb.Item>
+                                </Breadcrumb>
+                            )
+                            :
+                            (  // manage all lectures
+                                <Breadcrumb className="py-2" >
+                                    <Breadcrumb.Item href="admin/dashboard">
+                                        <HomeOutlined />
+                                    </Breadcrumb.Item>
+                                    <Breadcrumb.Item>Manage Lecture</Breadcrumb.Item>
+                                </Breadcrumb>
+                            )
+                    }
+                    {sessionId ? <h1 className="text-center m-10">Manage Lecture</h1> : <h1 className="text-center m-10">Manage All Lecture</h1>}
                     <Table dataSource={data} columns={columns} rowKey="lectureId" />
                 </div>
             )}

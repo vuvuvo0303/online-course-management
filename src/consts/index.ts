@@ -79,15 +79,24 @@ export const paths = {
   ADMIN_MANAGE_USERS: "manage-users",
 
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
+  ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
   ADMIN_MANAGE_BLOGS: "manage-blogs",
   ADMIN_MANAGE_COURSES: "manage-courses",
   ADMIN_MANAGE_FEEDBACKS: "manage-feedbacks",
   ADMIN_PAYMENT_HISTORY: "payment-history",
   ADMIN_MANAGE_SESSION_OF_COURSE: "manage-course/:courseId/manage-session",
   ADMIN_MANAGE_LECTURES_OF_COURSE: "manage-course/:courseId/manage-session/:sessionId/lecture",
+  ADMIN_MANAGE_LECTURES_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/:sessionId/manage-lecture",
   /* SPECIAL PATHS */
   INSTRUCTOR_HOME: "/instructor/dashboard",
   ADMIN_HOME: "/admin/dashboard",
+  ADMIN_MANAGE_ALL_SESSION: "manage-all-sessions",
+  ADMIN_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
+  ADMIN_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/update-session/:sessionId",
+  ADMIN_MANAGE_ALL_LECTURES: "manage-all-lectures",
+  ADMIN_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/create-lecture",
+  ADMIN_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
+
 };
 
 /* ROLE */

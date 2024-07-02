@@ -24,6 +24,7 @@ const CreateUpdateSession = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const [role, setRole] = useState<string>('');
   const [courseId2, setCourseId2] = useState<string>("");
   const [courses, setCourses] = useState<Course[]>([]);
   const [userId, setUserId] = useState<string>('');
@@ -31,7 +32,8 @@ const CreateUpdateSession = () => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
     setUserId(user?._id);
-    console.log("check userId: ", userId);
+    setRole(user?.role);
+    console.log("check role: ", role);
 
   }, []);
   useEffect(() => {
@@ -73,7 +75,11 @@ const CreateUpdateSession = () => {
         try {
           const res = await axios.get<Course[]>("https://665fbf245425580055b0b23d.mockapi.io/courses")
           if (res) {
-            setCourses(res.data.filter(course => course.userId === userId));
+            if (role === "instructor") {
+              setCourses(res.data.filter(course => course.userId === userId));
+            } else {
+              setCourses(res.data);
+            }
 
           }
         } catch (error) {
@@ -87,19 +93,21 @@ const CreateUpdateSession = () => {
   const onFinish = async (values: Session) => {
     setLoading(true);
     try {
-      if (sessionId) {
-        await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`, values);
-        toast.success("Update Session Successfully!")
-      } else {
-        if (courseId2) {
-          await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/session`, { ...values, courseId: courseId2, userId: userId });
-          toast.success("Create Session Successfully!")
+      if (role === "instructor") {
+        if (sessionId) {
+          await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`, values);
+          toast.success("Update Session Successfully!")
         } else {
-          await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/session`, { ...values, userId: userId });
-          toast.success("Create Session Successfully!")
+          if (courseId2) {
+            await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/session`, { ...values, courseId: courseId2, userId: userId });
+            toast.success("Create Session Successfully!")
+          } else {
+            await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/session`, { ...values, userId: userId });
+            toast.success("Create Session Successfully!")
+          }
         }
-      }
-      navigate(`/instructor/manage-all-sessions`);
+        navigate(`/instructor/manage-all-sessions`);
+      } 
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
@@ -185,7 +193,7 @@ const CreateUpdateSession = () => {
               !courseId && (
                 <Form.Item label="Course Id" name="courseId" rules={[{ required: true, message: 'Please input course!' }]}>
                   <Select
-                    
+
                     onChange={handleChange}
                     options={courses.map(course => (
                       {

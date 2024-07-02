@@ -1,8 +1,8 @@
 import { fetchStudents, fetchInstructors } from './get';
 import { Student, Instructor } from '../models';
-import { host_main } from "../consts";
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import axiosInstance from "./api.ts";
+import { toast } from "react-toastify";
 
 export async function login(email: string, password: string): Promise<{ user: Student | Instructor } | { status: string } | null> {
   try {
@@ -42,21 +42,23 @@ type JwtPayload = {
   iat: number,
 }
 
-export async function loginAdmin(email: string, password: string): Promise<{ token: string, userId: string } | { status: string } | null> {
+
+export async function loginAdmin(email: string, password: string): Promise<{ token: string } | null> {
   try {
-    const response = await axios.post(`${host_main}/api/auth`, { email, password });
-    if (response.data.success) {
-      const token = response.data.data.token;
+    const response = await axiosInstance.post(`/api/auth`, { email, password });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    if (response.success) {
+      const token = response.data.token;
       const decodedToken: JwtPayload = jwtDecode(token);
-      console.log(decodedToken)
-      if (decodedToken.role !== "admin") {
-        return { status: "Account not authorization" };
+      if (decodedToken.role !== 'admin') {
+        toast.error("You don't have permission");
+        return null;
       }
-      const userId = decodedToken.id;
-      return { token, userId };
+      return { token };
     }
 
-    return { status: "Login failed" };
+    return null;
   } catch (error) {
     console.error('Error logging in as admin:', error);
     return null;
