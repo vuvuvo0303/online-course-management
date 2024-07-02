@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, FormProps, Image, Input, Modal, Radio, Upload, message } from "antd";
+import { Button, Checkbox, Form, FormProps, Image, Input, Modal, Radio, Upload } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState } from "react";

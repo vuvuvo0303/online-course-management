@@ -1,8 +1,8 @@
 import { fetchStudents, fetchInstructors } from './get';
 import { Student, Instructor } from '../models';
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import axiosInstance from "./api.ts";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 export async function login(email: string, password: string): Promise<{ user: Student | Instructor } | { status: string } | null> {
   try {
@@ -51,7 +51,7 @@ export async function loginAdmin(email: string, password: string): Promise<{ tok
     if (response.success) {
       const token = response.data.token;
       const decodedToken: JwtPayload = jwtDecode(token);
-      if(decodedToken.role !== 'admin'){
+      if (decodedToken.role !== 'admin') {
         toast.error("You don't have permission");
         return null;
       }
