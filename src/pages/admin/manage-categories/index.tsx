@@ -1,7 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Table, Breadcrumb, Modal, Input, Space } from "antd";
+import {
+  Button,
+  Form,
+  Table,
+  Breadcrumb,
+  Modal,
+  Input,
+  Space,
+  Popconfirm,
+} from "antd";
 import { Link } from "react-router-dom";
-import { EyeOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  EyeOutlined,
+  HomeOutlined,
+  SearchOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import moment from "moment-timezone";
 import axios from "axios";
 import { Category } from "../../../models";
@@ -9,17 +24,26 @@ import { host_main } from "../../../consts";
 
 const AdminManageCategories: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [addModalVisible, setAddModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState<string | undefined>(
     undefined
   );
-  // const [searchInputValue, setSearchInputValue] = useState<string>("");
+
+  const [sortOrder, setSortOrder] = useState<{ [key: string]: any }>({
+    created_at: undefined,
+    updated_at: undefined,
+  });
+
+  const [selectedCategory, setSelectedCategory] = useState<
+    Category | undefined
+  >(undefined);
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [sortOrder]);
 
   const fetchCategories = async () => {
     try {
@@ -43,16 +67,65 @@ const AdminManageCategories: React.FC = () => {
         }
       );
       if (res.data && res.data.data) {
-        setCategories(res.data.data.pageData);
+        const sortedData = sortData(res.data.data.pageData);
+        setCategories(sortedData);
       }
     } catch (error: any) {
       console.log("Error fetching categories: ", error);
     }
   };
 
-  const handleDeleteCategory = (categoryId: string) => {
-    console.log(`Delete category with id: ${categoryId}`);
-    // Add logic here to delete category
+  const sortData = (data: Category[]) => {
+    const sortedData = [...data].sort((a, b) => {
+      const columnKey = Object.keys(sortOrder)[0] as keyof Category;
+
+      let aValue: any = a[columnKey];
+      let bValue: any = b[columnKey];
+
+      if (columnKey === "created_at" || columnKey === "updated_at") {
+        aValue = new Date(aValue).getTime();
+        bValue = new Date(bValue).getTime();
+      }
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortOrder[columnKey] === "ascend"
+          ? aValue - bValue
+          : bValue - aValue;
+      } else if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortOrder[columnKey] === "ascend"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      } else {
+        return 0;
+      }
+    });
+
+    return sortedData;
+  };
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.delete(
+        `${host_main}/api/category/${categoryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        const updatedCategories = categories.filter(
+          (cat) => cat._id !== categoryId
+        );
+        setCategories(updatedCategories);
+      } else {
+        console.error("Failed to delete category. Server returned:", res.data);
+      }
+    } catch (error: any) {
+      console.error("Error deleting category:", error);
+    }
   };
 
   const handleSearch = (
@@ -70,7 +143,18 @@ const AdminManageCategories: React.FC = () => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = (dataIndex: string) => ({
+  const sortColumn = (columnKey: keyof Category) => {
+    const currentOrder = sortOrder[columnKey];
+    let newOrder: "ascend" | "descend" = "ascend";
+
+    if (currentOrder === "ascend") {
+      newOrder = "descend";
+    }
+
+    setSortOrder({ [columnKey]: newOrder });
+  };
+
+  const getColumnSearchProps = (dataIndex: string, width?: number) => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -128,7 +212,74 @@ const AdminManageCategories: React.FC = () => {
       ) : (
         text
       ),
+    width: width, // Adjust column width if provided
   });
+
+  const handleEditCategory = (record: Category) => {
+    setSelectedCategory(record);
+    setEditModalVisible(true);
+  };
+
+  const handleSaveEdit = async (values: any) => {
+    try {
+      const token = localStorage.getItem("token");
+      const updatedCategory = {
+        ...selectedCategory!,
+        ...values,
+        updated_at: new Date().toISOString(),
+      };
+
+      const res = await axios.put(
+        `${host_main}/api/category/${updatedCategory._id}`,
+        updatedCategory,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        const updatedCategories = categories.map((cat) =>
+          cat._id === updatedCategory._id ? updatedCategory : cat
+        );
+        setCategories(updatedCategories);
+        setEditModalVisible(false);
+      } else {
+        console.error("Failed to update category. Server returned:", res.data);
+      }
+    } catch (error: any) {
+      console.error("Error updating category:", error);
+    }
+  };
+
+  const handleSaveAdd = async (values: any) => {
+    try {
+      const token = localStorage.getItem("token");
+      const newCategory = {
+        ...values,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        is_delete: false,
+      };
+
+      const res = await axios.post(`${host_main}/api/category`, newCategory, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status === 201) {
+        setCategories([...categories, res.data.data]);
+        form.resetFields();
+        setAddModalVisible(false);
+      } else {
+        console.error("Failed to add new category. Server returned:", res.data);
+      }
+    } catch (error: any) {
+      console.error("Error adding new category:", error);
+    }
+  };
 
   const columns = [
     {
@@ -136,36 +287,69 @@ const AdminManageCategories: React.FC = () => {
       dataIndex: "name",
       key: "name",
       ...getColumnSearchProps("name"),
+      width: 250,
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      ...getColumnSearchProps("description"),
+      width: 250,
     },
     {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
+      sorter: true,
+      sortOrder: sortOrder["created_at"],
       render: (created_at: string) =>
         moment
           .utc(created_at)
           .tz("Asia/Ho_Chi_Minh")
           .format("YYYY-MM-DD HH:mm:ss"),
+      onHeaderCell: () => ({
+        onClick: () => sortColumn("created_at"),
+      }),
+      width: 150,
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
+      sorter: true,
+      sortOrder: sortOrder["updated_at"],
       render: (updated_at: string) =>
         moment
           .utc(updated_at)
           .tz("Asia/Ho_Chi_Minh")
           .format("YYYY-MM-DD HH:mm:ss"),
+      onHeaderCell: () => ({
+        onClick: () => sortColumn("updated_at"),
+      }),
+      width: 150,
     },
     {
       title: "Action",
-      dataIndex: "_id",
-      key: "_id",
-      render: (_id: string) => (
-        <Link to={`/admin/manage-categories/${_id}`}>
-          <EyeOutlined className="text-purple-500" />
-        </Link>
+      key: "action",
+      render: (_: any, record: Category) => (
+        <Space size="middle">
+          <Link to={`/admin/manage-categories/${record._id}`}>
+            <EyeOutlined className="text-purple-500" />
+          </Link>
+          <a onClick={() => handleEditCategory(record)}>
+            <EditOutlined className="text-blue-500" />
+          </a>
+          <Popconfirm
+            title="Are you sure to delete this category?"
+            onConfirm={() => handleDeleteCategory(record._id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <DeleteOutlined className="text-red-500" />
+          </Popconfirm>
+        </Space>
       ),
+      width: 150,
     },
   ];
 
@@ -188,7 +372,7 @@ const AdminManageCategories: React.FC = () => {
         <Button
           type="primary"
           className="flex-shrink-0"
-          onClick={() => setModalVisible(true)}
+          onClick={() => setAddModalVisible(true)} // Open add modal
         >
           Add New Category
         </Button>
@@ -202,19 +386,73 @@ const AdminManageCategories: React.FC = () => {
 
       <Modal
         title="Add New Category"
-        visible={modalVisible}
+        visible={addModalVisible}
         onCancel={() => {
           form.resetFields();
-          setModalVisible(false);
+          setAddModalVisible(false);
         }}
+        footer={[
+          <Button key="cancel" onClick={() => setAddModalVisible(false)}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" onClick={() => form.submit()}>
+            Add
+          </Button>,
+        ]}
       >
-        <Form form={form} layout="vertical">
+        <Form form={form} layout="vertical" onFinish={handleSaveAdd}>
           <Form.Item
-            name="categoryName"
+            name="name"
             label="Category Name"
             rules={[{ required: true, message: "Please enter category name!" }]}
           >
             <Input />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[{ required: true, message: "Please enter description!" }]}
+          >
+            <Input.TextArea rows={4} />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title="Edit Category"
+        visible={editModalVisible}
+        onCancel={() => {
+          form.resetFields();
+          setEditModalVisible(false);
+        }}
+        footer={[
+          <Button key="cancel" onClick={() => setEditModalVisible(false)}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" onClick={() => form.submit()}>
+            Save
+          </Button>,
+        ]}
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSaveEdit}
+          initialValues={selectedCategory}
+        >
+          <Form.Item
+            name="name"
+            label="Category Name"
+            rules={[{ required: true, message: "Please enter category name!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[{ required: true, message: "Please enter description!" }]}
+          >
+            <Input.TextArea rows={4} />
           </Form.Item>
         </Form>
       </Modal>
