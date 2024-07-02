@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Table, Breadcrumb, Modal, Input, Tooltip } from "antd";
+import { Button, Form, Table, Breadcrumb, Modal, Input } from "antd";
 import { Link } from "react-router-dom";
-import { EyeOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { EyeOutlined, HomeOutlined } from "@ant-design/icons";
 import styles from "./managecategory.module.css";
 import axios from "axios";
 import moment from "moment-timezone";
