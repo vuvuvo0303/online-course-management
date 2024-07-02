@@ -13,10 +13,11 @@ import Popup from '../Popup';
 const Navbar: React.FC = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
-  const [dataUser, setDataUser] = useState<{ role: string | null; fullName: string | null; email: string | null }>({
+  const [dataUser, setDataUser] = useState<{ role: string | null; fullName: string | null; email: string | null; avatarUrl: string | null }>({
     role: null,
     fullName: null,
     email: null,
+    avatarUrl: null,
   });
   const isLoginOrRegister = location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
   const isMobile = useMediaQuery({ maxWidth: 768 });
@@ -31,7 +32,7 @@ const Navbar: React.FC = () => {
     if (user) {
       try {
         const userData = JSON.parse(user);
-        setDataUser({ role: userData.role, fullName: userData.fullName, email: userData.email });
+        setDataUser({ role: userData.role, fullName: userData.fullName, email: userData.email, avatarUrl: userData.avatarUrl });
       } catch (error) {
         console.error("Error parsing user data from localStorage", error);
       }

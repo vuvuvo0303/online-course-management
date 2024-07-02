@@ -1,8 +1,8 @@
 import { fetchStudents, fetchInstructors } from './get';
 import { Student, Instructor } from '../models';
-import {host_main} from "../consts";
+import { host_main } from "../consts";
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 export async function login(email: string, password: string): Promise<{ user: Student | Instructor } | { status: string } | null> {
   try {
@@ -49,7 +49,7 @@ export async function loginAdmin(email: string, password: string): Promise<{ tok
       const token = response.data.data.token;
       const decodedToken: JwtPayload = jwtDecode(token);
       console.log(decodedToken)
-      if(decodedToken.role !== "admin"){
+      if (decodedToken.role !== "admin") {
         return { status: "Account not authorization" };
       }
       const userId = decodedToken.id;
