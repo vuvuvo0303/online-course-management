@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Table, Breadcrumb, Modal, Input, Space } from "antd";
+import { Button, Form, Table, Breadcrumb, Modal, Input, Space, Popconfirm } from "antd";
 import { Link } from "react-router-dom";
-import { EyeOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import styles from "./managecategory.module.css";
 import axios from "axios";
 import moment from "moment-timezone";
-import axios from "axios";
 import { Category } from "../../../models";
 import { host_main } from "../../../consts";
+import { toast } from "react-toastify";
 
 const AdminManageCategories: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -162,7 +162,7 @@ const AdminManageCategories: React.FC = () => {
           <Button
             type="primary"
             onClick={() => handleSearch(selectedKeys[0], confirm, dataIndex)}
-            icon={<SearchOutlined />}
+            icon={<SearchOutlined/>}
             size="small"
             style={{ width: 90 }}
           >
@@ -260,6 +260,7 @@ const AdminManageCategories: React.FC = () => {
         setCategories([...categories, res.data.data]);
         form.resetFields();
         setAddModalVisible(false);
+        toast.success("Create New Category Successfully")
       } else {
         console.error("Failed to add new category. Server returned:", res.data);
       }
