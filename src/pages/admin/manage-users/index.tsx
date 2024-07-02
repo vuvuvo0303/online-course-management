@@ -16,26 +16,13 @@ import {
   Upload,
   Popconfirm,
 } from "antd";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  HomeOutlined,
-  PlusOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, HomeOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Student } from "../../../models";
 import { toast } from "react-toastify";
 import Highlighter from "react-highlight-words";
 import axiosInstance from "../../../services/api.ts";
-import type {
-  GetProp,
-  InputRef,
-  TableColumnsType,
-  TableColumnType,
-  UploadFile,
-  UploadProps,
-} from "antd";
+import type { GetProp, InputRef, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
@@ -51,9 +38,7 @@ type DataIndex = keyof Student;
 
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
-  const [sortOrder, setSortOrder] = useState<{
-    [key: string]: "ascend" | "descend";
-  }>({
+  const [sortOrder, setSortOrder] = useState<{ [key: string]: "ascend" | "descend" }>({
     created_at: "ascend",
     updated_at: "ascend",
   });
@@ -63,11 +48,7 @@ const AdminManageUsers: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
   useEffect(() => {
     fetchStudents();
@@ -76,20 +57,17 @@ const AdminManageUsers: React.FC = () => {
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const response: AxiosResponse = await axiosInstance.post(
-        "/api/users/search",
-        {
-          searchCondition: {
-            role: "all",
-            status: true,
-            is_delete: false,
-          },
-          pageInfo: {
-            pageNum: pagination.current,
-            pageSize: pagination.pageSize,
-          },
-        }
-      );
+      const response: AxiosResponse = await axiosInstance.post("/api/users/search", {
+        searchCondition: {
+          role: "all",
+          status: true,
+          is_delete: false,
+        },
+        pageInfo: {
+          pageNum: pagination.current,
+          pageSize: pagination.pageSize,
+        },
+      });
 
       if (response.data && response.data.pageData) {
         setData(response.data.pageData);
@@ -139,20 +117,14 @@ const AdminManageUsers: React.FC = () => {
       console.log(values.avatar.file.originFileObj);
       const url = await uploadFile(values.avatar.file.originFileObj);
       values.avatar = url;
-      const searchResponse = await axiosInstance.post(
-        `/api/users/search`,
-        searchBody
-      );
+      const searchResponse = await axiosInstance.post(`/api/users/search`, searchBody);
 
       if (searchResponse.data && searchResponse.data.pageData.length > 0) {
         setLoading(false);
         return toast.error("Email already exists in the database.");
       }
 
-      const response: AxiosResponse = await axiosInstance.post(
-        `/api/users/create`,
-        values
-      );
+      const response: AxiosResponse = await axiosInstance.post(`/api/users/create`, values);
       if (response.success === false) {
         setLoading(false);
         return toast.error(response.message);
@@ -193,9 +165,7 @@ const AdminManageUsers: React.FC = () => {
       if (typeof aValue === "number" && typeof bValue === "number") {
         return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
       } else if (typeof aValue === "string" && typeof bValue === "string") {
-        return newOrder === "ascend"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
+        return newOrder === "ascend" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
       } else {
         return 0;
       }
@@ -205,11 +175,7 @@ const AdminManageUsers: React.FC = () => {
     setSortOrder((prev) => ({ ...prev, [columnKey]: newOrder }));
   };
 
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: FilterDropdownProps["confirm"],
-    dataIndex: DataIndex
-  ) => {
+  const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -240,8 +206,7 @@ const AdminManageUsers: React.FC = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
-    setFileList(newFileList);
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -249,46 +214,28 @@ const AdminManageUsers: React.FC = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): TableColumnType<Student> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
+  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Student> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
           >
             Search
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
             Reset
           </Button>
           <Button
@@ -314,9 +261,7 @@ const AdminManageUsers: React.FC = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
+    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
     onFilter: (value, record) =>
       record[dataIndex]
         ?.toString()
@@ -368,17 +313,7 @@ const AdminManageUsers: React.FC = () => {
       dataIndex: "role",
       key: "role",
       render: (role) => (
-        <Tag
-          color={
-            role === "student"
-              ? "cyan"
-              : role === "instructor"
-              ? "lime"
-              : "default"
-          }
-        >
-          {role}
-        </Tag>
+        <Tag color={role === "student" ? "cyan" : role === "instructor" ? "lime" : "default"}>{role}</Tag>
       ),
     },
     {
@@ -417,10 +352,7 @@ const AdminManageUsers: React.FC = () => {
       dataIndex: "status",
       width: "10%",
       render: (status: boolean) => (
-        <Switch
-          defaultChecked={status}
-          onChange={(checked) => console.log(`switch to ${checked}`)}
-        />
+        <Switch defaultChecked={status} onChange={(checked) => console.log(`switch to ${checked}`)} />
       ),
     },
     {
@@ -428,10 +360,7 @@ const AdminManageUsers: React.FC = () => {
       key: "action",
       render: (record: Student) => (
         <div>
-          <EditOutlined
-            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
-            style={{ fontSize: "20px" }}
-          />
+          <EditOutlined className="hover:cursor-pointer text-blue-400 hover:opacity-60" style={{ fontSize: "20px" }} />
           <Popconfirm
             title="Delete the User"
             description="Are you sure to delete this User?"
@@ -491,25 +420,12 @@ const AdminManageUsers: React.FC = () => {
         />
       </div>
 
-      <Modal
-        title="Add New Student"
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-      >
+      <Modal title="Add New Student" visible={isModalVisible} onCancel={() => setIsModalVisible(false)} footer={null}>
         <Form form={form} onFinish={addNewUser} labelCol={{ span: "24" }}>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please input the name!" }]}
-          >
+          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: "Please input the email!" }]}
-          >
+          <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
             <Input />
           </Form.Item>
           <Form.Item
@@ -519,11 +435,7 @@ const AdminManageUsers: React.FC = () => {
           >
             <Input.Password />
           </Form.Item>
-          <Form.Item
-            label="Avatar"
-            name="avatar"
-            rules={[{ required: true, message: "Please upload your Avatar" }]}
-          >
+          <Form.Item label="Avatar" name="avatar" rules={[{ required: true, message: "Please upload your Avatar" }]}>
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
               listType="picture-card"
