@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Table, Breadcrumb, Modal, Input, Tooltip } from "antd";
 import { Link } from "react-router-dom";
-import {
-  HomeOutlined,
-  UserOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+import { EyeOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 import styles from "./managecategory.module.css";
 import axios from "axios";
 import moment from "moment-timezone";
 import { Category } from "../../../models";
+import { host_main } from "../../../consts";
 
 const AdminManageCategories: React.FC = () => {
   const [cates, setCates] = useState<Category[]>([]);
@@ -23,7 +18,7 @@ const AdminManageCategories: React.FC = () => {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.post(
-          "https://api-ojt-hcm24-react06-group01.vercel.app/api/category/search",
+          `${host_main}/api/category/search`,
           {
             searchCondition: {
               keyword: "",
@@ -67,18 +62,14 @@ const AdminManageCategories: React.FC = () => {
       key: "name",
     },
     {
-      title: "Status",
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Is Deleted",
       dataIndex: "is_deleted",
       key: "is_deleted",
-      render: (is_deleted: boolean) => (
-        <Tooltip title={is_deleted ? "Deleted" : "Active"}>
-          <Button
-            type="primary"
-            danger={is_deleted}
-            icon={<ExclamationCircleOutlined />}
-          />
-        </Tooltip>
-      ),
     },
     {
       title: "Created Date",
@@ -91,35 +82,54 @@ const AdminManageCategories: React.FC = () => {
           .format("YYYY-MM-DD HH:mm:ss"),
     },
     {
-      title: "Updated Date",
-      dataIndex: "updated_at",
-      key: "updated_at",
-      render: (updated_at: string) =>
-        moment
-          .utc(updated_at)
-          .tz("Asia/Ho_Chi_Minh")
-          .format("YYYY-MM-DD HH:mm:ss"),
+      title: "__v",
+      dataIndex: "__v",
+      key: "__v",
     },
     {
       title: "Action",
-      key: "action",
-      render: (_: any, record: Category) => (
-        <span>
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => handleEditCategory(record)}
-          />
-          <Button
-            type="link"
-            icon={<DeleteOutlined />}
-            onClick={() => handleDeleteCategory(record._id)}
-          />
-        </span>
+      dataIndex: "_id",
+      key: "_id",
+      render: (_id: string) => (
+        <>
+          <Link to={`/admin/manage-categories/${_id}`}>
+            <EyeOutlined className="text-purple-500" />
+          </Link>
+        </>
       ),
     },
   ];
+  // const saveToLocalStorage = (data: Category[]) => {
+  //     localStorage.setItem("categories", JSON.stringify(data));
+  //   };
 
+  //   const getFromLocalStorage = (): Category[] => {
+  //     const storedData = localStorage.getItem("categories");
+  //     return storedData ? JSON.parse(storedData) : [];
+  //   };
+
+  //   const handleFormSubmit = () => {
+  //     form.validateFields().then((values) => {
+  //       const categoryName = values.categoryName.trim();
+  //       if (categoryName) {
+  //         const newCategory: Category = {
+  //           id: categories.length + 1,
+  //           name: categoryName,
+  //         };
+  //         const updatedCategories = [...categories, newCategory];
+  //         setCategories(updatedCategories);
+  //         saveToLocalStorage(updatedCategories);
+  //         form.resetFields();
+  //         setModalVisible(false);
+  //       }
+  //     });
+  //   };
+
+  //   const handleDeleteCategory = (categoryId: number) => {
+  //     const updatedCategories = categories.filter((cat) => cat.id !== categoryId);
+  //     setCategories(updatedCategories);
+  //     saveToLocalStorage(updatedCategories);
+  //   };
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
