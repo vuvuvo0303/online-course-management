@@ -10,7 +10,6 @@ import {
   Modal,
   Form,
   Spin,
-  message,
   Pagination,
   Tag,
   Upload,
@@ -34,7 +33,7 @@ type AxiosResponse = {
   message?: string;
   error?: [];
 };
-type DataIndex = keyof Student;
+type DataIndex = keyof User;
 
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
@@ -78,10 +77,10 @@ const AdminManageUsers: React.FC = () => {
           pageSize: response.data.pageInfo.pageSize,
         }));
       } else {
-        message.error("Failed to fetch students");
+        console.log("Failed to fetch students");
       }
     } catch (error) {
-      message.error("Error fetching students: " + error.message);
+      console.log(error)
     }
     setLoading(false);
   };
@@ -89,46 +88,21 @@ const AdminManageUsers: React.FC = () => {
   const handleDelete = async (_id: string, email: string) => {
     try {
       await axiosInstance.delete(`/api/users/${_id}`);
-      setData((prevData) => prevData.filter((student) => student._id !== _id));
+      setData((prevData) => prevData.filter((user) => user._id !== _id));
       toast.success(`Deleted user ${email} successfully`);
       fetchStudents();
     } catch (error) {
-      toast.error(`Failed to delete user ${email}`);
+      console.log(error);
     }
   };
 
   const addNewUser = async (values: Student) => {
     try {
-      const searchBody = {
-        searchCondition: {
-          keyword: values.email,
-          role: "all",
-          status: true,
-          is_delete: false,
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 10,
-        },
-      };
-
       setLoading(true);
-      console.log(values);
-      console.log(values.avatar.file.originFileObj);
-      const url = await uploadFile(values.avatar.file.originFileObj);
+      const url = await uploadFile(values.avatar?.file.originFileObj);
       values.avatar = url;
-      const searchResponse = await axiosInstance.post(`/api/users/search`, searchBody);
-
-      if (searchResponse.data && searchResponse.data.pageData.length > 0) {
-        setLoading(false);
-        return toast.error("Email already exists in the database.");
-      }
 
       const response: AxiosResponse = await axiosInstance.post(`/api/users/create`, values);
-      if (response.success === false) {
-        setLoading(false);
-        return toast.error(response.message);
-      }
       const newUser = response.data;
       setData((prevData) => [...prevData, newUser]);
       toast.success("Created new student successfully");
@@ -137,7 +111,6 @@ const AdminManageUsers: React.FC = () => {
       setLoading(false);
       fetchStudents();
     } catch (error) {
-      toast.error("Failed to add user: " + (error as any).message);
       setLoading(false);
     }
   };
@@ -291,8 +264,6 @@ const AdminManageUsers: React.FC = () => {
       dataIndex: "name",
       key: "name",
       ...getColumnSearchProps("name"),
-      sorter: true,
-      sortDirections: ["descend", "ascend"],
       onHeaderCell: () => ({
         onClick: () => sortColumn("name"),
       }),
@@ -302,8 +273,6 @@ const AdminManageUsers: React.FC = () => {
       dataIndex: "email",
       key: "email",
       ...getColumnSearchProps("email"),
-      sorter: true,
-      sortDirections: ["descend", "ascend"],
       onHeaderCell: () => ({
         onClick: () => sortColumn("email"),
       }),
