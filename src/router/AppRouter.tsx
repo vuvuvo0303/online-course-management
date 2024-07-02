@@ -48,6 +48,7 @@ import {
   InstructorManageCoursesDetail,
   ManageAllSession,
   AdminLoginPage,
+  AdminCategoryDetail,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
@@ -254,6 +255,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.ADMIN_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS} element={<CreateUpdateSession />} />
         <Route path={paths.ADMIN_MANAGE_ALL_LECTURES} element={<AdminManageLecture />} />
         <Route path={paths.ADMIN_MANAGE_LECTURES_OF_MANAGE_ALL_SESSIONS} element={<AdminManageLecture/>} />
+        <Route path={paths.ADMIN_CATEGORY_DETAIL} element={<AdminCategoryDetail/>} />
         <Route path="*" element={<NotFound />} />
       </Route>
       <Route path="*" element={<Navigate to={paths.NOTFOUND} />} />

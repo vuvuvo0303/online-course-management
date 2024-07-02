@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Table, Breadcrumb, Modal, Input } from "antd";
 import { Link } from "react-router-dom";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { EyeOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 import styles from "./managecategory.module.css";
 import axios from "axios";
 import { Category } from "../../../models";
+import { host_main } from "../../../consts";
 
 const AdminManageCategories: React.FC = () => {
   const [cates, setCates] = useState<Category[]>([]);
@@ -16,7 +17,7 @@ const AdminManageCategories: React.FC = () => {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.post(
-          "https://api-ojt-hcm24-react06-group01.vercel.app/api/category/search",
+          `${host_main}/api/category/search`,
           {
             searchCondition: {
               keyword: "",
@@ -58,16 +59,6 @@ const AdminManageCategories: React.FC = () => {
       key: 'name',
     },
     {
-      title: 'Parent Category ID',
-      dataIndex: 'parent_category_id',
-      key: 'parent_category_id',
-    },
-    {
-      title: 'User ID',
-      dataIndex: 'user_id',
-      key: 'user_id',
-    },
-    {
       title: 'Is Deleted',
       dataIndex: 'is_deleted',
       key: 'is_deleted',
@@ -86,6 +77,16 @@ const AdminManageCategories: React.FC = () => {
       title: '__v',
       dataIndex: '__v',
       key: '__v',
+    },
+    {
+      title: 'Action',
+      dataIndex: '_id',
+      key: '_id',
+      render: (_id: string)=>(
+        <>
+        <Link to={`/admin/manage-categories/${_id}`} ><EyeOutlined className="text-purple-500" /></Link>
+        </>
+      )
     },
   ];
   // const saveToLocalStorage = (data: Category[]) => {

@@ -79,6 +79,7 @@ export const paths = {
   ADMIN_MANAGE_USERS: "manage-users",
 
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
+  ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
   ADMIN_MANAGE_BLOGS: "manage-blogs",
   ADMIN_MANAGE_COURSES: "manage-courses",
   ADMIN_MANAGE_FEEDBACKS: "manage-feedbacks",
