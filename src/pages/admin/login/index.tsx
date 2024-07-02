@@ -6,10 +6,9 @@ import Rectangle from "../../../assets/Rectangle .jpg";
 import { toast } from "react-toastify";
 import Lottie from "lottie-react";
 import { loginAdmin } from "../../../services/auth.ts";
-import { host_main, paths } from "../../../consts";
+import {paths } from "../../../consts";
 import vutru from "../../../assets/vutru.json";
-import axios from 'axios';
-import { User } from "../../../models/User.ts";
+import axiosInstance from "../../../services/api.ts";
 
 type FieldType = {
     email: string;
@@ -18,49 +17,25 @@ type FieldType = {
 
 const AdminLoginPage: React.FC = () => {
     const navigate = useNavigate();
-    const [accountLockedMsg, setAccountLockedMsg] = useState<string | null>(null);
-    const [userData, setUserData] = useState<User | undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(false); // Add loading state
 
-    const fetchUserData = async (token: string, userId: string) => {
-        try {
-            const response = await axios.get(`${host_main}/api/users/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            console.log(userData);
-            setUserData(response.data.data);
-            localStorage.setItem("user", JSON.stringify(response.data.data));
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            if(error.response && error.response.status === 401) {
-                // Token expired or unauthorized
-                localStorage.removeItem("token");
-
-            }
-            toast.error("Failed to fetch user data");
-        }
+    const fetchUserData = async (token: string) => {
+        const response = await axiosInstance.get('/api/auth');
+        console.log(response)
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(response.data));
     };
 
     const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
         const { email, password } = values;
         setLoading(true); // Set loading to true when login starts
         const authResult = await loginAdmin(email, password);
-
-        if (authResult && "status" in authResult) {
-            setAccountLockedMsg(authResult.status);
-            toast.error(authResult.status);
-        } else if (authResult && "token" in authResult) {
-            const { token, userId } = authResult;
+            if (authResult && "token" in authResult) {
+            const { token } = authResult;
             localStorage.setItem("token", token);
-            await fetchUserData(token, userId);
+            await fetchUserData(token);
             navigate(paths.ADMIN_HOME);
             toast.success("Login successfully");
-        } else {
-            toast.error("Login failed");
         }
         setLoading(false); // Set loading to false when login ends
     };
@@ -117,7 +92,6 @@ const AdminLoginPage: React.FC = () => {
                                 <Input.Password placeholder="Password" className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                             </Form.Item>
                         </div>
-                        {accountLockedMsg && <div className="text-red-500 text-sm">{accountLockedMsg}</div>}
 
                         <Form.Item>
                             <Button

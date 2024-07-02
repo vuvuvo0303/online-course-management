@@ -22,7 +22,6 @@ const LoginPage: React.FC = () => {
   const [accountLockedMsg, setAccountLockedMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if user is already logged in
     const user = localStorage.getItem("user");
     if (user) {
       navigate(paths.HOME);
@@ -43,7 +42,6 @@ const LoginPage: React.FC = () => {
       switch (user.role) {
         case "student":
           navigate(paths.HOME);
-          // window.location.reload();
           break;
         case "instructor":
           navigate(paths.INSTRUCTOR_HOME);
