@@ -1,140 +1,253 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-  Button,
-  Form,
-  Table,
   Breadcrumb,
-  Modal,
+  Button,
   Input,
   Space,
+  Table,
+  Modal,
+  Form,
+  Spin,
+  Pagination,
   Popconfirm,
 } from "antd";
-import { Link } from "react-router-dom";
 import {
+  DeleteOutlined,
+  EditOutlined,
   EyeOutlined,
   HomeOutlined,
   SearchOutlined,
-  EditOutlined,
-  DeleteOutlined,
 } from "@ant-design/icons";
-import moment from "moment-timezone";
-import axios from "axios";
+import { format } from "date-fns";
 import { Category } from "../../../models";
-import { host_main } from "../../../consts";
+import { toast } from "react-toastify";
+import Highlighter from "react-highlight-words";
+import axiosInstance from "../../../services/api.ts";
+import type { TablePaginationConfig } from "antd/es/table/interface";
+import { ColumnType } from "antd/es/table";
+import type { InputRef } from "antd/lib/input/Input";
+import type { FilterDropdownProps } from "antd/es/table/interface";
+import { Link } from "react-router-dom";
+
+interface AxiosResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+  error?: string[];
+}
+
+type DataIndex = keyof Category;
 
 const AdminManageCategories: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [addModalVisible, setAddModalVisible] = useState(false);
-  const [form] = Form.useForm();
-  const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState<string | undefined>(
-    undefined
-  );
-
-  const [sortOrder, setSortOrder] = useState<{ [key: string]: any }>({
-    created_at: undefined,
-    updated_at: undefined,
+  const [data, setData] = useState<Category[]>([]);
+  const [sortOrder, setSortOrder] = useState<{
+    [key in DataIndex]?: "ascend" | "descend";
+  }>({
+    created_at: "ascend",
+    updated_at: "ascend",
   });
-
-  const [selectedCategory, setSelectedCategory] = useState<
-    Category | undefined
-  >(undefined);
+  const [searchText, setSearchText] = useState<string>("");
+  const [searchedColumn, setSearchedColumn] = useState<DataIndex | "">("");
+  const searchInput = useRef<InputRef>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [form] = Form.useForm();
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
 
   useEffect(() => {
     fetchCategories();
-  }, [sortOrder]);
+  }, [pagination.current, pagination.pageSize]);
 
   const fetchCategories = async () => {
+    setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const res = await axios.post(
-        `${host_main}/api/category/search`,
-        {
-          searchCondition: {
-            keyword: searchText,
-            is_delete: false,
-          },
-          pageInfo: {
-            pageNum: 1,
-            pageSize: 10,
-          },
+      const response: AxiosResponse<{
+        pageData: Category[];
+        pageInfo: { totalItems: number; pageNum: number; pageSize: number };
+      }> = await axiosInstance.post("/api/category/search", {
+        searchCondition: {
+          role: "all",
+          status: true,
+          is_deleted: false,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (res.data && res.data.data) {
-        const sortedData = sortData(res.data.data.pageData);
-        setCategories(sortedData);
+        pageInfo: {
+          pageNum: pagination.current,
+          pageSize: pagination.pageSize,
+        },
+      });
+
+      if (response.data && response.data.pageData) {
+        setData(response.data.pageData);
+        setPagination((prev) => ({
+          ...prev,
+          total: response.data.pageInfo.totalItems,
+          current: response.data.pageInfo.pageNum,
+          pageSize: response.data.pageInfo.pageSize,
+        }));
+      } else {
+        console.log("Failed to fetch categories");
       }
-    } catch (error: any) {
-      console.log("Error fetching categories: ", error);
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
+
+  const handleDelete = async (_id: string, name: string) => {
+    console.log("_id:", _id);
+    try {
+      await axiosInstance.delete(`/api/category/${_id}`);
+      setData((prevData) =>
+        prevData.filter((category) => category._id !== _id)
+      );
+      toast.success(`Deleted category ${name} successfully`);
+      fetchCategories();
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const sortData = (data: Category[]) => {
-    const sortedData = [...data].sort((a, b) => {
-      const columnKey = Object.keys(sortOrder)[0] as keyof Category;
+  const handleEditCategory = (category: Category) => {
+    form.setFieldsValue({
+      name: category.name,
+      parent_category_id: category.parent_category_id,
+      description: category.description,
+    });
 
-      let aValue: any = a[columnKey];
-      let bValue: any = b[columnKey];
+    Modal.confirm({
+      title: `Edit Category - ${category.name}`,
+      content: (
+        <Form form={form} onFinish={updateCategory} labelCol={{ span: 24 }}>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input the name!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Parent Category"
+            name="parent_category_id"
+            rules={[{ required: false }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[{ required: false }]}
+          >
+            <Input.TextArea rows={4} />
+          </Form.Item>
+        </Form>
+      ),
+      okText: "Save",
+      onOk: () => form.submit(),
+      onCancel: () => form.resetFields(),
+    });
+  };
+
+  const updateCategory = async (values: Category) => {
+    try {
+      setLoading(true);
+      const updatedCategory: Category = {
+        ...values,
+        updated_at: new Date().toISOString(),
+      };
+
+      console.log("Updating category with _id:", values._id);
+
+      await axiosInstance.put(`/api/category/${values._id}`, updatedCategory);
+
+      const updatedData = data.map((category) =>
+        category._id === values._id ? updatedCategory : category
+      );
+      setData(updatedData);
+
+      toast.success(`Updated category ${values.name} successfully`);
+
+      setIsModalVisible(false);
+      form.resetFields();
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to update category. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addNewCategory = async (values: Category) => {
+    try {
+      setLoading(true);
+      const response: AxiosResponse<Category> = await axiosInstance.post(
+        `/api/category/create`,
+        values
+      );
+      const newCategory = response.data;
+      setData((prevData) => [...prevData, newCategory]);
+      toast.success("Created new category successfully");
+      setIsModalVisible(false);
+      form.resetFields();
+      setLoading(false);
+      fetchCategories();
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    try {
+      return format(new Date(dateString), "dd/MM/yyyy HH:mm:ss");
+    } catch (error) {
+      console.error("Invalid date:", dateString);
+      return "Invalid date";
+    }
+  };
+
+  const sortColumn = (columnKey: DataIndex) => {
+    const newOrder = sortOrder[columnKey] === "ascend" ? "descend" : "ascend";
+
+    const sortedData = [...data].sort((a: Category, b: Category) => {
+      let aValue: string | number | boolean | Date | null = a[columnKey];
+      let bValue: string | number | boolean | Date | null = b[columnKey];
 
       if (columnKey === "created_at" || columnKey === "updated_at") {
-        aValue = new Date(aValue).getTime();
-        bValue = new Date(bValue).getTime();
+        if (typeof aValue === "string" || typeof aValue === "number") {
+          aValue = new Date(aValue).getTime();
+        }
+        if (typeof bValue === "string" || typeof bValue === "number") {
+          bValue = new Date(bValue).getTime();
+        }
       }
 
       if (typeof aValue === "number" && typeof bValue === "number") {
-        return sortOrder[columnKey] === "ascend"
-          ? aValue - bValue
-          : bValue - aValue;
-      } else if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortOrder[columnKey] === "ascend"
+        return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
+      }
+
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return newOrder === "ascend"
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
-      } else {
-        return 0;
       }
+
+      return 0;
     });
 
-    return sortedData;
-  };
-
-  const handleDeleteCategory = async (categoryId: string) => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.delete(
-        `${host_main}/api/category/${categoryId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (res.status === 200) {
-        const updatedCategories = categories.filter(
-          (cat) => cat._id !== categoryId
-        );
-        setCategories(updatedCategories);
-      } else {
-        console.error("Failed to delete category. Server returned:", res.data);
-      }
-    } catch (error: any) {
-      console.error("Error deleting category:", error);
-    }
+    setData(sortedData);
+    setSortOrder((prev) => ({ ...prev, [columnKey]: newOrder }));
   };
 
   const handleSearch = (
-    selectedKeys: string,
-    confirm: () => void,
-    dataIndex: string
+    selectedKeys: string[],
+    confirm: FilterDropdownProps["confirm"],
+    dataIndex: DataIndex
   ) => {
     confirm();
-    setSearchText(selectedKeys);
+    setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
 
@@ -143,38 +256,35 @@ const AdminManageCategories: React.FC = () => {
     setSearchText("");
   };
 
-  const sortColumn = (columnKey: keyof Category) => {
-    const currentOrder = sortOrder[columnKey];
-    let newOrder: "ascend" | "descend" = "ascend";
-
-    if (currentOrder === "ascend") {
-      newOrder = "descend";
-    }
-
-    setSortOrder({ [columnKey]: newOrder });
-  };
-
-  const getColumnSearchProps = (dataIndex: string, width?: number) => ({
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): ColumnType<Category> => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
       confirm,
       clearFilters,
-    }: any) => (
-      <div style={{ padding: 8 }}>
+      close,
+    }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
+          ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
-          onPressEnter={() => handleSearch(selectedKeys[0], confirm, dataIndex)}
-          style={{ width: 188, marginBottom: 8, display: "block" }}
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
+          style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys[0], confirm, dataIndex)}
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
@@ -182,277 +292,218 @@ const AdminManageCategories: React.FC = () => {
             Search
           </Button>
           <Button
-            onClick={() => handleReset(clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
             style={{ width: 90 }}
           >
             Reset
           </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            Close
+          </Button>
         </Space>
       </div>
     ),
     filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
-    onFilter: (value: any, record: any) =>
-      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownVisibleChange: (visible: boolean) => {
+    onFilter: (value, record) =>
+      record[dataIndex]
+        ?.toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()) || false,
+    onFilterDropdownOpenChange: (visible) => {
       if (visible) {
-        setTimeout(() => {
-          const input = document.getElementById(`${dataIndex}-input`);
-          if (input) {
-            input.focus();
-          }
-        }, 100);
+        setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    render: (text: any) =>
+    render: (text) =>
       searchedColumn === dataIndex ? (
-        <span style={{ fontWeight: "bold" }}>{text}</span>
+        <Highlighter
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
       ) : (
         text
       ),
-    width: width, // Adjust column width if provided
   });
 
-  const handleEditCategory = (record: Category) => {
-    setSelectedCategory(record);
-    setEditModalVisible(true);
-  };
-
-  const handleSaveEdit = async (values: any) => {
-    try {
-      const token = localStorage.getItem("token");
-      const updatedCategory = {
-        ...selectedCategory!,
-        ...values,
-        updated_at: new Date().toISOString(),
-      };
-
-      const res = await axios.put(
-        `${host_main}/api/category/${updatedCategory._id}`,
-        updatedCategory,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (res.status === 200) {
-        const updatedCategories = categories.map((cat) =>
-          cat._id === updatedCategory._id ? updatedCategory : cat
-        );
-        setCategories(updatedCategories);
-        setEditModalVisible(false);
-      } else {
-        console.error("Failed to update category. Server returned:", res.data);
-      }
-    } catch (error: any) {
-      console.error("Error updating category:", error);
-    }
-  };
-
-  const handleSaveAdd = async (values: any) => {
-    try {
-      const token = localStorage.getItem("token");
-      const newCategory = {
-        ...values,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        is_delete: false,
-      };
-
-      const res = await axios.post(`${host_main}/api/category`, newCategory, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (res.status === 201) {
-        setCategories([...categories, res.data.data]);
-        form.resetFields();
-        setAddModalVisible(false);
-      } else {
-        console.error("Failed to add new category. Server returned:", res.data);
-      }
-    } catch (error: any) {
-      console.error("Error adding new category:", error);
-    }
-  };
-
-  const columns = [
+  const columns: ColumnType<Category>[] = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
       ...getColumnSearchProps("name"),
-      width: 250,
+      onHeaderCell: () => ({
+        onClick: () => sortColumn("name"),
+      }),
+    },
+    {
+      title: "Parent Category",
+      dataIndex: "parent_category_id",
+      key: "parent_category_id",
+      ...getColumnSearchProps("parent_category_id"),
+      render: (parent_category_id: string) => {
+        const category = data.find(
+          (category) => category._id === parent_category_id
+        );
+        return category ? category.name : "None";
+      },
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
-      ...getColumnSearchProps("description"),
-      width: 250,
+      ellipsis: true,
     },
     {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
+      render: (created_at: Date) => formatDate(created_at.toString()),
       sorter: true,
-      sortOrder: sortOrder["created_at"],
-      render: (created_at: string) =>
-        moment
-          .utc(created_at)
-          .tz("Asia/Ho_Chi_Minh")
-          .format("YYYY-MM-DD HH:mm:ss"),
+      sortDirections: ["descend", "ascend"],
       onHeaderCell: () => ({
         onClick: () => sortColumn("created_at"),
       }),
-      width: 150,
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
+      render: (updated_at: Date) => formatDate(updated_at.toString()),
       sorter: true,
-      sortOrder: sortOrder["updated_at"],
-      render: (updated_at: string) =>
-        moment
-          .utc(updated_at)
-          .tz("Asia/Ho_Chi_Minh")
-          .format("YYYY-MM-DD HH:mm:ss"),
+      sortDirections: ["descend", "ascend"],
       onHeaderCell: () => ({
         onClick: () => sortColumn("updated_at"),
       }),
-      width: 150,
     },
     {
       title: "Action",
       key: "action",
-      render: (_: any, record: Category) => (
-        <Space size="middle">
+      render: (_: unknown, record: Category) => (
+        <div>
           <Link to={`/admin/manage-categories/${record._id}`}>
-            <EyeOutlined className="text-purple-500" />
+            <EyeOutlined className="text-purple-500 mr-2" />
           </Link>
-          <a onClick={() => handleEditCategory(record)}>
-            <EditOutlined className="text-blue-500" />
-          </a>
+          <EditOutlined
+            className="text-blue-500"
+            style={{ fontSize: "16px", marginLeft: "8px", cursor: "pointer" }}
+            onClick={() => handleEditCategory(record)}
+          />
           <Popconfirm
             title="Are you sure to delete this category?"
-            onConfirm={() => handleDeleteCategory(record._id)}
+            onConfirm={() => handleDelete(record._id, record.name)}
             okText="Yes"
             cancelText="No"
           >
-            <DeleteOutlined className="text-red-500" />
+            <DeleteOutlined
+              className="text-red-500"
+              style={{ fontSize: "16px", marginLeft: "8px", cursor: "pointer" }}
+            />
           </Popconfirm>
-        </Space>
+        </div>
       ),
-      width: 150,
     },
   ];
+
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
+  };
+
+  const handlePaginationChange = (page: number, pageSize?: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize || 10,
+    }));
+  };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
-          <Breadcrumb.Item>
-            <Link to="/">
-              <HomeOutlined />
-            </Link>
+          <Breadcrumb.Item href="/">
+            <HomeOutlined />
           </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <Link to="/dashboard/admin">
-              <span>Admin</span>
-            </Link>
-          </Breadcrumb.Item>
+          <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Categories</Breadcrumb.Item>
         </Breadcrumb>
-        <Button
-          type="primary"
-          className="flex-shrink-0"
-          onClick={() => setAddModalVisible(true)} // Open add modal
-        >
+        <Button type="primary" onClick={() => setIsModalVisible(true)}>
           Add New Category
         </Button>
       </div>
-      <Table
-        dataSource={categories}
-        columns={columns}
-        pagination={false}
-        onChange={fetchCategories}
-      />
+      <Spin spinning={loading}>
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowKey="_id"
+          pagination={false}
+          onChange={handleTableChange}
+        />
+      </Spin>
+      <div className="flex justify-end py-8">
+        <Pagination
+          total={pagination.total}
+          showTotal={(total) => `Total ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
+      </div>
 
       <Modal
         title="Add New Category"
-        visible={addModalVisible}
-        onCancel={() => {
-          form.resetFields();
-          setAddModalVisible(false);
-        }}
-        footer={[
-          <Button key="cancel" onClick={() => setAddModalVisible(false)}>
-            Cancel
-          </Button>,
-          <Button key="submit" type="primary" onClick={() => form.submit()}>
-            Add
-          </Button>,
-        ]}
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
       >
-        <Form form={form} layout="vertical" onFinish={handleSaveAdd}>
+        <Form form={form} onFinish={addNewCategory} labelCol={{ span: 24 }}>
           <Form.Item
+            label="Name"
             name="name"
-            label="Category Name"
-            rules={[{ required: true, message: "Please enter category name!" }]}
+            rules={[{ required: true, message: "Please input the name!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true, message: "Please enter description!" }]}
-          >
-            <Input.TextArea rows={4} />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Edit Category"
-        visible={editModalVisible}
-        onCancel={() => {
-          form.resetFields();
-          setEditModalVisible(false);
-        }}
-        footer={[
-          <Button key="cancel" onClick={() => setEditModalVisible(false)}>
-            Cancel
-          </Button>,
-          <Button key="submit" type="primary" onClick={() => form.submit()}>
-            Save
-          </Button>,
-        ]}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSaveEdit}
-          initialValues={selectedCategory}
-        >
-          <Form.Item
-            name="name"
-            label="Category Name"
-            rules={[{ required: true, message: "Please enter category name!" }]}
+            label="Parent Category"
+            name="parent_category_id"
+            rules={[{ required: false }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="description"
             label="Description"
-            rules={[{ required: true, message: "Please enter description!" }]}
+            name="description"
+            rules={[{ required: false }]}
           >
             <Input.TextArea rows={4} />
+          </Form.Item>
+          <Form.Item>
+            <Button loading={loading} type="primary" htmlType="submit">
+              Add
+            </Button>
           </Form.Item>
         </Form>
       </Modal>
