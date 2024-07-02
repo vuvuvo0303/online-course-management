@@ -116,6 +116,16 @@ const Dashboard: React.FC = () => {
 
           getItem("Manage Categories", "/admin/manage-categories", <TeamOutlined />),
           getItem("Manage Courses", "/admin/manage-courses", <FundProjectionScreenOutlined />),
+          getItem(
+            "Manage All Sessions",
+            "/admin/manage-all-sessions",
+            <DesktopOutlined />,
+          ),
+          getItem(
+            "Manage All Lectures",
+            "/admin/manage-all-lectures",
+            <DesktopOutlined />,
+          ),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
           getItem("Manage Feedbacks", "/admin/manage-feedbacks", <CommentOutlined />),
           getItem("Payment History", "/admin/payment-history", <DesktopOutlined />),
