@@ -11,6 +11,7 @@ import {
   QuestionCircleOutlined,
   TeamOutlined,
   ToolOutlined,
+  UnorderedListOutlined,
   UserOutlined,
   WalletOutlined,
 } from "@ant-design/icons";
@@ -60,10 +61,16 @@ const Dashboard: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     navigate("/");
   };
 
-  function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
+  function getItem(
+    label: React.ReactNode,
+    key: React.Key,
+    icon?: React.ReactNode,
+    children?: MenuItem[]
+  ): MenuItem {
     return {
       key,
       icon,
@@ -79,56 +86,83 @@ const Dashboard: React.FC = () => {
           getItem(
             "Manage Feedbacks",
             "/instructor/manage-feedbacks",
-            <CommentOutlined />,
-
+            <CommentOutlined />
           ),
           getItem(
             "Manage Courses",
             "/instructor/manage-courses",
-            <FundProjectionScreenOutlined />,
+            <FundProjectionScreenOutlined />
           ),
           getItem(
             "Manage All Sessions",
             "/instructor/manage-all-sessions",
-            <DesktopOutlined />,
+            <DesktopOutlined />
           ),
           getItem(
             "Manage All Lectures",
             "/instructor/manage-all-lectures",
-            <DesktopOutlined />,
+            <DesktopOutlined />
           ),
           getItem(
             "Manage Students",
             "/instructor/manage-students",
-            <TeamOutlined />,
+            <TeamOutlined />
           ),
           getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
-          getItem("Create New Course", "/instructor/create-course", <FolderViewOutlined />),
-          getItem("Payment History", "/instructor/payment-history", <WalletOutlined />),
+          getItem(
+            "Create New Course",
+            "/instructor/create-course",
+            <FolderViewOutlined />
+          ),
+          getItem(
+            "Payment History",
+            "/instructor/payment-history",
+            <WalletOutlined />
+          ),
           getItem("Tools", "/instructor/tools", <ToolOutlined />),
-          getItem("Resources", "/instructor/resources", <QuestionCircleOutlined />),
+          getItem(
+            "Resources",
+            "/instructor/resources",
+            <QuestionCircleOutlined />
+          ),
         ]);
       } else if (dataUser.role === "admin") {
         setItems([
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
           getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
 
-          getItem("Manage Categories", "/admin/manage-categories", <TeamOutlined />),
-          getItem("Manage Courses", "/admin/manage-courses", <FundProjectionScreenOutlined />),
+          getItem(
+            "Manage Categories",
+            "/admin/manage-categories",
+            <UnorderedListOutlined />
+          ),
+          getItem(
+            "Manage Courses",
+            "/admin/manage-courses",
+            <FundProjectionScreenOutlined />
+          ),
           getItem(
             "Manage All Sessions",
             "/admin/manage-all-sessions",
-            <DesktopOutlined />,
+            <DesktopOutlined />
           ),
           getItem(
             "Manage All Lectures",
             "/admin/manage-all-lectures",
-            <DesktopOutlined />,
+            <DesktopOutlined />
           ),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
-          getItem("Manage Feedbacks", "/admin/manage-feedbacks", <CommentOutlined />),
-          getItem("Payment History", "/admin/payment-history", <DesktopOutlined />),
+          getItem(
+            "Manage Feedbacks",
+            "/admin/manage-feedbacks",
+            <CommentOutlined />
+          ),
+          getItem(
+            "Payment History",
+            "/admin/payment-history",
+            <DesktopOutlined />
+          ),
         ]);
       }
     }
@@ -182,7 +216,11 @@ const Dashboard: React.FC = () => {
       label: (
         <Link
           className="mt-2 text-lg"
-          to={dataUser.role === "Instructor" ? "/instructor/paidMemberships" : "/admin/paidMemberships"}
+          to={
+            dataUser.role === "Instructor"
+              ? "/instructor/paidMemberships"
+              : "/admin/paidMemberships"
+          }
         >
           Paid Memberships
         </Link>
@@ -191,7 +229,14 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={dataUser.role === "Instructor" ? "/instructor/setting" : "/admin/setting"}>
+        <Link
+          className="text-lg"
+          to={
+            dataUser.role === "Instructor"
+              ? "/instructor/setting"
+              : "/admin/setting"
+          }
+        >
           Setting
         </Link>
       ),
@@ -199,7 +244,12 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"}>
+        <Link
+          className="text-lg"
+          to={
+            dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"
+          }
+        >
           Help
         </Link>
       ),
@@ -209,7 +259,11 @@ const Dashboard: React.FC = () => {
       label: (
         <Link
           className="text-lg"
-          to={dataUser.role === "Instructor" ? "/instructor/sendFeedBack" : "/admin/sendFeedBack"}
+          to={
+            dataUser.role === "Instructor"
+              ? "/instructor/sendFeedBack"
+              : "/admin/sendFeedBack"
+          }
         >
           Send Feedback
         </Link>
@@ -218,7 +272,10 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <p onClick={handleLogout} className="text-lg hover:cursor-pointer hover:text-red-600">
+        <p
+          onClick={handleLogout}
+          className="text-lg hover:cursor-pointer hover:text-red-600"
+        >
           Logout
         </p>
       ),
@@ -229,9 +286,18 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
           <div className="demo-logo-vertical" />
-          <Menu className="py-4 bg-white-50 h-full" defaultSelectedKeys={["1"]} mode="vertical" items={items} />
+          <Menu
+            className="py-4 bg-white-50 h-full"
+            defaultSelectedKeys={["1"]}
+            mode="vertical"
+            items={items}
+          />
         </Sider>
         <Layout className="bg-stone-100">
           <Header className="flex justify-between items-center drop-shadow-xl bg-white ">
@@ -262,7 +328,9 @@ const Dashboard: React.FC = () => {
               <Outlet />
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>@ 2024 FLearn. All rights reserved</Footer>
+          <Footer style={{ textAlign: "center" }}>
+            @ 2024 FLearn. All rights reserved
+          </Footer>
         </Layout>
       </Layout>
     </>
