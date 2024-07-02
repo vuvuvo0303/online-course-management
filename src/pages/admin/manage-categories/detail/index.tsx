@@ -105,7 +105,7 @@ const CategoryDetail = () => {
                     </Link>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <h1 className="text-center my-10"> Categories Detail </h1>
+            <h1 className="text-center my-10"> Category Detail </h1>
             {cate ? (
                 <Table dataSource={[cate]} columns={columns} rowKey="_id" />
             ) : (
