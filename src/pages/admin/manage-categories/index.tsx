@@ -80,7 +80,7 @@ const AdminManageCategories: React.FC = () => {
         },
       });
 
-      if (response.data && response.data.pageData) {
+      if (response.success && response.data) {
         setData(response.data.pageData);
         setPagination((prev) => ({
           ...prev,
@@ -89,12 +89,14 @@ const AdminManageCategories: React.FC = () => {
           pageSize: response.data.pageInfo.pageSize,
         }));
       } else {
-        console.log("Failed to fetch categories");
+        toast.error(response.message || "Failed to fetch categories");
       }
     } catch (error) {
       console.log(error);
+      toast.error("An error occurred while fetching categories");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDelete = async (_id: string, name: string) => {
@@ -108,11 +110,13 @@ const AdminManageCategories: React.FC = () => {
       fetchCategories();
     } catch (error) {
       console.log(error);
+      toast.error("Failed to delete category");
     }
   };
 
   const handleEditCategory = (category: Category) => {
     form.setFieldsValue({
+      _id: category._id,
       name: category.name,
       parent_category_id: category.parent_category_id,
       description: category.description,
@@ -142,6 +146,9 @@ const AdminManageCategories: React.FC = () => {
             rules={[{ required: false }]}
           >
             <Input.TextArea rows={4} />
+          </Form.Item>
+          <Form.Item name="_id" style={{ display: "none" }}>
+            <Input type="hidden" />
           </Form.Item>
         </Form>
       ),
@@ -184,17 +191,24 @@ const AdminManageCategories: React.FC = () => {
     try {
       setLoading(true);
       const response: AxiosResponse<Category> = await axiosInstance.post(
-        `/api/category/create`,
+        `/api/category`,
         values
       );
-      const newCategory = response.data;
-      setData((prevData) => [...prevData, newCategory]);
-      toast.success("Created new category successfully");
-      setIsModalVisible(false);
-      form.resetFields();
-      setLoading(false);
-      fetchCategories();
+      console.log("check response: ", response)
+      if (response.success && response.data) {
+        const newCategory = response.data;
+        setData((prevData) => [...prevData, newCategory]);
+        toast.success("Created new category successfully");
+        setIsModalVisible(false);
+        form.resetFields();
+        fetchCategories();
+      } else {
+        toast.error(response.message || "Failed to create category");
+      }
     } catch (error) {
+      console.log(error);
+      toast.error("Failed to create category. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
