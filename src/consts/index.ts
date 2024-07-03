@@ -12,7 +12,24 @@ export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 export const API_BLOGS_URL = `${BASE_URL}/blogs`;
 
 /* API */
+
+//Base URL
 export const host_main = "https://api-ojt-hcm24-react06-group01.vercel.app";
+//Auth
+export const API_LOGIN = "/api/auth";
+export const API_LOGIN_WITH_GOOGLE = "/api/auth/google";
+export const API_CURRENT_LOGIN_USER = "/api/auth";
+//Users
+export const API_REGISTER = "/api/users";
+export const API_REGISTER_WITH_GOOGLE = "/api/users/google";
+export const API_CREATE_USER = "/api/users/create";
+export const API_GET_USERS = "/api/users/search";
+export const API_GET_USER_DETAIL = "/api/users";
+export const API_UPDATE_USER = "/api/users";
+export const API_CHANGE_PASSWORD = "/api/users/change-password";
+export const API_CHANGE_STATUS = "/api/users/change-status";
+export const API_CHANGE_ROLE = "/api/users/change-role";
+export const API_DELETE_USER = "/api/users";
 
 /* PATHS */
 export const paths = {
@@ -79,15 +96,24 @@ export const paths = {
   ADMIN_MANAGE_USERS: "manage-users",
 
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
+  ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
   ADMIN_MANAGE_BLOGS: "manage-blogs",
   ADMIN_MANAGE_COURSES: "manage-courses",
   ADMIN_MANAGE_FEEDBACKS: "manage-feedbacks",
   ADMIN_PAYMENT_HISTORY: "payment-history",
   ADMIN_MANAGE_SESSION_OF_COURSE: "manage-course/:courseId/manage-session",
   ADMIN_MANAGE_LECTURES_OF_COURSE: "manage-course/:courseId/manage-session/:sessionId/lecture",
+  ADMIN_MANAGE_LECTURES_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/:sessionId/manage-lecture",
   /* SPECIAL PATHS */
   INSTRUCTOR_HOME: "/instructor/dashboard",
   ADMIN_HOME: "/admin/dashboard",
+  ADMIN_MANAGE_ALL_SESSION: "manage-all-sessions",
+  ADMIN_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
+  ADMIN_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/update-session/:sessionId",
+  ADMIN_MANAGE_ALL_LECTURES: "manage-all-lectures",
+  ADMIN_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/create-lecture",
+  ADMIN_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
+
 };
 
 /* ROLE */

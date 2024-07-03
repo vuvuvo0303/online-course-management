@@ -6,11 +6,10 @@ const axiosInstance = axios.create({
     headers: {
         'Content-Type': 'application/json',
     }
-})
+});
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        // Check if the request needs token
         if (!config.headers.skipAuth) {
             const token = localStorage.getItem("token");
             if (token) {
@@ -22,7 +21,7 @@ axiosInstance.interceptors.request.use(
     (error) => {
         return Promise.reject(error);
     }
-)
+);
 
 axiosInstance.interceptors.response.use(
     (response) => {
@@ -36,25 +35,21 @@ axiosInstance.interceptors.response.use(
     (error) => {
         if (error.response) {
             const { status, data } = error.response;
-            if (status === 400) {
-                toast.error('Bad Request');
-            } else if (status === 401) {
-                toast.error('Unauthorized. Please login again');
-            } else if (status === 403) {
-                toast.error('Forbidden. You do not have permission to log in');
-            } else if (status === 404) {
-                toast.error('Not Found');
-            } else if (status === 500) {
-                toast.error('Internal Server Error');
-            } else {
-                toast.error('Error Occurred');
+            if (status === 409) {
+                // Handle conflict error silently
+                return Promise.reject({ status, data });
             }
-            return Promise.reject(data);
+            if (data && data.message) {
+                toast.error(data.message);
+            } else {
+                toast.error('An error occurred');
+            }
+            return Promise.reject(error.response.data);
         } else {
             toast.error('Network error');
             return Promise.reject(error);
         }
     }
-)
+);
 
 export default axiosInstance;

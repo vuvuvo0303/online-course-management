@@ -6,11 +6,19 @@ import Rectangle from "../../assets/Rectangle .jpg";
 import { login } from "../../services/auth";
 import { removePassword } from "../../utils/validHelper";
 import { toast } from "react-toastify";
-import { paths } from "../../consts";
+import {
+  API_CURRENT_LOGIN_USER,
+  API_GET_USERS,
+  API_LOGIN_WITH_GOOGLE,
+  API_REGISTER_WITH_GOOGLE,
+  paths
+} from "../../consts";
 import { GoogleLogin } from "@react-oauth/google";
 import Lottie from "lottie-react";
 import vutru from "../../assets/vutru.json";
 import { jwtDecode } from "jwt-decode";
+import axiosInstance from "../../services/api.ts";
+import {toggleToast} from "react-toastify/dist/core/store";
 
 type FieldType = {
   email: string;
@@ -22,7 +30,6 @@ const LoginPage: React.FC = () => {
   const [accountLockedMsg, setAccountLockedMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if user is already logged in
     const user = localStorage.getItem("user");
     if (user) {
       navigate(paths.HOME);
@@ -32,7 +39,6 @@ const LoginPage: React.FC = () => {
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     const { email, password } = values;
     const authResult = await login(email, password);
-
     if (authResult && "status" in authResult) {
       setAccountLockedMsg(authResult.status);
       toast.error(authResult.status);
@@ -43,7 +49,6 @@ const LoginPage: React.FC = () => {
       switch (user.role) {
         case "student":
           navigate(paths.HOME);
-          // window.location.reload();
           break;
         case "instructor":
           navigate(paths.INSTRUCTOR_HOME);
@@ -58,9 +63,48 @@ const LoginPage: React.FC = () => {
     }
   };
 
+
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+  
+
+  const handleLoginWithGoogle = async (googleId: string) => {
+    try {
+      const responseLogin = await axiosInstance.post(API_LOGIN_WITH_GOOGLE, {
+        google_id: googleId,
+      });
+      localStorage.setItem("token", responseLogin.data.token);
+      const currentUser = await axiosInstance.get(API_CURRENT_LOGIN_USER);
+      localStorage.setItem("user", JSON.stringify(currentUser.data));
+      toast.success("Login successfully");
+      navigate(paths.HOME);
+    } catch (error) {
+      if (error.status === 409) {
+        // Account does not exist, call the registration API
+        try {
+          const responseRegister = await axiosInstance.post(API_REGISTER_WITH_GOOGLE, {
+            google_id: googleId,
+            role: 'student'
+          });
+          console.log(responseRegister);
+          const responseLogin = await axiosInstance.post(API_LOGIN_WITH_GOOGLE, {
+            google_id: googleId,
+          })
+          localStorage.setItem("token", responseLogin.data.token);
+          const currentUser = await axiosInstance.get(API_CURRENT_LOGIN_USER);
+          localStorage.setItem("user", JSON.stringify(currentUser.data));
+          toast.success("Registered and logged in successfully");
+          navigate(paths.HOME);
+        } catch (registerError) {
+          // Handle registration error
+        }
+      } else {
+        // Handle other errors accordingly
+      }
+    }
+  };
+
 
   return (
     <>
@@ -160,6 +204,7 @@ const LoginPage: React.FC = () => {
             <GoogleLogin
               onSuccess={(credentialResponse) => {
                 console.log(credentialResponse);
+                handleLoginWithGoogle(credentialResponse.credential as string);
                 const credentialResponseDecoded = jwtDecode(credentialResponse.credential as string);
 
                 console.log(credentialResponseDecoded);
@@ -181,3 +226,4 @@ const LoginPage: React.FC = () => {
 };
 
 export default LoginPage;
+

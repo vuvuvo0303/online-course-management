@@ -67,7 +67,6 @@ const SideBar: React.FC = () => {
                         </Avatar>
                         <div>
                             <div className="font-bold text-lg">Hi, {userData.fullName || 'Guest'}</div>
-                            <div className="text-gray-500">Welcome back</div>
                         </div>
                     </div>
                 </div>

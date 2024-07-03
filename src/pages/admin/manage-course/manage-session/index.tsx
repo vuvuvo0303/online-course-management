@@ -94,24 +94,12 @@ const AdminManageSession = () => {
             ),
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: boolean, record: Session) => (
-                <Switch
-                    checked={status}
-                    onChange={(checked) => onChangeStatus(checked, record.sessionId)}
-                />
-            ),
-        },
-        {
             title: 'Action',
             dataIndex: 'sessionId',
             key: 'sessionId',
             render: (sessionId: string) => (
                 <>
                     <Link to={`/admin/manage-course/${courseId}/manage-session/${sessionId}/lecture`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-                    
                     <DeleteOutlined className=" text-red-500 m-2" />
                 </>
             )

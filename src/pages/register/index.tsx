@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, FormProps, Image, Input, Modal, Radio, Upload, message } from "antd";
+import { Button, Checkbox, Form, FormProps, Image, Input, Modal, Radio, Upload } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState } from "react";
@@ -7,11 +7,10 @@ import Vector from "../../assets/Vector.png";
 import Rectangle from "../../assets/Rectangle .jpg";
 import register from "../../assets/register.json";
 import Lottie from "lottie-react";
-import axios from "axios";
 import { toast } from "react-toastify";
-import { host_main, paths } from "../../consts";
 import { useForm } from "antd/es/form/Form";
 import uploadFile from "../../utils/upload";
+import axiosInstance from "../../services/api.ts";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type FieldType = {
@@ -41,7 +40,6 @@ const RegisterPage: React.FC = () => {
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     setLoading(true);
     try {
-      console.log(values);
 
       if (fileList.length > 0) {
         const file = fileList[0].originFileObj as FileType;
@@ -49,19 +47,13 @@ const RegisterPage: React.FC = () => {
         values.avatar = url;
       }
 
-      const response = await axios.post(`${host_main}/api/users`, values);
-      console.log("Success:", response.data);
-      if (response.data.success === false) {
-        return toast.error(response.data.message);
-      }
-      toast.success("Account created successfully!");
-      navigate(paths.LOGIN);
+      await axiosInstance.post("/api/users", values);
+      toast.success("Successfully registered");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 400) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Failed to create account");
-      }
+      //Handle error softly
     } finally {
       setLoading(false);
     }
@@ -216,7 +208,7 @@ const RegisterPage: React.FC = () => {
                 valuePropName="checked"
                 rules={[
                   {
-                    required: "true",
+                    required: true,
                     message: "Please agree with our policy",
                   },
                 ]}

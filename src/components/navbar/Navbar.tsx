@@ -13,10 +13,11 @@ import Popup from '../Popup';
 const Navbar: React.FC = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
-  const [dataUser, setDataUser] = useState<{ role: string | null; fullName: string | null; email: string | null }>({
+  const [dataUser, setDataUser] = useState<{ role: string | null; fullName: string | null; email: string | null; avatarUrl: string | null }>({
     role: null,
     fullName: null,
     email: null,
+    avatarUrl: null,
   });
   const isLoginOrRegister = location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
   const isMobile = useMediaQuery({ maxWidth: 768 });
@@ -25,13 +26,16 @@ const Navbar: React.FC = () => {
   const isRegisterPage = location.pathname === '/register';
   const isForgotPassword = location.pathname === '/forgot-password';
   // Create a submenu for each categoryFilter
+  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+  const { avatar } = userData;
 
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
       try {
         const userData = JSON.parse(user);
-        setDataUser({ role: userData.role, fullName: userData.fullName, email: userData.email });
+        console.log(userData.avatar)
+        setDataUser({ role: userData.role, fullName: userData.name, email: userData.email, avatarUrl: userData.avatar });
       } catch (error) {
         console.error("Error parsing user data from localStorage", error);
       }
@@ -42,6 +46,7 @@ const Navbar: React.FC = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     navigate('/');
+    window.location.reload();
   };
 
   const dropdownItems: MenuProps["items"] = [
@@ -51,7 +56,7 @@ const Navbar: React.FC = () => {
           <Row>
             <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
-                src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
+                src={dataUser.avatarUrl}
                 className="hover:cursor-pointer mt-1"
                 size={50}
                 icon={<UserOutlined />}
@@ -110,8 +115,7 @@ const Navbar: React.FC = () => {
   ];
 
   // Get user data from localStorage
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
-  const { avatarUrl } = userData;
+
 
   // const handleMenuClick = () => {
   //   setMobileMenuVisible(!mobileMenuVisible);
@@ -237,13 +241,12 @@ const Navbar: React.FC = () => {
                 </Link>
               </Popover>
 
-              {avatarUrl ? (
+              {avatar ? (
                 <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
                   <p onClick={(e) => e.preventDefault()}>
                     <Space>
                       <Avatar
-                        src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
-                        className="hover:cursor-pointer"
+                        src={dataUser.avatarUrl}
                         size={40}
                         icon={<UserOutlined />}
                       />

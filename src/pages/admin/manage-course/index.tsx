@@ -111,17 +111,6 @@ const AdminManageCourses: React.FC = () => {
       )
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: boolean, record: Course) => (
-        <div>
-          <Switch checked={status} onChange={(checked) => onChange(checked, record.courseId)} />
-        </div>
-      )
-    },
-    
-    {
       title: 'Action',
       dataIndex: 'courseId',
       key: 'courseId',
