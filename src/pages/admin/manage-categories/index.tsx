@@ -83,7 +83,7 @@ const AdminManageCategories: React.FC = () => {
         },
       });
 
-      if (response.data && response.data.pageData) {
+      if (response.success && response.data) {
         setData(response.data.pageData);
         setPagination((prev) => ({
           ...prev,
@@ -92,12 +92,14 @@ const AdminManageCategories: React.FC = () => {
           pageSize: response.data.pageInfo.pageSize,
         }));
       } else {
-        console.log("Failed to fetch categories");
+        toast.error(response.message || "Failed to fetch categories");
       }
     } catch (error) {
       console.log(error);
+      toast.error("An error occurred while fetching categories");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDelete = async (_id: string, name: string) => {
@@ -121,6 +123,7 @@ const AdminManageCategories: React.FC = () => {
       fetchCategories();
     } catch (error) {
       console.log(error);
+      toast.error("Failed to delete category");
     }
   };
 
@@ -184,6 +187,9 @@ const AdminManageCategories: React.FC = () => {
             rules={[{ required: false }]}
           >
             <Input.TextArea rows={4} />
+          </Form.Item>
+          <Form.Item name="_id" style={{ display: "none" }}>
+            <Input type="hidden" />
           </Form.Item>
         </Form>
       ),
@@ -257,6 +263,8 @@ const AdminManageCategories: React.FC = () => {
       fetchCategories();
     } catch (error) {
       console.log(error);
+      toast.error("Failed to create category. Please try again.");
+    } finally {
       setLoading(false);
       toast.error("Failed to create new category. Please try again.");
     }
