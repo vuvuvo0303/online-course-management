@@ -247,6 +247,7 @@ const AdminManageCategories: React.FC = () => {
         const newCategory = response.data;
         setData((prevData) => [...prevData, newCategory]);
         toast.success("Created new category successfully");
+        setData([]);
         setIsModalVisible(false);
         form.resetFields();
         fetchCategories();
@@ -258,7 +259,6 @@ const AdminManageCategories: React.FC = () => {
       toast.error("Failed to create category. Please try again.");
     } finally {
       setLoading(false);
-      toast.error("Failed to create new category. Please try again.");
     }
   };
 
