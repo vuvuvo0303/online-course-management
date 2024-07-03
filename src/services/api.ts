@@ -1,8 +1,10 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import config from "../secret/config.ts";
 
+console.log(config.BASE_URL)
 const axiosInstance = axios.create({
-    baseURL: "https://api-ojt-hcm24-react06-group01.vercel.app",
+    baseURL: config.BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     }

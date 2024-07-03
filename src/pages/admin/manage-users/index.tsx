@@ -47,6 +47,7 @@ import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
+import {API_CHANGE_STATUS, API_CREATE_USER, API_GET_USERS} from "../../../consts";
 
 interface ApiError {
   code: number;
@@ -59,7 +60,6 @@ interface CreateUserResponse {
   message?: string;
   error?: ApiError[];
 }
-import { API_GET_USERS } from "../../../consts";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type AxiosResponse<T> = {
@@ -85,11 +85,6 @@ const AdminManageUsers: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -107,7 +102,7 @@ const AdminManageUsers: React.FC = () => {
       const response: AxiosResponse<{
         pageData: User[];
         pageInfo: { totalItems: number; pageNum: number; pageSize: number };
-      }> = await axiosInstance.post("/api/users/search", {
+      }> = await axiosInstance.post(API_GET_USERS, {
         searchCondition: {
           role: "all",
           status: true,
@@ -169,7 +164,7 @@ const AdminManageUsers: React.FC = () => {
 
         const response: AxiosResponse<CreateUserResponse> =
           await axiosInstance.post<Student, AxiosResponse<CreateUserResponse>>(
-            `/api/users/create`,
+            API_CREATE_USER,
             userData
           );
 
@@ -267,7 +262,7 @@ const AdminManageUsers: React.FC = () => {
   const handleStatusChange = useCallback(
     async (checked: boolean, userId: string) => {
       try {
-        await axiosInstance.put("/api/users/change-status", {
+        await axiosInstance.put(API_CHANGE_STATUS, {
           user_id: userId,
           status: checked,
         });
