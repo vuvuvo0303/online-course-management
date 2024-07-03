@@ -263,10 +263,8 @@ const AdminManageCategories: React.FC = () => {
       fetchCategories();
     } catch (error) {
       console.log(error);
-      toast.error("Failed to create category. Please try again.");
     } finally {
       setLoading(false);
-      toast.error("Failed to create new category. Please try again.");
     }
   };
 

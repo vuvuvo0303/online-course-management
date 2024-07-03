@@ -80,6 +80,8 @@ const LoginPage: React.FC = () => {
       toast.success("Login successfully");
       navigate(paths.HOME);
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       if (error.status === 409) {
         // Account does not exist, call the registration API
         try {
