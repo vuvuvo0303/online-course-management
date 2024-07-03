@@ -101,6 +101,17 @@ const AdminManageCategories: React.FC = () => {
   };
 
   const handleDelete = async (_id: string, name: string) => {
+    const isParentCategory = data.some(
+      (category) => category.parent_category_id === _id
+    );
+
+    if (isParentCategory) {
+      toast.error(
+        `Cannot delete category ${name} as it is a parent category of another category.`
+      );
+      return;
+    }
+
     try {
       await axiosInstance.delete(`/api/category/${_id}`);
       setData((prevData) =>
@@ -239,6 +250,7 @@ const AdminManageCategories: React.FC = () => {
       const newCategory = response.data;
       setData((prevData) => [...prevData, newCategory]);
       toast.success("Created new category successfully");
+      setData([]);
       setIsModalVisible(false);
       form.resetFields();
       setLoading(false);
@@ -430,7 +442,6 @@ const AdminManageCategories: React.FC = () => {
       dataIndex: "created_at",
       key: "created_at",
       render: (created_at: Date) => formatDate(created_at.toString()),
-      sorter: true,
       sortDirections: ["descend", "ascend"],
       onHeaderCell: () => ({
         onClick: () => sortColumn("created_at"),
@@ -441,7 +452,6 @@ const AdminManageCategories: React.FC = () => {
       dataIndex: "updated_at",
       key: "updated_at",
       render: (updated_at: Date) => formatDate(updated_at.toString()),
-      sorter: true,
       sortDirections: ["descend", "ascend"],
       onHeaderCell: () => ({
         onClick: () => sortColumn("updated_at"),
@@ -541,11 +551,9 @@ const AdminManageCategories: React.FC = () => {
             rules={[{ required: false }]}
           >
             <Select>
-              {/* Thêm Option cho "None" */}
               <Option key="none" value={null}>
                 None
               </Option>
-              {/* Map các category */}
               {data.map((category) => (
                 <Option key={category._id} value={category._id}>
                   {category.name}
@@ -567,7 +575,6 @@ const AdminManageCategories: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
-      ;
     </div>
   );
 };
