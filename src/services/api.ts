@@ -1,8 +1,10 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import config from "../secret/config.ts";
 
+console.log(config.BASE_URL)
 const axiosInstance = axios.create({
-    baseURL: "https://api-ojt-hcm24-react06-group01.vercel.app",
+    baseURL: config.BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     }
@@ -10,14 +12,12 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        // Check if the request needs a token
         if (!config.headers.skipAuth) {
             const token = localStorage.getItem("token");
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
             }
         }
-        console.log(config);
         return config;
     },
     (error) => {
@@ -29,17 +29,18 @@ axiosInstance.interceptors.response.use(
     (response) => {
         if (response.status === 200 || response.status === 201) {
             if (response.data.success) {
-                console.log(response);
                 return response.data;
             }
         }
-        console.log(response);
         return response;
     },
     (error) => {
         if (error.response) {
-            const { data } = error.response;
-            console.log(error.response)
+            const { status, data } = error.response;
+            if (status === 409) {
+                // Handle conflict error silently
+                return Promise.reject({ status, data });
+            }
             if (data && data.message) {
                 toast.error(data.message);
             } else {

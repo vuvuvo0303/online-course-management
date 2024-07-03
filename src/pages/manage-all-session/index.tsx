@@ -156,13 +156,13 @@ const ManageAllSession = () => {
                 <>
                     {
                         role === "instructor" ?
-                        (
-                            <Link to={`/instructor/manage-courses/${record.courseId}/manage-sessions/${sessionId}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-                        )
-                        :
-                        (
-                            <Link to={`/admin/manage-all-sessions/${sessionId}/manage-lecture`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-                        )
+                            (
+                                <Link to={`/instructor/manage-courses/${record.courseId}/manage-sessions/${sessionId}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
+                            )
+                            :
+                            (
+                                <Link to={`/admin/manage-all-sessions/${sessionId}/manage-lecture`}><EyeOutlined className="text-purple-500 m-2" /></Link>
+                            )
                     }
                     {/* <Link to={`/instructor/manage-all-sessions/update-session/${sessionId}`}><EditOutlined className="m-2 text-blue-500" /></Link> */}
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(sessionId)} />
