@@ -43,6 +43,7 @@ const Navbar: React.FC = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     navigate('/');
+    window.location.reload();
   };
 
   const dropdownItems: MenuProps["items"] = [
@@ -52,7 +53,7 @@ const Navbar: React.FC = () => {
           <Row>
             <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
-                src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
+                src={dataUser.avatarUrl}
                 className="hover:cursor-pointer mt-1"
                 size={50}
                 icon={<UserOutlined />}
@@ -243,8 +244,7 @@ const Navbar: React.FC = () => {
                   <p onClick={(e) => e.preventDefault()}>
                     <Space>
                       <Avatar
-                        src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
-                        className="hover:cursor-pointer"
+                        src={dataUser.avatarUrl}
                         size={40}
                         icon={<UserOutlined />}
                       />
