@@ -11,7 +11,6 @@ import {
   Form,
   Spin,
   Pagination,
-  Tag,
   Upload,
   Popconfirm,
   Radio,
@@ -75,7 +74,7 @@ const AdminManageUsers: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
   const [formData, setFormData] = useState<any>({});
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
 

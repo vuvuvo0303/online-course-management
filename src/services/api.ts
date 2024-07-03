@@ -2,7 +2,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import config from "../secret/config.ts";
 
-console.log(config.BASE_URL)
 const axiosInstance = axios.create({
     baseURL: config.BASE_URL,
     headers: {
@@ -37,7 +36,7 @@ axiosInstance.interceptors.response.use(
     (error) => {
         if (error.response) {
             const { status, data } = error.response;
-            if (status === 409) {
+            if (status === 400) {
                 // Handle conflict error silently
                 return Promise.reject({ status, data });
             }
