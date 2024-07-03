@@ -15,8 +15,16 @@ import {
   Tag,
   Upload,
   Popconfirm,
+  Radio,
 } from "antd";
-import { DeleteOutlined, EditOutlined, HomeOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  HomeOutlined,
+  PlusOutlined,
+  SearchOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
 import { format } from "date-fns";
 import { Student } from "../../../models";
 import { toast } from "react-toastify";
@@ -49,6 +57,8 @@ const AdminManageUsers: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+  const [formData, setFormData] = useState<any>({});
+  const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
 
   useEffect(() => {
     fetchStudents();
@@ -98,6 +108,8 @@ const AdminManageUsers: React.FC = () => {
   };
 
   const addNewUser = async (values: Student) => {
+    console.log(values);
+
     try {
       const searchBody = {
         searchCondition: {
@@ -313,7 +325,17 @@ const AdminManageUsers: React.FC = () => {
       dataIndex: "role",
       key: "role",
       render: (role) => (
-        <Tag color={role === "student" ? "cyan" : role === "instructor" ? "lime" : "default"}>{role}</Tag>
+        <div
+          className={`tag ${
+            role === "student"
+              ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl p-1 border border-blue-500"
+              : role === "instructor"
+              ? "bg-lime-100  text-lime-400 flex justify-center rounded-xl p-1 border border-lime-500"
+              : "bg-gray-500 text-white"
+          }`}
+        >
+          {role.toUpperCase()}
+        </div>
       ),
     },
     {
@@ -326,7 +348,7 @@ const AdminManageUsers: React.FC = () => {
       onHeaderCell: () => ({
         onClick: () => sortColumn("created_at"),
       }),
-      width: "15%",
+      width: "13%",
     },
     {
       title: "Updated Date",
@@ -338,7 +360,7 @@ const AdminManageUsers: React.FC = () => {
       onHeaderCell: () => ({
         onClick: () => sortColumn("updated_at"),
       }),
-      width: "15%",
+      width: "13%",
     },
     {
       title: "Image",
@@ -350,7 +372,7 @@ const AdminManageUsers: React.FC = () => {
       title: "Status",
       key: "status",
       dataIndex: "status",
-      width: "10%",
+      width: "5%",
       render: (status: boolean) => (
         <Switch defaultChecked={status} onChange={(checked) => console.log(`switch to ${checked}`)} />
       ),
@@ -358,13 +380,23 @@ const AdminManageUsers: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      render: (record: Student) => (
+      render: (record: Student, values: Student) => (
         <div>
-          <EditOutlined className="hover:cursor-pointer text-blue-400 hover:opacity-60" style={{ fontSize: "20px" }} />
+          <EditOutlined
+            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
+            style={{ fontSize: "20px" }}
+            onClick={() => {
+              handleEditClick(record);
+              form.setFieldsValue(values);
+            }}
+          />
+
           <Popconfirm
             title="Delete the User"
             description="Are you sure to delete this User?"
-            onConfirm={() => handleDelete(record._id, record.email)}
+            onConfirm={() => {
+              handleDelete(record._id, record.email);
+            }}
             okText="Yes"
             cancelText="No"
           >
@@ -385,7 +417,17 @@ const AdminManageUsers: React.FC = () => {
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPagination({ ...pagination, current: page, pageSize });
   };
+  const handleAddClick = () => {
+    setFormData({}); // Đặt formData rỗng khi thêm mới
+    setModalMode("Add");
+    setIsModalVisible(true);
+  };
 
+  const handleEditClick = (record: any) => {
+    setFormData(record);
+    setModalMode("Edit");
+    setIsModalVisible(true);
+  };
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -396,9 +438,19 @@ const AdminManageUsers: React.FC = () => {
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Students</Breadcrumb.Item>
         </Breadcrumb>
-        <Button type="primary" onClick={() => setIsModalVisible(true)}>
-          Add New Student
-        </Button>
+        <div className="mt-3">
+          {" "}
+          <Button
+            type="primary"
+            onClick={() => {
+              handleAddClick();
+              form.resetFields();
+            }}
+            className="py-2"
+          >
+            <UserAddOutlined /> Add New Student
+          </Button>
+        </div>
       </div>
       <Spin spinning={loading}>
         <Table
@@ -420,7 +472,12 @@ const AdminManageUsers: React.FC = () => {
         />
       </div>
 
-      <Modal title="Add New Student" visible={isModalVisible} onCancel={() => setIsModalVisible(false)} footer={null}>
+      <Modal
+        title={modalMode === "Add" ? "Add New Student" : "Edit Student"}
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+      >
         <Form form={form} onFinish={addNewUser} labelCol={{ span: "24" }}>
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
             <Input />
@@ -428,13 +485,28 @@ const AdminManageUsers: React.FC = () => {
           <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
             <Input />
           </Form.Item>
+          {modalMode === "Add" && (
+            <Form.Item
+              name="password"
+              label="Password"
+              rules={[{ required: true, message: "Please input the password!" }]}
+            >
+              <Input.Password />
+            </Form.Item>
+          )}
+
           <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: "Please input the password!" }]}
+            label="Role"
+            name="role"
+            rules={[{ required: true, message: "Please choose the role you want to add!" }]}
           >
-            <Input.Password />
+            <Radio.Group>
+              <Radio value="student">Student</Radio>
+              <Radio value="instructor">Instructor</Radio>
+              <Radio value="admin">admin</Radio>
+            </Radio.Group>
           </Form.Item>
+
           <Form.Item label="Avatar" name="avatar" rules={[{ required: true, message: "Please upload your Avatar" }]}>
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
@@ -447,9 +519,11 @@ const AdminManageUsers: React.FC = () => {
             </Upload>
           </Form.Item>
           <Form.Item>
-            <Button loading={loading} type="primary" htmlType="submit">
-              Submit
-            </Button>
+            {modalMode === "Add" && (
+              <Button loading={loading} type="primary" htmlType="submit">
+                Submit
+              </Button>
+            )}
           </Form.Item>
         </Form>
       </Modal>
