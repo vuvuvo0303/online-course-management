@@ -31,6 +31,22 @@ export const API_CHANGE_STATUS = "/api/users/change-status";
 export const API_CHANGE_ROLE = "/api/users/change-role";
 export const API_DELETE_USER = "/api/users";
 
+export const getColor = (status: string) => {
+  switch (status) {
+    case "new":
+      return 'red';
+    case 'waiting-approve':
+      return 'blue'
+    case 'approve':
+      return 'yellow'
+    case 'reject':
+      return 'purple'
+    case 'active':
+      return 'pink'
+    case 'inactive':
+      return 'orange'
+  }
+}
 /* PATHS */
 export const paths = {
   /* GUEST PATHS */
@@ -62,7 +78,8 @@ export const paths = {
   /* INSTRUCTORS PATHS */
   INSTRUCTOR_DASHBOARD: "dashboard",
   INSTRUCTOR_PROFILE: "profile",
-  INSTRUCTOR_CREATE_COURSE: "create-course",
+  INSTRUCTOR_CREATE_COURSE: "manage-courses/create-course",
+  INSTRUCTOR_UPDATE_COURSE: "manage-courses/update-course/:_id",
   INSTRUCTOR_PAYMENT_HISTORY: "payment-history",
   INSTRUCTOR_MANAGE_FEEDBACKS: "manage-feedbacks",
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
@@ -82,7 +99,7 @@ export const paths = {
     "manage-courses/:courseId/manage-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION:
     "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
-  INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:courseId",
+  INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:_id",
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
   INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/update-session/:sessionId",
