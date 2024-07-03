@@ -12,7 +12,24 @@ export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 export const API_BLOGS_URL = `${BASE_URL}/blogs`;
 
 /* API */
+
+//Base URL
 export const host_main = "https://api-ojt-hcm24-react06-group01.vercel.app";
+//Auth
+export const API_LOGIN = "/api/auth";
+export const API_LOGIN_WITH_GOOGLE = "/api/auth/google";
+export const API_CURRENT_LOGIN_USER = "/api/auth";
+//Users
+export const API_REGISTER = "/api/users";
+export const API_REGISTER_WITH_GOOGLE = "/api/users/google";
+export const API_CREATE_USER = "/api/users/create";
+export const API_GET_USERS = "/api/users/search";
+export const API_GET_USER_DETAIL = "/api/users";
+export const API_UPDATE_USER = "/api/users";
+export const API_CHANGE_PASSWORD = "/api/users/change-password";
+export const API_CHANGE_STATUS = "/api/users/change-status";
+export const API_CHANGE_ROLE = "/api/users/change-role";
+export const API_DELETE_USER = "/api/users";
 
 /* PATHS */
 export const paths = {

@@ -1,4 +1,10 @@
-import { FileDoneOutlined, HomeOutlined, PlaySquareOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  FileDoneOutlined,
+  HomeOutlined,
+  PlaySquareOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { Badge, Breadcrumb, Card, Col, Image, Rate, Row } from "antd";
 import { Link } from "react-router-dom";
 import { UserChart } from "../chart/userchart";
@@ -6,7 +12,6 @@ import { RevenueChart } from "../chart/revenuechart";
 import top1 from "../../../assets/top1.png";
 import top2 from "../../../assets/top2.png";
 import top3 from "../../../assets/top3.png";
-
 
 const AdminDashboard: React.FC = () => {
   return (
@@ -31,11 +36,14 @@ const AdminDashboard: React.FC = () => {
             title: "Dashboard",
           },
         ]}
-      />
-      {" "}
+      />{" "}
       <div className="flex justify-between drop-shadow-xl gap-4">
         <Badge.Ribbon text="Flearn" color="blue">
-          <Card title="Total courses in the system" bordered={false} style={{ width: 300 }}>
+          <Card
+            title="Total courses in the system"
+            bordered={false}
+            style={{ width: 300 }}
+          >
             <div className="flex justify-center gap-2">
               <h1>50</h1>
               <PlaySquareOutlined style={{ fontSize: "20px", color: "red" }} />
@@ -45,7 +53,11 @@ const AdminDashboard: React.FC = () => {
 
         <Badge.Ribbon text="Flearn" color="orange">
           <Link to={"manage-students"}>
-            <Card title="Total Student in the system" bordered={false} style={{ width: 300 }}>
+            <Card
+              title="Total Student in the system"
+              bordered={false}
+              style={{ width: 300 }}
+            >
               <div className="flex justify-center gap-2">
                 <h1>500</h1>
                 <TeamOutlined style={{ fontSize: "20px", color: "gray" }} />
@@ -55,7 +67,11 @@ const AdminDashboard: React.FC = () => {
         </Badge.Ribbon>
 
         <Badge.Ribbon text="Flearn" color="green">
-          <Card title="Total Instructor in the system" bordered={false} style={{ width: 300 }}>
+          <Card
+            title="Total Instructor in the system"
+            bordered={false}
+            style={{ width: 300 }}
+          >
             <div className="flex justify-center gap-2">
               <h1>100</h1>
               <TeamOutlined style={{ fontSize: "20px", color: "gray" }} />
@@ -64,7 +80,11 @@ const AdminDashboard: React.FC = () => {
         </Badge.Ribbon>
 
         <Badge.Ribbon text="Flearn" color="red">
-          <Card title="Total Blogs in the system" bordered={false} style={{ width: 300 }}>
+          <Card
+            title="Total Blogs in the system"
+            bordered={false}
+            style={{ width: 300 }}
+          >
             <div className="flex justify-center gap-2">
               <h1>100</h1>
               <FileDoneOutlined style={{ fontSize: "20px", color: "blue" }} />
@@ -87,11 +107,16 @@ const AdminDashboard: React.FC = () => {
         </Row>
       </div>
       <div className="mt-6 drop-shadow-xl">
-        <span className="font-bold text-lg text-rose-400">Top 3 best-selling courses in the system</span>
+        <span className="font-bold text-lg text-rose-400">
+          Top 3 best-selling courses in the system
+        </span>
         <Row gutter={24} className="mt-2">
           <Col span={8}>
             <Card bordered={false} className="hover:cursor-pointer">
-              <div style={{ display: "flex", alignItems: "center" }} className="justify-between">
+              <div
+                style={{ display: "flex", alignItems: "center" }}
+                className="justify-between"
+              >
                 <span style={{ marginLeft: 10 }}>Reactjs course</span>
                 <img src={top1} alt="Reactjs course" width={50} />
               </div>
@@ -124,7 +149,10 @@ const AdminDashboard: React.FC = () => {
 
           <Col span={8}>
             <Card bordered={false} className="hover:cursor-pointer">
-              <div style={{ display: "flex", alignItems: "center" }} className="justify-between">
+              <div
+                style={{ display: "flex", alignItems: "center" }}
+                className="justify-between"
+              >
                 <span style={{ marginLeft: 10 }}>TailWind course</span>
                 <img src={top2} alt="TailWind course" width={50} />
               </div>
@@ -155,7 +183,10 @@ const AdminDashboard: React.FC = () => {
           </Col>
           <Col span={8}>
             <Card bordered={false} className="hover:cursor-pointer">
-              <div style={{ display: "flex", alignItems: "center" }} className="justify-between">
+              <div
+                style={{ display: "flex", alignItems: "center" }}
+                className="justify-between"
+              >
                 <span style={{ marginLeft: 10 }}>Antd course</span>
                 <img src={top3} alt="Antd course" width={50} />
               </div>

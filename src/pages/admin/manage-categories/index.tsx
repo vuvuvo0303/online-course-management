@@ -10,6 +10,7 @@ import {
   Spin,
   Pagination,
   Popconfirm,
+  Select,
 } from "antd";
 import {
   DeleteOutlined,
@@ -37,6 +38,8 @@ interface AxiosResponse<T> {
 }
 
 type DataIndex = keyof Category;
+
+const { Option } = Select;
 
 const AdminManageCategories: React.FC = () => {
   const [data, setData] = useState<Category[]>([]);
@@ -80,7 +83,7 @@ const AdminManageCategories: React.FC = () => {
         },
       });
 
-      if (response.data && response.data.pageData) {
+      if (response.success && response.data) {
         setData(response.data.pageData);
         setPagination((prev) => ({
           ...prev,
@@ -89,16 +92,28 @@ const AdminManageCategories: React.FC = () => {
           pageSize: response.data.pageInfo.pageSize,
         }));
       } else {
-        console.log("Failed to fetch categories");
+        toast.error(response.message || "Failed to fetch categories");
       }
     } catch (error) {
       console.log(error);
+      toast.error("An error occurred while fetching categories");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDelete = async (_id: string, name: string) => {
-    console.log("_id:", _id);
+    const isParentCategory = data.some(
+      (category) => category.parent_category_id === _id
+    );
+
+    if (isParentCategory) {
+      toast.error(
+        `Cannot delete category ${name} as it is a parent category of another category.`
+      );
+      return;
+    }
+
     try {
       await axiosInstance.delete(`/api/category/${_id}`);
       setData((prevData) =>
@@ -108,24 +123,43 @@ const AdminManageCategories: React.FC = () => {
       fetchCategories();
     } catch (error) {
       console.log(error);
+      toast.error("Failed to delete category");
     }
   };
 
   const handleEditCategory = (category: Category) => {
     form.setFieldsValue({
+      _id: category._id,
       name: category.name,
       parent_category_id: category.parent_category_id,
       description: category.description,
+      created_at: category.created_at,
     });
 
     Modal.confirm({
       title: `Edit Category - ${category.name}`,
       content: (
-        <Form form={form} onFinish={updateCategory} labelCol={{ span: 24 }}>
+        <Form
+          form={form}
+          onFinish={(values) => updateCategory(values, category.created_at)}
+          initialValues={{
+            _id: category._id,
+            name: category.name,
+            parent_category_id: category.parent_category_id,
+            description: category.description,
+          }}
+          labelCol={{ span: 24 }}
+        >
+          <Form.Item name="_id" style={{ display: "none" }}>
+            <Input />
+          </Form.Item>
+
           <Form.Item
             label="Name"
             name="name"
-            rules={[{ required: true, message: "Please input the name!" }]}
+            rules={[
+              { required: true, message: "Please input the name of category!" },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -134,7 +168,18 @@ const AdminManageCategories: React.FC = () => {
             name="parent_category_id"
             rules={[{ required: false }]}
           >
-            <Input />
+            <Select>
+              <Option key="none" value={null}>
+                None
+              </Option>
+              {data
+                .filter((item) => item._id !== category._id)
+                .map((item) => (
+                  <Option key={item._id} value={item._id}>
+                    {item.name}
+                  </Option>
+                ))}
+            </Select>
           </Form.Item>
           <Form.Item
             label="Description"
@@ -142,6 +187,9 @@ const AdminManageCategories: React.FC = () => {
             rules={[{ required: false }]}
           >
             <Input.TextArea rows={4} />
+          </Form.Item>
+          <Form.Item name="_id" style={{ display: "none" }}>
+            <Input type="hidden" />
           </Form.Item>
         </Form>
       ),
@@ -151,15 +199,33 @@ const AdminManageCategories: React.FC = () => {
     });
   };
 
-  const updateCategory = async (values: Category) => {
+  const updateCategory = async (
+    values: Partial<Category> & { _id: string | null },
+    originalCreatedAt: string
+  ) => {
+    if (values.parent_category_id === "none") {
+      values.parent_category_id = null;
+    }
+
+    if (!values._id) {
+      toast.error("Invalid category ID");
+      return;
+    }
+
     try {
       setLoading(true);
-      const updatedCategory: Category = {
-        ...values,
-        updated_at: new Date().toISOString(),
-      };
 
-      console.log("Updating category with _id:", values._id);
+      const updatedCategory: Category = {
+        _id: values._id,
+        name: values.name ?? "",
+        description: values.description ?? "",
+        parent_category_id: values.parent_category_id ?? null,
+        user_id: values.user_id ?? "",
+        is_deleted: values.is_deleted ?? false,
+        created_at: originalCreatedAt,
+        updated_at: new Date().toISOString(),
+        __v: values.__v ?? 0,
+      };
 
       await axiosInstance.put(`/api/category/${values._id}`, updatedCategory);
 
@@ -180,22 +246,27 @@ const AdminManageCategories: React.FC = () => {
     }
   };
 
-  const addNewCategory = async (values: Category) => {
+  const addNewCategory = async (values: Omit<Category, "_id">) => {
     try {
       setLoading(true);
       const response: AxiosResponse<Category> = await axiosInstance.post(
-        `/api/category/create`,
+        `/api/category`,
         values
       );
       const newCategory = response.data;
       setData((prevData) => [...prevData, newCategory]);
       toast.success("Created new category successfully");
+      setData([]);
       setIsModalVisible(false);
       form.resetFields();
       setLoading(false);
       fetchCategories();
     } catch (error) {
+      console.log(error);
+      toast.error("Failed to create category. Please try again.");
+    } finally {
       setLoading(false);
+      toast.error("Failed to create new category. Please try again.");
     }
   };
 
@@ -361,7 +432,6 @@ const AdminManageCategories: React.FC = () => {
       title: "Parent Category",
       dataIndex: "parent_category_id",
       key: "parent_category_id",
-      ...getColumnSearchProps("parent_category_id"),
       render: (parent_category_id: string) => {
         const category = data.find(
           (category) => category._id === parent_category_id
@@ -380,7 +450,6 @@ const AdminManageCategories: React.FC = () => {
       dataIndex: "created_at",
       key: "created_at",
       render: (created_at: Date) => formatDate(created_at.toString()),
-      sorter: true,
       sortDirections: ["descend", "ascend"],
       onHeaderCell: () => ({
         onClick: () => sortColumn("created_at"),
@@ -391,7 +460,6 @@ const AdminManageCategories: React.FC = () => {
       dataIndex: "updated_at",
       key: "updated_at",
       render: (updated_at: Date) => formatDate(updated_at.toString()),
-      sorter: true,
       sortDirections: ["descend", "ascend"],
       onHeaderCell: () => ({
         onClick: () => sortColumn("updated_at"),
@@ -471,7 +539,6 @@ const AdminManageCategories: React.FC = () => {
           showSizeChanger
         />
       </div>
-
       <Modal
         title="Add New Category"
         visible={isModalVisible}
@@ -491,7 +558,16 @@ const AdminManageCategories: React.FC = () => {
             name="parent_category_id"
             rules={[{ required: false }]}
           >
-            <Input />
+            <Select>
+              <Option key="none" value={null}>
+                None
+              </Option>
+              {data.map((category) => (
+                <Option key={category._id} value={category._id}>
+                  {category.name}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item
             label="Description"

@@ -26,13 +26,16 @@ const Navbar: React.FC = () => {
   const isRegisterPage = location.pathname === '/register';
   const isForgotPassword = location.pathname === '/forgot-password';
   // Create a submenu for each categoryFilter
+  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+  const { avatar } = userData;
 
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
       try {
         const userData = JSON.parse(user);
-        setDataUser({ role: userData.role, fullName: userData.fullName, email: userData.email, avatarUrl: userData.avatarUrl });
+        console.log(userData.avatar)
+        setDataUser({ role: userData.role, fullName: userData.name, email: userData.email, avatarUrl: userData.avatar });
       } catch (error) {
         console.error("Error parsing user data from localStorage", error);
       }
@@ -112,8 +115,7 @@ const Navbar: React.FC = () => {
   ];
 
   // Get user data from localStorage
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
-  const { avatarUrl } = userData;
+
 
   // const handleMenuClick = () => {
   //   setMobileMenuVisible(!mobileMenuVisible);
@@ -239,7 +241,7 @@ const Navbar: React.FC = () => {
                 </Link>
               </Popover>
 
-              {avatarUrl ? (
+              {avatar ? (
                 <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
                   <p onClick={(e) => e.preventDefault()}>
                     <Space>
