@@ -57,6 +57,7 @@ interface CreateUserResponse {
   message?: string;
   error?: ApiError[];
 }
+import { API_GET_USERS } from "../../../consts";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type AxiosResponse<T> = {
@@ -409,8 +410,8 @@ const AdminManageUsers: React.FC = () => {
               role === "student"
                 ? "cyan"
                 : role === "instructor"
-                ? "lime"
-                : "default"
+                  ? "lime"
+                  : "default"
             }
           >
             {role}
@@ -489,11 +490,11 @@ const AdminManageUsers: React.FC = () => {
 
   const handleTableChange = (pagination: PaginationProps) => {
     const newPagination: { current: number; pageSize: number; total: number } =
-      {
-        current: pagination.current ?? 1,
-        pageSize: pagination.pageSize ?? 10,
-        total: pagination.total ?? 0,
-      };
+    {
+      current: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      total: pagination.total ?? 0,
+    };
 
     setPagination(newPagination);
   };
