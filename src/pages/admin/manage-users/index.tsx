@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
   Breadcrumb,
   Button,
@@ -35,14 +29,7 @@ import { Student } from "../../../models";
 import { toast } from "react-toastify";
 import Highlighter from "react-highlight-words";
 import axiosInstance from "../../../services/api.ts";
-import type {
-  GetProp,
-  InputRef,
-  TableColumnsType,
-  TableColumnType,
-  UploadFile,
-  UploadProps,
-} from "antd";
+import type { GetProp, InputRef, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
@@ -59,7 +46,6 @@ interface CreateUserResponse {
   message?: string;
   error?: ApiError[];
 }
-import { API_GET_USERS } from "../../../consts";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type AxiosResponse<T> = {
@@ -93,7 +79,7 @@ const AdminManageUsers: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+
   const [formData, setFormData] = useState<any>({});
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
 
@@ -157,21 +143,16 @@ const AdminManageUsers: React.FC = () => {
 
         let avatarUrl = values.avatar;
 
-        if (
-          values.avatar &&
-          typeof values.avatar !== "string" &&
-          values.avatar?.file?.originFileObj
-        ) {
+        if (values.avatar && typeof values.avatar !== "string" && values.avatar?.file?.originFileObj) {
           avatarUrl = await uploadFile(values.avatar.file.originFileObj);
         }
 
         const userData = { ...values, avatar: avatarUrl };
 
-        const response: AxiosResponse<CreateUserResponse> =
-          await axiosInstance.post<Student, AxiosResponse<CreateUserResponse>>(
-            `/api/users/create`,
-            userData
-          );
+        const response: AxiosResponse<CreateUserResponse> = await axiosInstance.post<
+          Student,
+          AxiosResponse<CreateUserResponse>
+        >(`/api/users/create`, userData);
 
         const newUser = response.data.data;
         setData((prevData) => [...prevData, newUser]);
@@ -190,7 +171,7 @@ const AdminManageUsers: React.FC = () => {
 
   const formatDate = useCallback((dateString: string) => {
     try {
-      return format(new Date(dateString), "dd/MM/yyyy HH:mm:ss");
+      return format(new Date(dateString), "dd/MM/yyyy");
     } catch (error) {
       console.error("Invalid date:", dateString);
       return "Invalid date";
@@ -212,9 +193,7 @@ const AdminManageUsers: React.FC = () => {
         if (typeof aValue === "number" && typeof bValue === "number") {
           return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
         } else if (typeof aValue === "string" && typeof bValue === "string") {
-          return newOrder === "ascend"
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
+          return newOrder === "ascend" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
         } else {
           return 0;
         }
@@ -227,11 +206,7 @@ const AdminManageUsers: React.FC = () => {
   );
 
   const handleSearch = useCallback(
-    (
-      selectedKeys: string[],
-      confirm: FilterDropdownProps["confirm"],
-      dataIndex: DataIndex
-    ) => {
+    (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
       confirm();
       setSearchText(selectedKeys[0]);
       setSearchedColumn(dataIndex);
@@ -261,31 +236,23 @@ const AdminManageUsers: React.FC = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
-    setFileList(newFileList);
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
-  const handleStatusChange = useCallback(
-    async (checked: boolean, userId: string) => {
-      try {
-        await axiosInstance.put("/api/users/change-status", {
-          user_id: userId,
-          status: checked,
-        });
-        fetchStudents();
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const handleStatusChange = useCallback(async (checked: boolean, userId: string) => {
+    try {
+      await axiosInstance.put("/api/users/change-status", {
+        user_id: userId,
+        status: checked,
+      });
+      fetchStudents();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
-        setData((prevData) =>
-          prevData.map((user) =>
-            user._id === userId ? { ...user, status: checked } : user
-          )
-        );
-        toast.success(`User status updated successfully`);
-      } catch (error) {
-        // Handle error silently
-      }
-    },
-    []
-  );
+      setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
+      toast.success(`User status updated successfully`);
+    } catch (error) {
+      // Handle error silently
+    }
+  }, []);
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -294,46 +261,28 @@ const AdminManageUsers: React.FC = () => {
     </button>
   );
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): TableColumnType<Student> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
+  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Student> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
           >
             Search
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
             Reset
           </Button>
           <Button
@@ -359,9 +308,7 @@ const AdminManageUsers: React.FC = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
+    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
     onFilter: (value, record) =>
       record[dataIndex]
         ?.toString()
@@ -410,17 +357,19 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "role",
         key: "role",
         render: (role) => (
-          <Tag
-            color={
+          <div
+            className={`tag ${
               role === "student"
-                ? "cyan"
+                ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl p-1 border border-blue-500"
                 : role === "instructor"
-                  ? "lime"
-                  : "default"
-            }
+                ? "bg-lime-100 text-lime-400 flex justify-center rounded-xl p-1 border border-lime-500"
+                : role === "admin"
+                ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl p-1 border border-yellow-500"
+                : "bg-gray-500 text-white"
+            }`}
           >
-            {role}
-          </Tag>
+            {role ? role.toUpperCase() : "UNKNOWN"}
+          </div>
         ),
       },
       {
@@ -433,7 +382,7 @@ const AdminManageUsers: React.FC = () => {
         onHeaderCell: () => ({
           onClick: () => sortColumn("created_at"),
         }),
-        width: "15%",
+        width: "10%",
       },
       {
         title: "Updated Date",
@@ -445,7 +394,7 @@ const AdminManageUsers: React.FC = () => {
         onHeaderCell: () => ({
           onClick: () => sortColumn("updated_at"),
         }),
-        width: "15%",
+        width: "10%",
       },
       {
         title: "Image",
@@ -459,20 +408,21 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "status",
         width: "10%",
         render: (status: boolean, record: User) => (
-          <Switch
-            defaultChecked={status}
-            onChange={(checked) => handleStatusChange(checked, record._id)}
-          />
+          <Switch defaultChecked={status} onChange={(checked) => handleStatusChange(checked, record._id)} />
         ),
       },
       {
         title: "Action",
         key: "action",
-        render: (record: Student) => (
+        render: (record: Student, values: Student) => (
           <div>
             <EditOutlined
               className="hover:cursor-pointer text-blue-400 hover:opacity-60"
               style={{ fontSize: "20px" }}
+              onClick={() => {
+                handleEditClick(record);
+                form.setFieldsValue(values);
+              }}
             />
             <Popconfirm
               title="Delete the User"
@@ -494,8 +444,7 @@ const AdminManageUsers: React.FC = () => {
   );
 
   const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } =
-    {
+    const newPagination: { current: number; pageSize: number; total: number } = {
       current: pagination.current ?? 1,
       pageSize: pagination.pageSize ?? 10,
       total: pagination.total ?? 0,
@@ -508,7 +457,7 @@ const AdminManageUsers: React.FC = () => {
     setPagination({ ...pagination, current: page, pageSize });
   };
   const handleAddClick = () => {
-    setFormData({}); // Đặt formData rỗng khi thêm mới
+    setFormData({});
     setModalMode("Add");
     setIsModalVisible(true);
   };
@@ -569,18 +518,10 @@ const AdminManageUsers: React.FC = () => {
         footer={null}
       >
         <Form form={form} onFinish={addNewUser} labelCol={{ span: "24" }}>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please input the name!" }]}
-          >
+          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: "Please input the email!" }]}
-          >
+          <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
             <Input />
           </Form.Item>
           {modalMode === "Add" && (
@@ -601,7 +542,7 @@ const AdminManageUsers: React.FC = () => {
             <Radio.Group>
               <Radio value="student">Student</Radio>
               <Radio value="instructor">Instructor</Radio>
-              <Radio value="admin">admin</Radio>
+              <Radio value="admin">Admin</Radio>
             </Radio.Group>
           </Form.Item>
 
@@ -617,9 +558,13 @@ const AdminManageUsers: React.FC = () => {
             </Upload>
           </Form.Item>
           <Form.Item>
-            {modalMode === "Add" && (
+            {modalMode === "Add" ? (
               <Button loading={loading} type="primary" htmlType="submit">
                 Submit
+              </Button>
+            ) : (
+              <Button loading={loading} type="primary" htmlType="submit">
+                Edit
               </Button>
             )}
           </Form.Item>
