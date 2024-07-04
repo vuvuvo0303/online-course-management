@@ -61,6 +61,7 @@ const InstructorCreateCourse = () => {
             fetchData();
         }
     }, [_id, form, token])
+
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -81,7 +82,7 @@ const InstructorCreateCourse = () => {
                 });
 
                 if (res) {
-                    console.log("check res: ", res);
+                    console.log("check fetchCategories res: ", res);
                     setCates(res.data.data.pageData);
                 }
             } catch (error) {
@@ -96,6 +97,17 @@ const InstructorCreateCourse = () => {
     if (loading) {
         return <p className="text-center">Loading ...</p>;
     }
+    function isValidHttpUrl(string: string) {
+        let url;
+
+        try {
+            url = new URL(string);
+        } catch (_) {
+            return false;
+        }
+
+        return url.protocol === "http:" || url.protocol === "https:";
+    }
 
     const onFinish = async (value: Course) => {
 
@@ -105,6 +117,8 @@ const InstructorCreateCourse = () => {
         if (typeof value.discount === 'string') {
             value.discount = parseFloat(value.discount);
         }
+
+
         console.log("check value: ", value);
         try {
             // const token = localStorage.getItem("token");
@@ -201,7 +215,7 @@ const InstructorCreateCourse = () => {
                             <Input.TextArea />
                         </Form.Item>
                     }
-                    {_id&&
+                    {_id &&
                         <Form.Item
                             label="Status"
                             name="status"
@@ -232,19 +246,38 @@ const InstructorCreateCourse = () => {
                     <Form.Item
                         label="Video_url"
                         name="video_url"
-                        rules={[{ required: true, message: 'Please input!' }]}
+                        rules={[{ required: true, message: 'Please input!' },
+                        {
+                            validator: (_, value) =>
+                                isValidHttpUrl(value) ? Promise.resolve() : Promise.reject('This is not a video url'),
+                        }
+                        ]}
                     >
                         <Input />
                     </Form.Item>
                     {!_id &&
-                        <Form.Item label="Image_url" name="image_url" rules={[{ required: true, message: 'Please input!' }]}>
+                        <Form.Item label="Image_url"
+                            name="image_url"
+                            rules={[
+                                {
+                                    validator: (_, value) =>
+                                        !value || isValidHttpUrl(value)
+                                    ? Promise.resolve() : Promise.reject(new Error('This is not a valid image URL')),
+                                        
+                                }
+                            ]}
+                        >
                             <Input />
                         </Form.Item>
                     }
                     <Form.Item
                         label="Price"
                         name="price"
-                        rules={[{ required: true, message: 'Please input a number!' }]}
+                        rules={[{ required: true, message: 'Please input a number!' },
+                        {
+                            validator: (_, value) =>
+                                value > 1000 ? Promise.resolve() : Promise.reject('Price must be greater than 1000!'),
+                        },]}
                     >
                         <Input type="number" />
                     </Form.Item>
