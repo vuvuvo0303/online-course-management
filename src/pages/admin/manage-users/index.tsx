@@ -79,6 +79,25 @@ const AdminManageUsers: React.FC = () => {
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
 
   useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'users_updated') {
+        fetchStudents();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      if(!window.location.pathname.includes('user')){
+        localStorage.removeItem('users_updated');
+      }
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+
+
+  useEffect(() => {
     fetchStudents();
   }, [pagination.current, pagination.pageSize]);
 
@@ -124,6 +143,8 @@ const AdminManageUsers: React.FC = () => {
         setData((prevData) => prevData.filter((user) => user._id !== _id));
         toast.success(`Deleted user ${email} successfully`);
         fetchStudents();
+
+        localStorage.setItem('users_updated', new Date().toISOString());
       } catch (error) {
         // Handle error silently
       }
@@ -156,6 +177,7 @@ const AdminManageUsers: React.FC = () => {
         form.resetFields();
         setLoading(false);
         fetchStudents();
+        localStorage.setItem('users_updated', new Date().toISOString());
       } catch (error) {
         setLoading(false);
         console.error("Error creating new user:", error);
@@ -244,6 +266,7 @@ const AdminManageUsers: React.FC = () => {
 
       setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
       toast.success(`User status updated successfully`);
+      localStorage.setItem('users_updated', new Date().toISOString());
     } catch (error) {
       // Handle error silently
     }
@@ -409,7 +432,7 @@ const AdminManageUsers: React.FC = () => {
       {
         title: "Action",
         key: "action",
-        render: (record: Student, values: Student) => (
+        render: (record: Student) => (
           <div>
             <EditOutlined
               className="hover:cursor-pointer text-blue-400 hover:opacity-60"

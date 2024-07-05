@@ -1,8 +1,32 @@
-import { Link } from 'react-router-dom'
-import styles from './forgot.module.css'
-import { paths } from '../../consts'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import axiosInstance from '../../services/api.ts';
+import styles from './forgot.module.css';
+import {API_FORGOT_PASSWORD, paths} from '../../consts';
 
-const ForgotPassword = () => {
+const ForgotPassword: React.FC = () => {
+    const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true);
+
+        try {
+            const response = await axiosInstance.put(API_FORGOT_PASSWORD, { email });
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            if (response.success) {
+                toast.success("New password sent to your email. Please check your inbox.");
+            }
+        } catch (error) {
+            //
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className='w-full'>
             <main className={styles.forgot_container}>
@@ -17,14 +41,24 @@ const ForgotPassword = () => {
                         <div className='mt-10 md:mr-32'>
                             <h1 className='main_h1 text-center mb-5'>Forgot Password</h1>
                             <h4 className='font-thin text-center'>We’ll email you a link so you can reset your password.</h4>
-                            <form action="">
+                            <form onSubmit={handleSubmit}>
                                 <div className='py-7 px-8 md:px-16 min-w-72 max-w-full md:max-w-[60rem]'>
                                     <div className={styles.form_control}>
-                                        <input className={styles.input_field} type="email" name='email' minLength={7} maxLength={64} required placeholder='Email' />
+                                        <input
+                                            className={styles.input_field}
+                                            type="email"
+                                            name='email'
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            minLength={7}
+                                            maxLength={64}
+                                            required
+                                            placeholder='Email'
+                                        />
                                     </div>
                                     <div className='mb-10'>
-                                        <button type='submit' className={styles.button}>
-                                            <span>Reset Password</span>
+                                        <button type='submit' className={styles.button} disabled={loading}>
+                                            <span>{loading ? 'Sending...' : 'Reset Password'}</span>
                                         </button>
                                     </div>
                                 </div>
@@ -37,7 +71,7 @@ const ForgotPassword = () => {
                 </div>
             </main>
         </div>
-    )
+    );
 }
 
-export default ForgotPassword
+export default ForgotPassword;

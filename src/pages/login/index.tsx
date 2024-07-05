@@ -168,7 +168,7 @@ const LoginPage: React.FC = () => {
 
               <div className="flex justify-center">
                 <Link className="md:mr-40 hover:text-green-600" to={paths.FORGOT_PASSWORD}>
-                  Forget Password
+                  Forgot Password
                 </Link>
               </div>
 
