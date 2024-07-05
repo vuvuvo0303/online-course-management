@@ -19,6 +19,7 @@ export const host_main = "https://api-ojt-hcm24-react06-group01.vercel.app";
 export const API_LOGIN = "/api/auth";
 export const API_LOGIN_WITH_GOOGLE = "/api/auth/google";
 export const API_CURRENT_LOGIN_USER = "/api/auth";
+export const API_FORGOT_PASSWORD = "/api/auth/forgot-password";
 //Users
 export const API_REGISTER = "/api/users";
 export const API_REGISTER_WITH_GOOGLE = "/api/users/google";

@@ -38,7 +38,6 @@ axiosInstance.interceptors.response.use(
             const { data } = error.response;
             if (data && data.message) {
                 if (data.message.includes("Your email")) {
-                    // Handle specific message or return without showing toast
                     return Promise.reject(data);
                 } else {
                     toast.error(data.message);
