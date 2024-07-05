@@ -24,7 +24,7 @@ const InstructorCreateCourse = () => {
     const navigate = useNavigate();
     const [cates, setCates] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const { _id } = useParams<{ _id: string }>();
+    const { id, _id } = useParams<{ _id: string }>();
     const [form] = useForm();
     console.log("check id: ", _id);
     const token = localStorage.getItem("token");
@@ -118,10 +118,8 @@ const InstructorCreateCourse = () => {
             value.discount = parseFloat(value.discount);
         }
 
-
         console.log("check value: ", value);
         try {
-            // const token = localStorage.getItem("token");
             const token = localStorage.getItem("token")
             //Update Course
             if (_id) {
@@ -132,7 +130,11 @@ const InstructorCreateCourse = () => {
                         },
                     });
                 toast.success("Update New Course Successfully");
-                navigate(`/instructor/manage-courses`);
+                if (id) {
+                    navigate(`/instructor/manage-courses/${_id}`);
+                } else {
+                    navigate(`/instructor/manage-courses`);
+                }
             }
             //Create Course
             else {
@@ -152,26 +154,62 @@ const InstructorCreateCourse = () => {
 
     return (
         <>
-            <Breadcrumb
-                items={[
-                    {
-                        href: '/instructor/dashboard',
-                        title: <HomeOutlined />,
-                    },
-                    {
-                        href: '/instructor/manage-courses',
-                        title: (
-                            <>
-                                <UserOutlined />
-                                <span>Manage Courses</span>
-                            </>
-                        ),
-                    },
-                    {
-                        title: <>{_id ? "Update Course" : "Create Course"}</>,
-                    },
-                ]}
-            />
+            {
+                id ?
+                    (
+                        <Breadcrumb
+                            items={[
+                                {
+                                    href: '/instructor/dashboard',
+                                    title: <HomeOutlined />,
+                                },
+                                {
+                                    href: '/instructor/manage-courses',
+                                    title: (
+                                        <>
+                                            <UserOutlined />
+                                            <span>Manage Courses</span>
+                                        </>
+                                    ),
+                                },
+                                {
+                                    href: (`/instructor/manage-courses/${id}`),
+                                    title: (
+                                        <>
+                                            <UserOutlined />
+                                            <span>Course Detail </span>
+                                        </>
+                                    ),
+                                },
+
+                                {
+                                    title: <>{_id ? "Update Course" : "Create Course"}</>,
+                                },
+                            ]}
+                        />
+                    )
+                    :
+                    <Breadcrumb
+                        items={[
+                            {
+                                href: '/instructor/dashboard',
+                                title: <HomeOutlined />,
+                            },
+                            {
+                                href: '/instructor/manage-courses',
+                                title: (
+                                    <>
+                                        <UserOutlined />
+                                        <span>Manage Courses</span>
+                                    </>
+                                ),
+                            },
+                            {
+                                title: <>{_id ? "Update Course" : "Create Course"}</>,
+                            },
+                        ]}
+                    />
+            }
             {_id !== undefined && _id !== "" ? (
                 <h1 className="text-center">Update Course</h1>
             ) : (
@@ -262,8 +300,8 @@ const InstructorCreateCourse = () => {
                                 {
                                     validator: (_, value) =>
                                         !value || isValidHttpUrl(value)
-                                    ? Promise.resolve() : Promise.reject(new Error('This is not a valid image URL')),
-                                        
+                                            ? Promise.resolve() : Promise.reject(new Error('This is not a valid image URL')),
+
                                 }
                             ]}
                         >

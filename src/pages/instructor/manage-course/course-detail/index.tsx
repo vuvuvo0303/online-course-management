@@ -1,4 +1,4 @@
-import { HomeOutlined } from "@ant-design/icons";
+import { EditOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Col, DatePicker, Rate, Row } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -7,6 +7,7 @@ import { host_main } from "../../../../consts";
 import { useParams } from "react-router-dom";
 import { User } from "../../../../models/User";
 import moment from "moment";
+import { Link } from "react-router-dom";
 // import "./course-detail.css"
 
 const ManageCourseDetail = () => {
@@ -97,25 +98,30 @@ const ManageCourseDetail = () => {
   const formattedDate = moment(course?.updated_at).format('DD/MM/YYYY');
   return (
     <div className="container mx-auto px-10 ">
-      <div className="h-100">
-        <Breadcrumb
-          className="py-2 "
-          items={[
-            {
-              href: "/instructor/dashboard",
-              title: <HomeOutlined />,
-            },
-            {
-              href: "/instructor/manage-courses",
-              title: "Manage Courses",
+      <div className="grid">
+        <div className="flex justify-between">
+          <Breadcrumb
+            className="py-2 "
+            items={[
+              {
+                href: "/instructor/dashboard",
+                title: <HomeOutlined />,
+              },
+              {
+                href: "/instructor/manage-courses",
+                title: "Manage Courses",
 
-            },
-            {
-              title: "Manage Course Detail",
+              },
+              {
+                title: "Manage Course Detail",
 
-            },
-          ]}
-        />
+              },
+            ]}
+          />
+          <Link to={`/instructor/manage-courses/course-detail/${_id}/update-course/${_id}`}>
+            <EditOutlined className="mt-2 text-blue-500 text-3xl" /> {/* Sử dụng Tailwind để thay đổi kích thước */}
+          </Link>
+        </div>
         <div className="grid lg:grid-cols-2 grid-cols-1 mt-10 gap-10">
           <div className="">
             <h1 >{course?.name}</h1>

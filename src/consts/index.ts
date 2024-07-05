@@ -80,6 +80,7 @@ export const paths = {
   INSTRUCTOR_PROFILE: "profile",
   INSTRUCTOR_CREATE_COURSE: "manage-courses/create-course",
   INSTRUCTOR_UPDATE_COURSE: "manage-courses/update-course/:_id",
+  INSTRUCTOR_UPDATE_COURSE_DETAIL: "manage-courses/course-detail/:id/update-course/:_id",
   INSTRUCTOR_PAYMENT_HISTORY: "payment-history",
   INSTRUCTOR_MANAGE_FEEDBACKS: "manage-feedbacks",
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
