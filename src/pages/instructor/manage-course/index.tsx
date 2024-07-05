@@ -166,7 +166,7 @@ const InstructorManageCourses: React.FC = () => {
       render: (_id: string) => (
         <>
           <Link to={`/instructor/manage-courses/${_id}`}><Button type="primary">Detail</Button></Link>
-          <Link to={``}><EyeOutlined className="text-purple-500 m-2" /></Link>
+          <Link to={`/instructor/manage-courses/${_id}/manage-sessions`}><EyeOutlined className="text-purple-500 m-2" /></Link>
           <Link to={`/instructor/manage-courses/update-course/${_id}`}><EditOutlined className="mt-2 text-blue-500" /></Link>
           <DeleteOutlined onClick={() => showModal(_id)} className="text-red-500 m-2" />
         </>
