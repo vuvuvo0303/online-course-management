@@ -81,7 +81,7 @@ const AdminManageUsers: React.FC = () => {
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
       if (event.key === 'users_updated') {
-        fetchStudents();
+        fetchUsers();
       }
     };
 
@@ -98,10 +98,10 @@ const AdminManageUsers: React.FC = () => {
 
 
   useEffect(() => {
-    fetchStudents();
+    fetchUsers();
   }, [pagination.current, pagination.pageSize]);
 
-  const fetchStudents = useCallback(async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
       const response: AxiosResponse<{
@@ -142,14 +142,14 @@ const AdminManageUsers: React.FC = () => {
         await axiosInstance.delete(`/api/users/${_id}`);
         setData((prevData) => prevData.filter((user) => user._id !== _id));
         toast.success(`Deleted user ${email} successfully`);
-        fetchStudents();
+        fetchUsers();
 
         localStorage.setItem('users_updated', new Date().toISOString());
       } catch (error) {
         // Handle error silently
       }
     },
-    [fetchStudents]
+    [fetchUsers]
   );
 
   const addNewUser = useCallback(
@@ -176,14 +176,13 @@ const AdminManageUsers: React.FC = () => {
         setIsModalVisible(false);
         form.resetFields();
         setLoading(false);
-        fetchStudents();
+        fetchUsers();
         localStorage.setItem('users_updated', new Date().toISOString());
       } catch (error) {
         setLoading(false);
-        console.error("Error creating new user:", error);
       }
     },
-    [fetchStudents, form]
+    [fetchUsers, form]
   );
 
   const formatDate = useCallback((dateString: string) => {
@@ -261,7 +260,7 @@ const AdminManageUsers: React.FC = () => {
         user_id: userId,
         status: checked,
       });
-      fetchStudents();
+      fetchUsers();
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
       setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
@@ -530,7 +529,7 @@ const AdminManageUsers: React.FC = () => {
       toast.success("Updated user successfully");
       setIsModalVisible(false);
       form.resetFields();
-      fetchStudents();
+      fetchUsers();
     } catch (error) {
       console.error("Error updating user:", error);
     }
@@ -558,7 +557,7 @@ const AdminManageUsers: React.FC = () => {
             <HomeOutlined />
           </Breadcrumb.Item>
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
-          <Breadcrumb.Item>Manage Students</Breadcrumb.Item>
+          <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
         <div className="mt-3">
           {" "}
@@ -570,7 +569,7 @@ const AdminManageUsers: React.FC = () => {
             }}
             className="py-2"
           >
-            <UserAddOutlined /> Add New Student
+            <UserAddOutlined /> Add New User
           </Button>
         </div>
       </div>

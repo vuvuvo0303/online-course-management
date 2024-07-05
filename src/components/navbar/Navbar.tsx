@@ -246,7 +246,7 @@ const Navbar: React.FC = () => {
                   <p onClick={(e) => e.preventDefault()}>
                     <Space>
                       <Avatar
-                        src={dataUser.avatarUrl}
+                        src="https://firebasestorage.googleapis.com/v0/b/online-course-management-e9629.appspot.com/o/z5598376234724_b337fb917be166afee20d01ef791b592.jpg?alt=media&token=c4e29e03-47bc-406b-a326-f4ea52c9fdcc"
                         size={40}
                         icon={<UserOutlined />}
                       />

@@ -36,10 +36,17 @@ axiosInstance.interceptors.response.use(
     (error) => {
         if (error.response) {
             const { data } = error.response;
+            console.log(error.response)
             if (data && data.message) {
                 if (data.message.includes("Your email")) {
                     return Promise.reject(data);
-                } else {
+                }
+                else if(error.response.status === 403){
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    toast.error(data.message)
+                }
+                else {
                     toast.error(data.message);
                 }
             } else {
