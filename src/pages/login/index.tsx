@@ -68,7 +68,7 @@ const LoginPage: React.FC = () => {
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  
+
 
   const handleLoginWithGoogle = async (googleId: string) => {
     try {
@@ -81,10 +81,7 @@ const LoginPage: React.FC = () => {
       toast.success("Login successfully");
       navigate(paths.HOME);
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      if (error.status === 400) {
-        // Account does not exist, call the registration API
+      if (error) {
         try {
           const responseRegister = await axiosInstance.post(API_REGISTER_WITH_GOOGLE, {
             google_id: googleId,
@@ -171,7 +168,7 @@ const LoginPage: React.FC = () => {
 
               <div className="flex justify-center">
                 <Link className="md:mr-40 hover:text-green-600" to={paths.FORGOT_PASSWORD}>
-                  Forget Password
+                  Forgot Password
                 </Link>
               </div>
 

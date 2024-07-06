@@ -53,6 +53,7 @@ import {
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
 import AdminManageUsers from "../pages/admin/manage-users";
+import VerifyEmail from "../pages/verify-email";
 
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
@@ -77,6 +78,8 @@ const AppRouter: React.FC = () => {
       <Route path={paths.NOTFOUND} element={<NotFound />} />
       <Route path="/courses/:id" element={<CoursesCategory />} />
       <Route path={paths.FORGOT_PASSWORD} element={<ForgotPassword />} />
+        <Route path="/verify-email/:token" element={<VerifyEmail />} />
+
 
       {/* Route for Student */}
       <Route path={paths.STUDENT_PAYMENT_HISTORY} element={<StudentPaymentHistory />} />
@@ -151,6 +154,14 @@ const AppRouter: React.FC = () => {
         />
         <Route
           path={paths.INSTRUCTOR_CREATE_COURSE}
+          element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to="/" />}
+        />
+        <Route
+          path={paths.INSTRUCTOR_UPDATE_COURSE}
+          element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to="/" />}
+        />
+        <Route
+          path={paths.INSTRUCTOR_UPDATE_COURSE_DETAIL}
           element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to="/" />}
         />
         <Route

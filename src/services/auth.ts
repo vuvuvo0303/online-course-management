@@ -36,7 +36,6 @@ export async function login(email: string, password: string): Promise<{ token: s
 
     return null;
   } catch (error) {
-    console.error('Error logging in:', error);
     return null;
   }
 }

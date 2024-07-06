@@ -19,7 +19,7 @@ const SideBar: React.FC = () => {
         if (user) {
             try {
                 const parsedUser = JSON.parse(user);
-                setUserData({ fullName: parsedUser.fullName, avatarUrl: parsedUser.avatarUrl });
+                setUserData({ fullName: parsedUser.fullName, avatarUrl: parsedUser.avatar });
             } catch (error) {
                 console.error('Error parsing user data from localStorage', error);
             }

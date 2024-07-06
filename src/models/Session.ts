@@ -1,29 +1,33 @@
-export class Session{
-    sessionId: string 
-    title: string
-    description: string
-    createdDate: string 
-    updatedDate: string 
-    courseId: string 
-    status: boolean
-    userId: string 
+export class Session {
+    _id: string;
+    name: string;
+    user_id: string;
+    course_id: string;
+    description: string;
+    position_order: number;
+    created_at: Date;
+    updated_at: Date;
+    is_deleted: boolean;
+
     constructor(
-        sessionId: string = "",
-        title: string = "",
+        _id: string = "",
+        name: string = "",
+        user_id: string = "",
+        course_id: string = "",
         description: string = "",
-        createdDate: string = "",
-        updatedDate: string = "",
-        courseId: string = "",
-        userId: string = "",
-        status: boolean = false
-    ){
-        this.sessionId = sessionId;
-        this.title = title;
+        position_order: number = 0,
+        created_at: Date = new Date(),
+        updated_at: Date = new Date(),
+        is_deleted: boolean = false
+    ) {
+        this._id = _id;
+        this.name = name;
+        this.user_id = user_id;
+        this.course_id = course_id;
         this.description = description;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
-        this.courseId = courseId; 
-        this.status = status; 
-        this.userId = userId;
+        this.position_order = position_order;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.is_deleted = is_deleted;
     }
 }
