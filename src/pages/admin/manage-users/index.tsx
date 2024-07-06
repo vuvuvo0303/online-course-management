@@ -478,19 +478,19 @@ const AdminManageUsers: React.FC = () => {
       if (values.avatar && typeof values.avatar !== "string" && values.avatar.file.originFileObj) {
         avatarUrl = await uploadFile(values.avatar.file.originFileObj);
       }
-  
+
       // Prepare updated user data
       const updatedUser = {
         ...values,
         avatar: avatarUrl,
         email: values.email, // Ensure email is included
       };
-  
+
       console.log("Updated user data to send to server:", updatedUser);
-  
+
       const response: AxiosResponse<any> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
       console.log("Response from server:", response);
-  
+
       setData((prevData) => {
         const newData = prevData.map((user) => {
           if (user._id === formData._id) {
@@ -503,7 +503,7 @@ const AdminManageUsers: React.FC = () => {
         console.log("New state data after update:", newData);
         return newData;
       });
-  
+
       toast.success("Updated user successfully");
       setIsModalVisible(false);
       form.resetFields();
@@ -513,7 +513,6 @@ const AdminManageUsers: React.FC = () => {
     }
     setLoading(false);
   };
-  
 
   const onFinish = (values: any) => {
     if (modalMode === "Edit") {
@@ -581,9 +580,11 @@ const AdminManageUsers: React.FC = () => {
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
-            <Input />
-          </Form.Item>
+          {modalMode === "Add" && (
+            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
+              <Input />
+            </Form.Item>
+          )}
           {modalMode === "Add" && (
             <Form.Item
               name="password"
@@ -604,7 +605,7 @@ const AdminManageUsers: React.FC = () => {
               <Radio value="admin">Admin</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item label="Avatar" name="avatar" rules={[{ required: true, message: "Please upload your Avatar" }]}>
+          <Form.Item label="Avatar" name="avatar">
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
               listType="picture-card"
