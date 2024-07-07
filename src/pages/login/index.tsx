@@ -18,7 +18,7 @@ import Lottie from "lottie-react";
 import vutru from "../../assets/vutru.json";
 import { jwtDecode } from "jwt-decode";
 import axiosInstance from "../../services/api.ts";
-import {toggleToast} from "react-toastify/dist/core/store";
+import { toggleToast } from "react-toastify/dist/core/store";
 
 type FieldType = {
   email: string;
@@ -67,7 +67,7 @@ const LoginPage: React.FC = () => {
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  
+
 
   const handleLoginWithGoogle = async (googleId: string) => {
     try {
