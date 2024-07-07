@@ -68,6 +68,7 @@ export const paths = {
   NOTFOUND: "/notfound",
   COURSE_DETAIL: "/course/:id",
   FORGOT_PASSWORD: "/forgot-password",
+  VERIFY_TOKEN: "/verify-email/:token",
 
   /* STUDENT PATHS */
   STUDENT_PROFILE: "/profile",

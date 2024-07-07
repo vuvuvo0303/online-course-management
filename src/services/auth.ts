@@ -1,6 +1,8 @@
 import axiosInstance from "./api.ts";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
+import {useNavigate} from "react-router-dom";
+import {paths} from "../consts";
 
 type JwtPayload = {
   id: string;
@@ -19,7 +21,7 @@ export async function login(email: string, password: string): Promise<{ token: s
     if (response.success) {
       const token = response.data.token;
       const decodedToken: JwtPayload = jwtDecode(token);
-
+      localStorage.setItem("exp-token", `${decodedToken.exp}`);
       if (decodedToken.role === 'admin' || decodedToken.role === 'student' || decodedToken.role === 'instructor') {
         if (window.location.pathname.includes('/admin')) {
           if (decodedToken.role !== 'admin') {
@@ -39,3 +41,26 @@ export async function login(email: string, password: string): Promise<{ token: s
     return null;
   }
 }
+
+
+export const checkTokenExpiration = (navigate: ReturnType<typeof useNavigate>) => {
+  const expToken = localStorage.getItem("exp-token");
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
+  if (expToken) {
+    const currentTime = Math.floor(Date.now() / 1000);
+    if (currentTime > Number(expToken)) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("exp-token");
+      if(user.role === 'admin') {
+        navigate('admin/login')
+      }
+      else{
+        navigate(paths.LOGIN);
+      }
+      return true;
+    }
+  }
+  return false;
+};
