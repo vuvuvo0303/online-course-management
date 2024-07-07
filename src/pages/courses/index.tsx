@@ -1,16 +1,18 @@
-import { useParams } from "react-router-dom"
-import styles from './courses.module.css'
-import { Tabs } from 'antd';
+import { useState } from 'react';
+import { useParams } from "react-router-dom";
+import { Tabs, Collapse, Radio, Checkbox, Rate } from 'antd';
 import type { TabsProps } from 'antd';
-import WishList from "../enrollment/WishList.tsx";
+import WishList from "../enrollment/WishList";
+import MyList from "../enrollment/MyList";
 import List from "../../components/categories/list";
 import TeacherCategories from "../../components/categories/teacher";
-import { ExclamationCircleFilled, FilterOutlined, UpOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import {CartComponents} from "../../components";
+import { ExclamationCircleFilled, FilterOutlined } from "@ant-design/icons";
+import { CartComponents } from "../../components";
+import styles from './courses.module.css';
 
 const CoursesCategory: React.FC = () => {
     const urlParams = useParams().id;
+    const [isSidebarOpen, setSidebarOpen] = useState(true);
     const items: TabsProps['items'] = [
         {
             key: '1',
@@ -19,20 +21,16 @@ const CoursesCategory: React.FC = () => {
         },
         {
             key: '2',
-            label: 'New',
-            children: 'Content of Tab Pane 2',
-        },
-        {
-            key: '3',
             label: 'Trending',
-            children: 'Content of Tab Pane 3',
+            children: <MyList />,
         },
     ];
 
-    const [isRotated, setIsRotated] = useState(false);
+    const { Panel } = Collapse;
 
-    const toggleRotation = () => {
-        setIsRotated(!isRotated);
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!isSidebarOpen);
     };
 
     return (
@@ -94,7 +92,7 @@ const CoursesCategory: React.FC = () => {
                 <div className="mb-2.5">
                     <div className="flex justify-between mb-4 mt-7">
                         <div className="gap-y-[.8rem] flex flex-wrap my-0 mx-[-.4rem]">
-                            <button type="button" className={styles.filter_btn}>
+                            <button type="button" className={styles.filter_btn} onClick={toggleSidebar}>
                                 <FilterOutlined className="text-xl" />
                                 <span className="ml-2">Filter</span>
                             </button>
@@ -119,105 +117,60 @@ const CoursesCategory: React.FC = () => {
                             10,000 results
                         </span>
                     </div>
-                    <div className={styles.main_content}>
-                        <div className={styles.filtered_course_list}>
+                    <div className="flex w-full">
+                        {isSidebarOpen && (
                             <div className={styles.sidebar}>
                                 <form id="filter-form" aria-label="Changes will be applied when you select/deselect.">
-                                    <div className={styles.according_panel}>
-                                        <div className={styles.title_filter}>
-                                            <h3 className="flex flex-1 font-normal max-w-[60rem]">
-                                                <button type="button" aria-disabled="false" aria-expanded="true"
-                                                        className={styles.according_title} id="according-title">
-                                                    <span className="flex">Ratings</span>
-                                                </button>
-                                            </h3>
-                                            <div onClick={toggleRotation}>
-                                                <UpOutlined
-                                                    className={`${styles.according_expand} ${isRotated ? styles.rotated : ''}`} />
-                                            </div>
-                                            <div className="overflow-hidden visible max-h-none">
-                                                <div className="pt-3 px-0 pb-6">
-                                                    <div className="flex flex-col items-start">
-                                                        <div className="max-h-[14.5rem] overflow-hidden relative w-full">
-                                                            <div>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className={styles.according_panel}>
-                                        <div className={styles.title_filter}>
-                                            <h3 className="flex flex-1 font-normal max-w-[60rem]">
-                                                <button type="button" aria-disabled="false" aria-expanded="true"
-                                                        className={styles.according_title} id="according-title">
-                                                    <span className="flex">Video Duration</span>
-                                                </button>
-                                            </h3>
-                                            <div onClick={toggleRotation}>
-                                                <UpOutlined
-                                                    className={`${styles.according_expand} ${isRotated ? styles.rotated : ''}`}/>
-                                            </div>
-                                            <div className="overflow-hidden visible max-h-none">
-                                                <div className="pt-3 px-0 pb-6">
-                                                    <div className="flex flex-col items-start">
-                                                        <div
-                                                            className="max-h-[14.5rem] overflow-hidden relative w-full">
-                                                            <div>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className={styles.according_panel}>
-                                        <div className={styles.title_filter}>
-                                            <h3 className="flex flex-1 font-normal max-w-[60rem]">
-                                                <button type="button" aria-disabled="false" aria-expanded="true"
-                                                        className={styles.according_title} id="according-title">
-                                                    <span className="flex">Level</span>
-                                                </button>
-                                            </h3>
-                                            <div onClick={toggleRotation}>
-                                                <UpOutlined
-                                                    className={`${styles.according_expand} ${isRotated ? styles.rotated : ''}`}/>
-                                            </div>
-                                            <div className="overflow-hidden visible max-h-none">
-                                                <div className="pt-3 px-0 pb-6">
-                                                    <div className="flex flex-col items-start">
-                                                        <div
-                                                            className="max-h-[14.5rem] overflow-hidden relative w-full">
-                                                            <div>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <Collapse defaultActiveKey={['1', '2', '3']} expandIconPosition="right">
+                                        <Panel header="Ratings" key="1">
+                                            <Radio.Group>
+                                                <Radio value={4.5}>
+                                                    <Rate disabled defaultValue={4.5} style={{ fontSize: '12px' }} /> 4.5 (1,488)
+                                                </Radio>
+                                                <Radio value={4.0}>
+                                                    <Rate disabled defaultValue={4} style={{ fontSize: '12px' }} /> 4.0 (685)
+                                                </Radio>
+                                                <Radio value={3.5}>
+                                                    <Rate disabled defaultValue={3.5} style={{ fontSize: '12px' }} /> 3.5 (11)
+                                                </Radio>
+                                                <Radio value={3.0}>
+                                                    <Rate disabled defaultValue={3} style={{ fontSize: '12px' }} /> 3.0 (6)
+                                                </Radio>
+                                            </Radio.Group>
+                                        </Panel>
+                                        <Panel header="Video Duration" key="2">
+                                            <Checkbox.Group>
+                                                <Checkbox value="0-1">0-1 Hour (158)</Checkbox>
+                                                <Checkbox value="1-3">1-3 Hours (336)</Checkbox>
+                                                <Checkbox value="3-6">3-6 Hours (329)</Checkbox>
+                                                <Checkbox value="6-17">6-17 Hours (377)</Checkbox>
+                                            </Checkbox.Group>
+                                        </Panel>
+                                        <Panel header="Level" key="3">
+                                            <Checkbox.Group>
+                                                <Checkbox value="all">All Levels (697)</Checkbox>
+                                                <Checkbox value="beginner">Beginner (406)</Checkbox>
+                                                <Checkbox value="intermediate">Intermediate (185)</Checkbox>
+                                                <Checkbox value="expert">Expert (29)</Checkbox>
+                                            </Checkbox.Group>
+                                        </Panel>
+                                    </Collapse>
                                 </form>
                             </div>
-
-                            <div className={styles.course_list}>
-                                <div className="mb-5">
-                                    <CartComponents/>
-                                    <CartComponents/>
-                                    <CartComponents/>
-                                    <CartComponents/>
-                                </div>
+                        )}
+                        <div className={`${styles.course_list} ${isSidebarOpen ? '' : 'w-full'}`}>
+                            <div className="mb-5 lg:ml-[5rem]">
+                                <CartComponents />
+                                <CartComponents />
+                                <CartComponents />
+                                <CartComponents />
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-        </main>
-    )
+        </main >
+    );
 }
 
 export default CoursesCategory;

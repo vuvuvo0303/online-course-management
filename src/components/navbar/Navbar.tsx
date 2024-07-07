@@ -67,7 +67,7 @@ const Navbar: React.FC = () => {
                 <p className="text-base font-bold">{dataUser.fullName}</p>
               </Row>
               <div>
-                <p className="text-base">{dataUser.email}</p>
+                <p className="text-xs">{dataUser.email}</p>
               </div>
             </Col>
           </Row>

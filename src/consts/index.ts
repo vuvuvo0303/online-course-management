@@ -144,47 +144,16 @@ export const categoryFilters = [
 ];
 
 export const categoryCourse: categoryCourse = {
-  "Web Development": [
-    "JavaScript",
-    "React JS",
-    "Angular",
-    "Next.js",
-    "CSS",
-    "HTML",
-    "ASP.NET Core",
-    "Node.Js",
-    "Microservices",
-  ],
+  "Web Development": ["JavaScript", "React JS", "Angular", "Next.js", "CSS", "HTML", "ASP.NET Core", "Node.Js", "Microservices",],
   "Mobile Development": ["iOS", "Android", "Flutter", "React Native"],
   "Game Development": ["Unity", "Unreal Engine", "Godot"],
-  Entrepreneurship: ["Startup", "Business Planning", "Marketing"],
-  "Business Analytics & Intelligence": [
-    "Data Analysis",
-    "Power BI",
-    "Data Science",
-    "Data Visualization",
-  ],
-  Finance: ["Investing", "Trading", "Accounting", "Cryptocurrency"],
+  "Entrepreneurship": ["Startup", "Business Planning", "Marketing"],
+  "Business Analytics & Intelligence": ["Data Analysis", "Power BI", "Data Science", "Data Visualization",],
+  "Finance": ["Investing", "Trading", "Accounting", "Cryptocurrency"],
   "IT Certifications": ["AWS", "CompTIA", "Cisco", "Microsoft"],
-  "Personal Transformation": [
-    "Leadership",
-    "Personal Productivity",
-    "Communication Skills",
-    "Confidence",
-  ],
-  "Graphic Design & Illustration": [
-    "Photoshop",
-    "Illustrator",
-    "InDesign",
-    "Drawing",
-  ],
-  "Digital Marketing": [
-    "SEO",
-    "Social Media Marketing",
-    "Google Analytics",
-    "Content Marketing",
-  ],
-  // Add other subcategories as needed
+  "Personal Transformation": ["Leadership", "Personal Productivity", "Communication Skills", "Confidence",],
+  "Graphic Design & Illustration": ["Photoshop", "Illustrator", "InDesign", "Drawing",],
+  "Digital Marketing": ["SEO", "Social Media Marketing", "Google Analytics", "Content Marketing",],
 };
 
 /* SUB CATEGORIES */

@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { useForm } from "antd/es/form/Form";
 import uploadFile from "../../utils/upload";
 import axiosInstance from "../../services/api.ts";
+import Recaptcha from "../register/reCaptcha.tsx";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type FieldType = {
@@ -24,36 +25,51 @@ type FieldType = {
 const RegisterPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [captchaVisible, setCaptchaVisible] = useState<boolean>(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const navigate = useNavigate();
   const [form] = useForm();
+
   const handleOk = () => {
     setIsModalOpen(false);
     form.submit();
   };
+
   const openModal = () => {
     setIsModalOpen(true);
   };
+
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    setLoading(true);
-    try {
+    if (!captchaVisible) {
+      setCaptchaVisible(true);
+      return;
+    }
 
+    setLoading(true);
+    if (!captchaToken) {
+      toast.error("Please complete the CAPTCHA");
+      setLoading(false);
+      return;
+    }
+
+    try {
       if (fileList.length > 0) {
         const file = fileList[0].originFileObj as FileType;
         const url = await uploadFile(file);
         values.avatar = url;
       }
 
-      await axiosInstance.post("/api/users", values);
+      await axiosInstance.post("/api/users", { ...values, captchaToken });
       toast.success("Successfully registered");
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (error) {
-      //Handle error softly
+      toast.error("Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -113,7 +129,7 @@ const RegisterPage: React.FC = () => {
               name="basic"
               className="flex flex-col gap-1"
               style={{ maxWidth: 600 }}
-              initialValues={{ remember: true }} // Set default role here
+              initialValues={{ remember: true }}
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
               autoComplete="off"
@@ -153,10 +169,6 @@ const RegisterPage: React.FC = () => {
                     max: 20,
                     message: "Name must be at most 20 characters!",
                   },
-                  //   {
-                  //     pattern: /^[a-zA-Z0-9]*$/,
-                  //     message: "Name must not contain any special characters!",
-                  //   },
                 ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
@@ -234,6 +246,7 @@ const RegisterPage: React.FC = () => {
                   {fileList.length >= 8 ? null : uploadButton}
                 </Upload>
               </Form.Item>
+              {captchaVisible && <Recaptcha onVerify={setCaptchaToken} />}
               <Form.Item wrapperCol={{ span: 24 }}>
                 <Button
                   type="primary"
