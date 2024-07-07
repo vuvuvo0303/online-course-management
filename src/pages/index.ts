@@ -30,7 +30,7 @@ export { default as InstructorDashboard } from "./instructor/instructor-dashboar
 export { default as InstructorManageLectures } from "./instructor/manage-lectures";
 export { default as InstructorManageFeedbacks } from "./instructor/manage-feedback";
 export { default as PaymentHistory } from "./payment/payment-history";
-export { default as InstructorCreateCourse } from "../pages/course/create-course";
+export { default as InstructorCreateCourse } from "../pages/instructor/manage-course/create-update-course";
 export { default as InstructorManageCourses } from "./instructor/manage-course/index";
 export { default as InstructorManageStudents } from "./instructor/manage-students";
 export { default as InstructorManageBlogs } from "./instructor/manage-blogs/index";
@@ -42,6 +42,7 @@ export { default as ManageSession } from "./instructor/manage-course/manage-sess
 export { default as CreateUpdateSession } from "./instructor/manage-course/manage-session/create-update-session";
 export { default as InstructorManageCoursesDetail } from "./instructor/manage-course/course-detail";
 export { default as ManageAllSession } from "../pages/manage-all-session";
+export {default as VerifyToken} from "../pages/verify-token";
 /* Admin Page */
 export { default as AdminLoginPage } from "./admin/login";
 export { default as AdminDashboard } from "./admin/dashboard";

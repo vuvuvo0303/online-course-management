@@ -253,20 +253,22 @@ const AdminManageCategories: React.FC = () => {
         `/api/category`,
         values
       );
-      const newCategory = response.data;
-      setData((prevData) => [...prevData, newCategory]);
-      toast.success("Created new category successfully");
-      setData([]);
-      setIsModalVisible(false);
-      form.resetFields();
-      setLoading(false);
-      fetchCategories();
+      console.log("check response: ", response)
+      if (response.success && response.data) {
+        const newCategory = response.data;
+        setData((prevData) => [...prevData, newCategory]);
+        toast.success("Created new category successfully");
+        setData([]);
+        setIsModalVisible(false);
+        form.resetFields();
+        fetchCategories();
+      } else {
+        toast.error(response.message || "Failed to create category");
+      }
     } catch (error) {
       console.log(error);
-      toast.error("Failed to create category. Please try again.");
     } finally {
       setLoading(false);
-      toast.error("Failed to create new category. Please try again.");
     }
   };
 

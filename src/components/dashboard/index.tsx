@@ -20,6 +20,7 @@ import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
 import logo2 from "../../assets/logo2.jpg";
+import {checkTokenExpiration} from "../../services/auth.ts";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -39,10 +40,15 @@ const Dashboard: React.FC = () => {
     fullName: null,
     email: null,
   });
+
+  const userString = localStorage.getItem("user");
+  const user: User = userString ? JSON.parse(userString) : null;
+  const userRole = user?.role;
   useEffect(() => {
-    const userString = localStorage.getItem("user");
-    const user: User = userString ? JSON.parse(userString) : null;
-    const userRole = user?.role;
+
+    if (checkTokenExpiration(navigate)) {
+      return;
+    }
 
     console.log(role, fullName);
 
@@ -62,6 +68,7 @@ const Dashboard: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    localStorage.removeItem("exp-token")
     navigate("/");
   };
 
@@ -183,7 +190,7 @@ const Dashboard: React.FC = () => {
           <Row>
             <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
-                src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
+              src={user.avatar}
                 className="hover:cursor-pointer"
                 size={50}
                 icon={<UserOutlined />}
@@ -307,7 +314,7 @@ const Dashboard: React.FC = () => {
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
                   <Avatar
-                    src="https://images.unsplash.com/photo-1693533846949-5df11d41642e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZnB0fGVufDB8fDB8fHww"
+                    src= {user.avatar}
                     className="hover:cursor-pointer "
                     size={40}
                     icon={<UserOutlined />}

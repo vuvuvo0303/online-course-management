@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, DatePicker, Breadcrumb, Select } from "antd";
+import { Button, Form, Input, Breadcrumb, Select } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
@@ -7,6 +7,7 @@ import { HomeOutlined } from "@ant-design/icons";
 import { Course, Session } from "../../../../../models";
 import { toast } from "react-toastify";
 import { User } from "../../../../../models/User";
+import { host_main } from "../../../../../consts";
 
 const formItemLayout = {
   labelCol: {
@@ -20,6 +21,7 @@ const formItemLayout = {
 };
 
 const CreateUpdateSession = () => {
+  const token = localStorage.getItem("token")
   const { courseId, sessionId } = useParams<{ courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,29 +30,31 @@ const CreateUpdateSession = () => {
   const [courseId2, setCourseId2] = useState<string>("");
   const [courses, setCourses] = useState<Course[]>([]);
   const [userId, setUserId] = useState<string>('');
+
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
     setUserId(user?._id);
     setRole(user?.role);
-    console.log("check role: ", role);
-
   }, []);
+  console.log("check courseId: ", courseId)
   useEffect(() => {
     if (courseId) {
       setCourseId2(courseId);
     }
+    // update session
     if (sessionId) {
       const fetchData = async () => {
         try {
-          const res = await axios.get(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`);
-          const data = res.data;
+          const res = await axios.get<Session>(`${host_main}/api/session/${sessionId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          const data = res.data.data;
           form.setFieldsValue({
-            title: data.title,
+            name: data.name,
             description: data.description,
-            updatedDate: moment(),
-            courseId: data.courseId,
-            sessionId: data.sessionId,
           });
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -60,14 +64,10 @@ const CreateUpdateSession = () => {
       };
       fetchData();
     } else {
-      form.setFieldsValue({
-        createdDate: moment(),
-      });
-
       setLoading(false);
     }
 
-  }, [courseId, form, sessionId]);
+  }, [courseId, form, sessionId, token]);
 
   useEffect(() => {
     if (!courseId) {
@@ -76,7 +76,7 @@ const CreateUpdateSession = () => {
           const res = await axios.get<Course[]>("https://665fbf245425580055b0b23d.mockapi.io/courses")
           if (res) {
             if (role === "instructor") {
-              setCourses(res.data.filter(course => course.userId === userId));
+              setCourses(res.data.filter(course => course._id === userId));
             } else {
               setCourses(res.data);
             }
@@ -88,31 +88,63 @@ const CreateUpdateSession = () => {
       };
       fetchCourses();
     }
-  }, [courseId, userId])
+  }, [courseId, userId, role])
 
   const onFinish = async (values: Session) => {
     setLoading(true);
-    try {
-      if (role === "instructor") {
-        if (sessionId) {
-          await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`, values);
-          toast.success("Update Session Successfully!")
-        } else {
-          if (courseId2) {
-            await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/session`, { ...values, courseId: courseId2, userId: userId });
-            toast.success("Create Session Successfully!")
-          } else {
-            await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/session`, { ...values, userId: userId });
-            toast.success("Create Session Successfully!")
+    // manage course -> manage session -> update session
+    if (courseId2 && sessionId) {
+      console.log('values: ', values)
+      console.log('userId: ', userId)
+      console.log('sessionId: ', sessionId)
+      try {
+        const updateres = await axios.put(`${host_main}/api/session/${sessionId}`, { ...values, user_id: userId, position_order: 3, _id: sessionId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
           }
+        )
+        toast.success("Update Session Successfully!")
+        console.log("updateres: ", updateres)
+      } catch (error) {
+        console.error("Error occurred:", error);
+        toast.error("Update Session Failed!")
+      }
+      navigate(`/instructor/manage-courses/${courseId}/manage-sessions`);
+    } else {
+      // manage course -> manage session -> create session
+      if (courseId2) {
+        try {
+          const create = await axios.post(`${host_main}/api/session`, values,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
+          console.log("check create: ", create);
+          toast.success("Create Session Successfully!")
+          navigate(`/instructor/manage-courses/${courseId}/manage-sessions`);
+        } catch (error) {
+          setLoading(false)
+          console.error(error);
+          toast.error("Create Session Failed!")
         }
-        navigate(`/instructor/manage-all-sessions`);
-      } 
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    } finally {
-      setLoading(false);
+      }
+      else {
+        // manage all sessions - create session
+        try {
+          await axios.post(`${host_main}/api/session`, { ...values, userId: userId });
+          toast.success("Create Session Successfully!")
+          navigate(`/instructor/manage-all-sessions`);
+        } catch (error) {
+          console.error("Error occurred:", error);
+          toast.error("Create Session Failed!")
+        }
+      }
     }
+
   };
 
   const handleChange = (value: string) => {
@@ -157,47 +189,26 @@ const CreateUpdateSession = () => {
 
           <h1 className="text-center mb-8">{sessionId ? "Update Session" : "Create Session"}</h1>
           <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
-            <Form.Item label="Title" name="title" rules={[{ required: true, message: 'Please input title!' }]}>
+            <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Please input title!' }]}>
               <Input />
             </Form.Item>
 
             <Form.Item
               label="Description"
               name="description"
-              rules={[{ required: true, message: "Please input description!" }]}
             >
               <Input.TextArea />
             </Form.Item>
-            {!sessionId && (
-              <Form.Item
-                className="w-full"
-                label="Created Date"
-                name="createdDate"
-                rules={[{ required: true, message: "Please select created date!" }]}
-              >
-                <DatePicker defaultValue={moment()} disabled />
-              </Form.Item>
-            )}
-
-            {sessionId && (
-              <Form.Item
-                label="Updated Date"
-                name="updatedDate"
-                rules={[{ required: true, message: "Please select updated date!" }]}
-              >
-                <DatePicker defaultValue={moment()} disabled />
-              </Form.Item>
-            )}
 
             {
               !courseId && (
-                <Form.Item label="Course Id" name="courseId" rules={[{ required: true, message: 'Please input course!' }]}>
+                <Form.Item label="Course Id" name="course_id" rules={[{ required: true, message: 'Please input course!' }]}>
                   <Select
 
                     onChange={handleChange}
                     options={courses.map(course => (
                       {
-                        value: course.courseId, label: course.title
+                        value: course._id, label: course.name
                       }
                     ))
                     }
@@ -208,8 +219,8 @@ const CreateUpdateSession = () => {
 
 
             {
-              courseId2 && (
-                <Form.Item hidden label="Course Id" name="courseId" initialValue={courseId2}>
+              courseId && (
+                <Form.Item hidden label="Course Id" name="course_id" initialValue={courseId}>
                   <Input />
                 </Form.Item>
               )
