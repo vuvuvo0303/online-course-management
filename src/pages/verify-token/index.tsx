@@ -20,8 +20,6 @@ const VerifyToken: React.FC = () => {
             const response = await axiosInstance.post(API_VERIFY_TOKEN, {
                 token: params.token,
             });
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
             if (response.success) {
                 toast.success("Verification Successfully");
                 navigate(paths.LOGIN);
@@ -43,8 +41,6 @@ const VerifyToken: React.FC = () => {
             const response = await axiosInstance.post(API_RESEND_TOKEN, {
                 email: email,
             });
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
             if (response.success) {
                 toast.success("New token sent to your email.");
                 setTokenExpired(false);
@@ -58,48 +54,56 @@ const VerifyToken: React.FC = () => {
     };
 
     return (
-        <div className="flex items-center justify-center flex-col">
-            <h1 className="main_h1 my-5">Verify Token</h1>
-            {!tokenExpired ? (
-                <div className="mb-5">
-                    <Button
-                        type="primary"
-                        loading={isLoadingVerify}
-                        onClick={handleVerifyEmail}
-                    >
-                        {isLoadingVerify ? "Verifying..." : "Verify Email"}
-                    </Button>
-                </div>
-            ) : (
-                <div className="flex items-center justify-center flex-col">
-                    {!resendSuccess && (
-                        <div className="flex flex-col items-center">
-                            <p className="text-red-500 mb-3">Your token has expired. Do you want to resend a new token?</p>
-                            <Form layout="inline" onFinish={handleResendToken}>
-                                <Form.Item
-                                    name="email"
-                                    rules={[{ required: true, message: 'Please input your email!' }, { type: 'email', message: 'Please enter a valid email!' }]}
-                                >
-                                    <Input
-                                        placeholder="Enter your email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                </Form.Item>
-                                <Form.Item>
-                                    <Button
-                                        type="primary"
-                                        htmlType="submit"
-                                        loading={isLoadingResend}
+        <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: 'url(/l2.jpg)' }}>
+            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+                <h1 className="text-2xl font-semibold text-center mb-6">Verify Token</h1>
+                {!tokenExpired ? (
+                    <div className="mb-5 text-center">
+                        <Button
+                            type="primary"
+                            loading={isLoadingVerify}
+                            onClick={handleVerifyEmail}
+                            className="w-full"
+                        >
+                            {isLoadingVerify ? "Verifying..." : "Verify Email"}
+                        </Button>
+                    </div>
+                ) : (
+                    <div className="text-center">
+                        {!resendSuccess && (
+                            <div className="flex flex-col items-center">
+                                <p className="text-red-500 mb-3">Your token has expired. Do you want to resend a new token?</p>
+                                <Form layout="vertical" onFinish={handleResendToken} className="w-full">
+                                    <Form.Item
+                                        name="email"
+                                        rules={[
+                                            { required: true, message: 'Please input your email!' },
+                                            { type: 'email', message: 'Please enter a valid email!' }
+                                        ]}
                                     >
-                                        {isLoadingResend ? "Resending..." : "Resend Token"}
-                                    </Button>
-                                </Form.Item>
-                            </Form>
-                        </div>
-                    )}
-                </div>
-            )}
+                                        <Input
+                                            placeholder="Enter your email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="w-full"
+                                        />
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Button
+                                            type="primary"
+                                            htmlType="submit"
+                                            loading={isLoadingResend}
+                                            className="w-full"
+                                        >
+                                            {isLoadingResend ? "Resending..." : "Resend Token"}
+                                        </Button>
+                                    </Form.Item>
+                                </Form>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
