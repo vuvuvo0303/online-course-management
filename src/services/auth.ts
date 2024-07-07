@@ -2,7 +2,7 @@ import axiosInstance from "./api.ts";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { paths } from "../consts";
+import { API_LOGIN, paths, roles } from "../consts";
 
 type JwtPayload = {
   id: string;
@@ -15,16 +15,16 @@ export async function login(email: string, password: string): Promise<{ token: s
 
 
   try {
-    const response = await axiosInstance.post(`/api/auth`, { email, password });
+    const response = await axiosInstance.post(API_LOGIN, { email, password });
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     if (response.success) {
       const token = response.data.token;
       const decodedToken: JwtPayload = jwtDecode(token);
       localStorage.setItem("exp-token", `${decodedToken.exp}`);
-      if (decodedToken.role === 'admin' || decodedToken.role === 'student' || decodedToken.role === 'instructor') {
+      if (decodedToken.role === roles.ADMIN || decodedToken.role === roles.STUDENT || decodedToken.role === roles.INSTRUCTOR) {
         if (window.location.pathname.includes('/admin')) {
-          if (decodedToken.role !== 'admin') {
+          if (decodedToken.role !== roles.ADMIN) {
             toast.error("You don't have permission to access this page");
             return null;
           }

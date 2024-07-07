@@ -21,7 +21,7 @@ export const API_LOGIN_WITH_GOOGLE = "/api/auth/google";
 export const API_CURRENT_LOGIN_USER = "/api/auth";
 export const API_FORGOT_PASSWORD = "/api/auth/forgot-password";
 export const API_VERIFY_TOKEN = "/api/auth/verify-token";
-export const API_RESEND_TOKEN = "/api/auth/resend-token"
+export const API_RESEND_TOKEN = "/api/auth/resend-token";
 //Users
 export const API_REGISTER = "/api/users";
 export const API_REGISTER_WITH_GOOGLE = "/api/users/google";
