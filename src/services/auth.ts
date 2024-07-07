@@ -1,8 +1,8 @@
 import axiosInstance from "./api.ts";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
-import {useNavigate} from "react-router-dom";
-import {paths} from "../consts";
+import { useNavigate } from "react-router-dom";
+import { paths } from "../consts";
 
 type JwtPayload = {
   id: string;
@@ -53,10 +53,10 @@ export const checkTokenExpiration = (navigate: ReturnType<typeof useNavigate>) =
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("exp-token");
-      if(user.role === 'admin') {
+      if (user.role === 'admin') {
         navigate('admin/login')
       }
-      else{
+      else {
         navigate(paths.LOGIN);
       }
       return true;
