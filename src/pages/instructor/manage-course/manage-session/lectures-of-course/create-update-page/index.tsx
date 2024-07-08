@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, DatePicker, Breadcrumb, Select } from "antd";
+import { Button, Form, Input, Breadcrumb, Select } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import moment from "moment";
 import { Course, Lecture, Session } from "../../../../../../models";
 import { HomeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { User } from "../../../../../../models/User";
+import axiosInstance from "../../../../../../services/api";
 
 const formItemLayout = {
   labelCol: {
@@ -24,35 +24,35 @@ const CreateLecture = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-  const [courseId2, setCourseId2] = useState<string>("");
-  const [sessionId2, setSessionId2] = useState<string>("");
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [sessions, setSessions] = useState<Session[]>([]);
+  const [course, setCourse] = useState<Course | null>();
+  const [session, setSession] = useState<Session | null>();
   const [userId, setUserId] = useState<string>('');
 
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
     setUserId(user?._id);
-    console.log("check userId: ", userId);
   }, []);
 
   useEffect(() => {
-    if (courseId && sessionId) {
-      setCourseId2(courseId);
-      setSessionId2(sessionId);
-    }
     if (lectureId) {
       const fetchData = async () => {
         try {
-          const res = await axios.get(`https://665fbf245425580055b0b23d.mockapi.io/lectures/${lectureId}`);
+          const res = await axiosInstance.get(`/api/lesson/${lectureId}`);
+          console.log("check res lesson: ", res)
           const data = res.data;
           form.setFieldsValue({
-            title: data.title,
+            name: data.name,
+            course_id: data.course_id,
+            session_id: data.session_id,
+            user_id: data.user_id,
+            lesson_type: data.lesson_type,
             description: data.description,
-            videoUrl: data.videoUrl,
-            updatedDate: moment(),
-            courseId: data.courseId,
+            video_url: data.video_url,
+            image_url: data.image_url,
+            price: data.price,
+            full_time: data.full_time,
+            position_order: data.position_order,
           });
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -63,50 +63,68 @@ const CreateLecture = () => {
       fetchData();
     } else {
       form.setFieldsValue({
-        createdDate: moment(),
+        course_id: course?._id,
+        session_id: session?._id
       });
       setLoading(false);
     }
   }, [lectureId, courseId, form, sessionId]);
 
-  const handleCourseChange = async (value: string) => {
-    console.log(`selected course ${value}`);
-    setCourseId2(value);
-    setSessionId2(""); // Reset sessionId when a new courseId is selected
-
-    try {
-      const res = await axios.get<Session[]>(`https://665fbf245425580055b0b23d.mockapi.io/session`);
-      if (res.data) {
-        console.log("check courseId2:", value);
-        setSessions(res.data.filter(session => session.userId === userId && session.courseId === value));
-      }
-    } catch (error) {
-      console.log("error: " + error);
-    }
-  };
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get<Course[]>("https://665fbf245425580055b0b23d.mockapi.io/courses")
-        if (res) {
-          setCourses(res.data.filter(course => course.userId === userId));
+        const res = await axiosInstance.get(`/api/course/${courseId}`);
+        if (res.data) {
+          setCourse(res.data);
+          console.log("check courses: ", res.data);
         }
       } catch (error) {
-        console.log("error: " + error);
+        console.log("Error: ", error);
+      } finally {
+        setLoading(false)
       }
     };
     fetchCourses();
-  }, [userId])
+  }, [courseId])
+
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const res = await axiosInstance.get(`/api/session/${sessionId}`);
+        if (res) {
+          console.log("check session res: ", res);
+          setSession(res.data);
+          console.log("check session: ", res.data);
+        }
+      } catch (error) {
+        console.log("Error: ", error);
+      } finally {
+        setLoading(false)
+      }
+    };
+    fetchSessions();
+  }, [sessionId])
+
+
 
   const onFinish = async (values: Lecture) => {
+    if (typeof values.full_time === 'string') {
+      values.full_time = parseFloat(values.full_time);
+    }
+    if (typeof values.position_order === 'string') {
+      values.position_order = parseFloat(values.position_order);
+    }
     setLoading(true);
     try {
       if (lectureId) {
-        await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/lectures/${lectureId}`, values);
+        console.log("check value update: ", values)
+        await axiosInstance.put(`/api/lesson/${lectureId}`, values, {
+        });
         toast.success("Update Lecture Successfully!")
       } else {
-        await axios.post(`https://665fbf245425580055b0b23d.mockapi.io/lectures`, { ...values, courseId: courseId2, sessionId: sessionId2 });
+        console.log("check value create: ", values)
+        await axiosInstance.post(`/api/lesson`, values);
         toast.success("Create Lecture Successfully!")
       }
       if (sessionId && courseId) {
@@ -150,86 +168,85 @@ const CreateLecture = () => {
           }
           <h1 className="text-center mb-8">{lectureId ? "Update Lecture" : "Create Lecture"}</h1>
           <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
-            <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input title!" }]}>
+            <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input name!" }]}>
               <Input />
             </Form.Item>
 
             <Form.Item
+              label="Course Name"
+              name="course_id"
+            >
+              <Input defaultValue={course?._id} disabled />
+            </Form.Item>
+            <Form.Item
+              initialValue={session?._id}
+              label="Session Name"
+              name="session_id"
+            >
+              <Input defaultValue={session?._id} disabled />
+            </Form.Item>
+            <Form.Item
+              hidden
+              label="User Id"
+              name="user_id"
+              initialValue={userId}
+            >
+              <Input.TextArea />
+            </Form.Item>
+            <Form.Item
+              label="Lecture Type"
+              name="lesson_type"
+              initialValue={"video"}
+              rules={[{ required: true, message: "Please input lecture name!" }]}
+            >
+              <Select
+                defaultValue="video"
+                style={{ width: 200 }}
+                options={[
+                  {
+                    options: [
+                      { label: <span>video</span>, value: 'video' },
+                      { label: <span>text</span>, value: 'text' },
+                      { label: <span>image</span>, value: 'image' },
+                    ],
+                  },
+                ]}
+              />
+            </Form.Item>
+            <Form.Item
               label="Description"
               name="description"
-              rules={[{ required: true, message: "Please input description!" }]}
             >
               <Input.TextArea />
             </Form.Item>
 
             <Form.Item
               label="Video URL"
-              name="videoUrl"
+              name="video_url"
               rules={[{ required: true, message: "Please input video URL!" }]}
             >
               <Input />
             </Form.Item>
-
-            {!lectureId && (
-              <Form.Item
-                label="Created Date"
-                name="createdDate"
-                rules={[{ required: true, message: "Please select created date!" }]}
-              >
-                <DatePicker defaultValue={moment()} disabled />
-              </Form.Item>
-            )}
-
-            {lectureId && (
-              <Form.Item
-                label="Updated Date"
-                name="updatedDate"
-                rules={[{ required: true, message: "Please select updated date!" }]}
-              >
-                <DatePicker defaultValue={moment()} disabled />
-              </Form.Item>
-            )}
-
-            <Form.Item hidden label="Course Id" name="courseId" initialValue={courseId2}>
+            <Form.Item
+              label="Image URL"
+              name="image_url"
+            >
               <Input />
             </Form.Item>
-
-            {
-              !courseId && (
-                <Form.Item label="Course Id" name="courseId" rules={[{ required: true, message: 'Please input course!' }]}>
-                  <Select
-                    onChange={handleCourseChange}
-                    options={courses.map(course => (
-                      {
-                        value: course.courseId, label: course.title
-                      }
-                    ))
-                    }
-                  />
-                </Form.Item>
-              )
-            }
-            {!sessionId &&
-              <Form.Item label="Session Id" name="sessionId" rules={[{ required: true, message: 'Please input session!' }]}>
-                <Select
-                  disabled={!courseId2}
-                  onChange={setSessionId2}
-                  options={sessions.map(session => (
-                    {
-                      value: session.sessionId, label: session.title
-                    }
-                  ))
-                  }
-                />
-              </Form.Item>
-            }
-            {
-              courseId2 && (
-                <Form.Item hidden label="Course Id" name="courseId" initialValue={courseId2}>
-                  <Input />
-                </Form.Item>
-              )
-            }
+            <Form.Item
+              label="full_time"
+              name="full_time"
+              rules={[{ required: true, message: 'Please input a number!' }]}
+            >
+              <Input type="number" />
+            </Form.Item>
+            <Form.Item
+              label="position_order"
+              name="position_order"
+              rules={[{ required: true, message: 'Please input a number!' }]}
+            >
+              <Input type="number" />
+            </Form.Item>
             <Form.Item wrapperCol={{ span: 24, offset: 6 }}>
               <Button type="primary" htmlType="submit" loading={loading}>
                 Submit

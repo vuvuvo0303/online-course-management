@@ -1,13 +1,15 @@
 import { EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Col, DatePicker, Rate, Row } from "antd";
+import { Breadcrumb,Rate} from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Category, Course } from "../../../../models";
-import { host_main } from "../../../../consts";
+import { User } from "../../../../../models/User";
 import { useParams } from "react-router-dom";
-import { User } from "../../../../models/User";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { host_main } from "../../../../../consts";
+import { Category, Course } from "../../../../../models";
+import axiosInstance from "../../../../../services/api";
+
 // import "./course-detail.css"
 
 const ManageSessionDetail = () => {
@@ -43,7 +45,7 @@ const ManageSessionDetail = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.post(`${host_main}/api/category/search`, {
+        const res = await axiosInstance.post(`/api/category/search`, {
           "searchCondition": {
             "keyword": "",
             "is_delete": false
@@ -75,10 +77,10 @@ const ManageSessionDetail = () => {
   useEffect(() => {
     const fetchInstructor = async () => {
       try {
-        const res = await axios.get<User>(`${host_main}/api/users/${course?.user_id}`, {
+        const res = await axiosInstance.get(`/api/users/${course?.user_id}`, {
           headers: {
             Authorization: `Bearer ${token}`
-          }
+          } 
         });
         if (res) {
           console.log("check instructor: ", res);

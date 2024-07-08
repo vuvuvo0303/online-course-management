@@ -24,7 +24,7 @@ const InstructorCreateCourse = () => {
     const navigate = useNavigate();
     const [cates, setCates] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const { id, _id } = useParams<{ _id: string }>();
+    const { id, _id } = useParams<{ _id: string, id: string}>();
     const [form] = useForm();
     console.log("check id: ", _id);
     const token = localStorage.getItem("token");
@@ -32,7 +32,7 @@ const InstructorCreateCourse = () => {
         const fetchData = async () => {
             try {
                 const res = await
-                    axios.get<Course>(`${host_main}/api/course/${_id}`, {
+                    axios.get(`${host_main}/api/course/${_id}`, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
@@ -65,7 +65,7 @@ const InstructorCreateCourse = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await axios.post<Category[]>(`${host_main}/api/category/search`, {
+                const res = await axios.post(`${host_main}/api/category/search`, {
                     "searchCondition": {
                         "keyword": "",
                         "is_delete": false
@@ -138,7 +138,7 @@ const InstructorCreateCourse = () => {
             }
             //Create Course
             else {
-                await axios.post<Course>(`${host_main}/api/course`, value, {
+                await axios.post(`${host_main}/api/course`, value, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

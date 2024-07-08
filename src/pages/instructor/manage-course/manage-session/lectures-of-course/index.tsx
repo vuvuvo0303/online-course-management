@@ -1,10 +1,11 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Modal, Spin, Switch, Table, TableProps } from "antd";
+import { Breadcrumb, Button, Modal, Spin, Table, TableProps, } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Lecture } from "../../../../../models";
 import { toast } from "react-toastify";
+import axiosInstance from "../../../../../services/api";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
@@ -29,11 +30,12 @@ const LectureOfCourse: React.FC = () => {
                 await handleDelete(selectedLectureId);
             } catch (error) {
                 setModalText("Error occurred: " + error);
+                toast.success("Delete Lecture Failed!");
             } finally {
                 setTimeout(() => {
                     setOpen(false);
                     setConfirmLoading(false);
-                }, 2000);
+                }, 300);
             }
         } else {
             setOpen(false);
@@ -41,24 +43,44 @@ const LectureOfCourse: React.FC = () => {
     };
 
     const handleDelete = async (lectureId: string) => {
-        await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/lectures/${lectureId}`);
-        setData(data.filter(lecture => lecture.lectureId !== lectureId));
+        await axiosInstance.delete(`/api/lesson/${lectureId}`);
+        setData(data.filter(lecture => lecture._id !== lectureId));
         toast.success("Delete Lecture Successfully!")
     };
 
     const handleCancel = () => {
         setOpen(false);
     };
-
+    const token = localStorage.getItem("token")
     useEffect(() => {
 
         if (courseId) {
             const fetchLecture = async () => {
                 try {
-                    const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
-                    if (res.data) {
-                        const filteredLectures = res.data.filter(lecture => lecture.courseId === courseId && lecture.sessionId === sessionId);
-                        setData(filteredLectures);
+                    const res = await axiosInstance.post(`/api/lesson/search`,
+                        {
+                            "searchCondition": {
+                                "keyword": "",
+                                "course_id": courseId,
+                                "session_id": sessionId,
+                                "lesson_type": "",
+                                "is_position_order": false,
+                                "is_deleted": false
+                            },
+                            "pageInfo": {
+                                "pageNum": 1,
+                                "pageSize": 10
+                            }
+                        },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        }
+                    );
+                    if (res) {
+                        console.log("Check res: ", res);
+                        setData(res.data.pageData)
                     }
                 } catch (error) {
                     console.error("Error fetching data:", error);
@@ -82,96 +104,74 @@ const LectureOfCourse: React.FC = () => {
             };
             fetchLecture();
         }
-    }, [courseId, sessionId]);
+    }, [courseId, sessionId, token]);
 
-    const onChangeStatus = async (checked: boolean, lectureId: string) => {
-        try {
-            const updatedLecture = data.find(lecture => lecture.lectureId === lectureId);
-            if (updatedLecture) {
-                updatedLecture.status = checked;
-                await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/lectures/${lectureId}`, updatedLecture);
-                setData([...data]); // Update state to trigger re-render
-            }
-        } catch (error) {
-            console.error("Error updating status:", error);
-        }
-    };
 
-    const columns: TableProps<Lecture>["columns"] = [
+    const columns: TableProps["columns"] = [
         {
-            title: 'Lecture Id',
-            dataIndex: 'lectureId',
-            key: 'lectureId',
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+            width: 300
         },
         {
-            title: 'Session Id',
-            dataIndex: 'sessionId',
-            key: 'sessionId',
+            title: 'Course Name',
+            dataIndex: 'course_name',
+            key: 'course_name',
+
         },
         {
-            title: 'Title',
-            dataIndex: 'title',
-            key: 'title',
+            title: 'Video Url',
+            dataIndex: 'video_url',
+            key: 'video_url',
+            render:(video_url: string)=>(
+                <>
+                <iframe src={video_url} ></iframe>
+                </>
+            )
         },
         {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
+            title: 'Image Url',
+            dataIndex: 'image_url',
+            key: 'image_url',
+
         },
         {
-            title: 'Created Date',
-            dataIndex: 'createdDate',
-            key: 'createdDate',
+            title: 'Created At ',
+            dataIndex: 'created_at',
+            key: 'created_at',
             defaultSortOrder: 'descend',
-            sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
             render: (date: string) => new Date(date).toLocaleDateString(),
         },
         {
-            title: 'Updated Date',
-            dataIndex: 'updatedDate',
+            title: 'Updated At ',
+            dataIndex: 'updated_at',
             key: 'updatedDate',
             defaultSortOrder: 'descend',
-            sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
             render: (date: string) => new Date(date).toLocaleDateString(),
-        },
-        {
-            title: 'Course Id',
-            dataIndex: 'courseId',
-            key: 'courseId',
-        },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: boolean, record: Lecture) => (
-                <Switch
-                    checked={status}
-                    onChange={(checked) => onChangeStatus(checked, record.lectureId)}
-                />
-            ),
         },
         {
             title: 'Action',
-            dataIndex: 'lectureId',
-            key: 'action',
-            render: (lectureId: string) => (
+            dataIndex: '_id',
+            key: '_id',
+            render: (_id: string) => (
                 <>
                     {
                         courseId && sessionId ? (
-                            <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/edit-lecture/${lectureId}`}>
-                        <EditOutlined className="text-blue-500 m-2" />
+                            <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/edit-lecture/${_id}`}>
+                                <EditOutlined className="text-blue-500 m-2" />
 
-                    </Link>
+                            </Link>
                         )
-                        :
-                        (
-                            <Link to={`/instructor/manage-all-lectures/update-lecture/${lectureId}`}>
-                        <EditOutlined className="text-blue-500 m-2" />
+                            :
+                            (
+                                <Link to={`/instructor/manage-all-lectures/update-lecture/${_id}`}>
+                                    <EditOutlined className="text-blue-500 m-2" />
 
-                    </Link>
-                        )
+                                </Link>
+                            )
                     }
-                    <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(lectureId)} />
+                    <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id)} />
                 </>
             ),
         },
