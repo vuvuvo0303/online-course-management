@@ -1,6 +1,6 @@
 import { Menu, Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { paths } from '../../consts/index';
+import { paths } from '../../consts';
 import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined, MenuOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
@@ -8,6 +8,7 @@ import SearchTool from '../SearchTool';
 import Drawer from '../Drawer';
 import PopoverContent from '../PopoverContent';
 import Popup from '../Popup';
+import {checkTokenExpiration} from "../../services/auth.ts";
 
 
 const Navbar: React.FC = () => {
@@ -26,27 +27,26 @@ const Navbar: React.FC = () => {
   const isRegisterPage = location.pathname === '/register';
   const isForgotPassword = location.pathname === '/forgot-password';
   // Create a submenu for each categoryFilter
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
-  const { avatar } = userData;
+  const user = localStorage.getItem("user");
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    if (checkTokenExpiration(navigate)) {
+      return;
+    }
     if (user) {
       try {
         const userData = JSON.parse(user);
-        console.log(userData.avatar)
         setDataUser({ role: userData.role, fullName: userData.name, email: userData.email, avatarUrl: userData.avatar });
       } catch (error) {
-        console.error("Error parsing user data from localStorage", error);
+        //
       }
     }
-  }, []);
+  }, [navigate, user]);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     navigate('/');
-    window.location.reload();
   };
 
   const dropdownItems: MenuProps["items"] = [
@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
           <Row>
             <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
-                src={dataUser.avatarUrl}
+                src={dataUser.avatarUrl ? dataUser.avatarUrl : "https://firebasestorage.googleapis.com/v0/b/online-course-management-e9629.appspot.com/o/z5598376234724_b337fb917be166afee20d01ef791b592.jpg?alt=media&token=c4e29e03-47bc-406b-a326-f4ea52c9fdcc"}
                 className="hover:cursor-pointer mt-1"
                 size={50}
                 icon={<UserOutlined />}
@@ -67,7 +67,7 @@ const Navbar: React.FC = () => {
                 <p className="text-base font-bold">{dataUser.fullName}</p>
               </Row>
               <div>
-                <p className="text-base">{dataUser.email}</p>
+                <p className="text-xs">{dataUser.email}</p>
               </div>
             </Col>
           </Row>
@@ -113,13 +113,6 @@ const Navbar: React.FC = () => {
       key: "5",
     },
   ];
-
-  // Get user data from localStorage
-
-
-  // const handleMenuClick = () => {
-  //   setMobileMenuVisible(!mobileMenuVisible);
-  // };
 
   const items: MenuProps["items"] = [
     {
@@ -241,13 +234,14 @@ const Navbar: React.FC = () => {
                 </Link>
               </Popover>
 
-              {avatar ? (
+              {user ? (
                 <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
                   <p onClick={(e) => e.preventDefault()}>
                     <Space>
                       <Avatar
-                        src="https://firebasestorage.googleapis.com/v0/b/online-course-management-e9629.appspot.com/o/z5598376234724_b337fb917be166afee20d01ef791b592.jpg?alt=media&token=c4e29e03-47bc-406b-a326-f4ea52c9fdcc"
+                        src={dataUser.avatarUrl ? dataUser.avatarUrl : "https://firebasestorage.googleapis.com/v0/b/online-course-management-e9629.appspot.com/o/z5598376234724_b337fb917be166afee20d01ef791b592.jpg?alt=media&token=c4e29e03-47bc-406b-a326-f4ea52c9fdcc"}
                         size={40}
+                        className="hover:cursor-pointer"
                         icon={<UserOutlined />}
                       />
                     </Space>

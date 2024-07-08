@@ -20,6 +20,8 @@ export const API_LOGIN = "/api/auth";
 export const API_LOGIN_WITH_GOOGLE = "/api/auth/google";
 export const API_CURRENT_LOGIN_USER = "/api/auth";
 export const API_FORGOT_PASSWORD = "/api/auth/forgot-password";
+export const API_VERIFY_TOKEN = "/api/auth/verify-token";
+export const API_RESEND_TOKEN = "/api/auth/resend-token";
 //Users
 export const API_REGISTER = "/api/users";
 export const API_REGISTER_WITH_GOOGLE = "/api/users/google";
@@ -71,6 +73,7 @@ export const paths = {
   NOTFOUND: "/notfound",
   COURSE_DETAIL: "/course/:id",
   FORGOT_PASSWORD: "/forgot-password",
+  VERIFY_TOKEN: "/verify-email/:token",
 
   /* STUDENT PATHS */
   STUDENT_PROFILE: "/profile",
@@ -160,17 +163,7 @@ export const categoryFilters = [
 ];
 
 export const categoryCourse: categoryCourse = {
-  "Web Development": [
-    "JavaScript",
-    "React JS",
-    "Angular",
-    "Next.js",
-    "CSS",
-    "HTML",
-    "ASP.NET Core",
-    "Node.Js",
-    "Microservices",
-  ],
+  "Web Development": ["JavaScript", "React JS", "Angular", "Next.js", "CSS", "HTML", "ASP.NET Core", "Node.Js", "Microservices",],
   "Mobile Development": ["iOS", "Android", "Flutter", "React Native"],
   "Game Development": ["Unity", "Unreal Engine", "Godot"],
   Entrepreneurship: ["Startup", "Business Planning", "Marketing"],

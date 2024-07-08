@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   Breadcrumb,
   Button,
@@ -31,7 +37,14 @@ import { Student } from "../../../models";
 import { toast } from "react-toastify";
 import Highlighter from "react-highlight-words";
 import axiosInstance from "../../../services/api.ts";
-import type { GetProp, InputRef, MenuProps, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
+import type {
+  GetProp,
+  InputRef,
+  TableColumnsType,
+  TableColumnType,
+  UploadFile,
+  UploadProps,
+} from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
@@ -160,7 +173,11 @@ const AdminManageUsers: React.FC = () => {
 
         let avatarUrl = values.avatar;
 
-        if (values.avatar && typeof values.avatar !== "string" && values.avatar?.file?.originFileObj) {
+        if (
+          values.avatar &&
+          typeof values.avatar !== "string" &&
+          values.avatar?.file?.originFileObj
+        ) {
           avatarUrl = await uploadFile(values.avatar.file.originFileObj);
         }
 
@@ -210,7 +227,9 @@ const AdminManageUsers: React.FC = () => {
         if (typeof aValue === "number" && typeof bValue === "number") {
           return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
         } else if (typeof aValue === "string" && typeof bValue === "string") {
-          return newOrder === "ascend" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+          return newOrder === "ascend"
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
         } else {
           return 0;
         }
@@ -223,7 +242,11 @@ const AdminManageUsers: React.FC = () => {
   );
 
   const handleSearch = useCallback(
-    (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
+    (
+      selectedKeys: string[],
+      confirm: FilterDropdownProps["confirm"],
+      dataIndex: DataIndex
+    ) => {
       confirm();
       setSearchText(selectedKeys[0]);
       setSearchedColumn(dataIndex);
@@ -253,7 +276,8 @@ const AdminManageUsers: React.FC = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
+    setFileList(newFileList);
 
   const handleStatusChange = useCallback(async (checked: boolean, userId: string) => {
     try {
@@ -279,28 +303,46 @@ const AdminManageUsers: React.FC = () => {
     </button>
   );
 
-  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Student> => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): TableColumnType<Student> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
           >
             Search
           </Button>
-          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
             Reset
           </Button>
           <Button
@@ -326,7 +368,9 @@ const AdminManageUsers: React.FC = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+    ),
     onFilter: (value, record) =>
       record[dataIndex]
         ?.toString()
@@ -433,7 +477,10 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "status",
         width: "10%",
         render: (status: boolean, record: User) => (
-          <Switch defaultChecked={status} onChange={(checked) => handleStatusChange(checked, record._id)} />
+          <Switch
+            defaultChecked={status}
+            onChange={(checked) => handleStatusChange(checked, record._id)}
+          />
         ),
       },
       {
@@ -483,11 +530,12 @@ const AdminManageUsers: React.FC = () => {
   );
 
   const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } = {
-      current: pagination.current ?? 1,
-      pageSize: pagination.pageSize ?? 10,
-      total: pagination.total ?? 0,
-    };
+    const newPagination: { current: number; pageSize: number; total: number } =
+      {
+        current: pagination.current ?? 1,
+        pageSize: pagination.pageSize ?? 10,
+        total: pagination.total ?? 0,
+      };
 
     setPagination(newPagination);
   };
@@ -656,7 +704,9 @@ const AdminManageUsers: React.FC = () => {
             <Form.Item
               name="password"
               label="Password"
-              rules={[{ required: true, message: "Please input the password!" }]}
+              rules={[
+                { required: true, message: "Please input the password!" },
+              ]}
             >
               <Input.Password />
             </Form.Item>
@@ -664,7 +714,12 @@ const AdminManageUsers: React.FC = () => {
           <Form.Item
             label="Role"
             name="role"
-            rules={[{ required: true, message: "Please choose the role you want to add!" }]}
+            rules={[
+              {
+                required: true,
+                message: "Please choose the role you want to add!",
+              },
+            ]}
           >
             <Radio.Group>
               <Radio value="student">Student</Radio>

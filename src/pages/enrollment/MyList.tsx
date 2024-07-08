@@ -34,10 +34,6 @@ const MyList = () => {
                     <MyListCard />
                     <MyListCard />
                     <MyListCard />
-                    <MyListCard />
-                    <MyListCard />
-                    <MyListCard />
-                    <MyListCard />
                 </div>
             </div>
         </div>
