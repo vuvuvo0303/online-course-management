@@ -40,17 +40,17 @@ export const API_GET_COURSE = "/api/course/search";
 export const getColor = (status: string) => {
   switch (status) {
     case "new":
-      return "red";
-    case "waiting-approve":
-      return "blue";
-    case "approve":
-      return "yellow";
-    case "reject":
-      return "purple";
-    case "active":
-      return "pink";
-    case "inactive":
-      return "orange";
+      return 'red';
+    case 'waiting_approve':
+      return 'blue'
+    case 'approve':
+      return 'yellow'
+    case 'reject':
+      return 'purple'
+    case 'active':
+      return 'pink'
+    case 'inactive':
+      return 'orange'
   }
 };
 /* PATHS */

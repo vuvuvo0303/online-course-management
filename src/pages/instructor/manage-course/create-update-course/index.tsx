@@ -118,11 +118,11 @@ const InstructorCreateCourse = () => {
             value.discount = parseFloat(value.discount);
         }
 
-        console.log("check value: ", value);
         try {
-            const token = localStorage.getItem("token")
             //Update Course
             if (_id) {
+
+                console.log("check value: ", value);
                 await axios.put<Course>(`${host_main}/api/course/${_id}`, value,
                     {
                         headers: {
@@ -251,34 +251,6 @@ const InstructorCreateCourse = () => {
                             rules={[{ required: true, message: 'Please input!' }]}
                         >
                             <Input.TextArea />
-                        </Form.Item>
-                    }
-                    {_id &&
-                        <Form.Item
-                            label="Status"
-                            name="status"
-                            rules={[{ required: true, message: 'Please input!' }]}
-                        >
-                            <Select>
-                                <Select.Option key="1" value="new">
-                                    new
-                                </Select.Option>
-                                <Select.Option key="2" value="waiting-approve">
-                                    waiting-approve
-                                </Select.Option>
-                                <Select.Option key="3" value="approve">
-                                    approve
-                                </Select.Option>
-                                <Select.Option key="4" value="reject">
-                                    reject
-                                </Select.Option>
-                                <Select.Option key="5" value="active">
-                                    active
-                                </Select.Option>
-                                <Select.Option key="6" value="inactive">
-                                    inactive
-                                </Select.Option>
-                            </Select>
                         </Form.Item>
                     }
                     <Form.Item
