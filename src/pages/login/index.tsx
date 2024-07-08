@@ -25,13 +25,13 @@ type FieldType = {
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const user = localStorage.getItem("user");
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
     if (user) {
       navigate(paths.HOME);
     }
-  }, [navigate]);
+  }, [navigate, user]);
 
   const fetchUserData = async (token: string) => {
     const response = await axiosInstance.get("/api/auth");

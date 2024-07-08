@@ -117,7 +117,7 @@ const AdminManageCategories: React.FC = () => {
       );
       fetchCategories();
     } catch (error) {
-      console.log(error);
+      //
     }
   };
 
@@ -224,7 +224,7 @@ const AdminManageCategories: React.FC = () => {
       setIsModalVisible(false);
       form.resetFields();
     } catch (error) {
-      console.log(error);
+      //
     } finally {
       setLoading(false);
     }
@@ -256,7 +256,7 @@ const AdminManageCategories: React.FC = () => {
         fetchCategories();
       }
     } catch (error) {
-      console.log(error);
+      //
     } finally {
       setLoading(false);
     }

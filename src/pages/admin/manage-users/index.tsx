@@ -21,7 +21,7 @@ import {
   Popconfirm,
   Radio,
   Dropdown,
-  Typography,
+  Typography, MenuProps,
 } from "antd";
 import {
   DeleteOutlined,
@@ -587,11 +587,10 @@ const AdminManageUsers: React.FC = () => {
         form.resetFields();
         fetchUsers();
       } else {
-        toast.error("Failed to update user");
+        //
       }
     } catch (error) {
-      console.error("Error updating user:", error);
-      toast.error("Error updating user");
+      //
     }
     setLoading(false);
   };
