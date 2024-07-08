@@ -1,16 +1,34 @@
-import { DeleteOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Breadcrumb, Image, Table, TableProps, message } from "antd";
-import { Course } from "../../../models";
+import { Breadcrumb, Button, Image, Modal, Table, TableColumnsType, TablePaginationConfig } from "antd";
 import { API_GET_COURSE } from "../../../consts";
 import axiosInstance from "../../../services/api";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
+
+interface Course {
+  _id: string;
+  name: string;
+  status: string;
+  price: number;
+  discount: number;
+  created_at: string;
+  updated_at: string;
+  image_url?: string;
+  video_url?: string;
+  category_name: string;
+  user_name: string;
+  session_count: number;
+}
 
 const AdminManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState({
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
@@ -30,24 +48,17 @@ const AdminManageCourses: React.FC = () => {
       });
 
       if (response.data && response.data.pageData) {
-        const validCourses = response.data.pageData.filter((course: Course) => validStatuses.includes(course.status));
-        setCourses(validCourses);
+        setCourses(response.data.pageData);
         setPagination((prev) => ({
           ...prev,
           total: response.data.pageInfo.totalItems,
-          current: response.data.pageInfo.pageNum,
-          pageSize: response.data.pageInfo.pageSize,
         }));
       } else {
         throw new Error("Failed to fetch courses");
       }
     } catch (error) {
       console.error("Error fetching courses: ", error);
-      if (error.response && error.response.data && error.response.data.errors) {
-        setError(error.response.data.errors[0].message);
-      } else {
-        setError("An unexpected error occurred.");
-      }
+      setError("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
@@ -57,35 +68,36 @@ const AdminManageCourses: React.FC = () => {
     fetchCourses();
   }, [fetchCourses]);
 
-  const columnsCourses: TableProps<Course>["columns"] = [
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
+  };
+
+  const columnsCourses: TableColumnsType<Course> = [
     {
       title: "Title",
+      width: "100",
       dataIndex: "name",
       key: "name",
+      fixed: "left",
+      render: (text, record) => (
+        <Button type="link" onClick={() => showModal(record)}>
+          {text}
+        </Button>
+      ),
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
     },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (price: number) => <span>{price}</span>,
-    },
-    {
-      title: "Discount",
-      dataIndex: "discount",
-      key: "discount",
-    },
+
     {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
       defaultSortOrder: "descend",
       sorter: (a: Course, b: Course) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
-      render: (date: string) => new Date(date).toLocaleDateString(),
+      render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Updated Date",
@@ -93,23 +105,7 @@ const AdminManageCourses: React.FC = () => {
       key: "updated_at",
       defaultSortOrder: "descend",
       sorter: (a: Course, b: Course) => new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime(),
-      render: (date: string) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "Thumbnail",
-      dataIndex: "image_url",
-      key: "image_url",
-      render: (imageUrl: string) => <Image src={imageUrl} width={50} />,
-    },
-    {
-      title: "Course Video",
-      dataIndex: "video_url",
-      key: "video_url",
-      render: (videoUrl: string) => (
-        <a href={videoUrl} target="_blank" rel="noopener noreferrer">
-          Watch Video
-        </a>
-      ),
+      render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Action",
@@ -133,8 +129,72 @@ const AdminManageCourses: React.FC = () => {
     return <p className="flex justify-center items-center text-red-500">{error}</p>;
   }
 
+  const showModal = (record: Course) => {
+    setSelectedCourse(record);
+    setIsModalVisible(true);
+  };
+  const formatVND = (value) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(value);
+  };
+
   return (
     <div>
+      <Modal
+        title={
+          <span
+            className="text-2xl font-bold flex justify-center text-amber-700"
+          >
+            {selectedCourse ? selectedCourse.name : ""}
+          </span>
+        }
+        open={isModalVisible}
+        onOk={() => setIsModalVisible(false)}
+        onCancel={() => setIsModalVisible(false)}
+      >
+        {selectedCourse && (
+          <div className="flex flex-col gap-2">
+            <div>
+              <span className="text-base font-bold">Course's Instructor: </span>
+              {selectedCourse.user_name}
+            </div>
+            <div>
+              <span className="text-base font-bold">Price: </span>
+              {formatVND(selectedCourse.price)}
+            </div>
+            <div>
+              <span className="text-base font-bold">Dicount: </span>
+              {selectedCourse.discount}%
+            </div>
+            <div>
+              <span className="text-base font-bold">Category Name: </span>
+              {selectedCourse.category_name}
+            </div>
+            <div>
+              <span className="text-base font-bold">Session: </span>
+              {selectedCourse.session_count}
+            </div>
+            <div>
+              <span className="text-base font-bold">Thumnail: </span>
+              <Image src={selectedCourse.image_url} alt={selectedCourse.name} style={{ width: "100%" }} />
+            </div>
+            <div className="flex gap-2 items-center">
+              <span className="text-base font-bold">Course Video :</span>
+
+              <span>
+                <Link to={selectedCourse.video_url} target="_blank" rel="noopener noreferrer">
+                  <Button className="bg-rose-500" type="primary">
+                    <PlayCircleOutlined />
+                    Watch Video
+                  </Button>
+                </Link>
+              </span>
+            </div>
+          </div>
+        )}
+      </Modal>
       <Breadcrumb
         className="py-2"
         items={[
@@ -148,9 +208,10 @@ const AdminManageCourses: React.FC = () => {
         ]}
       />
       <h1 className="text-center mb-10">Manage Course</h1>
-      <Table columns={columnsCourses} dataSource={courses} pagination={pagination} />
+      <Table columns={columnsCourses} dataSource={courses} pagination={pagination} onChange={handleTableChange} />
     </div>
   );
 };
 
 export default AdminManageCourses;
+3;
