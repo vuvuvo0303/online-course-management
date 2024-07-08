@@ -36,7 +36,7 @@ export const getColor = (status: string) => {
   switch (status) {
     case "new":
       return 'red';
-    case 'waiting-approve':
+    case 'waiting_approve':
       return 'blue'
     case 'approve':
       return 'yellow'

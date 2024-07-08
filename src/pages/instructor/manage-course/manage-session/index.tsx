@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Modal, Table, TableProps } from "antd";
+import { Breadcrumb, Button, Modal, Select, Space, Table, TableProps, Tag } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Lecture, Session } from "../../../../models";
@@ -43,8 +43,8 @@ const ManageSession = () => {
     const handleDelete = async (sessionId: string) => {
         try {
             // Xóa session trước
-            await axios.delete(`${host_main}/api/session/${sessionId}`,{
-                headers:{
+            await axios.delete(`${host_main}/api/session/${sessionId}`, {
+                headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
@@ -54,7 +54,7 @@ const ManageSession = () => {
             toast.error("Failed to delete session. Please try again.");
         }
     };
-     
+
     const handleCancel = () => {
         setOpen(false);
     };
@@ -74,18 +74,18 @@ const ManageSession = () => {
                             "pageSize": 10
                         }
                     }
-                    ,{
-                    headers:{
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                    , {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
                 if (res) {
                     console.log("check res:", res);
                     setSessions(res.data.data.pageData);
                 }
             } catch (error) {
                 console.log("error: ", error);
-                setError(error+"");
+                setError(error + "");
             } finally {
                 setLoading(false);
             }
@@ -95,6 +95,16 @@ const ManageSession = () => {
             fetchSession();
         }
     }, [courseId, token]);
+
+    const colorStatus = (is_delete: boolean) => {
+        if (is_delete) {
+            return "red"
+        } else {
+            return "blue"
+        }
+    }
+
+
 
     const columns: TableProps<Session>["columns"] = [
         {
@@ -111,16 +121,12 @@ const ManageSession = () => {
             title: 'Created At',
             dataIndex: 'created_at',
             key: 'created_at',
-            defaultSortOrder: 'descend',
-            sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
             render: (date: string) => new Date(date).toLocaleDateString(),
         },
         {
             title: 'Updated At',
             dataIndex: 'updated_at',
             key: 'updated_at',
-            defaultSortOrder: 'descend',
-            sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
             render: (date: string) => new Date(date).toLocaleDateString(),
         },
         {
@@ -137,6 +143,13 @@ const ManageSession = () => {
             title: 'Is deleted',
             dataIndex: 'is_deleted',
             key: 'is_deleted',
+            render: (is_delete: boolean) => (
+                <>
+                    <Tag color={colorStatus(is_delete)}>
+                        {is_delete ? "true" : "false"}
+                    </Tag>
+                </>
+            )
         },
         {
             title: '__v',
@@ -149,6 +162,7 @@ const ManageSession = () => {
             key: '_id',
             render: (sessionId: string) => (
                 <>
+                    <Button type="primary" className="m-2">Detail</Button>
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/update-session/${sessionId}`}><EditOutlined className="m-2 text-blue-500" /></Link>
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(sessionId)} />
@@ -164,6 +178,38 @@ const ManageSession = () => {
     if (error) {
         return <div>{error}</div>;
     }
+    const handleChange = (value: string[]) => {
+
+    };
+    const options2 = [
+        {
+            label: 'Updated At_Ascending',
+            value: 'updated_at_ascending',
+        }, {
+            label: 'Updated At_Descending',
+            value: 'updated_at_descending',
+        },
+    ]
+    const options3 = [
+        {
+            label: 'Is Deleted_Ascending',
+            value: 'is_deleted_ascending',
+        },
+        {
+            label: 'Is Deleted_Descending',
+            value: 'is_deleted_descending',
+        }
+    ]
+    const options = [
+        {
+            label: 'Created At Ascending',
+            value: 'created_at_ascending',
+        },
+        {
+            label: 'Created At_Descending',
+            value: 'created_at_descending',
+        },   
+    ];
 
     return (
         <div>
@@ -188,6 +234,22 @@ const ManageSession = () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
             <h1 className="text-center mt-10">Manage Session</h1>
+            <Select
+                mode="multiple"
+                className="w-96"
+                placeholder="Filter Session"
+                defaultValue={['']}
+                onChange={handleChange}
+                options={options}
+                optionRender={(option) => (
+                    <Space>
+                        <span role="img" aria-label={option.data.label}>
+                            {option.data.label}
+                        </span>
+
+                    </Space>
+                )}
+            />
             <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New</Button></Link>
             <Table dataSource={sessions} columns={columns} rowKey="sessionId" />
         </div>
