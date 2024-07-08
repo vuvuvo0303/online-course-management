@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   Breadcrumb,
   Button,
@@ -14,9 +20,12 @@ import {
   Upload,
   Popconfirm,
   Radio,
+  Dropdown,
+  Typography, MenuProps,
 } from "antd";
 import {
   DeleteOutlined,
+  DownOutlined,
   EditOutlined,
   HomeOutlined,
   PlusOutlined,
@@ -28,7 +37,14 @@ import { Student } from "../../../models";
 import { toast } from "react-toastify";
 import Highlighter from "react-highlight-words";
 import axiosInstance from "../../../services/api.ts";
-import type { GetProp, InputRef, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
+import type {
+  GetProp,
+  InputRef,
+  TableColumnsType,
+  TableColumnType,
+  UploadFile,
+  UploadProps,
+} from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
@@ -80,22 +96,20 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === 'users_updated') {
+      if (event.key === "users_updated") {
         fetchUsers();
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
 
     return () => {
-      if(!window.location.pathname.includes('user')){
-        localStorage.removeItem('users_updated');
+      if (!window.location.pathname.includes("user")) {
+        localStorage.removeItem("users_updated");
       }
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
-
-
 
   useEffect(() => {
     fetchUsers();
@@ -144,7 +158,7 @@ const AdminManageUsers: React.FC = () => {
         toast.success(`Deleted user ${email} successfully`);
         fetchUsers();
 
-        localStorage.setItem('users_updated', new Date().toISOString());
+        localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
         // Handle error silently
       }
@@ -159,7 +173,11 @@ const AdminManageUsers: React.FC = () => {
 
         let avatarUrl = values.avatar;
 
-        if (values.avatar && typeof values.avatar !== "string" && values.avatar?.file?.originFileObj) {
+        if (
+          values.avatar &&
+          typeof values.avatar !== "string" &&
+          values.avatar?.file?.originFileObj
+        ) {
           avatarUrl = await uploadFile(values.avatar.file.originFileObj);
         }
 
@@ -177,7 +195,7 @@ const AdminManageUsers: React.FC = () => {
         form.resetFields();
         setLoading(false);
         fetchUsers();
-        localStorage.setItem('users_updated', new Date().toISOString());
+        localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
         setLoading(false);
       }
@@ -209,7 +227,9 @@ const AdminManageUsers: React.FC = () => {
         if (typeof aValue === "number" && typeof bValue === "number") {
           return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
         } else if (typeof aValue === "string" && typeof bValue === "string") {
-          return newOrder === "ascend" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+          return newOrder === "ascend"
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
         } else {
           return 0;
         }
@@ -222,7 +242,11 @@ const AdminManageUsers: React.FC = () => {
   );
 
   const handleSearch = useCallback(
-    (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
+    (
+      selectedKeys: string[],
+      confirm: FilterDropdownProps["confirm"],
+      dataIndex: DataIndex
+    ) => {
       confirm();
       setSearchText(selectedKeys[0]);
       setSearchedColumn(dataIndex);
@@ -252,7 +276,8 @@ const AdminManageUsers: React.FC = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
+    setFileList(newFileList);
 
   const handleStatusChange = useCallback(async (checked: boolean, userId: string) => {
     try {
@@ -265,7 +290,7 @@ const AdminManageUsers: React.FC = () => {
 
       setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
       toast.success(`User status updated successfully`);
-      localStorage.setItem('users_updated', new Date().toISOString());
+      localStorage.setItem("users_updated", new Date().toISOString());
     } catch (error) {
       // Handle error silently
     }
@@ -278,28 +303,46 @@ const AdminManageUsers: React.FC = () => {
     </button>
   );
 
-  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Student> => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): TableColumnType<Student> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
           >
             Search
           </Button>
-          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
             Reset
           </Button>
           <Button
@@ -325,7 +368,9 @@ const AdminManageUsers: React.FC = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+    ),
     onFilter: (value, record) =>
       record[dataIndex]
         ?.toString()
@@ -351,6 +396,13 @@ const AdminManageUsers: React.FC = () => {
 
   const columns: TableColumnsType<Student> = useMemo(
     () => [
+      {
+        title: "NO",
+        dataIndex: "index",
+        key: "index",
+        render: (_text: unknown, _record: unknown, index: number) =>
+          (pagination.current - 1) * pagination.pageSize + index + 1,
+      },
       {
         title: "Name",
         dataIndex: "name",
@@ -425,7 +477,10 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "status",
         width: "10%",
         render: (status: boolean, record: User) => (
-          <Switch defaultChecked={status} onChange={(checked) => handleStatusChange(checked, record._id)} />
+          <Switch
+            defaultChecked={status}
+            onChange={(checked) => handleStatusChange(checked, record._id)}
+          />
         ),
       },
       {
@@ -475,11 +530,12 @@ const AdminManageUsers: React.FC = () => {
   );
 
   const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } = {
-      current: pagination.current ?? 1,
-      pageSize: pagination.pageSize ?? 10,
-      total: pagination.total ?? 0,
-    };
+    const newPagination: { current: number; pageSize: number; total: number } =
+      {
+        current: pagination.current ?? 1,
+        pageSize: pagination.pageSize ?? 10,
+        total: pagination.total ?? 0,
+      };
 
     setPagination(newPagination);
   };
@@ -500,42 +556,44 @@ const AdminManageUsers: React.FC = () => {
       if (values.avatar && typeof values.avatar !== "string" && values.avatar.file.originFileObj) {
         avatarUrl = await uploadFile(values.avatar.file.originFileObj);
       }
-  
-      // Prepare updated user data
+
       const updatedUser = {
         ...values,
         avatar: avatarUrl,
-        email: values.email, // Ensure email is included
+        email: values.email,
       };
-  
-      console.log("Updated user data to send to server:", updatedUser);
-  
+
       const response: AxiosResponse<any> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
-      console.log("Response from server:", response);
-  
-      setData((prevData) => {
-        const newData = prevData.map((user) => {
-          if (user._id === formData._id) {
-            console.log("Updating user in state:", { ...user, ...updatedUser });
-            return { ...user, ...updatedUser };
-          } else {
-            return user;
+
+      if (response.success) {
+        // Handle role change if it is different from the current role
+        if (formData.role !== values.role) {
+          const roleChangeResponse: AxiosResponse<any> = await axiosInstance.put(`/api/users/change-role`, {
+            user_id: formData._id,
+            role: values.role,
+          });
+
+          if (!roleChangeResponse.success) {
+            throw new Error("Failed to change user role");
           }
-        });
-        console.log("New state data after update:", newData);
-        return newData;
-      });
-  
-      toast.success("Updated user successfully");
-      setIsModalVisible(false);
-      form.resetFields();
-      fetchUsers();
+        }
+
+        setData((prevData) =>
+          prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
+        );
+
+        toast.success("Updated user successfully");
+        setIsModalVisible(false);
+        form.resetFields();
+        fetchUsers();
+      } else {
+        //
+      }
     } catch (error) {
-      console.error("Error updating user:", error);
+      //
     }
     setLoading(false);
   };
-  
 
   const onFinish = (values: any) => {
     if (modalMode === "Edit") {
@@ -548,9 +606,27 @@ const AdminManageUsers: React.FC = () => {
       addNewUser(values);
     }
   };
-
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: "ALL",
+    },
+    {
+      key: "2",
+      label: "Admins",
+    },
+    {
+      key: "3",
+      label: "Instructors",
+    },
+    {
+      key: "4",
+      label: "Students",
+    },
+  ];
   return (
     <div>
+      
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
           <Breadcrumb.Item href="/">
@@ -559,6 +635,7 @@ const AdminManageUsers: React.FC = () => {
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
+      
         <div className="mt-3">
           {" "}
           <Button
@@ -573,6 +650,20 @@ const AdminManageUsers: React.FC = () => {
           </Button>
         </div>
       </div>
+      <Dropdown
+        menu={{
+          items,
+          selectable: true,
+          defaultSelectedKeys: ["3"],
+        }}
+      >
+        <Typography.Link>
+          <Space>
+            Filter Role
+            <DownOutlined />
+          </Space>
+        </Typography.Link>
+      </Dropdown>
       <Spin spinning={loading}>
         <Table
           columns={columns}
@@ -603,14 +694,18 @@ const AdminManageUsers: React.FC = () => {
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
-            <Input />
-          </Form.Item>
+          {modalMode === "Add" && (
+            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
+              <Input />
+            </Form.Item>
+          )}
           {modalMode === "Add" && (
             <Form.Item
               name="password"
               label="Password"
-              rules={[{ required: true, message: "Please input the password!" }]}
+              rules={[
+                { required: true, message: "Please input the password!" },
+              ]}
             >
               <Input.Password />
             </Form.Item>
@@ -618,7 +713,12 @@ const AdminManageUsers: React.FC = () => {
           <Form.Item
             label="Role"
             name="role"
-            rules={[{ required: true, message: "Please choose the role you want to add!" }]}
+            rules={[
+              {
+                required: true,
+                message: "Please choose the role you want to add!",
+              },
+            ]}
           >
             <Radio.Group>
               <Radio value="student">Student</Radio>
@@ -626,7 +726,7 @@ const AdminManageUsers: React.FC = () => {
               <Radio value="admin">Admin</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item label="Avatar" name="avatar" rules={[{ required: true, message: "Please upload your Avatar" }]}>
+          <Form.Item label="Avatar" name="avatar">
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
               listType="picture-card"

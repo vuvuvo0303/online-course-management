@@ -1,130 +1,137 @@
-
-
 import { DeleteOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Breadcrumb, Switch, Table, TableProps } from "antd";
+import { Breadcrumb, Image, Table, TableProps, message } from "antd";
 import { Course } from "../../../models";
+import { API_GET_COURSE } from "../../../consts";
+import axiosInstance from "../../../services/api";
 
 const AdminManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  useEffect(() => {
-    const fetchLecture = async () => {
-      try {
-        const res = await axios.get(`https://665fbf245425580055b0b23d.mockapi.io/courses`);
-        if (res.data) {
-          setCourses(res.data);
-        }
-      } catch (error) {
-        console.log("Error: ", error);
-      } finally {
-        setLoading(false)
-      }
-    };
-    fetchLecture();
-  }, [])
+  const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
 
-  if (loading) {
-    return <p className="flex justify-center items-center">Loading ...</p>
-  }
-
-  const onChange = async (checked: boolean, courseId: string) => {
+  const fetchCourses = useCallback(async () => {
+    setLoading(true);
     try {
-      const updateStatus = courses.find(course => course.courseId === courseId)
-      if (updateStatus) {
-        updateStatus.status = checked;
-        await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/courses/${courseId}`, updateStatus)
-        setCourses([...courses]);
+      const response = await axiosInstance.post(API_GET_COURSE, {
+        pageInfo: {
+          pageNum: pagination.current,
+          pageSize: pagination.pageSize,
+        },
+        searchCondition: {
+          status: "new",
+        },
+      });
+
+      if (response.data && response.data.pageData) {
+        const validCourses = response.data.pageData.filter((course: Course) => validStatuses.includes(course.status));
+        setCourses(validCourses);
+        setPagination((prev) => ({
+          ...prev,
+          total: response.data.pageInfo.totalItems,
+          current: response.data.pageInfo.pageNum,
+          pageSize: response.data.pageInfo.pageSize,
+        }));
+      } else {
+        throw new Error("Failed to fetch courses");
       }
     } catch (error) {
-      console.error("Error updating status:", error);
+      console.error("Error fetching courses: ", error);
+      if (error.response && error.response.data && error.response.data.errors) {
+        setError(error.response.data.errors[0].message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [pagination.current, pagination.pageSize]);
 
-  const columnsCourses:TableProps<Course>["columns"] = [
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
+
+  const columnsCourses: TableProps<Course>["columns"] = [
     {
-      title: 'Title',
-      dataIndex: 'title',
-      key: 'title',
+      title: "Title",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
     },
     {
-      title: 'Duration',
-      dataIndex: 'duration',
-      key: 'duration',
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (price: number) => <span>{price}</span>,
     },
     {
-      title: 'Course Id',
-      dataIndex: 'courseId',
-      key: 'courseId',
+      title: "Discount",
+      dataIndex: "discount",
+      key: "discount",
     },
     {
-      title: 'Created Date',
-      dataIndex: 'createdDate',
-      key: 'createdDate',
-      defaultSortOrder: 'descend',
-      sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
+      title: "Created Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      defaultSortOrder: "descend",
+      sorter: (a: Course, b: Course) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: 'Updated Date',
-      dataIndex: 'updatedDate',
-      key: 'updatedDate',
-      defaultSortOrder: 'descend',
-      sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
+      title: "Updated Date",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      defaultSortOrder: "descend",
+      sorter: (a: Course, b: Course) => new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime(),
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
+      title: "Thumbnail",
+      dataIndex: "image_url",
+      key: "image_url",
+      render: (imageUrl: string) => <Image src={imageUrl} width={50} />,
     },
     {
-      title: 'Rating',
-      dataIndex: 'rating',
-      key: 'rating',
+      title: "Course Video",
+      dataIndex: "video_url",
+      key: "video_url",
+      render: (videoUrl: string) => (
+        <a href={videoUrl} target="_blank" rel="noopener noreferrer">
+          Watch Video
+        </a>
+      ),
     },
     {
-      title: 'Level',
-      dataIndex: 'level',
-      key: 'level',
-    },
-    {
-      title: 'User Id',
-      dataIndex: 'userId',
-      key: 'userId',
-    },
-    {
-      title: 'Ban',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: boolean, record: Course) => (
-        <div>
-          <Switch checked={status} onChange={(checked) => onChange(checked, record.courseId)} />
-        </div>
-      )
-    },
-    {
-      title: 'Action',
-      dataIndex: 'courseId',
-      key: 'courseId',
-      render: (courseId: string) => (
+      title: "Action",
+      key: "action",
+      render: (record: Course) => (
         <>
-          <Link to={`/admin/manage-course/${courseId}/manage-session`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-          <DeleteOutlined className=" text-red-500 m-2" />
-          
+          <Link to={`/admin/manage-course/${record._id}/manage-session`}>
+            <EyeOutlined className="text-purple-500 m-2" />
+          </Link>
+          <DeleteOutlined className="text-red-500 m-2" />
         </>
-      )
-
-    }
+      ),
+    },
   ];
 
+  if (loading) {
+    return <p className="flex justify-center items-center">Loading ...</p>;
+  }
+
+  if (error) {
+    return <p className="flex justify-center items-center text-red-500">{error}</p>;
+  }
 
   return (
     <div>
@@ -137,15 +144,11 @@ const AdminManageCourses: React.FC = () => {
           },
           {
             title: "Manage Course",
-
           },
         ]}
       />
       <h1 className="text-center mb-10">Manage Course</h1>
-      
-      <Table columns={columnsCourses}
-        dataSource={courses}
-      />
+      <Table columns={columnsCourses} dataSource={courses} pagination={pagination} />
     </div>
   );
 };

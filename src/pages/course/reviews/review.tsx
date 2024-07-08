@@ -1,9 +1,22 @@
-import { Rate, Progress, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { Rate, Progress, Input, Button, Modal, Form } from 'antd';
+import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import 'tailwindcss/tailwind.css'; // Make sure Tailwind CSS is configured
 
+interface Review {
+    name: string;
+    time: string;
+    rating: number;
+    text: string;
+}
+
+interface ReviewFormValues {
+    rating: number;
+    text: string;
+}
+
 const ReviewPage: React.FC = () => {
-    const reviews = [
+    const [reviews, setReviews] = useState<Review[]>([
         {
             name: 'John Doe',
             time: '2 hours ago',
@@ -28,7 +41,30 @@ const ReviewPage: React.FC = () => {
             rating: 5.0,
             text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi lorem egestas odio, vitae scelerisque enim ligula venenatis dolor.',
         },
-    ];
+    ]);
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [form] = Form.useForm();
+
+    const handleAddReview = (values: ReviewFormValues) => {
+        const newReview: Review = {
+            name: 'New User', // Replace with actual user data
+            time: 'Just now',
+            rating: values.rating,
+            text: values.text,
+        };
+        setReviews([newReview, ...reviews]);
+        form.resetFields();
+        setIsModalVisible(false);
+    };
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
 
     return (
         <div className="flex flex-col p-4 bg-white min-h-screen text-black space-y-4 sm:flex-row sm:space-x-4">
@@ -61,12 +97,16 @@ const ReviewPage: React.FC = () => {
                 </div>
             </div>
             <div className="bg-gray-900 p-4 rounded-md w-full sm:w-1/2">
-                <h2 className="text-xl mb-4">Reviews</h2>
+                <div className="flex justify-between items-center mb-4 w-full">
+                    <h2 className="text-xl mb-0">Reviews</h2>
+                    <Button type="default" icon={<PlusOutlined />} onClick={showModal}>
+                        Add Your Review
+                    </Button>
+                </div>
                 <Input
                     placeholder="Search reviews..."
                     prefix={<SearchOutlined />}
                     className="mb-4"
-                // Add onChange event handler for search functionality
                 />
                 <div className="h-96 overflow-y-auto pr-2">
                     {reviews.map((review, index) => (
@@ -94,6 +134,37 @@ const ReviewPage: React.FC = () => {
                     ))}
                 </div>
             </div>
+            <Modal
+                title="Add Your Review"
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                footer={null}
+            >
+                <Form form={form} onFinish={handleAddReview}>
+                    <Form.Item
+                        name="rating"
+                        label="Rating"
+                        rules={[{ required: true, message: 'Please provide a rating' }]}
+                    >
+                        <Rate allowHalf />
+                    </Form.Item>
+                    <Form.Item
+                        name="text"
+                        label="Review"
+                        rules={[{ required: true, message: 'Please provide a review' }]}
+                    >
+                        <Input.TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="default" htmlType="submit" className='border-none'>
+                            Cancel
+                        </Button>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 };
