@@ -14,9 +14,12 @@ import {
   Upload,
   Popconfirm,
   Radio,
+  Dropdown,
+  Typography,
 } from "antd";
 import {
   DeleteOutlined,
+  DownOutlined,
   EditOutlined,
   HomeOutlined,
   PlusOutlined,
@@ -28,7 +31,7 @@ import { Student } from "../../../models";
 import { toast } from "react-toastify";
 import Highlighter from "react-highlight-words";
 import axiosInstance from "../../../services/api.ts";
-import type { GetProp, InputRef, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
+import type { GetProp, InputRef, MenuProps, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
@@ -80,22 +83,20 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === 'users_updated') {
+      if (event.key === "users_updated") {
         fetchUsers();
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
 
     return () => {
-      if(!window.location.pathname.includes('user')){
-        localStorage.removeItem('users_updated');
+      if (!window.location.pathname.includes("user")) {
+        localStorage.removeItem("users_updated");
       }
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
-
-
 
   useEffect(() => {
     fetchUsers();
@@ -144,7 +145,7 @@ const AdminManageUsers: React.FC = () => {
         toast.success(`Deleted user ${email} successfully`);
         fetchUsers();
 
-        localStorage.setItem('users_updated', new Date().toISOString());
+        localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
         // Handle error silently
       }
@@ -177,7 +178,7 @@ const AdminManageUsers: React.FC = () => {
         form.resetFields();
         setLoading(false);
         fetchUsers();
-        localStorage.setItem('users_updated', new Date().toISOString());
+        localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
         setLoading(false);
       }
@@ -265,7 +266,7 @@ const AdminManageUsers: React.FC = () => {
 
       setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
       toast.success(`User status updated successfully`);
-      localStorage.setItem('users_updated', new Date().toISOString());
+      localStorage.setItem("users_updated", new Date().toISOString());
     } catch (error) {
       // Handle error silently
     }
@@ -351,6 +352,13 @@ const AdminManageUsers: React.FC = () => {
 
   const columns: TableColumnsType<Student> = useMemo(
     () => [
+      {
+        title: "NO",
+        dataIndex: "index",
+        key: "index",
+        render: (_text: unknown, _record: unknown, index: number) =>
+          (pagination.current - 1) * pagination.pageSize + index + 1,
+      },
       {
         title: "Name",
         dataIndex: "name",
@@ -501,37 +509,41 @@ const AdminManageUsers: React.FC = () => {
         avatarUrl = await uploadFile(values.avatar.file.originFileObj);
       }
 
-      // Prepare updated user data
       const updatedUser = {
         ...values,
         avatar: avatarUrl,
-        email: values.email, // Ensure email is included
+        email: values.email,
       };
 
-      console.log("Updated user data to send to server:", updatedUser);
-
       const response: AxiosResponse<any> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
-      console.log("Response from server:", response);
 
-      setData((prevData) => {
-        const newData = prevData.map((user) => {
-          if (user._id === formData._id) {
-            console.log("Updating user in state:", { ...user, ...updatedUser });
-            return { ...user, ...updatedUser };
-          } else {
-            return user;
+      if (response.success) {
+        // Handle role change if it is different from the current role
+        if (formData.role !== values.role) {
+          const roleChangeResponse: AxiosResponse<any> = await axiosInstance.put(`/api/users/change-role`, {
+            user_id: formData._id,
+            role: values.role,
+          });
+
+          if (!roleChangeResponse.success) {
+            throw new Error("Failed to change user role");
           }
-        });
-        console.log("New state data after update:", newData);
-        return newData;
-      });
+        }
 
-      toast.success("Updated user successfully");
-      setIsModalVisible(false);
-      form.resetFields();
-      fetchUsers();
+        setData((prevData) =>
+          prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
+        );
+
+        toast.success("Updated user successfully");
+        setIsModalVisible(false);
+        form.resetFields();
+        fetchUsers();
+      } else {
+        toast.error("Failed to update user");
+      }
     } catch (error) {
       console.error("Error updating user:", error);
+      toast.error("Error updating user");
     }
     setLoading(false);
   };
@@ -547,9 +559,27 @@ const AdminManageUsers: React.FC = () => {
       addNewUser(values);
     }
   };
-
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: "ALL",
+    },
+    {
+      key: "2",
+      label: "Admins",
+    },
+    {
+      key: "3",
+      label: "Instructors",
+    },
+    {
+      key: "4",
+      label: "Students",
+    },
+  ];
   return (
     <div>
+      
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
           <Breadcrumb.Item href="/">
@@ -558,6 +588,7 @@ const AdminManageUsers: React.FC = () => {
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
+      
         <div className="mt-3">
           {" "}
           <Button
@@ -572,6 +603,20 @@ const AdminManageUsers: React.FC = () => {
           </Button>
         </div>
       </div>
+      <Dropdown
+        menu={{
+          items,
+          selectable: true,
+          defaultSelectedKeys: ["3"],
+        }}
+      >
+        <Typography.Link>
+          <Space>
+            Filter Role
+            <DownOutlined />
+          </Space>
+        </Typography.Link>
+      </Dropdown>
       <Spin spinning={loading}>
         <Table
           columns={columns}
