@@ -4,11 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Vector from "../../assets/Vector.png";
 import Rectangle from "../../assets/Rectangle .jpg";
 import { login } from "../../services/auth";
-import { removePassword } from "../../utils/validHelper";
 import { toast } from "react-toastify";
 import {
   API_CURRENT_LOGIN_USER,
-  API_GET_USERS,
   API_LOGIN_WITH_GOOGLE,
   API_REGISTER_WITH_GOOGLE,
   paths,
@@ -18,7 +16,6 @@ import Lottie from "lottie-react";
 import vutru from "../../assets/vutru.json";
 import { jwtDecode } from "jwt-decode";
 import axiosInstance from "../../services/api.ts";
-import { toggleToast } from "react-toastify/dist/core/store";
 
 type FieldType = {
   email: string;
@@ -27,7 +24,7 @@ type FieldType = {
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const [accountLockedMsg, setAccountLockedMsg] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -36,31 +33,35 @@ const LoginPage: React.FC = () => {
     }
   }, [navigate]);
 
+  const fetchUserData = async (token: string) => {
+    const response = await axiosInstance.get("/api/auth");
+    const user = response.data;
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    switch (user.role) {
+      case "student":
+        navigate(paths.HOME);
+        break;
+      case "instructor":
+        navigate(paths.INSTRUCTOR_HOME);
+        break;
+      default:
+        navigate(paths.HOME);
+        break;
+    }
+    toast.success("Login successfully");
+  };
+
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     const { email, password } = values;
+    setLoading(true);
     const authResult = await login(email, password);
-    if (authResult && "status" in authResult) {
-      setAccountLockedMsg(authResult.status);
-      toast.error(authResult.status);
-    } else if (authResult && "user" in authResult) {
-      const { user } = authResult;
-      const userWithoutPassword = removePassword(user);
-      localStorage.setItem("user", JSON.stringify(userWithoutPassword));
-      switch (user.role) {
-        case "student":
-          navigate(paths.HOME);
-          break;
-        case "instructor":
-          navigate(paths.INSTRUCTOR_HOME);
-          break;
-        default:
-          navigate(paths.HOME);
-          break;
-      }
-      toast.success("Login successfully");
-    } else {
-      toast.error("Login failed");
+    if (authResult && "token" in authResult) {
+      const { token } = authResult;
+      localStorage.setItem("token", token);
+      await fetchUserData(token);
     }
+    setLoading(false);
   };
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
@@ -80,10 +81,7 @@ const LoginPage: React.FC = () => {
       toast.success("Login successfully");
       navigate(paths.HOME);
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      if (error.status === 409) {
-        // Account does not exist, call the registration API
+      if (error) {
         try {
           const responseRegister = await axiosInstance.post(
             API_REGISTER_WITH_GOOGLE,
@@ -191,16 +189,12 @@ const LoginPage: React.FC = () => {
                 </Form.Item>
               </div>
 
-              {accountLockedMsg && (
-                <div className="text-red-500 text-sm">{accountLockedMsg}</div>
-              )}
-
               <div className="flex justify-center">
                 <Link
                   className="md:mr-40 hover:text-green-600"
                   to={paths.FORGOT_PASSWORD}
                 >
-                  Forget Password
+                  Forgot Password
                 </Link>
               </div>
 
@@ -210,6 +204,7 @@ const LoginPage: React.FC = () => {
                   size="large"
                   htmlType="submit"
                   className="w-full md:w-2/3 shadow-xl hover:shadow-sky-600 bg-black"
+                  loading={loading}
                 >
                   Login
                 </Button>

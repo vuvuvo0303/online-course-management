@@ -19,6 +19,9 @@ export const host_main = "https://api-ojt-hcm24-react06-group01.vercel.app";
 export const API_LOGIN = "/api/auth";
 export const API_LOGIN_WITH_GOOGLE = "/api/auth/google";
 export const API_CURRENT_LOGIN_USER = "/api/auth";
+export const API_FORGOT_PASSWORD = "/api/auth/forgot-password";
+export const API_VERIFY_TOKEN = "/api/auth/verify-token";
+export const API_RESEND_TOKEN = "/api/auth/resend-token";
 //Users
 export const API_REGISTER = "/api/users";
 export const API_REGISTER_WITH_GOOGLE = "/api/users/google";
@@ -31,6 +34,22 @@ export const API_CHANGE_STATUS = "/api/users/change-status";
 export const API_CHANGE_ROLE = "/api/users/change-role";
 export const API_DELETE_USER = "/api/users";
 
+export const getColor = (status: string) => {
+  switch (status) {
+    case "new":
+      return 'red';
+    case 'waiting-approve':
+      return 'blue'
+    case 'approve':
+      return 'yellow'
+    case 'reject':
+      return 'purple'
+    case 'active':
+      return 'pink'
+    case 'inactive':
+      return 'orange'
+  }
+}
 /* PATHS */
 export const paths = {
   /* GUEST PATHS */
@@ -51,6 +70,7 @@ export const paths = {
   NOTFOUND: "/notfound",
   COURSE_DETAIL: "/course/:id",
   FORGOT_PASSWORD: "/forgot-password",
+  VERIFY_TOKEN: "/verify-email/:token",
 
   /* STUDENT PATHS */
   STUDENT_PROFILE: "/profile",
@@ -62,7 +82,9 @@ export const paths = {
   /* INSTRUCTORS PATHS */
   INSTRUCTOR_DASHBOARD: "dashboard",
   INSTRUCTOR_PROFILE: "profile",
-  INSTRUCTOR_CREATE_COURSE: "create-course",
+  INSTRUCTOR_CREATE_COURSE: "manage-courses/create-course",
+  INSTRUCTOR_UPDATE_COURSE: "manage-courses/update-course/:_id",
+  INSTRUCTOR_UPDATE_COURSE_DETAIL: "manage-courses/course-detail/:id/update-course/:_id",
   INSTRUCTOR_PAYMENT_HISTORY: "payment-history",
   INSTRUCTOR_MANAGE_FEEDBACKS: "manage-feedbacks",
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
@@ -82,7 +104,7 @@ export const paths = {
     "manage-courses/:courseId/manage-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION:
     "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
-  INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:courseId",
+  INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:_id",
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
   INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/update-session/:sessionId",
@@ -144,47 +166,16 @@ export const categoryFilters = [
 ];
 
 export const categoryCourse: categoryCourse = {
-  "Web Development": [
-    "JavaScript",
-    "React JS",
-    "Angular",
-    "Next.js",
-    "CSS",
-    "HTML",
-    "ASP.NET Core",
-    "Node.Js",
-    "Microservices",
-  ],
+  "Web Development": ["JavaScript", "React JS", "Angular", "Next.js", "CSS", "HTML", "ASP.NET Core", "Node.Js", "Microservices",],
   "Mobile Development": ["iOS", "Android", "Flutter", "React Native"],
   "Game Development": ["Unity", "Unreal Engine", "Godot"],
-  Entrepreneurship: ["Startup", "Business Planning", "Marketing"],
-  "Business Analytics & Intelligence": [
-    "Data Analysis",
-    "Power BI",
-    "Data Science",
-    "Data Visualization",
-  ],
-  Finance: ["Investing", "Trading", "Accounting", "Cryptocurrency"],
+  "Entrepreneurship": ["Startup", "Business Planning", "Marketing"],
+  "Business Analytics & Intelligence": ["Data Analysis", "Power BI", "Data Science", "Data Visualization",],
+  "Finance": ["Investing", "Trading", "Accounting", "Cryptocurrency"],
   "IT Certifications": ["AWS", "CompTIA", "Cisco", "Microsoft"],
-  "Personal Transformation": [
-    "Leadership",
-    "Personal Productivity",
-    "Communication Skills",
-    "Confidence",
-  ],
-  "Graphic Design & Illustration": [
-    "Photoshop",
-    "Illustrator",
-    "InDesign",
-    "Drawing",
-  ],
-  "Digital Marketing": [
-    "SEO",
-    "Social Media Marketing",
-    "Google Analytics",
-    "Content Marketing",
-  ],
-  // Add other subcategories as needed
+  "Personal Transformation": ["Leadership", "Personal Productivity", "Communication Skills", "Confidence",],
+  "Graphic Design & Illustration": ["Photoshop", "Illustrator", "InDesign", "Drawing",],
+  "Digital Marketing": ["SEO", "Social Media Marketing", "Google Analytics", "Content Marketing",],
 };
 
 /* SUB CATEGORIES */

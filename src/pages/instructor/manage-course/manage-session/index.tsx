@@ -1,10 +1,11 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Modal, Switch, Table, TableProps } from "antd";
+import { Breadcrumb, Button, Modal, Table, TableProps } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Lecture, Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { host_main } from "../../../../consts";
 
 const ManageSession = () => {
     const { courseId } = useParams<{ courseId: string }>();
@@ -15,12 +16,12 @@ const ManageSession = () => {
     const [modalText, setModalText] = useState('');
     const [open, setOpen] = useState(false);
     const [selectedSessionID, setSelectedSessionID] = useState<string>('');
+    const token = localStorage.getItem("token")
     const showModal = (sessionId: string) => {
         setModalText(`Do you want to delete this session with id = ${sessionId} and the lessons of this session `)
         setSelectedSessionID(sessionId)
         setOpen(true);
     };
-
     const handleOk = async () => {
         if (selectedSessionID) {
             setModalText('Deleting...');
@@ -42,13 +43,12 @@ const ManageSession = () => {
     const handleDelete = async (sessionId: string) => {
         try {
             // Xóa session trước
-            await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`);
-            const res = await axios.get<Lecture[]>(`https://665fbf245425580055b0b23d.mockapi.io/lectures`);
-            const lecturesOfSessionNeedToDelete = res.data.filter(lecture => lecture.sessionId === sessionId);
-            await Promise.all(lecturesOfSessionNeedToDelete.map(lecture => 
-                axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/lectures/${lecture.lectureId}`)
-            ));
-            setSessions(sessions.filter(session => session.sessionId !== sessionId));
+            await axios.delete(`${host_main}/api/session/${sessionId}`,{
+                headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setSessions(sessions.filter(session => session._id !== sessionId));
             toast.success("Delete Session Successfully!");
         } catch (error) {
             toast.error("Failed to delete session. Please try again.");
@@ -61,14 +61,31 @@ const ManageSession = () => {
     useEffect(() => {
         const fetchSession = async () => {
             try {
-                const res = await axios.get<Session[]>("https://665fbf245425580055b0b23d.mockapi.io/session");
+                const res = await axios.post<Session[]>(`${host_main}/api/session/search`,
+                    {
+                        "searchCondition": {
+                            "keyword": "",
+                            "course_id": `${courseId}`,
+                            "is_position_order": true,
+                            "is_deleted": false
+                        },
+                        "pageInfo": {
+                            "pageNum": 1,
+                            "pageSize": 10
+                        }
+                    }
+                    ,{
+                    headers:{
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 if (res) {
                     console.log("check res:", res);
-                    setSessions(res.data.filter(session => session.courseId === courseId));
+                    setSessions(res.data.data.pageData);
                 }
             } catch (error) {
                 console.log("error: ", error);
-                setError("Lỗi xảy ra khi lấy dữ liệu phiên học");
+                setError(error+"");
             } finally {
                 setLoading(false);
             }
@@ -77,72 +94,63 @@ const ManageSession = () => {
         if (courseId) {
             fetchSession();
         }
-    }, [courseId]);
-
-    const onChangeStatus = async (checked: boolean, sessionId: string) => {
-        try {
-            const updatedSesstion = sessions.find(session => session.sessionId === sessionId);
-            if (updatedSesstion) {
-                updatedSesstion.status = checked;
-                await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`, updatedSesstion);
-                setSessions([...sessions]); // Update state to trigger re-render
-            }
-        } catch (error) {
-            console.error("Error updating status:", error);
-        }
-    };
+    }, [courseId, token]);
 
     const columns: TableProps<Session>["columns"] = [
         {
             title: 'Session Id',
-            dataIndex: 'sessionId',
-            key: 'sessionId',
+            dataIndex: '_id',
+            key: '_id',
         },
         {
-            title: 'Title',
-            dataIndex: 'title',
-            key: 'title',
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
         },
         {
-            title: 'Created Date',
-            dataIndex: 'createdDate',
-            key: 'createdDate',
+            title: 'Created At',
+            dataIndex: 'created_at',
+            key: 'created_at',
             defaultSortOrder: 'descend',
             sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
             render: (date: string) => new Date(date).toLocaleDateString(),
         },
         {
-            title: 'Updated Date',
-            dataIndex: 'updatedDate',
-            key: 'updatedDate',
+            title: 'Updated At',
+            dataIndex: 'updated_at',
+            key: 'updated_at',
             defaultSortOrder: 'descend',
             sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
             render: (date: string) => new Date(date).toLocaleDateString(),
         },
         {
             title: 'Course Id',
-            dataIndex: 'courseId',
-            key: 'courseId',
+            dataIndex: 'course_id',
+            key: 'course_id',
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: boolean, record: Session) => (
-                <Switch
-                    checked={status}
-                    onChange={(checked) => onChangeStatus(checked, record.sessionId)}
-                />
-            ),
+            title: 'Description',
+            dataIndex: 'description',
+            key: 'description',
+        },
+        {
+            title: 'Is deleted',
+            dataIndex: 'is_deleted',
+            key: 'is_deleted',
+        },
+        {
+            title: '__v',
+            dataIndex: '__v',
+            key: '__v',
         },
         {
             title: 'Action',
-            dataIndex: 'sessionId',
-            key: 'sessionId',
+            dataIndex: '_id',
+            key: '_id',
             render: (sessionId: string) => (
                 <>
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/update-session/${sessionId}`}><EditOutlined className="mt-2 text-blue-500" /></Link>
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/update-session/${sessionId}`}><EditOutlined className="m-2 text-blue-500" /></Link>
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(sessionId)} />
                 </>
             )

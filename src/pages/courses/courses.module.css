@@ -118,16 +118,21 @@
     width: 100%;
 }
 
+.content_container {
+    display: flex;
+    gap: 2rem;
+}
+
 .sidebar {
-    grid-column: 1 / 2;
-    max-height: 240rem;
-    transition: 400ms cubic-bezier(.2, 0, .38, .9);
+    flex: 1;
+    max-width: 250px;
 }
 
 .course_list {
-    grid-column: 2 / 3;
-    position: relative;
-    min-width: 1px;
+    flex: 3;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .according_panel {

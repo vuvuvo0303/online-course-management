@@ -5,7 +5,7 @@ import Vector from "../../../assets/Vector.png";
 import Rectangle from "../../../assets/Rectangle .jpg";
 import { toast } from "react-toastify";
 import Lottie from "lottie-react";
-import { loginAdmin } from "../../../services/auth.ts";
+import { login } from "../../../services/auth.ts";
 import {paths } from "../../../consts";
 import vutru from "../../../assets/vutru.json";
 import axiosInstance from "../../../services/api.ts";
@@ -21,7 +21,6 @@ const AdminLoginPage: React.FC = () => {
 
     const fetchUserData = async (token: string) => {
         const response = await axiosInstance.get('/api/auth');
-        console.log(response)
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(response.data));
     };
@@ -29,7 +28,7 @@ const AdminLoginPage: React.FC = () => {
     const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
         const { email, password } = values;
         setLoading(true); // Set loading to true when login starts
-        const authResult = await loginAdmin(email, password);
+        const authResult = await login(email, password);
             if (authResult && "token" in authResult) {
             const { token } = authResult;
             localStorage.setItem("token", token);

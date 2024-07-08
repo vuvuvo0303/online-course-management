@@ -17,7 +17,6 @@ import {
   Form,
   Spin,
   Pagination,
-  Tag,
   Upload,
   Popconfirm,
   Radio,
@@ -47,11 +46,7 @@ import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
-import {
-  API_CHANGE_STATUS,
-  API_CREATE_USER,
-  API_GET_USERS,
-} from "../../../consts";
+import { API_CHANGE_STATUS, API_CREATE_USER, API_GET_USERS } from "../../../consts";
 
 interface ApiError {
   code: number;
@@ -92,20 +87,34 @@ const AdminManageUsers: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
-
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
   const [formData, setFormData] = useState<any>({});
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
 
   useEffect(() => {
-    fetchStudents();
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'users_updated') {
+        fetchUsers();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      if(!window.location.pathname.includes('user')){
+        localStorage.removeItem('users_updated');
+      }
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+
+
+  useEffect(() => {
+    fetchUsers();
   }, [pagination.current, pagination.pageSize]);
 
-  const fetchStudents = useCallback(async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
       const response: AxiosResponse<{
@@ -146,12 +155,14 @@ const AdminManageUsers: React.FC = () => {
         await axiosInstance.delete(`/api/users/${_id}`);
         setData((prevData) => prevData.filter((user) => user._id !== _id));
         toast.success(`Deleted user ${email} successfully`);
-        fetchStudents();
+        fetchUsers();
+
+        localStorage.setItem('users_updated', new Date().toISOString());
       } catch (error) {
         // Handle error silently
       }
     },
-    [fetchStudents]
+    [fetchUsers]
   );
 
   const addNewUser = useCallback(
@@ -171,11 +182,10 @@ const AdminManageUsers: React.FC = () => {
 
         const userData = { ...values, avatar: avatarUrl };
 
-        const response: AxiosResponse<CreateUserResponse> =
-          await axiosInstance.post<Student, AxiosResponse<CreateUserResponse>>(
-            API_CREATE_USER,
-            userData
-          );
+        const response: AxiosResponse<CreateUserResponse> = await axiosInstance.post<
+          Student,
+          AxiosResponse<CreateUserResponse>
+        >(API_CREATE_USER, userData);
 
         const newUser = response.data.data;
         setData((prevData) => [...prevData, newUser]);
@@ -183,13 +193,13 @@ const AdminManageUsers: React.FC = () => {
         setIsModalVisible(false);
         form.resetFields();
         setLoading(false);
-        fetchStudents();
+        fetchUsers();
+        localStorage.setItem('users_updated', new Date().toISOString());
       } catch (error) {
         setLoading(false);
-        console.error("Error creating new user:", error);
       }
     },
-    [fetchStudents, form]
+    [fetchUsers, form]
   );
 
   const formatDate = useCallback((dateString: string) => {
@@ -268,28 +278,22 @@ const AdminManageUsers: React.FC = () => {
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
     setFileList(newFileList);
 
-  const handleStatusChange = useCallback(
-    async (checked: boolean, userId: string) => {
-      try {
-        await axiosInstance.put(API_CHANGE_STATUS, {
-          user_id: userId,
-          status: checked,
-        });
-        fetchStudents();
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const handleStatusChange = useCallback(async (checked: boolean, userId: string) => {
+    try {
+      await axiosInstance.put(API_CHANGE_STATUS, {
+        user_id: userId,
+        status: checked,
+      });
+      fetchUsers();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
-        setData((prevData) =>
-          prevData.map((user) =>
-            user._id === userId ? { ...user, status: checked } : user
-          )
-        );
-        toast.success(`User status updated successfully`);
-      } catch (error) {
-        // Handle error silently
-      }
-    },
-    []
-  );
+      setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
+      toast.success(`User status updated successfully`);
+      localStorage.setItem('users_updated', new Date().toISOString());
+    } catch (error) {
+      // Handle error silently
+    }
+  }, []);
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -417,11 +421,11 @@ const AdminManageUsers: React.FC = () => {
           <div
             className={`tag ${
               role === "student"
-                ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl p-1 border border-blue-500"
+                ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl py-2 border border-blue-500 text-xs"
                 : role === "instructor"
-                ? "bg-lime-100 text-lime-400 flex justify-center rounded-xl p-1 border border-lime-500"
+                ? "bg-lime-100 text-lime-400 flex justify-center rounded-xl py-2 border border-lime-500 text-xs"
                 : role === "admin"
-                ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl p-1 border border-yellow-500"
+                ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl py-2 border border-yellow-500 text-xs"
                 : "bg-gray-500 text-white"
             }`}
           >
@@ -474,14 +478,28 @@ const AdminManageUsers: React.FC = () => {
       {
         title: "Action",
         key: "action",
-        render: (record: Student, values: Student) => (
+        render: (record: Student) => (
           <div>
             <EditOutlined
               className="hover:cursor-pointer text-blue-400 hover:opacity-60"
               style={{ fontSize: "20px" }}
               onClick={() => {
-                handleEditClick(record);
-                form.setFieldsValue(values);
+                setModalMode("Edit");
+                setIsModalVisible(true);
+                form.setFieldsValue(record);
+                setFormData(record);
+                setFileList(
+                  record.avatar
+                    ? [
+                        {
+                          uid: "-1",
+                          name: "avatar.png",
+                          status: "done",
+                          url: record.avatar,
+                        },
+                      ]
+                    : []
+                );
               }}
             />
             <Popconfirm
@@ -523,11 +541,61 @@ const AdminManageUsers: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const handleEditClick = (record: any) => {
-    setFormData(record);
-    setModalMode("Edit");
-    setIsModalVisible(true);
+  const editUser = async (values: any) => {
+    setLoading(true);
+    try {
+      let avatarUrl = values.avatar;
+      if (values.avatar && typeof values.avatar !== "string" && values.avatar.file.originFileObj) {
+        avatarUrl = await uploadFile(values.avatar.file.originFileObj);
+      }
+
+      // Prepare updated user data
+      const updatedUser = {
+        ...values,
+        avatar: avatarUrl,
+        email: values.email, // Ensure email is included
+      };
+
+      console.log("Updated user data to send to server:", updatedUser);
+
+      const response: AxiosResponse<any> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
+      console.log("Response from server:", response);
+
+      setData((prevData) => {
+        const newData = prevData.map((user) => {
+          if (user._id === formData._id) {
+            console.log("Updating user in state:", { ...user, ...updatedUser });
+            return { ...user, ...updatedUser };
+          } else {
+            return user;
+          }
+        });
+        console.log("New state data after update:", newData);
+        return newData;
+      });
+
+      toast.success("Updated user successfully");
+      setIsModalVisible(false);
+      form.resetFields();
+      fetchUsers();
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+    setLoading(false);
   };
+
+  const onFinish = (values: any) => {
+    if (modalMode === "Edit") {
+      if (formData._id) {
+        editUser({ ...formData, ...values });
+      } else {
+        console.error("User ID is not set.");
+      }
+    } else {
+      addNewUser(values);
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -536,7 +604,7 @@ const AdminManageUsers: React.FC = () => {
             <HomeOutlined />
           </Breadcrumb.Item>
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
-          <Breadcrumb.Item>Manage Students</Breadcrumb.Item>
+          <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
         <div className="mt-3">
           {" "}
@@ -548,7 +616,7 @@ const AdminManageUsers: React.FC = () => {
             }}
             className="py-2"
           >
-            <UserAddOutlined /> Add New Student
+            <UserAddOutlined /> Add New User
           </Button>
         </div>
       </div>
@@ -573,26 +641,20 @@ const AdminManageUsers: React.FC = () => {
       </div>
 
       <Modal
-        title={modalMode === "Add" ? "Add New Student" : "Edit Student"}
+        title={modalMode === "Edit" ? "Edit User" : "Add User"}
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
       >
-        <Form form={form} onFinish={addNewUser} labelCol={{ span: "24" }}>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please input the name!" }]}
-          >
+        <Form form={form} onFinish={onFinish} layout="vertical">
+          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: "Please input the email!" }]}
-          >
-            <Input />
-          </Form.Item>
+          {modalMode === "Add" && (
+            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
+              <Input />
+            </Form.Item>
+          )}
           {modalMode === "Add" && (
             <Form.Item
               name="password"
@@ -604,7 +666,6 @@ const AdminManageUsers: React.FC = () => {
               <Input.Password />
             </Form.Item>
           )}
-
           <Form.Item
             label="Role"
             name="role"
@@ -621,12 +682,7 @@ const AdminManageUsers: React.FC = () => {
               <Radio value="admin">Admin</Radio>
             </Radio.Group>
           </Form.Item>
-
-          <Form.Item
-            label="Avatar"
-            name="avatar"
-            rules={[{ required: true, message: "Please upload your Avatar" }]}
-          >
+          <Form.Item label="Avatar" name="avatar">
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
               listType="picture-card"
@@ -638,18 +694,13 @@ const AdminManageUsers: React.FC = () => {
             </Upload>
           </Form.Item>
           <Form.Item>
-            {modalMode === "Add" ? (
-              <Button loading={loading} type="primary" htmlType="submit">
-                Submit
-              </Button>
-            ) : (
-              <Button loading={loading} type="primary" htmlType="submit">
-                Edit
-              </Button>
-            )}
+            <Button loading={loading} type="primary" htmlType="submit">
+              {modalMode === "Add" ? "Submit" : "Edit"}
+            </Button>
           </Form.Item>
         </Form>
       </Modal>
+
       {previewImage && (
         <Image
           wrapperStyle={{ display: "none" }}

@@ -2,7 +2,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import config from "../secret/config.ts";
 
-console.log(config.BASE_URL)
 const axiosInstance = axios.create({
     baseURL: config.BASE_URL,
     headers: {
@@ -36,13 +35,20 @@ axiosInstance.interceptors.response.use(
     },
     (error) => {
         if (error.response) {
-            const { status, data } = error.response;
-            if (status === 409) {
-                // Handle conflict error silently
-                return Promise.reject({ status, data });
-            }
+            const { data } = error.response;
+            console.log(error.response)
             if (data && data.message) {
-                toast.error(data.message);
+                if (data.message.includes("Your email")) {
+                    return Promise.reject(data);
+                }
+                else if(error.response.status === 403){
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    toast.error(data.message)
+                }
+                else {
+                    toast.error(data.message);
+                }
             } else {
                 toast.error('An error occurred');
             }
