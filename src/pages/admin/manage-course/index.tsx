@@ -75,10 +75,10 @@ const AdminManageCourses: React.FC = () => {
   const columnsCourses: TableColumnsType<Course> = [
     {
       title: "Title",
-      width: "100",
+      width: "50%",
       dataIndex: "name",
       key: "name",
-      fixed: "left",
+
       render: (text, record) => (
         <Button type="link" onClick={() => showModal(record)}>
           {text}
@@ -144,14 +144,12 @@ const AdminManageCourses: React.FC = () => {
     <div>
       <Modal
         title={
-          <span
-            className="text-2xl font-bold flex justify-center text-amber-700"
-          >
+          <span className="text-2xl font-bold flex justify-center text-amber-700">
             {selectedCourse ? selectedCourse.name : ""}
           </span>
         }
-        open={isModalVisible}
-        onOk={() => setIsModalVisible(false)}
+        visible={isModalVisible}
+        footer={null}
         onCancel={() => setIsModalVisible(false)}
       >
         {selectedCourse && (
@@ -165,7 +163,7 @@ const AdminManageCourses: React.FC = () => {
               {formatVND(selectedCourse.price)}
             </div>
             <div>
-              <span className="text-base font-bold">Dicount: </span>
+              <span className="text-base font-bold">Discount: </span>
               {selectedCourse.discount}%
             </div>
             <div>
@@ -177,12 +175,11 @@ const AdminManageCourses: React.FC = () => {
               {selectedCourse.session_count}
             </div>
             <div>
-              <span className="text-base font-bold">Thumnail: </span>
+              <span className="text-base font-bold">Thumbnail: </span>
               <Image src={selectedCourse.image_url} alt={selectedCourse.name} style={{ width: "100%" }} />
             </div>
             <div className="flex gap-2 items-center">
-              <span className="text-base font-bold">Course Video :</span>
-
+              <span className="text-base font-bold">Course Video:</span>
               <span>
                 <Link to={selectedCourse.video_url} target="_blank" rel="noopener noreferrer">
                   <Button className="bg-rose-500" type="primary">
@@ -194,7 +191,13 @@ const AdminManageCourses: React.FC = () => {
             </div>
           </div>
         )}
+        <div className="flex justify-end">
+          <Button type="primary"  onClick={() => setIsModalVisible(false)}>
+            Close
+          </Button>
+        </div>
       </Modal>
+
       <Breadcrumb
         className="py-2"
         items={[
@@ -214,4 +217,3 @@ const AdminManageCourses: React.FC = () => {
 };
 
 export default AdminManageCourses;
-3;
