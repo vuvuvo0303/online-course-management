@@ -8,6 +8,7 @@ import { Course, Session } from "../../../../../models";
 import { toast } from "react-toastify";
 import { User } from "../../../../../models/User";
 import { host_main } from "../../../../../consts";
+import axiosInstance from "../../../../../services/api";
 
 const formItemLayout = {
   labelCol: {
@@ -46,12 +47,9 @@ const CreateUpdateSession = () => {
     if (sessionId) {
       const fetchData = async () => {
         try {
-          const res = await axios.get<Session>(`${host_main}/api/session/${sessionId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          const data = res.data.data;
+          const res = await axiosInstance.get(`/api/session/${sessionId}`);
+          console.log("check data update res: ", res);
+          const data = res.data;
           form.setFieldsValue({
             name: data.name,
             description: data.description,

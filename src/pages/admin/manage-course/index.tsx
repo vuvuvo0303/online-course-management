@@ -1,26 +1,23 @@
-import { DeleteOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import { useEffect, useState, useCallback } from "react";
+import {DeleteOutlined, DownOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined} from "@ant-design/icons";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Breadcrumb, Button, Image, Modal, Table, TableColumnsType, TablePaginationConfig } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Dropdown,
+  Image,
+  Input, MenuProps,
+  Modal,
+  Space,
+  Table,
+  TableColumnsType,
+  TablePaginationConfig
+} from "antd";
 import { API_GET_COURSE } from "../../../consts";
 import axiosInstance from "../../../services/api";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-
-interface Course {
-  _id: string;
-  name: string;
-  status: string;
-  price: number;
-  discount: number;
-  created_at: string;
-  updated_at: string;
-  image_url?: string;
-  video_url?: string;
-  category_name: string;
-  user_name: string;
-  session_count: number;
-}
+import {Course} from "../../../models";
 
 const AdminManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -57,7 +54,6 @@ const AdminManageCourses: React.FC = () => {
         throw new Error("Failed to fetch courses");
       }
     } catch (error) {
-      console.error("Error fetching courses: ", error);
       setError("An unexpected error occurred.");
     } finally {
       setLoading(false);
@@ -75,7 +71,7 @@ const AdminManageCourses: React.FC = () => {
   const columnsCourses: TableColumnsType<Course> = [
     {
       title: "Title",
-      width: "50%",
+      width: "50",
       dataIndex: "name",
       key: "name",
 
@@ -95,21 +91,18 @@ const AdminManageCourses: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      defaultSortOrder: "descend",
-      sorter: (a: Course, b: Course) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
       render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      defaultSortOrder: "descend",
-      sorter: (a: Course, b: Course) => new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime(),
       render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Action",
       key: "action",
+      width: "15",
       render: (record: Course) => (
         <>
           <Link to={`/admin/manage-course/${record._id}/manage-session`}>
@@ -133,13 +126,30 @@ const AdminManageCourses: React.FC = () => {
     setSelectedCourse(record);
     setIsModalVisible(true);
   };
-  const formatVND = (value) => {
+  const formatVND = (value: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(value);
   };
-
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: "All",
+    },
+    {
+      key: "2",
+      label: "Admins",
+    },
+    {
+      key: "3",
+      label: "Instructors",
+    },
+    {
+      key: "4",
+      label: "Students",
+    },
+  ];
   return (
     <div>
       <Modal
@@ -181,7 +191,7 @@ const AdminManageCourses: React.FC = () => {
             <div className="flex gap-2 items-center">
               <span className="text-base font-bold">Course Video:</span>
               <span>
-                <Link to={selectedCourse.video_url} target="_blank" rel="noopener noreferrer">
+                <Link to={selectedCourse.video_url ?? "https://youtube.com"} target="_blank" rel="noopener noreferrer">
                   <Button className="bg-rose-500" type="primary">
                     <PlayCircleOutlined />
                     Watch Video
@@ -210,6 +220,44 @@ const AdminManageCourses: React.FC = () => {
           },
         ]}
       />
+
+      <Space style={{ marginTop: 32, marginBottom: 16 }}>
+        <Input
+            placeholder="Search..."
+            style={{ width: 200 }}
+        />
+        <Dropdown
+            menu={{
+              items,
+              selectable: true,
+              defaultSelectedKeys: ["1"],
+            }}
+        >
+          <Button>
+            <Space>
+              Filter Categories
+              <DownOutlined />
+            </Space>
+          </Button>
+        </Dropdown>
+
+        <Dropdown
+            menu={{
+              items,
+              selectable: true,
+              defaultSelectedKeys: ["1"],
+            }}
+        >
+          <Button>
+            <Space>
+              Filter Parent Categories
+              <DownOutlined />
+            </Space>
+          </Button>
+        </Dropdown>
+        <Button >Clear filters</Button>
+        <Button >Clear filters and sorters</Button>
+      </Space>
       <h1 className="text-center mb-10">Manage Course</h1>
       <Table columns={columnsCourses} dataSource={courses} pagination={pagination} onChange={handleTableChange} />
     </div>

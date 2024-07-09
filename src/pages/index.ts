@@ -18,6 +18,7 @@ export { default as CourseDetail } from "./course-detail";
 export { default as BecomeInstructorPage } from "./teaching";
 export { default as CoursesCategory } from "./courses";
 export { default as ForgotPassword } from "./forgot-password";
+export { default as InternalServerError } from "./internal-server-error"
 
 /* Student Page */
 export { default as StudentPaymentHistory } from "./payment/studentPaymentHistory";

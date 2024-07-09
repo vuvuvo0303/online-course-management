@@ -37,6 +37,14 @@ export const API_DELETE_USER = "/api/users";
 //admin
 export const API_GET_COURSE = "/api/course/search";
 
+export const colorIs_delete = (is_delete: boolean) => {
+  if (is_delete) {
+      return "red"
+  } else {
+      return "blue"
+  }
+}
+
 export const getColor = (status: string) => {
   switch (status) {
     case "new":
@@ -74,6 +82,7 @@ export const paths = {
   COURSE_DETAIL: "/course/:id",
   FORGOT_PASSWORD: "/forgot-password",
   VERIFY_TOKEN: "/verify-email/:token",
+  INTERNAL_SERVER_ERROR: "/internal-server-error",
 
   /* STUDENT PATHS */
   STUDENT_PROFILE: "/profile",

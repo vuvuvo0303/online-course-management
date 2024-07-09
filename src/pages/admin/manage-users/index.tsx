@@ -129,10 +129,10 @@ const AdminManageUsers: React.FC = () => {
           pageSize: response.data.pageInfo.pageSize,
         }));
       } else {
-        console.log("Failed to fetch students");
+        //
       }
     } catch (error) {
-      console.error(error);
+      //
     }
     setLoading(false);
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
@@ -153,7 +153,7 @@ const AdminManageUsers: React.FC = () => {
     [fetchUsers]
   );
 
-  const addNewUser = useCallback(
+  const handleAddNewUser = useCallback(
     async (values: Student) => {
       try {
         setLoading(true);
@@ -400,11 +400,6 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "created_at",
         key: "created_at",
         render: (created_at: string) => formatDate(created_at),
-        sorter: true,
-        sortDirections: ["descend", "ascend"],
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("created_at"),
-        }),
         width: "10%",
       },
       {
@@ -412,11 +407,6 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "updated_at",
         key: "updated_at",
         render: (updated_at: string) => formatDate(updated_at),
-        sorter: true,
-        sortDirections: ["descend", "ascend"],
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("updated_at"),
-        }),
         width: "10%",
       },
       {
@@ -569,7 +559,7 @@ const AdminManageUsers: React.FC = () => {
         console.error("User ID is not set.");
       }
     } else {
-      addNewUser(values);
+      handleAddNewUser(values);
     }
   };
   const handleRoleChange = (value: string) => {
@@ -616,6 +606,7 @@ const AdminManageUsers: React.FC = () => {
           </Button>
         </div>
       </div>
+
 
       <Spin spinning={loading}>
         <Table
