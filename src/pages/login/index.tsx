@@ -9,7 +9,7 @@ import {
   API_CURRENT_LOGIN_USER,
   API_LOGIN_WITH_GOOGLE,
   API_REGISTER_WITH_GOOGLE,
-  paths,
+  paths, roles,
 } from "../../consts";
 import { GoogleLogin } from "@react-oauth/google";
 import Lottie from "lottie-react";
@@ -39,10 +39,10 @@ const LoginPage: React.FC = () => {
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(user));
     switch (user.role) {
-      case "student":
+      case roles.STUDENT:
         navigate(paths.HOME);
         break;
-      case "instructor":
+      case roles.INSTRUCTOR:
         navigate(paths.INSTRUCTOR_HOME);
         break;
       default:
@@ -83,14 +83,13 @@ const LoginPage: React.FC = () => {
     } catch (error) {
       if (error) {
         try {
-          const responseRegister = await axiosInstance.post(
+            await axiosInstance.post(
             API_REGISTER_WITH_GOOGLE,
             {
               google_id: googleId,
               role: "student",
             }
           );
-          console.log(responseRegister);
           const responseLogin = await axiosInstance.post(
             API_LOGIN_WITH_GOOGLE,
             {

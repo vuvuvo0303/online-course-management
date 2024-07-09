@@ -15,7 +15,7 @@ import {
   Popconfirm,
   Radio,
   Dropdown,
-  Typography, MenuProps,
+  MenuProps,
 } from "antd";
 import {
   DeleteOutlined,
@@ -129,10 +129,10 @@ const AdminManageUsers: React.FC = () => {
           pageSize: response.data.pageInfo.pageSize,
         }));
       } else {
-        console.log("Failed to fetch students");
+        //
       }
     } catch (error) {
-      console.error(error);
+      //
     }
     setLoading(false);
   }, [pagination.current, pagination.pageSize]);
@@ -153,7 +153,7 @@ const AdminManageUsers: React.FC = () => {
     [fetchUsers]
   );
 
-  const addNewUser = useCallback(
+  const handleAddNewUser = useCallback(
     async (values: Student) => {
       try {
         setLoading(true);
@@ -356,19 +356,11 @@ const AdminManageUsers: React.FC = () => {
         title: "Name",
         dataIndex: "name",
         key: "name",
-        ...getColumnSearchProps("name"),
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("name"),
-        }),
       },
       {
         title: "Email",
         dataIndex: "email",
         key: "email",
-        ...getColumnSearchProps("email"),
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("email"),
-        }),
       },
       {
         title: "Role",
@@ -395,11 +387,6 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "created_at",
         key: "created_at",
         render: (created_at: string) => formatDate(created_at),
-        sorter: true,
-        sortDirections: ["descend", "ascend"],
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("created_at"),
-        }),
         width: "10%",
       },
       {
@@ -407,11 +394,6 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "updated_at",
         key: "updated_at",
         render: (updated_at: string) => formatDate(updated_at),
-        sorter: true,
-        sortDirections: ["descend", "ascend"],
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("updated_at"),
-        }),
         width: "10%",
       },
       {
@@ -548,13 +530,13 @@ const AdminManageUsers: React.FC = () => {
         console.error("User ID is not set.");
       }
     } else {
-      addNewUser(values);
+      handleAddNewUser(values);
     }
   };
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: "ALL",
+      label: "All",
     },
     {
       key: "2",
@@ -580,6 +562,44 @@ const AdminManageUsers: React.FC = () => {
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
 
+        <Space style={{ marginTop: 32, marginBottom: 16 }}>
+          <Input
+              placeholder="Search..."
+              style={{ width: 200 }}
+          />
+          <Dropdown
+              menu={{
+                items,
+                selectable: true,
+                defaultSelectedKeys: ["1"],
+              }}
+          >
+            <Button>
+              <Space>
+                Filter Role
+                <DownOutlined />
+              </Space>
+            </Button>
+          </Dropdown>
+
+          <Dropdown
+              menu={{
+                items,
+                selectable: true,
+                defaultSelectedKeys: ["1"],
+              }}
+          >
+            <Button>
+              <Space>
+                Status
+                <DownOutlined />
+              </Space>
+            </Button>
+          </Dropdown>
+          <Button >Clear filters</Button>
+          <Button >Clear filters and sorters</Button>
+        </Space>
+
         <div className="mt-3">
           {" "}
           <Button
@@ -594,20 +614,7 @@ const AdminManageUsers: React.FC = () => {
           </Button>
         </div>
       </div>
-      <Dropdown
-        menu={{
-          items,
-          selectable: true,
-          defaultSelectedKeys: ["3"],
-        }}
-      >
-        <Typography.Link>
-          <Space>
-            Filter Role
-            <DownOutlined />
-          </Space>
-        </Typography.Link>
-      </Dropdown>
+
       <Spin spinning={loading}>
         <Table
           columns={columns}
