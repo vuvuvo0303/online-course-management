@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Input, Breadcrumb, Select } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import moment from "moment";
 import { Course, Lecture, Session } from "../../../../../../models";
 import { HomeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
@@ -25,8 +24,11 @@ const CreateLecture = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const [course, setCourse] = useState<Course | null>();
+  const [courses, setCourses] = useState<Course[]>([]);
   const [session, setSession] = useState<Session | null>();
+  const [sessions, setSessions] = useState<Session[]>([]);
   const [userId, setUserId] = useState<string>('');
+  const [course_id, setCourse_id] = useState<string>('');
 
   useEffect(() => {
     const userString = localStorage.getItem("user");
@@ -54,6 +56,7 @@ const CreateLecture = () => {
             full_time: data.full_time,
             position_order: data.position_order,
           });
+          setCourse_id(data.course_id);
         } catch (error) {
           console.error("Error fetching data:", error);
         } finally {
@@ -73,38 +76,92 @@ const CreateLecture = () => {
 
   useEffect(() => {
     const fetchCourses = async () => {
-      try {
-        const res = await axiosInstance.get(`/api/course/${courseId}`);
-        if (res.data) {
-          setCourse(res.data);
-          console.log("check courses: ", res.data);
+
+      if (courseId && sessionId) {
+        try {
+          const res = await axiosInstance.get(`/api/course/${courseId}`);
+          if (res.data) {
+            setCourse(res.data);
+          }
+        } catch (error) {
+          console.log("Error: ", error);
+        } finally {
+          setLoading(false)
         }
-      } catch (error) {
-        console.log("Error: ", error);
-      } finally {
-        setLoading(false)
       }
+      // if there is no sessionId and courseId 
+      else {
+        try {
+          const res = await axiosInstance.post(`/api/course/search`,
+            {
+              "searchCondition": {
+                "keyword": "",
+                "category": "",
+                "status": "new",
+                "is_deleted": false
+              },
+              "pageInfo": {
+                "pageNum": 1,
+                "pageSize": 10
+              }
+            }
+          );
+          if (res.data) {
+            setCourses(res.data.pageData);
+            console.log("check courses of manage all lectures: ", res.data);
+          }
+        } catch (error) {
+          console.log("Error: ", error);
+        } finally {
+          setLoading(false)
+        }
+      }
+
     };
     fetchCourses();
-  }, [courseId])
+  }, [courseId, sessionId])
 
   useEffect(() => {
     const fetchSessions = async () => {
-      try {
-        const res = await axiosInstance.get(`/api/session/${sessionId}`);
-        if (res) {
-          console.log("check session res: ", res);
-          setSession(res.data);
-          console.log("check session: ", res.data);
+      if (courseId && sessionId) {
+        try {
+          const res = await axiosInstance.get(`/api/session/${sessionId}`);
+          if (res) {
+            setSession(res.data);
+          }
+        } catch (error) {
+          console.log("Error: ", error);
+        } finally {
+          setLoading(false)
         }
-      } catch (error) {
-        console.log("Error: ", error);
-      } finally {
-        setLoading(false)
+      } else {
+        if(course_id){
+          try {
+            const res = await axiosInstance.post(`/api/session/search`, {
+              "searchCondition": {
+                "keyword": "",
+                "course_id": course_id,
+                "is_position_order": false,
+                "is_deleted": false
+              },
+              "pageInfo": {
+                "pageNum": 1,
+                "pageSize": 10
+              }
+            });
+            if (res) {
+              setSessions(res.data.pageData);
+            }
+          } catch (error) {
+            console.log("Error: ", error);
+          } finally {
+            setLoading(false)
+          }
+        }
       }
     };
     fetchSessions();
-  }, [sessionId])
+  }, [sessionId, courseId, course_id])
 
 
 
@@ -138,6 +195,10 @@ const CreateLecture = () => {
       setLoading(false);
     }
   };
+  const handleChangeCourseId = (value: string) => {
+    console.log("onchange value: ", value)
+    setCourse_id(value);
+  }
 
   return (
     <div className="flex justify-center items-center h-full mt-10">
@@ -172,19 +233,64 @@ const CreateLecture = () => {
               <Input />
             </Form.Item>
 
-            <Form.Item
-              label="Course Name"
-              name="course_id"
-            >
-              <Input defaultValue={course?._id} disabled />
-            </Form.Item>
-            <Form.Item
-              initialValue={session?._id}
-              label="Session Name"
-              name="session_id"
-            >
-              <Input defaultValue={session?._id} disabled />
-            </Form.Item>
+            {sessionId && courseId &&
+              <Form.Item
+                label="Course Name"
+                name="course_id"
+                hidden
+                rules={[{ required: true, message: "Please choose course name!" }]}
+              >
+                <Input defaultValue={courseId} disabled />
+              </Form.Item>
+            }
+            {/* if there is no sessionId and courseId */}
+            {
+              !sessionId && !courseId &&
+              <Form.Item
+                label="Course Name"
+                name="course_id"
+                rules={[{ required: true, message: "Please choose course name!" }]}
+              >
+                <Select
+                  // Save course_id to use to call the session api
+                  onChange={handleChangeCourseId}
+                  defaultValue="Choose course fo this lecture"
+                  options={courses.map(course => ({
+                    label: course.name,
+                    value: course._id
+                  }))}
+                />
+              </Form.Item>
+            }
+            {sessionId && courseId &&
+              <Form.Item
+                initialValue={sessionId}
+                label="Session Name"
+                name="session_id"
+                hidden
+                rules={[{ required: true, message: "Please input session name!" }]}
+              >
+                <Input defaultValue={session?._id} disabled />
+              </Form.Item>
+            }
+
+            {/* if there is no sessionId and courseId */}
+            {
+              !sessionId && !courseId &&
+              <Form.Item
+                label="Session Name"
+                name="session_id"
+                rules={[{ required: true, message: "Please session name!" }]}
+              >
+                <Select
+                  defaultValue="Choose session fo this lecture"
+                  options={sessions.map(session => ({
+                    label: session.name,
+                    value: session._id
+                  }))}
+                />
+              </Form.Item>
+            }
             <Form.Item
               hidden
               label="User Id"
@@ -201,7 +307,6 @@ const CreateLecture = () => {
             >
               <Select
                 defaultValue="video"
-                style={{ width: 200 }}
                 options={[
                   {
                     options: [
