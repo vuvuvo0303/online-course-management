@@ -74,6 +74,7 @@ export const paths = {
   COURSE_DETAIL: "/course/:id",
   FORGOT_PASSWORD: "/forgot-password",
   VERIFY_TOKEN: "/verify-email/:token",
+  INTERNAL_SERVER_ERROR: "/internal-server-error",
 
   /* STUDENT PATHS */
   STUDENT_PROFILE: "/profile",

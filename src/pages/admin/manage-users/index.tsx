@@ -564,7 +564,7 @@ const AdminManageUsers: React.FC = () => {
 
         <Space style={{ marginTop: 32, marginBottom: 16 }}>
           <Input
-              placeholder="Search Role"
+              placeholder="Search..."
               style={{ width: 200 }}
           />
           <Dropdown

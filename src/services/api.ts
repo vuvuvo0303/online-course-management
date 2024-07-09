@@ -1,6 +1,8 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import config from "../secret/config.ts";
+import { useNavigate } from "react-router-dom";
+import { paths } from "../consts";
 
 const axiosInstance = axios.create({
     baseURL: config.BASE_URL,
@@ -39,17 +41,29 @@ axiosInstance.interceptors.response.use(
         if (error.response) {
             const { data } = error.response;
             console.log(error.response)
+            const navigate = useNavigate();
+
             if (data && data.message) {
-                if (data.message.includes("Your email")) {
-                    return Promise.reject(data);
-                }
-                else if(error.response.status === 403){
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("user");
-                    toast.error(data.message)
-                }
-                else {
-                    toast.error(data.message);
+                switch (error.response.status) {
+                    case 403:
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        toast.error(data.message);
+                        break;
+                    case 404:
+                        toast.error(data.message);
+                        navigate(paths.NOTFOUND);
+                        break;
+                    case 500:
+                        toast.error(data.message);
+                        navigate(paths.INTERNAL_SERVER_ERROR);
+                        break;
+                    default:
+                        if (data.message.includes("Your email")) {
+                            return Promise.reject(data);
+                        }
+                        toast.error(data.message);
+                        break;
                 }
             } else {
                 toast.error('An error occurred');

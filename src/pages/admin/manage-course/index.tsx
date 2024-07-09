@@ -1,7 +1,18 @@
-import { DeleteOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import { useEffect, useState, useCallback } from "react";
+import {DeleteOutlined, DownOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined} from "@ant-design/icons";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Breadcrumb, Button, Image, Modal, Table, TableColumnsType, TablePaginationConfig } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Dropdown,
+  Image,
+  Input, MenuProps,
+  Modal,
+  Space,
+  Table,
+  TableColumnsType,
+  TablePaginationConfig
+} from "antd";
 import { API_GET_COURSE } from "../../../consts";
 import axiosInstance from "../../../services/api";
 import { format } from "date-fns";
@@ -121,7 +132,24 @@ const AdminManageCourses: React.FC = () => {
       currency: "VND",
     }).format(value);
   };
-
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: "All",
+    },
+    {
+      key: "2",
+      label: "Admins",
+    },
+    {
+      key: "3",
+      label: "Instructors",
+    },
+    {
+      key: "4",
+      label: "Students",
+    },
+  ];
   return (
     <div>
       <Modal
@@ -189,6 +217,44 @@ const AdminManageCourses: React.FC = () => {
           },
         ]}
       />
+
+      <Space style={{ marginTop: 32, marginBottom: 16 }}>
+        <Input
+            placeholder="Search..."
+            style={{ width: 200 }}
+        />
+        <Dropdown
+            menu={{
+              items,
+              selectable: true,
+              defaultSelectedKeys: ["1"],
+            }}
+        >
+          <Button>
+            <Space>
+              Filter Categories
+              <DownOutlined />
+            </Space>
+          </Button>
+        </Dropdown>
+
+        <Dropdown
+            menu={{
+              items,
+              selectable: true,
+              defaultSelectedKeys: ["1"],
+            }}
+        >
+          <Button>
+            <Space>
+              Filter Parent Categories
+              <DownOutlined />
+            </Space>
+          </Button>
+        </Dropdown>
+        <Button >Clear filters</Button>
+        <Button >Clear filters and sorters</Button>
+      </Space>
       <h1 className="text-center mb-10">Manage Course</h1>
       <Table columns={columnsCourses} dataSource={courses} pagination={pagination} onChange={handleTableChange} />
     </div>

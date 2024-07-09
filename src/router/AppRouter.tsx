@@ -48,7 +48,7 @@ import {
     InstructorManageCoursesDetail,
     ManageAllSession,
     AdminLoginPage,
-    AdminCategoryDetail, VerifyToken,
+    AdminCategoryDetail, VerifyToken, InternalServerError,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
@@ -78,6 +78,7 @@ const AppRouter: React.FC = () => {
       <Route path="/courses/:id" element={<CoursesCategory />} />
       <Route path={paths.FORGOT_PASSWORD} element={<ForgotPassword />} />
         <Route path={paths.VERIFY_TOKEN} element={<VerifyToken />} />
+        <Route path={paths.INTERNAL_SERVER_ERROR} element={<InternalServerError/>} />
 
 
       {/* Route for Student */}
