@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { Button, Form, Input, Breadcrumb, Select } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
+import { Editor } from '@tinymce/tinymce-react';
 import { HomeOutlined } from "@ant-design/icons";
 import { Course, Session } from "../../../../../models";
 import { toast } from "react-toastify";
 import { User } from "../../../../../models/User";
 import { host_main } from "../../../../../consts";
+import axiosInstance from "../../../../../services/api";
 
 const formItemLayout = {
   labelCol: {
@@ -29,15 +30,17 @@ const CreateUpdateSession = () => {
   const [role, setRole] = useState<string>('');
   const [courseId2, setCourseId2] = useState<string>("");
   const [courses, setCourses] = useState<Course[]>([]);
+  const [course, setCourse] = useState<Course | null>();
   const [userId, setUserId] = useState<string>('');
-
+  //value of tinymce (field: description)
+  const [value, setValue] = useState<string>('TinyMCE editor text');
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
     setUserId(user?._id);
     setRole(user?.role);
   }, []);
-  console.log("check courseId: ", courseId)
+
   useEffect(() => {
     if (courseId) {
       setCourseId2(courseId);
@@ -46,16 +49,15 @@ const CreateUpdateSession = () => {
     if (sessionId) {
       const fetchData = async () => {
         try {
-          const res = await axios.get<Session>(`${host_main}/api/session/${sessionId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          const data = res.data.data;
+          const res = await axiosInstance.get(`/api/session/${sessionId}`);
+          console.log("check data update res: ", res);
+          const data = res.data;
           form.setFieldsValue({
             name: data.name,
             description: data.description,
+            course_id: data.course_id
           });
+          setValue(data.description);
         } catch (error) {
           console.error("Error fetching data:", error);
         } finally {
@@ -73,17 +75,27 @@ const CreateUpdateSession = () => {
     if (!courseId) {
       const fetchCourses = async () => {
         try {
-          const res = await axios.get<Course[]>("https://665fbf245425580055b0b23d.mockapi.io/courses")
-          if (res) {
-            if (role === "instructor") {
-              setCourses(res.data.filter(course => course._id === userId));
-            } else {
-              setCourses(res.data);
+          const res = await axiosInstance.post(`/api/course/search`,
+            {
+              "searchCondition": {
+                "keyword": "",
+                "category": "",
+                "status": "new",
+                "is_deleted": false
+              },
+              "pageInfo": {
+                "pageNum": 1,
+                "pageSize": 10
+              }
             }
-
+          );
+          if (res.data) {
+            setCourses(res.data.pageData);
           }
         } catch (error) {
-          console.log("error: " + error);
+          console.log("Error: ", error);
+        } finally {
+          setLoading(false)
         }
       };
       fetchCourses();
@@ -91,6 +103,7 @@ const CreateUpdateSession = () => {
   }, [courseId, userId, role])
 
   const onFinish = async (values: Session) => {
+    values.description = value;
     setLoading(true);
     // manage course -> manage session -> update session
     if (courseId2 && sessionId) {
@@ -135,10 +148,12 @@ const CreateUpdateSession = () => {
       else {
         // manage all sessions - create session
         try {
-          await axios.post(`${host_main}/api/session`, { ...values, userId: userId });
+          console.log("check value create session: ", values)
+          await axiosInstance.post(`/api/session`, values);
           toast.success("Create Session Successfully!")
           navigate(`/instructor/manage-all-sessions`);
         } catch (error) {
+          setLoading(false)
           console.error("Error occurred:", error);
           toast.error("Create Session Failed!")
         }
@@ -197,7 +212,22 @@ const CreateUpdateSession = () => {
               label="Description"
               name="description"
             >
-              <Input.TextArea />
+              <Editor
+                apiKey="lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u"
+                onEditorChange={(newValue) => setValue(newValue)}
+                initialValue={value}
+                init={{
+                  plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+                  toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                  tinycomments_mode: 'embedded',
+                  tinycomments_author: 'Author name',
+                  mergetags_list: [
+                    { value: 'First.Name', title: 'First Name' },
+                    { value: 'Email', title: 'Email' },
+                  ],
+                  ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                }}
+              />
             </Form.Item>
 
             {

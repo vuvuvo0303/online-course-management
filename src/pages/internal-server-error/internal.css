@@ -1,0 +1,13 @@
+@media (min-width: 768px){
+    .title{
+        font-size: 3rem;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+}
+
+@media (max-width: 468px) {
+    .title{
+        font-size: 1.8rem;
+    }
+}

@@ -1,12 +1,13 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
 import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps, Tag } from "antd";
 import { Category, Course } from "../../../models";
 import { User } from "../../../models/User";
 import { getColor, host_main } from "../../../consts";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import axiosInstance from "../../../services/api";
 
 const InstructorManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -17,7 +18,6 @@ const InstructorManageCourses: React.FC = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('');
   const token = localStorage.getItem('token');
-  const navigate = useNavigate();
   const [status, setStatus] = useState<string>('new');
   const [cateId, setCateId] = useState<string>('java');
   const [keyword, setKeyword] = useState<string>('');
@@ -68,7 +68,7 @@ const InstructorManageCourses: React.FC = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.post<Category[]>(`${host_main}/api/category/search`,
+        const res = await axiosInstance.post(`/api/category/search`,
           {
             "searchCondition": {
               "keyword": "",
@@ -85,7 +85,7 @@ const InstructorManageCourses: React.FC = () => {
             }
           })
         if (res) {
-          setCategories(res.data.data.pageData);
+          setCategories(res.data.pageData);
         }
       } catch (error) {
         console.log("Error: ", error);
@@ -94,10 +94,10 @@ const InstructorManageCourses: React.FC = () => {
     fetchCategories();
   }, [token])
 
-  const CoursesWithStatus = useEffect(() => {
+  useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.post<Course[]>(`${host_main}/api/course/search`, {
+        const res = await axiosInstance.post(`/api/course/search`, {
           "searchCondition": {
             "keyword": keyword,
             "category": cateId,
@@ -115,9 +115,9 @@ const InstructorManageCourses: React.FC = () => {
             }
 
           });
-        if (res.data.data.pageData) {
+        if (res.data.pageData) {
           console.log("check res: ", res);
-          setCourses(res.data.data.pageData);
+          setCourses(res.data.pageData);
           console.log("check courses: ", res.data);
         }
       } catch (error) {
@@ -144,21 +144,31 @@ const InstructorManageCourses: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
   };
-  const columnsCourses: TableProps<Course>["columns"] = [
-    {
-      title: 'ID',
-      dataIndex: '_id',
-      key: '_id',
-    },
+  const columnsCourses: TableProps["columns"] = [
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      width: 300
     },
     {
-      title: 'Cate ID',
-      dataIndex: 'category_id',
-      key: 'category_id',
+      title: 'Cate Name',
+      dataIndex: 'category_name',
+      key: 'category_name',
+
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status: string) => (
+        <>
+          <Tag color={getColor(status)}
+          >
+            {status}
+          </Tag>
+        </>
+      )
     },
     {
       title: 'Created At ',
@@ -173,19 +183,6 @@ const InstructorManageCourses: React.FC = () => {
       key: 'updatedDate',
       defaultSortOrder: 'descend',
       render: (date: string) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: string) => (
-        <>
-          <Tag color={getColor(status)}
-          >
-            {status}
-          </Tag>
-        </>
-      )
     },
     {
       title: 'Action',
@@ -261,9 +258,12 @@ const InstructorManageCourses: React.FC = () => {
             value={keyword}
             onChange={handleSearch}
             className="m-5"
+            style={{ width: 200 }}
           />
         </div>
+        <div>
         <Link to={"/instructor/manage-courses/create-course"}><Button type="primary" className="float-right m-5">Add New</Button></Link>
+        </div>
       </div>
       <Table columns={columnsCourses} dataSource={courses} />
     </div>

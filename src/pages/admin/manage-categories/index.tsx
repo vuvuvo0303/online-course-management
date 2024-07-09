@@ -9,11 +9,10 @@ import {
   Form,
   Spin,
   Pagination,
-  Popconfirm,
-  InputRef,
+  Popconfirm, Dropdown, MenuProps,
 } from "antd";
 import {
-  DeleteOutlined,
+  DeleteOutlined, DownOutlined,
   EditOutlined,
   EyeOutlined,
   HomeOutlined,
@@ -509,6 +508,25 @@ const AdminManageCategories: React.FC = () => {
     }));
   };
 
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: "All",
+    },
+    {
+      key: "2",
+      label: "Admins",
+    },
+    {
+      key: "3",
+      label: "Instructors",
+    },
+    {
+      key: "4",
+      label: "Students",
+    },
+  ];
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -519,6 +537,43 @@ const AdminManageCategories: React.FC = () => {
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Categories</Breadcrumb.Item>
         </Breadcrumb>
+        <Space style={{ marginTop: 32, marginBottom: 16 }}>
+          <Input
+              placeholder="Search..."
+              style={{ width: 200 }}
+          />
+          <Dropdown
+              menu={{
+                items,
+                selectable: true,
+                defaultSelectedKeys: ["1"],
+              }}
+          >
+            <Button>
+              <Space>
+                Filter Categories
+                <DownOutlined />
+              </Space>
+            </Button>
+          </Dropdown>
+
+          <Dropdown
+              menu={{
+                items,
+                selectable: true,
+                defaultSelectedKeys: ["1"],
+              }}
+          >
+            <Button>
+              <Space>
+                Filter Parent Categories
+                <DownOutlined />
+              </Space>
+            </Button>
+          </Dropdown>
+          <Button >Clear filters</Button>
+          <Button >Clear filters and sorters</Button>
+        </Space>
         <Button type="primary" onClick={handleOpenModal}>
           Add New Category
         </Button>
