@@ -6,7 +6,9 @@ const axiosInstance = axios.create({
     baseURL: config.BASE_URL,
     headers: {
         'Content-Type': 'application/json',
-    }
+    },
+    timeout: 300000,
+    timeoutErrorMessage: `Connection is timeout exceeded`
 });
 
 axiosInstance.interceptors.request.use(

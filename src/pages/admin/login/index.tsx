@@ -66,6 +66,7 @@ const AdminLoginPage: React.FC = () => {
                         <div className="pb-2">
                             <Form.Item
                                 name="email"
+                                label="Email"
                                 rules={[
                                     { required: true, message: "Please input your email!" },
                                     { type: "email", message: "Please enter the correct email format!" },
@@ -75,10 +76,11 @@ const AdminLoginPage: React.FC = () => {
                                 wrapperCol={{ span: 24 }}
                                 className="mb-1"
                             >
-                                <Input placeholder="Email" className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                <Input className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                             </Form.Item>
                             <Form.Item
                                 name="password"
+                                label="Password"
                                 rules={[
                                     { required: true, message: "Please input your password!" },
                                     { min: 6, message: "Password must be at least 6 characters!" },
@@ -88,7 +90,7 @@ const AdminLoginPage: React.FC = () => {
                                 wrapperCol={{ span: 24 }}
                                 className="mb-1 mt-5"
                             >
-                                <Input.Password placeholder="Password" className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                <Input.Password className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                             </Form.Item>
                         </div>
 

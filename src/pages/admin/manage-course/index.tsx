@@ -6,21 +6,7 @@ import { API_GET_COURSE } from "../../../consts";
 import axiosInstance from "../../../services/api";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-
-interface Course {
-  _id: string;
-  name: string;
-  status: string;
-  price: number;
-  discount: number;
-  created_at: string;
-  updated_at: string;
-  image_url?: string;
-  video_url?: string;
-  category_name: string;
-  user_name: string;
-  session_count: number;
-}
+import {Course} from "../../../models";
 
 const AdminManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -57,7 +43,6 @@ const AdminManageCourses: React.FC = () => {
         throw new Error("Failed to fetch courses");
       }
     } catch (error) {
-      console.error("Error fetching courses: ", error);
       setError("An unexpected error occurred.");
     } finally {
       setLoading(false);
@@ -75,7 +60,7 @@ const AdminManageCourses: React.FC = () => {
   const columnsCourses: TableColumnsType<Course> = [
     {
       title: "Title",
-      width: "100",
+      width: "50",
       dataIndex: "name",
       key: "name",
       fixed: "left",
@@ -95,21 +80,18 @@ const AdminManageCourses: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      defaultSortOrder: "descend",
-      sorter: (a: Course, b: Course) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
       render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      defaultSortOrder: "descend",
-      sorter: (a: Course, b: Course) => new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime(),
       render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Action",
       key: "action",
+      width: "15",
       render: (record: Course) => (
         <>
           <Link to={`/admin/manage-course/${record._id}/manage-session`}>
@@ -133,7 +115,7 @@ const AdminManageCourses: React.FC = () => {
     setSelectedCourse(record);
     setIsModalVisible(true);
   };
-  const formatVND = (value) => {
+  const formatVND = (value: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
@@ -177,14 +159,14 @@ const AdminManageCourses: React.FC = () => {
               {selectedCourse.session_count}
             </div>
             <div>
-              <span className="text-base font-bold">Thumnail: </span>
+              <span className="text-base font-bold">Thumbnail: </span>
               <Image src={selectedCourse.image_url} alt={selectedCourse.name} style={{ width: "100%" }} />
             </div>
             <div className="flex gap-2 items-center">
               <span className="text-base font-bold">Course Video :</span>
 
               <span>
-                <Link to={selectedCourse.video_url} target="_blank" rel="noopener noreferrer">
+                <Link to={selectedCourse.video_url ?? "https://youtube.com"} target="_blank" rel="noopener noreferrer">
                   <Button className="bg-rose-500" type="primary">
                     <PlayCircleOutlined />
                     Watch Video
