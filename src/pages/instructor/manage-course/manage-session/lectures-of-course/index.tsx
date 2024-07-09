@@ -19,6 +19,8 @@ const LectureOfCourse: React.FC = () => {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [courses, setCourses] = useState<Course[]>([]);
     const [course_id, setCourse_id] = useState<string>('');
+
+
     const showModal = (lectureId: string, name: string) => {
         setModalText(`Do you want to delete this lecture with name is "${name}"`)
         setSelectedLectureId(lectureId)
@@ -255,10 +257,11 @@ const LectureOfCourse: React.FC = () => {
         setCourse_id(value);
         console.log("check value: ", value)
     };
+    console.log();
 
     return (
         <div className="">
-
+            
             <Modal
                 title="Confirm Delete"
                 visible={open}
@@ -306,13 +309,13 @@ const LectureOfCourse: React.FC = () => {
                     }
                     <div className="grid grid-cols-2">
 
-                        <div className="grid grid-cols-3 gap-20">
+                        <div className="grid xl:grid-cols-3 grid-cols-1 gap-20">
                             <Select
                                 defaultValue="Choose course to filter"
                                 style={{ width: 200 }}
                                 className="mt-10"
                                 onChange={handleCourseChange}
-                              
+
                                 options={courses.map(course => ({
                                     label: course.name,
                                     value: course._id

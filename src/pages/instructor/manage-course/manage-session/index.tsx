@@ -128,16 +128,6 @@ const ManageSession = () => {
             render: (date: string) => new Date(date).toLocaleDateString(),
         },
         {
-            title: 'Course Id',
-            dataIndex: 'course_id',
-            key: 'course_id',
-        },
-        {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
-        },
-        {
             title: 'Is deleted',
             dataIndex: 'is_deleted',
             key: 'is_deleted',
@@ -149,11 +139,11 @@ const ManageSession = () => {
                 </>
             )
         },
-        {
-            title: '__v',
-            dataIndex: '__v',
-            key: '__v',
-        },
+        // {
+        //     title: '__v',
+        //     dataIndex: '__v',
+        //     key: '__v',
+        // },
         {
             title: 'Action',
             dataIndex: '_id',

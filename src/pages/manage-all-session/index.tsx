@@ -21,6 +21,7 @@ const ManageAllSession = () => {
     const [userId, setUserId] = useState<string>('');
     const [modalText, setModalText] = useState('');
     const [selectedSessionID, setSelectedSessionID] = useState<string>('');
+
     const showModal = (sessionId: string) => {
         setModalText(`Do you want to delete this session with id = ${sessionId} and the lessons of this session `)
         setSelectedSessionID(sessionId)
@@ -82,7 +83,7 @@ const ManageAllSession = () => {
                         },
                         "pageInfo": {
                             "pageNum": 1,
-                            "pageSize": 10
+                            "pageSize": 100
                         }
                     });
                     if (res) {

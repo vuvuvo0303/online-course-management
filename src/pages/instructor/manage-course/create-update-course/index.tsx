@@ -8,7 +8,8 @@ import { Breadcrumb, Button, Form, Input, Select } from 'antd';
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
-
+import { Editor } from '@tinymce/tinymce-react';
+import axiosInstance from "../../../../services/api";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -24,10 +25,11 @@ const InstructorCreateCourse = () => {
     const navigate = useNavigate();
     const [cates, setCates] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const { id, _id } = useParams<{ _id: string, id: string}>();
+    const { id, _id } = useParams<{ _id: string, id: string }>();
     const [form] = useForm();
     console.log("check id: ", _id);
     const token = localStorage.getItem("token");
+    const [value, setValue] = useState<string>('TinyMCE editor text');
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -51,6 +53,7 @@ const InstructorCreateCourse = () => {
                         price: data?.price,
                         discount: data?.discount
                     })
+                    setValue(data.description);
                 }
 
             } catch (error) {
@@ -109,21 +112,21 @@ const InstructorCreateCourse = () => {
         return url.protocol === "http:" || url.protocol === "https:";
     }
 
-    const onFinish = async (value: Course) => {
-
-        if (typeof value.price === 'string') {
-            value.price = parseFloat(value.price);
+    const onFinish = async (values: Course) => {
+        console.log("check value: ", values)
+        if (typeof values.price === 'string') {
+            values.price = parseFloat(values.price);
         }
-        if (typeof value.discount === 'string') {
-            value.discount = parseFloat(value.discount);
+        if (typeof values.discount === 'string') {
+            values.discount = parseFloat(values.discount);
         }
-
+        values.description = value;
         try {
             //Update Course
             if (_id) {
 
                 console.log("check value: ", value);
-                await axios.put<Course>(`${host_main}/api/course/${_id}`, value,
+                await axios.put<Course>(`${host_main}/api/course/${_id}`, values,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -138,10 +141,8 @@ const InstructorCreateCourse = () => {
             }
             //Create Course
             else {
-                await axios.post(`${host_main}/api/course`, value, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                await axiosInstance.post(`${host_main}/api/course`, values, {
+                    
                 });
                 toast.success("Create New Course Successfully");
                 navigate(`/instructor/manage-courses`);
@@ -240,9 +241,24 @@ const InstructorCreateCourse = () => {
                     <Form.Item
                         label="Description"
                         name="description"
-                        rules={[{ required: true, message: 'Please input!' }]}
+      
                     >
-                        <Input.TextArea />
+                        <Editor
+                            apiKey="lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u"
+                            onEditorChange={(newValue) => setValue(newValue)}
+                            initialValue={value}
+                            init={{
+                                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+                                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                                tinycomments_mode: 'embedded',
+                                tinycomments_author: 'Author name',
+                                mergetags_list: [
+                                    { value: 'First.Name', title: 'First Name' },
+                                    { value: 'Email', title: 'Email' },
+                                ],
+                                ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                            }}
+                        />
                     </Form.Item>
                     {
                         !_id && <Form.Item
