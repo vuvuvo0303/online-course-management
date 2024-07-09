@@ -14,12 +14,10 @@ import {
   Upload,
   Popconfirm,
   Radio,
-  Dropdown,
-  Typography, MenuProps,
+  Select,
 } from "antd";
 import {
   DeleteOutlined,
-  DownOutlined,
   EditOutlined,
   HomeOutlined,
   PlusOutlined,
@@ -78,8 +76,10 @@ const AdminManageUsers: React.FC = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<unknown>({});
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
+  const [selectedRole, setSelectedRole] = useState<string>("All");
+  const [selectedStatus, setSelectedStatus] = useState<string>("true");
 
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
@@ -100,7 +100,7 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [pagination.current, pagination.pageSize]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -110,8 +110,8 @@ const AdminManageUsers: React.FC = () => {
         pageInfo: { totalItems: number; pageNum: number; pageSize: number };
       }> = await axiosInstance.post(API_GET_USERS, {
         searchCondition: {
-          role: "all",
-          status: true,
+          role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
+          status: selectedStatus === "true" ? true : selectedStatus === "false" ? false : undefined,
           is_delete: false,
         },
         pageInfo: {
@@ -135,7 +135,7 @@ const AdminManageUsers: React.FC = () => {
       console.error(error);
     }
     setLoading(false);
-  }, [pagination.current, pagination.pageSize]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
 
   const handleDelete = useCallback(
     async (_id: string, email: string) => {
@@ -356,6 +356,7 @@ const AdminManageUsers: React.FC = () => {
         title: "Name",
         dataIndex: "name",
         key: "name",
+        width: "20%",
         ...getColumnSearchProps("name"),
         onHeaderCell: () => ({
           onClick: () => sortColumn("name"),
@@ -365,6 +366,8 @@ const AdminManageUsers: React.FC = () => {
         title: "Email",
         dataIndex: "email",
         key: "email",
+        width: "20%",
+
         ...getColumnSearchProps("email"),
         onHeaderCell: () => ({
           onClick: () => sortColumn("email"),
@@ -374,6 +377,8 @@ const AdminManageUsers: React.FC = () => {
         title: "Role",
         dataIndex: "role",
         key: "role",
+        width: "10%",
+
         render: (role) => (
           <div
             className={`tag ${
@@ -430,8 +435,24 @@ const AdminManageUsers: React.FC = () => {
         ),
       },
       {
+        title: "Verify",
+        dataIndex: "is_verified",
+        key: "is_verified",
+        render: (is_verified: boolean) => (
+          <span>
+            {is_verified ? (
+              <img src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png" alt="" />
+            ) : (
+              <img src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png" alt="" />
+            )}
+          </span>
+        ),
+      },
+
+      {
         title: "Action",
         key: "action",
+        width: "15%",
         render: (record: Student) => (
           <div>
             <EditOutlined
@@ -551,24 +572,12 @@ const AdminManageUsers: React.FC = () => {
       addNewUser(values);
     }
   };
-  const items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: "ALL",
-    },
-    {
-      key: "2",
-      label: "Admins",
-    },
-    {
-      key: "3",
-      label: "Instructors",
-    },
-    {
-      key: "4",
-      label: "Students",
-    },
-  ];
+  const handleRoleChange = (value: string) => {
+    setSelectedRole(value);
+  };
+  const handleStatus = useCallback((value: string) => {
+    setSelectedStatus(value);
+  }, []);
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -579,6 +588,19 @@ const AdminManageUsers: React.FC = () => {
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
+
+        <Space>
+          <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }}>
+            <Select.Option value="All">All Roles</Select.Option>
+            <Select.Option value="Admin">Admin</Select.Option>
+            <Select.Option value="Student">Student</Select.Option>
+            <Select.Option value="Instructor">Instructor</Select.Option>
+          </Select>
+          <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
+            <Select.Option value="true">Active</Select.Option>
+            <Select.Option value="false">Inactive</Select.Option>
+          </Select>
+        </Space>
 
         <div className="mt-3">
           {" "}
@@ -594,20 +616,7 @@ const AdminManageUsers: React.FC = () => {
           </Button>
         </div>
       </div>
-      <Dropdown
-        menu={{
-          items,
-          selectable: true,
-          defaultSelectedKeys: ["3"],
-        }}
-      >
-        <Typography.Link>
-          <Space>
-            Filter Role
-            <DownOutlined />
-          </Space>
-        </Typography.Link>
-      </Dropdown>
+
       <Spin spinning={loading}>
         <Table
           columns={columns}
