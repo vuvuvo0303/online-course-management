@@ -21,7 +21,8 @@ import {
   Popconfirm,
   Radio,
   Dropdown,
-  Typography, MenuProps,
+  Typography,
+  MenuProps,
 } from "antd";
 import {
   DeleteOutlined,
@@ -49,7 +50,11 @@ import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
-import { API_CHANGE_STATUS, API_CREATE_USER, API_GET_USERS } from "../../../consts";
+import {
+  API_CHANGE_STATUS,
+  API_CREATE_USER,
+  API_GET_USERS,
+} from "../../../consts";
 
 interface ApiError {
   code: number;
@@ -90,7 +95,11 @@ const AdminManageUsers: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const [formData, setFormData] = useState<any>({});
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
 
@@ -183,10 +192,11 @@ const AdminManageUsers: React.FC = () => {
 
         const userData = { ...values, avatar: avatarUrl };
 
-        const response: AxiosResponse<CreateUserResponse> = await axiosInstance.post<
-          Student,
-          AxiosResponse<CreateUserResponse>
-        >(API_CREATE_USER, userData);
+        const response: AxiosResponse<CreateUserResponse> =
+          await axiosInstance.post<Student, AxiosResponse<CreateUserResponse>>(
+            API_CREATE_USER,
+            userData
+          );
 
         const newUser = response.data.data;
         setData((prevData) => [...prevData, newUser]);
@@ -279,22 +289,29 @@ const AdminManageUsers: React.FC = () => {
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
     setFileList(newFileList);
 
-  const handleStatusChange = useCallback(async (checked: boolean, userId: string) => {
-    try {
-      await axiosInstance.put(API_CHANGE_STATUS, {
-        user_id: userId,
-        status: checked,
-      });
-      fetchUsers();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const handleStatusChange = useCallback(
+    async (checked: boolean, userId: string) => {
+      try {
+        await axiosInstance.put(API_CHANGE_STATUS, {
+          user_id: userId,
+          status: checked,
+        });
+        fetchUsers();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
-      setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
-      toast.success(`User status updated successfully`);
-      localStorage.setItem("users_updated", new Date().toISOString());
-    } catch (error) {
-      // Handle error silently
-    }
-  }, []);
+        setData((prevData) =>
+          prevData.map((user) =>
+            user._id === userId ? { ...user, status: checked } : user
+          )
+        );
+        toast.success(`User status updated successfully`);
+        localStorage.setItem("users_updated", new Date().toISOString());
+      } catch (error) {
+        // Handle error silently
+      }
+    },
+    []
+  );
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -553,7 +570,11 @@ const AdminManageUsers: React.FC = () => {
     setLoading(true);
     try {
       let avatarUrl = values.avatar;
-      if (values.avatar && typeof values.avatar !== "string" && values.avatar.file.originFileObj) {
+      if (
+        values.avatar &&
+        typeof values.avatar !== "string" &&
+        values.avatar.file.originFileObj
+      ) {
         avatarUrl = await uploadFile(values.avatar.file.originFileObj);
       }
 
@@ -563,15 +584,19 @@ const AdminManageUsers: React.FC = () => {
         email: values.email,
       };
 
-      const response: AxiosResponse<any> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
+      const response: AxiosResponse<any> = await axiosInstance.put(
+        `/api/users/${formData._id}`,
+        updatedUser
+      );
 
       if (response.success) {
         // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
-          const roleChangeResponse: AxiosResponse<any> = await axiosInstance.put(`/api/users/change-role`, {
-            user_id: formData._id,
-            role: values.role,
-          });
+          const roleChangeResponse: AxiosResponse<any> =
+            await axiosInstance.put(`/api/users/change-role`, {
+              user_id: formData._id,
+              role: values.role,
+            });
 
           if (!roleChangeResponse.success) {
             throw new Error("Failed to change user role");
@@ -579,7 +604,11 @@ const AdminManageUsers: React.FC = () => {
         }
 
         setData((prevData) =>
-          prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
+          prevData.map((user) =>
+            user._id === formData._id
+              ? { ...user, ...updatedUser, role: values.role }
+              : user
+          )
         );
 
         toast.success("Updated user successfully");
@@ -626,7 +655,6 @@ const AdminManageUsers: React.FC = () => {
   ];
   return (
     <div>
-      
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
           <Breadcrumb.Item href="/">
@@ -635,7 +663,7 @@ const AdminManageUsers: React.FC = () => {
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
-      
+
         <div className="mt-3">
           {" "}
           <Button
@@ -691,11 +719,19 @@ const AdminManageUsers: React.FC = () => {
         footer={null}
       >
         <Form form={form} onFinish={onFinish} layout="vertical">
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input the name!" }]}
+          >
             <Input />
           </Form.Item>
           {modalMode === "Add" && (
-            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[{ required: true, message: "Please input the email!" }]}
+            >
               <Input />
             </Form.Item>
           )}

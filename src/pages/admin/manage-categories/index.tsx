@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  RefObject,
+} from "react";
 import {
   Breadcrumb,
   Button,
@@ -10,6 +16,7 @@ import {
   Spin,
   Pagination,
   Popconfirm,
+  InputRef,
 } from "antd";
 import {
   DeleteOutlined,
@@ -25,7 +32,6 @@ import Highlighter from "react-highlight-words";
 import axiosInstance from "../../../services/api.ts";
 import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
-import type { InputRef } from "antd/lib/input/Input";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { Link } from "react-router-dom";
 
@@ -52,191 +58,158 @@ const AdminManageCategories: React.FC = () => {
     total: 0,
   });
 
-  const fetchCategories = async (refresh = false) => {
-    setLoading(true);
-    try {
-      let response;
-      if (refresh) {
-        response = await axiosInstance.post("/api/category");
-      } else {
-        response = await axiosInstance.post("/api/category/search", {
-          searchCondition: {
-            role: "all",
-            status: true,
-            is_deleted: false,
-          },
-          pageInfo: {
-            pageNum: pagination.current,
-            pageSize: pagination.pageSize,
-          },
-        });
-      }
+  const fetchCategories = useCallback(
+    async (refresh = false) => {
+      setLoading(true);
+      try {
+        let response;
+        if (refresh) {
+          response = await axiosInstance.post("/api/category");
+        } else {
+          response = await axiosInstance.post("/api/category/search", {
+            searchCondition: {
+              role: "all",
+              status: true,
+              is_deleted: false,
+            },
+            pageInfo: {
+              pageNum: pagination.current,
+              pageSize: pagination.pageSize,
+            },
+          });
+        }
 
-      if (response.data) {
-        setData(response.data.pageData || response.data); // Handle both search and list responses
-        setPagination((prev) => ({
-          ...prev,
-          total: response.data.pageInfo?.totalItems || response.data.length,
-          current: response.data.pageInfo?.pageNum || 1,
-          pageSize: response.data.pageInfo?.pageSize || response.data.length,
-        }));
+        if (response.data) {
+          setData(response.data.pageData || response.data);
+          setPagination((prev) => ({
+            ...prev,
+            total: response.data.pageInfo?.totalItems || response.data.length,
+            current: response.data.pageInfo?.pageNum || 1,
+            pageSize: response.data.pageInfo?.pageSize || response.data.length,
+          }));
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [pagination.current, pagination.pageSize]
+  );
 
   useEffect(() => {
     fetchCategories();
-  }, [pagination.current, pagination.pageSize]);
+  }, [fetchCategories]);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = useCallback(() => {
     setIsModalVisible(true);
     setValidateOnOpen(true);
     fetchCategories(true);
-  };
+  }, [fetchCategories]);
 
-  const handleDelete = async (_id: string, name: string) => {
-    const isParentCategory = data.some(
-      (category) => category.parent_category_id === _id
-    );
-
-    if (isParentCategory) {
-      toast.error(
-        `Cannot delete category ${name} as it is a parent category of another category.`
+  const handleDelete = useCallback(
+    async (_id: string, name: string) => {
+      const isParentCategory = data.some(
+        (category) => category.parent_category_id === _id
       );
-      return;
-    }
 
-    try {
-      await axiosInstance.delete(`/api/category/${_id}`);
-      setData((prevData) =>
-        prevData.filter((category) => category._id !== _id)
-      );
-      fetchCategories();
-    } catch (error) {
-      //
-    }
-  };
-
-  const handleEditCategory = (category: Category) => {
-    form.setFieldsValue({
-      _id: category._id,
-      name: category.name,
-      parent_category_id: category.parent_category_id,
-      description: category.description,
-      created_at: category.created_at,
-    });
-
-    Modal.confirm({
-      title: `Edit Category - ${category.name}`,
-      content: (
-        <Form
-          form={form}
-          onFinish={(values) => updateCategory(values, category.created_at)}
-          initialValues={{
-            _id: category._id,
-            name: category.name,
-            parent_category_id: category.parent_category_id,
-            description: category.description,
-          }}
-          labelCol={{ span: 24 }}
-        >
-          <Form.Item name="_id" style={{ display: "none" }}>
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[
-              { required: true, message: "Please input the name of category!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Parent Category"
-            name="parent_category_id"
-            rules={[{ required: false }]}
-          >
-            <Input placeholder="Input parent category" />
-          </Form.Item>
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[{ required: false }]}
-          >
-            <Input.TextArea rows={4} />
-          </Form.Item>
-          <Form.Item name="_id" style={{ display: "none" }}>
-            <Input type="hidden" />
-          </Form.Item>
-        </Form>
-      ),
-      okText: "Save",
-      onOk: () => form.submit(),
-      onCancel: () => form.resetFields(),
-    });
-  };
-
-  const updateCategory = async (
-    values: Partial<Category> & { _id: string | null },
-    originalCreatedAt: string
-  ) => {
-    let parentCategoryId = null;
-
-    if (values.parent_category_id === "none") {
-      parentCategoryId = null;
-    } else if (values.parent_category_id) {
-      const parentCategory = data.find(
-        (category) => category.name === values.parent_category_id
-      );
-      if (parentCategory) {
-        parentCategoryId = parentCategory._id;
+      if (isParentCategory) {
+        toast.error(
+          `Cannot delete category ${name} as it is a parent category of another category.`
+        );
+        return;
       }
-    }
 
-    try {
-      setLoading(true);
+      try {
+        await axiosInstance.delete(`/api/category/${_id}`);
+        setData((prevData) =>
+          prevData.filter((category) => category._id !== _id)
+        );
+        fetchCategories();
+        toast.success(`Category ${name} deleted successfully.`);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [data, fetchCategories]
+  );
 
-      const updatedCategory: Category = {
-        _id: values._id,
-        name: values.name ?? "",
-        description: values.description ?? "",
-        parent_category_id: parentCategoryId,
-        user_id: values.user_id ?? "",
-        is_deleted: values.is_deleted ?? false,
-        created_at: originalCreatedAt,
-        updated_at: new Date().toISOString(),
-        __v: values.__v ?? 0,
-      };
+  const handleEditCategory = useCallback(
+    (category: Category) => {
+      form.setFieldsValue({
+        _id: category._id,
+        name: category.name,
+        parent_category_id: category.parent_category_id,
+        description: category.description,
+        created_at: category.created_at,
+      });
 
-      await axiosInstance.put(`/api/category/${values._id}`, updatedCategory);
+      Modal.confirm({
+        title: `Edit Category - ${category.name}`,
+        content: (
+          <Form
+            form={form}
+            onFinish={(values) => updateCategory(values, category.created_at)}
+            initialValues={{
+              _id: category._id,
+              name: category.name,
+              parent_category_id: category.parent_category_id,
+              description: category.description,
+            }}
+            labelCol={{ span: 24 }}
+          >
+            <Form.Item name="_id" style={{ display: "none" }}>
+              <Input />
+            </Form.Item>
 
-      const updatedData = data.map((category) =>
-        category._id === values._id ? updatedCategory : category
-      );
-      setData(updatedData);
+            <Form.Item
+              label="Name"
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input the name of category!",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Parent Category"
+              name="parent_category_id"
+              rules={[{ required: false }]}
+            >
+              <Input placeholder="Input parent category" />
+            </Form.Item>
+            <Form.Item
+              label="Description"
+              name="description"
+              rules={[{ required: false }]}
+            >
+              <Input.TextArea rows={4} />
+            </Form.Item>
+            <Form.Item name="_id" style={{ display: "none" }}>
+              <Input type="hidden" />
+            </Form.Item>
+          </Form>
+        ),
+        okText: "Save",
+        onCancel: () => form.resetFields(),
+      });
+    },
+    [data, form]
+  );
 
-      setIsModalVisible(false);
-      form.resetFields();
-    } catch (error) {
-      //
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const addNewCategory = async (values: Omit<Category, "_id">) => {
-    try {
-      setLoading(true);
-
-      // Tìm ID của danh mục cha dựa trên tên
+  const updateCategory = useCallback(
+    async (
+      values: Partial<Category> & { _id: string | null },
+      originalCreatedAt: string
+    ) => {
       let parentCategoryId = null;
-      if (values.parent_category_id) {
+
+      if (values.parent_category_id === "none") {
+        parentCategoryId = null;
+      } else if (values.parent_category_id) {
         const parentCategory = data.find(
           (category) => category.name === values.parent_category_id
         );
@@ -245,170 +218,214 @@ const AdminManageCategories: React.FC = () => {
         }
       }
 
-      const categoryData = { ...values, parent_category_id: parentCategoryId };
+      try {
+        setLoading(true);
 
-      const response = await axiosInstance.post(`/api/category`, categoryData);
-      if (response.data) {
-        const newCategory = response.data;
-        setData((prevData) => [...prevData, newCategory]);
+        const updatedCategory: Category = {
+          _id: values._id!,
+          name: values.name ?? "",
+          description: values.description ?? "",
+          parent_category_id: parentCategoryId,
+          user_id: values.user_id ?? "",
+          is_deleted: values.is_deleted ?? false,
+          created_at: originalCreatedAt,
+          updated_at: new Date().toISOString(),
+        };
+
+        await axiosInstance.put(`/api/category/${values._id}`, updatedCategory);
+
+        const updatedData = data.map((category) =>
+          category._id === values._id ? updatedCategory : category
+        );
+        setData(updatedData);
+
         setIsModalVisible(false);
         form.resetFields();
-        fetchCategories();
+        toast.success(`Category ${values.name} updated successfully.`);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      //
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [data, form]
+  );
 
-  const formatDate = (dateString: string) => {
+  const addNewCategory = useCallback(
+    async (values: Omit<Category, "_id">) => {
+      try {
+        setLoading(true);
+
+        let parentCategoryId = null;
+        if (values.parent_category_id) {
+          const parentCategory = data.find(
+            (category) => category.name === values.parent_category_id
+          );
+          if (parentCategory) {
+            parentCategoryId = parentCategory._id;
+          }
+        }
+
+        const categoryData = {
+          ...values,
+          parent_category_id: parentCategoryId,
+        };
+
+        const response = await axiosInstance.post(
+          `/api/category`,
+          categoryData
+        );
+        if (response.data) {
+          const newCategory = response.data;
+          setData((prevData) => [...prevData, newCategory]);
+          setIsModalVisible(false);
+          form.resetFields();
+          fetchCategories();
+          toast.success(`Category ${values.name} created successfully.`);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [data, form, fetchCategories]
+  );
+
+  const formatDate = useCallback((dateString: string) => {
     try {
       return format(new Date(dateString), "dd/MM/yyyy HH:mm:ss");
     } catch (error) {
       console.error("Invalid date:", dateString);
       return "Invalid date";
     }
-  };
+  }, []);
 
-  const sortColumn = (columnKey: DataIndex) => {
-    const newOrder = sortOrder[columnKey] === "ascend" ? "descend" : "ascend";
+  const sortColumn = useCallback(
+    (columnKey: DataIndex) => {
+      const newOrder = sortOrder[columnKey] === "ascend" ? "descend" : "ascend";
 
-    const sortedData = [...data].sort((a: Category, b: Category) => {
-      let aValue: string | number | boolean | Date | null = a[columnKey];
-      let bValue: string | number | boolean | Date | null = b[columnKey];
+      const sortedData = [...data].sort((a: Category, b: Category) => {
+        let aValue: string | number | boolean | Date | null = a[columnKey];
+        let bValue: string | number | boolean | Date | null = b[columnKey];
 
-      if (columnKey === "created_at" || columnKey === "updated_at") {
-        if (typeof aValue === "string" || typeof aValue === "number") {
-          aValue = new Date(aValue).getTime();
+        if (columnKey === "created_at" || columnKey === "updated_at") {
+          if (typeof aValue === "string" || typeof aValue === "number") {
+            aValue = new Date(aValue).getTime();
+          }
+          if (typeof bValue === "string" || typeof bValue === "number") {
+            bValue = new Date(bValue).getTime();
+          }
         }
-        if (typeof bValue === "string" || typeof bValue === "number") {
-          bValue = new Date(bValue).getTime();
+
+        if (typeof aValue === "number" && typeof bValue === "number") {
+          return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
+        } else if (typeof aValue === "string" && typeof bValue === "string") {
+          return newOrder === "ascend"
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        } else if (typeof aValue === "boolean" && typeof bValue === "boolean") {
+          return newOrder === "ascend"
+            ? Number(aValue) - Number(bValue)
+            : Number(bValue) - Number(aValue);
+        } else {
+          return 0;
         }
-      }
+      });
 
-      if (typeof aValue === "number" && typeof bValue === "number") {
-        return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
-      }
-
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return newOrder === "ascend"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      }
-
-      return 0;
-    });
-
-    setData(sortedData);
-    setSortOrder((prev) => ({ ...prev, [columnKey]: newOrder }));
-  };
-
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: FilterDropdownProps["confirm"],
-    dataIndex: DataIndex
-  ) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-
-  const handleReset = (clearFilters: () => void) => {
+      setSortOrder({ ...sortOrder, [columnKey]: newOrder });
+      setData(sortedData);
+    },
+    [data, sortOrder]
+  );
+  const handleSearch = useCallback(
+    (selectedKeys: string[], confirm: () => void, dataIndex: DataIndex) => {
+      confirm();
+      setSearchText(selectedKeys[0]);
+      setSearchedColumn(dataIndex);
+    },
+    []
+  );
+  const handleReset = useCallback((clearFilters: () => void) => {
     clearFilters();
     setSearchText("");
-  };
+  }, []);
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): ColumnType<Category> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
-          style={{ marginBottom: 8, display: "block" }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() =>
+  const getColumnSearchProps = useCallback(
+    (dataIndex: DataIndex): ColumnType<Category> => ({
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }: FilterDropdownProps) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            ref={searchInput}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() =>
               handleSearch(selectedKeys as string[], confirm, dataIndex)
             }
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            Close
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        ?.toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()) || false,
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
-      }
-    },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() =>
+                handleSearch(selectedKeys as string[], confirm, dataIndex)
+              }
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => clearFilters && handleReset(clearFilters)}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Reset
+            </Button>
+          </Space>
+        </div>
       ),
-  });
+      filterIcon: (filtered: boolean) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) => {
+        const recordValue = record[dataIndex];
+        if (recordValue) {
+          return recordValue
+            .toString()
+            .toLowerCase()
+            .includes((value as string).toLowerCase());
+        }
+        return false;
+      },
+      onFilterDropdownVisibleChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
+      render: (text) =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text ? text.toString() : ""}
+          />
+        ) : (
+          text
+        ),
+    }),
+    [handleSearch, handleReset, searchText, searchedColumn]
+  );
 
   const columns: ColumnType<Category>[] = [
     {
