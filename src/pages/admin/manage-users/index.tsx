@@ -15,6 +15,7 @@ import {
   Upload,
   Popconfirm,
   Radio,
+  Select,
 
 } from "antd";
 import {
@@ -30,13 +31,14 @@ import { format } from "date-fns";
 import { Student } from "../../../models";
 import { toast } from "react-toastify";
 
-import axiosInstance from "../../../services/api.ts";
+
 import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
 import { API_CHANGE_STATUS, API_CREATE_USER, API_GET_USERS } from "../../../consts";
+import axiosInstance from "../../../services/axiosInstance.ts";
 
 interface ApiError {
   code: number;
@@ -60,12 +62,7 @@ type AxiosResponse<T> = {
 
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
-  const [sortOrder, setSortOrder] = useState<{
-    [key: string]: "ascend" | "descend";
-  }>({
-    created_at: "ascend",
-    updated_at: "ascend",
-  });
+  
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -208,48 +205,7 @@ const AdminManageUsers: React.FC = () => {
     }
   }, []);
 
-  const sortColumn = useCallback(
-    (columnKey: keyof User) => {
-      const newOrder = sortOrder[columnKey] === "ascend" ? "descend" : "ascend";
-      const sortedData = [...data].sort((a, b) => {
-        let aValue = a[columnKey] as string | number | Date | undefined;
-        let bValue = b[columnKey] as string | number | Date | undefined;
 
-        if (columnKey === "created_at" || columnKey === "updated_at") {
-          aValue = aValue ? new Date(aValue).getTime() : 0;
-          bValue = bValue ? new Date(bValue).getTime() : 0;
-        }
-
-        if (typeof aValue === "number" && typeof bValue === "number") {
-          return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
-        } else if (typeof aValue === "string" && typeof bValue === "string") {
-          return newOrder === "ascend"
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
-        } else {
-          return 0;
-        }
-      });
-
-      setData(sortedData);
-      setSortOrder((prev) => ({ ...prev, [columnKey]: newOrder }));
-    },
-    [data, sortOrder]
-  );
-
-  const handleSearch = useCallback(
-    (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
-      confirm();
-      setSearchText(selectedKeys[0]);
-      setSearchedColumn(dataIndex);
-    },
-    []
-  );
-
-  const handleReset = useCallback((clearFilters: () => void) => {
-    clearFilters();
-    setSearchText("");
-  }, []);
 
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
