@@ -1,10 +1,5 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from "react";
+
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Breadcrumb,
   Button,
@@ -20,25 +15,25 @@ import {
   Upload,
   Popconfirm,
   Radio,
-  Dropdown,
-  Typography,
-  MenuProps,
+  Select,
+
 } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
   HomeOutlined,
+  
   PlusOutlined,
-  SearchOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
+
 import { format } from "date-fns";
 import { Student } from "../../../models";
 import { toast } from "react-toastify";
-import Highlighter from "react-highlight-words";
-import axiosInstance from "../../../services/axiosInstance.ts";
-import type { GetProp, InputRef, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
-import type { FilterDropdownProps } from "antd/es/table/interface";
+
+
+import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
+
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
@@ -65,19 +60,10 @@ type AxiosResponse<T> = {
   error?: [];
 };
 
-type DataIndex = keyof User;
-
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
-  const [sortOrder, setSortOrder] = useState<{
-    [key: string]: "ascend" | "descend";
-  }>({
-    created_at: "ascend",
-    updated_at: "ascend",
-  });
+  
   const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState<DataIndex | "">("");
-  const searchInput = useRef<InputRef>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
@@ -89,7 +75,7 @@ const AdminManageUsers: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<User>({});
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
   const [selectedRole, setSelectedRole] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("true");
@@ -132,6 +118,7 @@ const AdminManageUsers: React.FC = () => {
                 ? false
                 : undefined,
           is_delete: false,
+          keyword: searchText,
         },
         pageInfo: {
           pageNum: pagination.current,
@@ -154,7 +141,7 @@ const AdminManageUsers: React.FC = () => {
       //
     }
     setLoading(false);
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
 
   const handleDelete = useCallback(
     async (_id: string, email: string) => {
@@ -166,7 +153,7 @@ const AdminManageUsers: React.FC = () => {
 
         localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
-        // Handle error silently
+        //
       }
     },
     [fetchUsers]
@@ -178,7 +165,7 @@ const AdminManageUsers: React.FC = () => {
         setLoading(true);
 
         let avatarUrl = values.avatar;
-
+        
         if (
           values.avatar &&
           typeof values.avatar !== "string" &&
@@ -219,52 +206,7 @@ const AdminManageUsers: React.FC = () => {
     }
   }, []);
 
-  const sortColumn = useCallback(
-    (columnKey: keyof User) => {
-      const newOrder = sortOrder[columnKey] === "ascend" ? "descend" : "ascend";
-      const sortedData = [...data].sort((a, b) => {
-        let aValue = a[columnKey] as string | number | Date | undefined;
-        let bValue = b[columnKey] as string | number | Date | undefined;
 
-        if (columnKey === "created_at" || columnKey === "updated_at") {
-          aValue = aValue ? new Date(aValue).getTime() : 0;
-          bValue = bValue ? new Date(bValue).getTime() : 0;
-        }
-
-        if (typeof aValue === "number" && typeof bValue === "number") {
-          return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
-        } else if (typeof aValue === "string" && typeof bValue === "string") {
-          return newOrder === "ascend"
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
-        } else {
-          return 0;
-        }
-      });
-
-      setData(sortedData);
-      setSortOrder((prev) => ({ ...prev, [columnKey]: newOrder }));
-    },
-    [data, sortOrder]
-  );
-
-  const handleSearch = useCallback(
-    (
-      selectedKeys: string[],
-      confirm: FilterDropdownProps["confirm"],
-      dataIndex: DataIndex
-    ) => {
-      confirm();
-      setSearchText(selectedKeys[0]);
-      setSearchedColumn(dataIndex);
-    },
-    []
-  );
-
-  const handleReset = useCallback((clearFilters: () => void) => {
-    clearFilters();
-    setSearchText("");
-  }, []);
 
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -317,97 +259,6 @@ const AdminManageUsers: React.FC = () => {
     </button>
   );
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): TableColumnType<Student> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
-          style={{ marginBottom: 8, display: "block" }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            Close
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        ?.toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()) || false,
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
-      }
-    },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
-      ),
-  });
-
   const columns: TableColumnsType<Student> = useMemo(
     () => [
       {
@@ -415,21 +266,12 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "name",
         key: "name",
         width: "20%",
-        ...getColumnSearchProps("name"),
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("name"),
-        }),
       },
       {
         title: "Email",
         dataIndex: "email",
         key: "email",
         width: "20%",
-
-        ...getColumnSearchProps("email"),
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("email"),
-        }),
       },
       {
         title: "Role",
@@ -549,7 +391,7 @@ const AdminManageUsers: React.FC = () => {
         ),
       },
     ],
-    [getColumnSearchProps, sortColumn, formatDate, handleDelete]
+    [formatDate, handleStatusChange, form, handleDelete]
   );
 
   const handleTableChange = (pagination: PaginationProps) => {
@@ -590,20 +432,24 @@ const AdminManageUsers: React.FC = () => {
         email: values.email,
       };
 
-      const response: AxiosResponse<any> = await axiosInstance.put(
+      const response = await axiosInstance.put(
         `/api/users/${formData._id}`,
         updatedUser
       );
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       if (response.success) {
         // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
-          const roleChangeResponse: AxiosResponse<any> =
+          const roleChangeResponse =
             await axiosInstance.put(`/api/users/change-role`, {
               user_id: formData._id,
               role: values.role,
             });
 
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
           if (!roleChangeResponse.success) {
             throw new Error("Failed to change user role");
           }
@@ -643,6 +489,7 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleRoleChange = (value: string) => {
     setSelectedRole(value);
+    console.log("hadelRole ", value);
   };
   const handleStatus = useCallback((value: string) => {
     setSelectedStatus(value);
@@ -655,12 +502,32 @@ const AdminManageUsers: React.FC = () => {
     <div>
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
-          <Breadcrumb.Item href="/">
+          <Breadcrumb.Item href="">
             <HomeOutlined />
           </Breadcrumb.Item>
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
+
+        <Space>
+          <Input.Search
+            placeholder="Search By Name"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onSearch={handleSearch}
+            style={{ width: 200 }}
+          />
+          <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }}>
+            <Select.Option value="All">All Roles</Select.Option>
+            <Select.Option value="Admin">Admin</Select.Option>
+            <Select.Option value="Student">Student</Select.Option>
+            <Select.Option value="Instructor">Instructor</Select.Option>
+          </Select>
+          <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
+            <Select.Option value="true">Active</Select.Option>
+            <Select.Option value="false">Inactive</Select.Option>
+          </Select>
+        </Space>
 
         <div className="mt-3">
           {" "}
@@ -681,7 +548,7 @@ const AdminManageUsers: React.FC = () => {
           columns={columns}
           dataSource={data}
           rowKey="_id"
-          pagination={false} // Disable the default pagination
+          pagination={false} 
           onChange={handleTableChange}
         />
       <div className="flex justify-end py-8">

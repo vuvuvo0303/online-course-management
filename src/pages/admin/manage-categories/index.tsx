@@ -9,7 +9,7 @@ import {
   Form,
   Spin,
   Pagination,
-  Popconfirm, Dropdown, MenuProps,
+  Popconfirm, Dropdown, MenuProps, InputRef,
 } from "antd";
 import {
   DeleteOutlined, DownOutlined,

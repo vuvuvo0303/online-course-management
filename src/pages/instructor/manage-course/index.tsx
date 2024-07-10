@@ -78,7 +78,6 @@ const InstructorManageCourses: React.FC = () => {
   };
 
   const handleCancel = () => {
-    console.log('Clicked cancel button');
     setOpen(false);
     setOpenChangeStatus(false);
   };
@@ -86,9 +85,7 @@ const InstructorManageCourses: React.FC = () => {
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
-    console.log("check user: ", user);
     setUserId(user?._id);
-    console.log("check userId: ", user?._id);
 
   }, []);
   //fetch categories
@@ -105,7 +102,7 @@ const InstructorManageCourses: React.FC = () => {
               "pageNum": 1,
               "pageSize": 100
             }
-          })
+          })  
         if (res) {
           setCategories(res.data.pageData);
         }
@@ -119,7 +116,7 @@ const InstructorManageCourses: React.FC = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axiosInstance.post(`/api/course/search`, {
+        const res = await axiosInstance.post(API_GET_COURSES, {
           "searchCondition": {
             "keyword": keyword,
             "category": cateId,
@@ -172,7 +169,7 @@ const InstructorManageCourses: React.FC = () => {
       width: 300
     },
     {
-      title: 'Cate Name',
+      title: 'Category',
       dataIndex: 'category_name',
       key: 'category_name',
 

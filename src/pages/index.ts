@@ -55,5 +55,4 @@ export { default as AdminCategoryDetail } from "./admin/manage-categories/detail
 export { default as AdminManageCourses } from "./admin/manage-course";
 export { default as AdminManageFeedbacks } from "./admin/manage-feedbacks";
 export { default as Dashboard } from "../components/dashboard/index";
-export { default as AdminManageSession } from "./admin/manage-course/manage-session/";
-export { default as AdminManageLecture } from "./admin/manage-course/manage-session/lectures-of-course";
+

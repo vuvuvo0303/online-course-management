@@ -1,6 +1,5 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps, Tag } from "antd";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Session } from "../../models";
 import { Link } from "react-router-dom";

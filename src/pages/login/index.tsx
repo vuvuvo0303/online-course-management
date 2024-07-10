@@ -125,6 +125,7 @@ const LoginPage: React.FC = () => {
             >
               <div className="pb-2">
                 <Form.Item
+                label="Email"
                   name="email"
                   label="Email"
                   rules={[
@@ -147,6 +148,7 @@ const LoginPage: React.FC = () => {
                   />
                 </Form.Item>
                 <Form.Item
+                label="Password"
                   name="password"
                   label="Password"
                   rules={[

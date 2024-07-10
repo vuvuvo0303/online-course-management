@@ -103,6 +103,8 @@ const AdminManageCourses: React.FC = () => {
     fetchCourses();
   }, [status])
 
+
+
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
   };
@@ -151,7 +153,6 @@ const AdminManageCourses: React.FC = () => {
       width: "50",
       dataIndex: "name",
       key: "name",
-
       render: (text, record) => (
         <Button type="link" onClick={() => showModal(record)}>
           {text}
@@ -181,7 +182,6 @@ const AdminManageCourses: React.FC = () => {
         </>
       )
     },
-
     {
       title: "Created Date",
       dataIndex: "created_at",
@@ -203,7 +203,6 @@ const AdminManageCourses: React.FC = () => {
           <Link to={`/admin/manage-course/${record._id}/manage-session`}>
             <EyeOutlined className="text-purple-500 m-2" />
           </Link>
-          <DeleteOutlined className="text-red-500 m-2" />
         </>
       ),
     },
@@ -221,6 +220,9 @@ const AdminManageCourses: React.FC = () => {
     setSelectedCourse(record);
     setIsModalVisible(true);
   };
+
+  
+
   const formatVND = (value: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -251,6 +253,7 @@ const AdminManageCourses: React.FC = () => {
   };
 
   return (
+    
     <div>
       {/* modal change status */}
       <Modal
