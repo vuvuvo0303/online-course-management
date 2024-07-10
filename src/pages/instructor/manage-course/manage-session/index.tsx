@@ -150,7 +150,7 @@ const ManageSession = () => {
             key: '_id',
             render: (_id: string) => (
                 <>
-                    <Button type="primary" className="m-2">Detail</Button>
+                    {/* <Button type="primary" className="m-2">Detail</Button> */}
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${_id}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/update-session/${_id}`}><EditOutlined className="m-2 text-blue-500" /></Link>
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id)} />

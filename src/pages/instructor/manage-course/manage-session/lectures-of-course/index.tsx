@@ -70,7 +70,7 @@ const LectureOfCourse: React.FC = () => {
                     },
                     "pageInfo": {
                         "pageNum": 1,
-                        "pageSize": 10
+                        "pageSize": 100
                     }
                 })
                 if (res) {
@@ -96,7 +96,7 @@ const LectureOfCourse: React.FC = () => {
                     },
                     "pageInfo": {
                         "pageNum": 1,
-                        "pageSize": 10
+                        "pageSize": 100
                     }
                 })
                 if (res) {
@@ -129,7 +129,7 @@ const LectureOfCourse: React.FC = () => {
                             },
                             "pageInfo": {
                                 "pageNum": 1,
-                                "pageSize": 10
+                                "pageSize": 100
                             }
                         }
                     );
@@ -159,7 +159,7 @@ const LectureOfCourse: React.FC = () => {
                         },
                         "pageInfo": {
                             "pageNum": 1,
-                            "pageSize": 10
+                            "pageSize": 100
                         }
                     },);
                     if (res) {

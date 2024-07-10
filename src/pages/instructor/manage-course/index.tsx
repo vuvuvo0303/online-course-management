@@ -76,12 +76,7 @@ const InstructorManageCourses: React.FC = () => {
             },
             "pageInfo": {
               "pageNum": 1,
-              "pageSize": 10
-            }
-          }
-          , {
-            headers: {
-              Authorization: `Bearer ${token}`
+              "pageSize": 100
             }
           })
         if (res) {
@@ -108,13 +103,7 @@ const InstructorManageCourses: React.FC = () => {
             "pageNum": 1,
             "pageSize": 100
           }
-        },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-
-          });
+        });
         if (res.data.pageData) {
           console.log("check res: ", res);
           setCourses(res.data.pageData);
@@ -190,7 +179,7 @@ const InstructorManageCourses: React.FC = () => {
       key: '_id',
       render: (_id: string) => (
         <>
-          <Link to={`/instructor/manage-courses/${_id}`}><Button type="primary">Detail</Button></Link>
+          {/* <Link to={`/instructor/manage-courses/${_id}`}><Button type="primary">Detail</Button></Link> */}
           <Link to={`/instructor/manage-courses/${_id}/manage-sessions`}><EyeOutlined className="text-purple-500 m-2" /></Link>
           <Link to={`/instructor/manage-courses/update-course/${_id}`}><EditOutlined className="mt-2 text-blue-500" /></Link>
           <DeleteOutlined onClick={() => showModal(_id)} className="text-red-500 m-2" />
