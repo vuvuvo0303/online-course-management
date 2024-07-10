@@ -21,7 +21,6 @@ import {
   DeleteOutlined,
   EditOutlined,
   HomeOutlined,
-  
   PlusOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
@@ -64,7 +63,7 @@ const AdminManageUsers: React.FC = () => {
   
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -98,8 +97,7 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
-    
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -204,8 +202,6 @@ const AdminManageUsers: React.FC = () => {
       return "Invalid date";
     }
   }, []);
-
-
 
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -467,7 +463,7 @@ const AdminManageUsers: React.FC = () => {
         form.resetFields();
         fetchUsers();
       } else {
-        //
+        //handle error for edit users
       }
     } catch (error) {
       //
@@ -488,23 +484,25 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleRoleChange = (value: string) => {
     setSelectedRole(value);
-    console.log("hadelRole ", value);
   };
   const handleStatus = useCallback((value: string) => {
     setSelectedStatus(value);
   }, []);
+  const handleSearch = useCallback(() => {
+    setPagination((prev) => ({
+      ...prev,
+      current: 1,
+    }));
+    fetchUsers();
+  }, [fetchUsers]);
 
-  if(loading === true){
-       return <p className="text-center flex justify-center">Loading ...</p>       
-  }
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
-          <Breadcrumb.Item href="">
+          <Breadcrumb.Item href={paths.ADMIN_HOME}>
             <HomeOutlined />
           </Breadcrumb.Item>
-          <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
 
@@ -542,14 +540,16 @@ const AdminManageUsers: React.FC = () => {
           </Button>
         </div>
       </div>
-            
-      <Table
+
+      <Spin spinning={loading}>
+        <Table
           columns={columns}
           dataSource={data}
           rowKey="_id"
           pagination={false} 
           onChange={handleTableChange}
         />
+      </Spin>
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

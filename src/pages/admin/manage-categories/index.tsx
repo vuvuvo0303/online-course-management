@@ -27,6 +27,7 @@ import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { Link } from "react-router-dom";
+import {paths} from "../../../consts";
 
 type DataIndex = keyof Category;
 
@@ -277,7 +278,7 @@ const AdminManageCategories: React.FC = () => {
           toast.success(`Category ${values.name} created successfully.`);
         }
       } catch (error) {
-        console.log(error);
+        //handle error add new category
       } finally {
         setLoading(false);
       }
@@ -533,10 +534,9 @@ const AdminManageCategories: React.FC = () => {
     <div>
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
-          <Breadcrumb.Item href="/">
+          <Breadcrumb.Item href={paths.ADMIN_HOME}>
             <HomeOutlined />
           </Breadcrumb.Item>
-          <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Categories</Breadcrumb.Item>
         </Breadcrumb>
         <Space style={{ marginTop: 32, marginBottom: 16 }}>

@@ -3,7 +3,6 @@ import {
   HomeOutlined,
   PlaySquareOutlined,
   TeamOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
 import { Badge, Breadcrumb, Card, Col, Image, Rate, Row } from "antd";
 import { Link } from "react-router-dom";
@@ -24,21 +23,12 @@ const AdminDashboard: React.FC = () => {
             title: <HomeOutlined />,
           },
           {
-            href: "/dashboard/admin",
-            title: (
-              <>
-                <UserOutlined />
-                <span>Admin</span>
-              </>
-            ),
-          },
-          {
             title: "Dashboard",
           },
         ]}
       />{" "}
       <div className="flex justify-between drop-shadow-xl gap-4">
-        <Badge.Ribbon text="Flearn" color="blue">
+        <Badge.Ribbon text="FLearn" color="blue">
           <Card
             title="Total courses in the system"
             bordered={false}
@@ -51,7 +41,7 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </Badge.Ribbon>
 
-        <Badge.Ribbon text="Flearn" color="orange">
+        <Badge.Ribbon text="FLearn" color="orange">
           <Link to={"manage-students"}>
             <Card
               title="Total Student in the system"
@@ -66,7 +56,7 @@ const AdminDashboard: React.FC = () => {
           </Link>
         </Badge.Ribbon>
 
-        <Badge.Ribbon text="Flearn" color="green">
+        <Badge.Ribbon text="FLearn" color="green">
           <Card
             title="Total Instructor in the system"
             bordered={false}
@@ -79,7 +69,7 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </Badge.Ribbon>
 
-        <Badge.Ribbon text="Flearn" color="red">
+        <Badge.Ribbon text="FLearn" color="red">
           <Card
             title="Total Blogs in the system"
             bordered={false}
