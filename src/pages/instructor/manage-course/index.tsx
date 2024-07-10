@@ -106,7 +106,7 @@ const InstructorManageCourses: React.FC = () => {
           },
           "pageInfo": {
             "pageNum": 1,
-            "pageSize": 10
+            "pageSize": 100
           }
         },
           {

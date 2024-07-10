@@ -91,13 +91,6 @@ const ManageAllSession = () => {
                         setSessions(res.data.pageData);
                     }
                 }
-                else {
-                    const res = await axios.get<Session[]>("https://665fbf245425580055b0b23d.mockapi.io/session");
-                    if (res) {
-                        console.log("check res:", res);
-                        setSessions(res.data)
-                    }
-                }
             } catch (error) {
                 console.log("error: ", error);
                 toast.error("failed")
@@ -106,7 +99,7 @@ const ManageAllSession = () => {
             }
         };
         fetchSession();
-    }, [userId, role , is_deleted, keyword]);
+    }, [userId, role, is_deleted, keyword]);
 
 
 
