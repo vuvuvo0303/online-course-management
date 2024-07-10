@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Button, Form, Input } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosInstance from "../../services/api.ts";
+import axiosInstance from "../../services/axiosInstance.ts";
 import { toast } from "react-toastify";
 import { API_RESEND_TOKEN, API_VERIFY_TOKEN, paths } from "../../consts";
 
@@ -9,31 +9,34 @@ const VerifyToken: React.FC = () => {
     const params = useParams();
     const navigate = useNavigate();
     const [tokenExpired, setTokenExpired] = useState(false);
-    const [isLoadingVerify, setIsLoadingVerify] = useState(false);
     const [isLoadingResend, setIsLoadingResend] = useState(false);
     const [resendSuccess, setResendSuccess] = useState(false);
     const [email, setEmail] = useState("");
 
-    const handleVerifyEmail = async () => {
-        setIsLoadingVerify(true);
-        try {
-            const response = await axiosInstance.post(API_VERIFY_TOKEN, {
-                token: params.token,
-            });
-            if (response.success) {
-                toast.success("Verification Successfully");
-                navigate(paths.LOGIN);
+    useEffect(() => {
+        const handleVerifyEmail = async () => {
+            try {
+                const response = await axiosInstance.post(API_VERIFY_TOKEN, {
+                    token: params.token,
+                });
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                if (response.success) {
+                    toast.success("Verification Successfully");
+                    navigate(paths.LOGIN);
+                }
+            } catch (error) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                if (error.message && !error.success) {
+                    setTokenExpired(true);
+                } else {
+                    //
+                }
             }
-        } catch (error) {
-            if (error.message && !error.success) {
-                setTokenExpired(true);
-            } else {
-                //
-            }
-        } finally {
-            setIsLoadingVerify(false);
-        }
-    };
+        };
+        handleVerifyEmail();
+    }, []);
 
     const handleResendToken = async () => {
         setIsLoadingResend(true);
@@ -41,10 +44,15 @@ const VerifyToken: React.FC = () => {
             const response = await axiosInstance.post(API_RESEND_TOKEN, {
                 email: email,
             });
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             if (response.success) {
                 toast.success("New token sent to your email.");
                 setTokenExpired(false);
                 setResendSuccess(true);
+                setTimeout(() => {
+                    navigate(paths.HOME);
+                }, 2000)
             }
         } catch (error) {
             //
@@ -56,17 +64,9 @@ const VerifyToken: React.FC = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: 'url(/l2.jpg)' }}>
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-                <h1 className="text-2xl font-semibold text-center mb-6">Verify Token</h1>
+                <h1 className="text-2xl font-semibold text-center mb-6">Verify Email</h1>
                 {!tokenExpired ? (
                     <div className="mb-5 text-center">
-                        <Button
-                            type="primary"
-                            loading={isLoadingVerify}
-                            onClick={handleVerifyEmail}
-                            className="w-full"
-                        >
-                            {isLoadingVerify ? "Verifying..." : "Verify Email"}
-                        </Button>
                     </div>
                 ) : (
                     <div className="text-center">

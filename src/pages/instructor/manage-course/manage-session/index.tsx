@@ -1,11 +1,12 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Modal, Table, TableProps } from "antd";
+import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps, Tag } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Lecture, Session } from "../../../../models";
+import { Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { host_main } from "../../../../consts";
+import axiosInstance from "../../../../services/axiosInstance.ts";
 
 const ManageSession = () => {
     const { courseId } = useParams<{ courseId: string }>();
@@ -15,6 +16,7 @@ const ManageSession = () => {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('');
     const [open, setOpen] = useState(false);
+    const [keyword, setKeyword] = useState<string>('');
     const [selectedSessionID, setSelectedSessionID] = useState<string>('');
     const token = localStorage.getItem("token")
     const showModal = (sessionId: string) => {
@@ -22,6 +24,8 @@ const ManageSession = () => {
         setSelectedSessionID(sessionId)
         setOpen(true);
     };
+    const [is_deleted, setIs_deleted] = useState<boolean>(false);
+    
     const handleOk = async () => {
         if (selectedSessionID) {
             setModalText('Deleting...');
@@ -40,11 +44,14 @@ const ManageSession = () => {
             setOpen(false);
         }
     };
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setKeyword(e.target.value);
+    };
     const handleDelete = async (sessionId: string) => {
         try {
             // Xóa session trước
-            await axios.delete(`${host_main}/api/session/${sessionId}`,{
-                headers:{
+            await axios.delete(`${host_main}/api/session/${sessionId}`, {
+                headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
@@ -54,38 +61,34 @@ const ManageSession = () => {
             toast.error("Failed to delete session. Please try again.");
         }
     };
-     
+
     const handleCancel = () => {
         setOpen(false);
     };
+
     useEffect(() => {
         const fetchSession = async () => {
             try {
-                const res = await axios.post<Session[]>(`${host_main}/api/session/search`,
+                const res = await axiosInstance.post(`/api/session/search`,
                     {
                         "searchCondition": {
-                            "keyword": "",
-                            "course_id": `${courseId}`,
-                            "is_position_order": true,
-                            "is_deleted": false
+                            "keyword": keyword,
+                            "course_id": courseId,
+                            "is_position_order": false,
+                            "is_deleted": is_deleted
                         },
                         "pageInfo": {
                             "pageNum": 1,
                             "pageSize": 10
                         }
-                    }
-                    ,{
-                    headers:{
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                    });
                 if (res) {
-                    console.log("check res:", res);
-                    setSessions(res.data.data.pageData);
+                    setSessions(res.data.pageData);
+                    console.log("check res: ", res);
                 }
             } catch (error) {
                 console.log("error: ", error);
-                setError(error+"");
+                setError(error + "");
             } finally {
                 setLoading(false);
             }
@@ -94,14 +97,19 @@ const ManageSession = () => {
         if (courseId) {
             fetchSession();
         }
-    }, [courseId, token]);
+    }, [courseId, keyword, is_deleted]);
+
+    const colorStatus = (is_delete: boolean) => {
+        if (is_delete) {
+            return "red"
+        } else {
+            return "blue"
+        }
+    }
+
+
 
     const columns: TableProps<Session>["columns"] = [
-        {
-            title: 'Session Id',
-            dataIndex: '_id',
-            key: '_id',
-        },
         {
             title: 'Name',
             dataIndex: 'name',
@@ -111,47 +119,41 @@ const ManageSession = () => {
             title: 'Created At',
             dataIndex: 'created_at',
             key: 'created_at',
-            defaultSortOrder: 'descend',
-            sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
             render: (date: string) => new Date(date).toLocaleDateString(),
         },
         {
             title: 'Updated At',
             dataIndex: 'updated_at',
             key: 'updated_at',
-            defaultSortOrder: 'descend',
-            sorter: (a: { createdDate: string }, b: { createdDate: string }) => new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime(),
             render: (date: string) => new Date(date).toLocaleDateString(),
-        },
-        {
-            title: 'Course Id',
-            dataIndex: 'course_id',
-            key: 'course_id',
-        },
-        {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
         },
         {
             title: 'Is deleted',
             dataIndex: 'is_deleted',
             key: 'is_deleted',
+            render: (is_delete: boolean) => (
+                <>
+                    <Tag color={colorStatus(is_delete)}>
+                        {is_delete ? "true" : "false"}
+                    </Tag>
+                </>
+            )
         },
-        {
-            title: '__v',
-            dataIndex: '__v',
-            key: '__v',
-        },
+        // {
+        //     title: '__v',
+        //     dataIndex: '__v',
+        //     key: '__v',
+        // },
         {
             title: 'Action',
             dataIndex: '_id',
             key: '_id',
-            render: (sessionId: string) => (
+            render: (_id: string) => (
                 <>
-                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/update-session/${sessionId}`}><EditOutlined className="m-2 text-blue-500" /></Link>
-                    <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(sessionId)} />
+                    <Button type="primary" className="m-2">Detail</Button>
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${_id}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/update-session/${_id}`}><EditOutlined className="m-2 text-blue-500" /></Link>
+                    <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id)} />
                 </>
             )
         },
@@ -164,7 +166,9 @@ const ManageSession = () => {
     if (error) {
         return <div>{error}</div>;
     }
-
+    const handleChange = (value: boolean) => {
+        setIs_deleted(value);
+    };
     return (
         <div>
             <Modal
@@ -187,8 +191,35 @@ const ManageSession = () => {
                     <span>Manage Sessions</span>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <h1 className="text-center mt-10">Manage Session</h1>
-            <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New</Button></Link>
+            <h1 className="text-center m-5">Manage Session</h1>
+            <div className="grid grid-cols-2">
+                <div className="grid grid-cols-2">
+                    <Select
+                        defaultValue={is_deleted}
+                        style={{ width: 200 }}
+                        className="mt-10"
+                        onChange={handleChange}
+                        options={[
+                            {
+                                options: [
+                                    { label: <span>true</span>, value: true },
+                                    { label: <span>false</span>, value: false },
+                                ],
+                            },
+                        ]}
+                    />
+                    <Input
+                        placeholder="Search"
+                        value={keyword}
+                        onChange={handleSearch}
+                        className="m-10"
+                        style={{ width: 200 }}
+                    />
+                </div>
+                <div>
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New</Button></Link>
+                </div>
+            </div>
             <Table dataSource={sessions} columns={columns} rowKey="sessionId" />
         </div>
     );

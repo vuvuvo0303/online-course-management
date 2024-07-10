@@ -22,10 +22,10 @@ import {
   Radio,
   Dropdown,
   Typography,
+  MenuProps,
 } from "antd";
 import {
   DeleteOutlined,
-  DownOutlined,
   EditOutlined,
   HomeOutlined,
   PlusOutlined,
@@ -36,20 +36,13 @@ import { format } from "date-fns";
 import { Student } from "../../../models";
 import { toast } from "react-toastify";
 import Highlighter from "react-highlight-words";
-import axiosInstance from "../../../services/api.ts";
-import type {
-  GetProp,
-  InputRef,
-  TableColumnsType,
-  TableColumnType,
-  UploadFile,
-  UploadProps,
-} from "antd";
+import axiosInstance from "../../../services/axiosInstance.ts";
+import type { GetProp, InputRef, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
-import { API_CHANGE_STATUS, API_CREATE_USER, API_GET_USERS } from "../../../consts";
+import { API_CHANGE_STATUS, API_CREATE_USER, API_DELETE_USER, API_GET_USERS } from "../../../consts";
 
 interface ApiError {
   code: number;
@@ -90,9 +83,15 @@ const AdminManageUsers: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const [formData, setFormData] = useState<any>({});
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
+  const [selectedRole, setSelectedRole] = useState<string>("All");
+  const [selectedStatus, setSelectedStatus] = useState<string>("true");
 
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
@@ -113,7 +112,7 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [pagination.current, pagination.pageSize]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -123,8 +122,13 @@ const AdminManageUsers: React.FC = () => {
         pageInfo: { totalItems: number; pageNum: number; pageSize: number };
       }> = await axiosInstance.post(API_GET_USERS, {
         searchCondition: {
-          role: "all",
-          status: true,
+          role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
+          status:
+            selectedStatus === "true"
+              ? true
+              : selectedStatus === "false"
+                ? false
+                : undefined,
           is_delete: false,
         },
         pageInfo: {
@@ -142,18 +146,18 @@ const AdminManageUsers: React.FC = () => {
           pageSize: response.data.pageInfo.pageSize,
         }));
       } else {
-        console.log("Failed to fetch students");
+        //
       }
     } catch (error) {
-      console.error(error);
+      //
     }
     setLoading(false);
-  }, [pagination.current, pagination.pageSize]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
 
   const handleDelete = useCallback(
     async (_id: string, email: string) => {
       try {
-        await axiosInstance.delete(`/api/users/${_id}`);
+        await axiosInstance.delete(`${API_DELETE_USER}/${_id}`);
         setData((prevData) => prevData.filter((user) => user._id !== _id));
         toast.success(`Deleted user ${email} successfully`);
         fetchUsers();
@@ -166,7 +170,7 @@ const AdminManageUsers: React.FC = () => {
     [fetchUsers]
   );
 
-  const addNewUser = useCallback(
+  const handleAddNewUser = useCallback(
     async (values: Student) => {
       try {
         setLoading(true);
@@ -183,10 +187,11 @@ const AdminManageUsers: React.FC = () => {
 
         const userData = { ...values, avatar: avatarUrl };
 
-        const response: AxiosResponse<CreateUserResponse> = await axiosInstance.post<
-          Student,
-          AxiosResponse<CreateUserResponse>
-        >(API_CREATE_USER, userData);
+        const response: AxiosResponse<CreateUserResponse> =
+          await axiosInstance.post<Student, AxiosResponse<CreateUserResponse>>(
+            API_CREATE_USER,
+            userData
+          );
 
         const newUser = response.data.data;
         setData((prevData) => [...prevData, newUser]);
@@ -279,22 +284,29 @@ const AdminManageUsers: React.FC = () => {
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
     setFileList(newFileList);
 
-  const handleStatusChange = useCallback(async (checked: boolean, userId: string) => {
-    try {
-      await axiosInstance.put(API_CHANGE_STATUS, {
-        user_id: userId,
-        status: checked,
-      });
-      fetchUsers();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const handleStatusChange = useCallback(
+    async (checked: boolean, userId: string) => {
+      try {
+        await axiosInstance.put(API_CHANGE_STATUS, {
+          user_id: userId,
+          status: checked,
+        });
+        fetchUsers();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
-      setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
-      toast.success(`User status updated successfully`);
-      localStorage.setItem("users_updated", new Date().toISOString());
-    } catch (error) {
-      // Handle error silently
-    }
-  }, []);
+        setData((prevData) =>
+          prevData.map((user) =>
+            user._id === userId ? { ...user, status: checked } : user
+          )
+        );
+        toast.success(`User status updated successfully`);
+        localStorage.setItem("users_updated", new Date().toISOString());
+      } catch (error) {
+        // Handle error silently
+      }
+    },
+    []
+  );
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -397,16 +409,10 @@ const AdminManageUsers: React.FC = () => {
   const columns: TableColumnsType<Student> = useMemo(
     () => [
       {
-        title: "NO",
-        dataIndex: "index",
-        key: "index",
-        render: (_text: unknown, _record: unknown, index: number) =>
-          (pagination.current - 1) * pagination.pageSize + index + 1,
-      },
-      {
         title: "Name",
         dataIndex: "name",
         key: "name",
+        width: "20%",
         ...getColumnSearchProps("name"),
         onHeaderCell: () => ({
           onClick: () => sortColumn("name"),
@@ -416,6 +422,8 @@ const AdminManageUsers: React.FC = () => {
         title: "Email",
         dataIndex: "email",
         key: "email",
+        width: "20%",
+
         ...getColumnSearchProps("email"),
         onHeaderCell: () => ({
           onClick: () => sortColumn("email"),
@@ -425,17 +433,18 @@ const AdminManageUsers: React.FC = () => {
         title: "Role",
         dataIndex: "role",
         key: "role",
+        width: "10%",
+
         render: (role) => (
           <div
-            className={`tag ${
-              role === "student"
-                ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl py-2 border border-blue-500 text-xs"
+            className={`tag ${role === "student"
+                ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl p-2 border border-blue-500 text-xs"
                 : role === "instructor"
-                ? "bg-lime-100 text-lime-400 flex justify-center rounded-xl py-2 border border-lime-500 text-xs"
-                : role === "admin"
-                ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl py-2 border border-yellow-500 text-xs"
-                : "bg-gray-500 text-white"
-            }`}
+                  ? "bg-lime-100 text-lime-400 flex justify-center rounded-xl p-2 border border-lime-500 text-xs"
+                  : role === "admin"
+                    ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl p-2 border border-yellow-500 text-xs"
+                    : "bg-gray-500 text-white"
+              }`}
           >
             {role ? role.toUpperCase() : "UNKNOWN"}
           </div>
@@ -446,11 +455,6 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "created_at",
         key: "created_at",
         render: (created_at: string) => formatDate(created_at),
-        sorter: true,
-        sortDirections: ["descend", "ascend"],
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("created_at"),
-        }),
         width: "10%",
       },
       {
@@ -458,11 +462,6 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "updated_at",
         key: "updated_at",
         render: (updated_at: string) => formatDate(updated_at),
-        sorter: true,
-        sortDirections: ["descend", "ascend"],
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("updated_at"),
-        }),
         width: "10%",
       },
       {
@@ -484,8 +483,30 @@ const AdminManageUsers: React.FC = () => {
         ),
       },
       {
+        title: "Verify",
+        dataIndex: "is_verified",
+        key: "is_verified",
+        render: (is_verified: boolean) => (
+          <span>
+            {is_verified ? (
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png"
+                alt=""
+              />
+            ) : (
+              <img
+                src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png"
+                alt=""
+              />
+            )}
+          </span>
+        ),
+      },
+
+      {
         title: "Action",
         key: "action",
+        width: "15%",
         render: (record: Student) => (
           <div>
             <EditOutlined
@@ -499,13 +520,13 @@ const AdminManageUsers: React.FC = () => {
                 setFileList(
                   record.avatar
                     ? [
-                        {
-                          uid: "-1",
-                          name: "avatar.png",
-                          status: "done",
-                          url: record.avatar,
-                        },
-                      ]
+                      {
+                        uid: "-1",
+                        name: "avatar.png",
+                        status: "done",
+                        url: record.avatar,
+                      },
+                    ]
                     : []
                 );
               }}
@@ -531,11 +552,11 @@ const AdminManageUsers: React.FC = () => {
 
   const handleTableChange = (pagination: PaginationProps) => {
     const newPagination: { current: number; pageSize: number; total: number } =
-      {
-        current: pagination.current ?? 1,
-        pageSize: pagination.pageSize ?? 10,
-        total: pagination.total ?? 0,
-      };
+    {
+      current: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      total: pagination.total ?? 0,
+    };
 
     setPagination(newPagination);
   };
@@ -553,7 +574,11 @@ const AdminManageUsers: React.FC = () => {
     setLoading(true);
     try {
       let avatarUrl = values.avatar;
-      if (values.avatar && typeof values.avatar !== "string" && values.avatar.file.originFileObj) {
+      if (
+        values.avatar &&
+        typeof values.avatar !== "string" &&
+        values.avatar.file.originFileObj
+      ) {
         avatarUrl = await uploadFile(values.avatar.file.originFileObj);
       }
 
@@ -563,15 +588,19 @@ const AdminManageUsers: React.FC = () => {
         email: values.email,
       };
 
-      const response: AxiosResponse<any> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
+      const response: AxiosResponse<any> = await axiosInstance.put(
+        `/api/users/${formData._id}`,
+        updatedUser
+      );
 
       if (response.success) {
         // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
-          const roleChangeResponse: AxiosResponse<any> = await axiosInstance.put(`/api/users/change-role`, {
-            user_id: formData._id,
-            role: values.role,
-          });
+          const roleChangeResponse: AxiosResponse<any> =
+            await axiosInstance.put(`/api/users/change-role`, {
+              user_id: formData._id,
+              role: values.role,
+            });
 
           if (!roleChangeResponse.success) {
             throw new Error("Failed to change user role");
@@ -579,7 +608,11 @@ const AdminManageUsers: React.FC = () => {
         }
 
         setData((prevData) =>
-          prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
+          prevData.map((user) =>
+            user._id === formData._id
+              ? { ...user, ...updatedUser, role: values.role }
+              : user
+          )
         );
 
         toast.success("Updated user successfully");
@@ -587,11 +620,10 @@ const AdminManageUsers: React.FC = () => {
         form.resetFields();
         fetchUsers();
       } else {
-        toast.error("Failed to update user");
+        //
       }
     } catch (error) {
-      console.error("Error updating user:", error);
-      toast.error("Error updating user");
+      //
     }
     setLoading(false);
   };
@@ -604,30 +636,17 @@ const AdminManageUsers: React.FC = () => {
         console.error("User ID is not set.");
       }
     } else {
-      addNewUser(values);
+      handleAddNewUser(values);
     }
   };
-  const items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: "ALL",
-    },
-    {
-      key: "2",
-      label: "Admins",
-    },
-    {
-      key: "3",
-      label: "Instructors",
-    },
-    {
-      key: "4",
-      label: "Students",
-    },
-  ];
+  const handleRoleChange = (value: string) => {
+    setSelectedRole(value);
+  };
+  const handleStatus = useCallback((value: string) => {
+    setSelectedStatus(value);
+  }, []);
   return (
     <div>
-      
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
           <Breadcrumb.Item href="/">
@@ -636,7 +655,7 @@ const AdminManageUsers: React.FC = () => {
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
-      
+
         <div className="mt-3">
           {" "}
           <Button
@@ -651,20 +670,7 @@ const AdminManageUsers: React.FC = () => {
           </Button>
         </div>
       </div>
-      <Dropdown
-        menu={{
-          items,
-          selectable: true,
-          defaultSelectedKeys: ["3"],
-        }}
-      >
-        <Typography.Link>
-          <Space>
-            Filter Role
-            <DownOutlined />
-          </Space>
-        </Typography.Link>
-      </Dropdown>
+
       <Spin spinning={loading}>
         <Table
           columns={columns}
@@ -677,7 +683,9 @@ const AdminManageUsers: React.FC = () => {
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
-          showTotal={(total) => `Total ${total} items`}
+          showTotal={(total, range) =>
+            `${range[0]}-${range[1]} of ${total} items`
+          }
           current={pagination.current}
           pageSize={pagination.pageSize}
           onChange={handlePaginationChange}
@@ -692,11 +700,19 @@ const AdminManageUsers: React.FC = () => {
         footer={null}
       >
         <Form form={form} onFinish={onFinish} layout="vertical">
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input the name!" }]}
+          >
             <Input />
           </Form.Item>
           {modalMode === "Add" && (
-            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[{ required: true, message: "Please input the email!" }]}
+            >
               <Input />
             </Form.Item>
           )}

@@ -37,20 +37,28 @@ export const API_DELETE_USER = "/api/users";
 //admin
 export const API_GET_COURSE = "/api/course/search";
 
+export const colorIs_delete = (is_delete: boolean) => {
+  if (is_delete) {
+      return "red"
+  } else {
+      return "blue"
+  }
+}
+
 export const getColor = (status: string) => {
   switch (status) {
     case "new":
-      return "red";
-    case "waiting-approve":
-      return "blue";
-    case "approve":
-      return "yellow";
-    case "reject":
-      return "purple";
-    case "active":
-      return "pink";
-    case "inactive":
-      return "orange";
+      return 'red';
+    case 'waiting_approve':
+      return 'blue'
+    case 'approve':
+      return 'yellow'
+    case 'reject':
+      return 'purple'
+    case 'active':
+      return 'pink'
+    case 'inactive':
+      return 'orange'
   }
 };
 /* PATHS */
@@ -74,6 +82,7 @@ export const paths = {
   COURSE_DETAIL: "/course/:id",
   FORGOT_PASSWORD: "/forgot-password",
   VERIFY_TOKEN: "/verify-email/:token",
+  INTERNAL_SERVER_ERROR: "/internal-server-error",
 
   /* STUDENT PATHS */
   STUDENT_PROFILE: "/profile",
@@ -114,6 +123,7 @@ export const paths = {
   ADMIN_CREATE_COURSE: "create-course",
   ADMIN_MANAGE_LECTURES: "manage-lectures",
   ADMIN_MANAGE_USERS: "manage-users",
+  ADMIN_LOGIN: "admin/login",
 
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",

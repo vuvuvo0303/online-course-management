@@ -1,12 +1,16 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import config from "../secret/config.ts";
+import {useNavigate} from "react-router-dom";
+import {paths} from "../consts";
 
 const axiosInstance = axios.create({
     baseURL: config.BASE_URL,
     headers: {
         'Content-Type': 'application/json',
-    }
+    },
+    timeout: 300000,
+    timeoutErrorMessage: `Connection is timeout exceeded`
 });
 
 axiosInstance.interceptors.request.use(
@@ -26,6 +30,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
     (response) => {
+        console.log(response)
         if (response.status === 200 || response.status === 201) {
             if (response.data.success) {
                 return response.data;
@@ -46,11 +51,21 @@ axiosInstance.interceptors.response.use(
                     localStorage.removeItem("user");
                     toast.error(data.message)
                 }
+                else if(error.response.status === 404){
+                    toast.error(data.message);
+                    const navigate = useNavigate();
+                    navigate(paths.NOTFOUND);
+                }
+                else if(error.response.status === 500){
+                    const navigate = useNavigate();
+                    toast.error(data.message);
+                    navigate(paths.INTERNAL_SERVER_ERROR);
+                }
                 else {
                     toast.error(data.message);
                 }
             } else {
-                toast.error('An error occurred');
+                toast.error(error.response.errors.message);
             }
             return Promise.reject(error.response.data);
         } else {

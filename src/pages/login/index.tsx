@@ -3,7 +3,7 @@ import { Button, Form, FormProps, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Vector from "../../assets/Vector.png";
 import Rectangle from "../../assets/Rectangle .jpg";
-import { login } from "../../services/auth";
+import {handleNavigateRole, login} from "../../services/auth";
 import { toast } from "react-toastify";
 import {
   API_CURRENT_LOGIN_USER,
@@ -15,7 +15,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import Lottie from "lottie-react";
 import vutru from "../../assets/vutru.json";
 import { jwtDecode } from "jwt-decode";
-import axiosInstance from "../../services/api.ts";
+import axiosInstance from "../../services/axiosInstance.ts";
 
 type FieldType = {
   email: string;
@@ -25,32 +25,14 @@ type FieldType = {
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const user = localStorage.getItem("user");
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
     if (user) {
       navigate(paths.HOME);
     }
-  }, [navigate]);
+  }, [navigate, user]);
 
-  const fetchUserData = async (token: string) => {
-    const response = await axiosInstance.get("/api/auth");
-    const user = response.data;
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
-    switch (user.role) {
-      case "student":
-        navigate(paths.HOME);
-        break;
-      case "instructor":
-        navigate(paths.INSTRUCTOR_HOME);
-        break;
-      default:
-        navigate(paths.HOME);
-        break;
-    }
-    toast.success("Login successfully");
-  };
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     const { email, password } = values;
@@ -59,7 +41,7 @@ const LoginPage: React.FC = () => {
     if (authResult && "token" in authResult) {
       const { token } = authResult;
       localStorage.setItem("token", token);
-      await fetchUserData(token);
+      await handleNavigateRole(token, navigate);
     }
     setLoading(false);
   };
@@ -83,14 +65,13 @@ const LoginPage: React.FC = () => {
     } catch (error) {
       if (error) {
         try {
-          const responseRegister = await axiosInstance.post(
+            await axiosInstance.post(
             API_REGISTER_WITH_GOOGLE,
             {
               google_id: googleId,
               role: "student",
             }
           );
-          console.log(responseRegister);
           const responseLogin = await axiosInstance.post(
             API_LOGIN_WITH_GOOGLE,
             {
@@ -145,6 +126,7 @@ const LoginPage: React.FC = () => {
               <div className="pb-2">
                 <Form.Item
                   name="email"
+                  label="Email"
                   rules={[
                     { required: true, message: "Please input your email!" },
                     {
@@ -161,12 +143,12 @@ const LoginPage: React.FC = () => {
                   className="mb-1"
                 >
                   <Input
-                    placeholder="Email"
                     className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                 </Form.Item>
                 <Form.Item
                   name="password"
+                  label="Password"
                   rules={[
                     { required: true, message: "Please input your password!" },
                     {
@@ -183,7 +165,6 @@ const LoginPage: React.FC = () => {
                   className="mb-1 mt-5"
                 >
                   <Input.Password
-                    placeholder="Password"
                     className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                 </Form.Item>
@@ -215,7 +196,7 @@ const LoginPage: React.FC = () => {
             Do you have an account?{" "}
             <strong>
               <Link
-                to="/register"
+                to={paths.REGISTER}
                 className="hover:cursor-pointer hover:text-red-400"
               >
                 Sign up here

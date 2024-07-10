@@ -17,7 +17,7 @@ const AdminManageSession = () => {
                 const res = await axios.get<Session[]>("https://665fbf245425580055b0b23d.mockapi.io/session");
                 if (res) {
                     console.log("check res:", res);
-                    setSessions(res.data.filter(session => session.courseId === courseId));
+                    setSessions(res.data.filter(session => session._id === courseId));
                 }
             } catch (error) {
                 console.log("error: ", error);
@@ -34,7 +34,7 @@ const AdminManageSession = () => {
 
     const onChangeStatus = async (checked: boolean, sessionId: string) => {
         try {
-            const updatedSesstion = sessions.find(session => session.sessionId === sessionId);
+            const updatedSesstion = sessions.find(session => session._id === sessionId);
             if (updatedSesstion) {
                 updatedSesstion.status = checked;
                 await axios.put(`https://665fbf245425580055b0b23d.mockapi.io/session/${sessionId}`, updatedSesstion);

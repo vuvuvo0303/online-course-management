@@ -3,12 +3,9 @@ import { Button, Form, FormProps, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import Vector from "../../../assets/Vector.png";
 import Rectangle from "../../../assets/Rectangle .jpg";
-import { toast } from "react-toastify";
 import Lottie from "lottie-react";
-import { login } from "../../../services/auth.ts";
-import {paths } from "../../../consts";
+import {handleNavigateRole, login} from "../../../services/auth.ts";
 import vutru from "../../../assets/vutru.json";
-import axiosInstance from "../../../services/api.ts";
 
 type FieldType = {
     email: string;
@@ -19,11 +16,6 @@ const AdminLoginPage: React.FC = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false); // Add loading state
 
-    const fetchUserData = async (token: string) => {
-        const response = await axiosInstance.get('/api/auth');
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(response.data));
-    };
 
     const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
         const { email, password } = values;
@@ -32,9 +24,7 @@ const AdminLoginPage: React.FC = () => {
             if (authResult && "token" in authResult) {
             const { token } = authResult;
             localStorage.setItem("token", token);
-            await fetchUserData(token);
-            navigate(paths.ADMIN_HOME);
-            toast.success("Login successfully");
+            await handleNavigateRole(token, navigate);
         }
         setLoading(false); // Set loading to false when login ends
     };
@@ -66,6 +56,7 @@ const AdminLoginPage: React.FC = () => {
                         <div className="pb-2">
                             <Form.Item
                                 name="email"
+                                label="Email"
                                 rules={[
                                     { required: true, message: "Please input your email!" },
                                     { type: "email", message: "Please enter the correct email format!" },
@@ -75,10 +66,11 @@ const AdminLoginPage: React.FC = () => {
                                 wrapperCol={{ span: 24 }}
                                 className="mb-1"
                             >
-                                <Input placeholder="Email" className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                <Input className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                             </Form.Item>
                             <Form.Item
                                 name="password"
+                                label="Password"
                                 rules={[
                                     { required: true, message: "Please input your password!" },
                                     { min: 6, message: "Password must be at least 6 characters!" },
@@ -88,7 +80,7 @@ const AdminLoginPage: React.FC = () => {
                                 wrapperCol={{ span: 24 }}
                                 className="mb-1 mt-5"
                             >
-                                <Input.Password placeholder="Password" className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                <Input.Password className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                             </Form.Item>
                         </div>
 
