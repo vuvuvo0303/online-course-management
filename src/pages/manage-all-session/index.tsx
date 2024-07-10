@@ -6,7 +6,7 @@ import { Session } from "../../models";
 import { Link } from "react-router-dom";
 import { User } from "../../models/User";
 import { toast } from "react-toastify";
-import axiosInstance from "../../services/api";
+import axiosInstance from "../../services/axiosInstance.ts";
 import { colorIs_delete } from "../../consts";
 
 const ManageAllSession = () => {

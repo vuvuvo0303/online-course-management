@@ -5,7 +5,7 @@ import { Course, Lecture, Session } from "../../../../../../models";
 import { HomeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { User } from "../../../../../../models/User";
-import axiosInstance from "../../../../../../services/api";
+import axiosInstance from "../../../../../../services/axiosInstance.ts";
 import { Editor } from '@tinymce/tinymce-react';
 const formItemLayout = {
   labelCol: {

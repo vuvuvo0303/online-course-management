@@ -8,7 +8,7 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import { host_main } from "../../../../../consts";
 import { Category, Course } from "../../../../../models";
-import axiosInstance from "../../../../../services/api";
+import axiosInstance from "../../../../../services/axiosInstance.ts";
 
 // import "./course-detail.css"
 
@@ -61,7 +61,7 @@ const ManageSessionDetail = () => {
         });
         if (res) {
           console.log("check res cate:", res);
-          setCates(res.data.data.pageData.filter(category => category._id === course?.category_id));
+          setCates(res.data.data.pageData.filter((category: { _id: string | undefined; }) => category._id === course?.category_id));
           console.log("check cate:", cates);
           console.log("check cate:", cates[0]?.name);
         }

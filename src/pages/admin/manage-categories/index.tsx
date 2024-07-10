@@ -22,7 +22,7 @@ import { format } from "date-fns";
 import { Category } from "../../../models";
 import { toast } from "react-toastify";
 import Highlighter from "react-highlight-words";
-import axiosInstance from "../../../services/api.ts";
+import axiosInstance from "../../../services/axiosInstance.ts";
 import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
 import type { InputRef } from "antd/lib/input/Input";

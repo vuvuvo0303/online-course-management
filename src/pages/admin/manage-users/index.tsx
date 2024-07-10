@@ -28,13 +28,13 @@ import { format } from "date-fns";
 import { Student } from "../../../models";
 import { toast } from "react-toastify";
 import Highlighter from "react-highlight-words";
-import axiosInstance from "../../../services/api.ts";
+import axiosInstance from "../../../services/axiosInstance.ts";
 import type { GetProp, InputRef, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
-import { API_CHANGE_STATUS, API_CREATE_USER, API_GET_USERS } from "../../../consts";
+import {API_CHANGE_STATUS, API_CREATE_USER, API_DELETE_USER, API_GET_USERS} from "../../../consts";
 
 interface ApiError {
   code: number;
@@ -140,7 +140,7 @@ const AdminManageUsers: React.FC = () => {
   const handleDelete = useCallback(
     async (_id: string, email: string) => {
       try {
-        await axiosInstance.delete(`/api/users/${_id}`);
+        await axiosInstance.delete(`${API_DELETE_USER}/${_id}`);
         setData((prevData) => prevData.filter((user) => user._id !== _id));
         toast.success(`Deleted user ${email} successfully`);
         fetchUsers();

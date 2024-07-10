@@ -1,5 +1,5 @@
 import { EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Col, DatePicker, Rate, Row } from "antd";
+import { Breadcrumb, Rate } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Category, Course } from "../../../../models";
@@ -59,7 +59,7 @@ const ManageCourseDetail = () => {
         });
         if (res) {
           console.log("check res cate:", res);
-          setCates(res.data.data.pageData.filter(category => category._id === course?.category_id));
+          setCates(res.data.data.pageData.filter((category: { _id: string | undefined; }) => category._id === course?.category_id));
           console.log("check cate:", cates);
           console.log("check cate:", cates[0]?.name);
         }
@@ -82,7 +82,7 @@ const ManageCourseDetail = () => {
         });
         if (res) {
           console.log("check instructor: ", res);
-          setInstructor(res.data.data);
+          setInstructor(res.data);
         }
       } catch (error) {
         console.log("Error: ", error);
