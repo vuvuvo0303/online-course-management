@@ -10,7 +10,6 @@ import {
   Table,
   Modal,
   Form,
-  Spin,
   Pagination,
   Upload,
   Popconfirm,
@@ -38,7 +37,7 @@ import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
 import { API_CHANGE_STATUS, API_CREATE_USER, API_DELETE_USER, API_GET_USERS } from "../../../consts";
-import { fa } from "@faker-js/faker";
+import axiosInstance from "../../../services/axiosInstance.ts";
 
 interface ApiError {
   code: number;
@@ -514,7 +513,7 @@ const AdminManageUsers: React.FC = () => {
             placeholder="Search By Name"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            onSearch={handleSearch}
+            // onSearch={handleSearch}
             style={{ width: 200 }}
           />
           <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }}>

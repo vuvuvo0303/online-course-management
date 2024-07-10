@@ -11,3 +11,4 @@ export {Blog}  from './Blog';
 export {Session}  from './Session';
 export {Category}  from './Category';
 export {SubCategory}  from './SubCategory';
+export {Log}  from './Log';
