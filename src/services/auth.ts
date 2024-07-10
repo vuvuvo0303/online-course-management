@@ -1,4 +1,4 @@
-import axiosInstance from "./api.ts";
+import axiosInstance from "./axiosInstance.ts";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ type JwtPayload = {
   iat: number,
 }
 
-export async function login(email: string, password: string): Promise<{ token: string } | null> {
+export async function login(email: string, password: string){
 
 
   try {
@@ -21,7 +21,6 @@ export async function login(email: string, password: string): Promise<{ token: s
     if (response.success) {
       const token = response.data.token;
       const decodedToken: JwtPayload = jwtDecode(token);
-      localStorage.setItem("exp-token", `${decodedToken.exp}`);
       if (decodedToken.role === roles.ADMIN || decodedToken.role === roles.STUDENT || decodedToken.role === roles.INSTRUCTOR) {
         if (window.location.pathname.includes('/admin')) {
           if (decodedToken.role !== roles.ADMIN) {
@@ -29,16 +28,21 @@ export async function login(email: string, password: string): Promise<{ token: s
             return null;
           }
         }
+        else{
+          if (decodedToken.role === roles.ADMIN) {
+            toast.error("Account doesn't exist");
+            return null;
+          }
+        }
+        localStorage.setItem("exp-token", `${decodedToken.exp}`);
         return { token };
       } else {
         toast.error("Invalid user role");
-        return null;
       }
     }
 
-    return null;
   } catch (error) {
-    return null;
+    //
   }
 }
 
@@ -53,8 +57,8 @@ export const checkTokenExpiration = (navigate: ReturnType<typeof useNavigate>) =
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("exp-token");
-      if (user.role === 'admin') {
-        navigate('admin/login')
+      if (user.role === roles.ADMIN) {
+        navigate(paths.ADMIN_LOGIN);
       }
       else {
         navigate(paths.LOGIN);
@@ -64,3 +68,26 @@ export const checkTokenExpiration = (navigate: ReturnType<typeof useNavigate>) =
   }
   return false;
 };
+
+export const handleNavigateRole = async (token: string, navigate: ReturnType<typeof useNavigate>) => {
+  const response = await axiosInstance.get(API_LOGIN);
+  const user = response.data;
+  localStorage.setItem("token", token);
+  localStorage.setItem("user", JSON.stringify(user));
+  switch (user.role) {
+    case roles.STUDENT:
+      navigate(paths.HOME);
+      break;
+    case roles.INSTRUCTOR:
+      navigate(paths.INSTRUCTOR_HOME);
+      break;
+    case roles.ADMIN:
+      navigate(paths.ADMIN_HOME);
+      break;
+    default:
+      navigate(paths.HOME);
+      break;
+  }
+  toast.success("Login successfully");
+};
+

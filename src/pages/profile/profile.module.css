@@ -1,40 +1,12 @@
 .profileContainer {
   max-width: 1500px;
-  margin: 20px auto;
-  padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
-  margin-bottom: 100px;
-}
-
-.coverPhoto {
-  position: relative;
-  width: 100%;
-  height: 300px;
-}
-
-.coverImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 8px 8px 0 0;
-}
-
-.profileAvatar {
-  position: absolute;
-  bottom: -75px;
-  left: 20px;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  border: 3px solid white;
-  object-fit: cover;
 }
 
 .profileHeader {
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 10px;
   color: #c78b57;
 }
 
@@ -101,7 +73,7 @@
 }
 
 .tab {
-  margin-top: 70px;
+  padding: 20px;
 }
 
 .degreeImage {

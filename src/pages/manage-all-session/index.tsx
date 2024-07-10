@@ -6,7 +6,7 @@ import { Session } from "../../models";
 import { Link } from "react-router-dom";
 import { User } from "../../models/User";
 import { toast } from "react-toastify";
-import axiosInstance from "../../services/api";
+import axiosInstance from "../../services/axiosInstance.ts";
 import { colorIs_delete } from "../../consts";
 
 const ManageAllSession = () => {
@@ -21,6 +21,7 @@ const ManageAllSession = () => {
     const [userId, setUserId] = useState<string>('');
     const [modalText, setModalText] = useState('');
     const [selectedSessionID, setSelectedSessionID] = useState<string>('');
+
     const showModal = (sessionId: string) => {
         setModalText(`Do you want to delete this session with id = ${sessionId} and the lessons of this session `)
         setSelectedSessionID(sessionId)
@@ -82,19 +83,12 @@ const ManageAllSession = () => {
                         },
                         "pageInfo": {
                             "pageNum": 1,
-                            "pageSize": 10
+                            "pageSize": 100
                         }
                     });
                     if (res) {
                         console.log("check res:", res);
                         setSessions(res.data.pageData);
-                    }
-                }
-                else {
-                    const res = await axios.get<Session[]>("https://665fbf245425580055b0b23d.mockapi.io/session");
-                    if (res) {
-                        console.log("check res:", res);
-                        setSessions(res.data)
                     }
                 }
             } catch (error) {
@@ -105,7 +99,7 @@ const ManageAllSession = () => {
             }
         };
         fetchSession();
-    }, [userId, role , is_deleted, keyword]);
+    }, [userId, role, is_deleted, keyword]);
 
 
 

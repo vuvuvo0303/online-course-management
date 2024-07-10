@@ -1,12 +1,8 @@
 /* Fake API */
 const BASE_URL = "https://665fbf245425580055b0b23d.mockapi.io";
-export const API_STUDENT_URL = `${BASE_URL}/students`;
-export const API_INSTRUCTOR_URL = `${BASE_URL}/instructors`;
-export const API_ADMIN_URL = `${BASE_URL}/admins`;
 export const API_COURSES_URL = `${BASE_URL}/courses`;
 export const API_COMMENT_URL = `${BASE_URL}/comments`;
 export const API_ENROLLMENT_URL = `${BASE_URL}/enrollments`;
-export const API_LECTURE_URL = `${BASE_URL}/lectures`;
 export const API_PAYMENT_URL = `${BASE_URL}/payments`;
 export const API_REVIEW_URL = `${BASE_URL}/reviews`;
 export const API_BLOGS_URL = `${BASE_URL}/blogs`;
@@ -33,9 +29,27 @@ export const API_CHANGE_PASSWORD = "/api/users/change-password";
 export const API_CHANGE_STATUS = "/api/users/change-status";
 export const API_CHANGE_ROLE = "/api/users/change-role";
 export const API_DELETE_USER = "/api/users";
+//Course
+//export const API_CREATE_COURSE: "/api/course";
+export const API_GET_COURSES = "/api/course/search";
+export const API_GET_COURSE = "/api/course";
+export const API_UPDATE_COURSE = "/api/course";
+export const API_DELETE_COURSE = "/api/course";
+export const API_COURSE_STATUS = "/api/course/change-status";
+export const API_COURSE_DETAIL = "/api/course";
+//Session
+//export const API_CREATE_SESSION: "/api/session";
+export const API_GET_SESSIONS = "/api/session/search";
+export const API_GET_SESSION = "/api/session";
+export const API_UPDATE_SESSION = "/api/session";
+export const API_DELETE_SESSION = "/api/session";
+//Lesson
+export const API_CREATE_LESSON = "/api/lesson";
+export const API_GET_LESSONS = "/api/lesson/search";
+export const API_GET_LESSON = "/api/lesson";
+export const API_UPDATE_LESSON = "api/lesson";
+export const API_DELETE_LESSON = "/api/lesson";
 
-//admin
-export const API_GET_COURSE = "/api/course/search";
 
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
@@ -123,6 +137,7 @@ export const paths = {
   ADMIN_CREATE_COURSE: "create-course",
   ADMIN_MANAGE_LECTURES: "manage-lectures",
   ADMIN_MANAGE_USERS: "manage-users",
+  ADMIN_LOGIN: "admin/login",
 
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
@@ -142,6 +157,10 @@ export const paths = {
   ADMIN_MANAGE_ALL_LECTURES: "manage-all-lectures",
   ADMIN_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/create-lecture",
   ADMIN_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
+
+  /* IMG */
+  AVATAR: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PyKYrBKAWWy6YCbQzWQcwIRqH8wYMPluIZiMpV1w0NYSbocTZz0ICWFkLcXhaMyvCwQ&usqp=CAU",
+
 };
 
 /* ROLE */
@@ -150,6 +169,7 @@ export const roles = {
   INSTRUCTOR: "instructor",
   ADMIN: "admin",
 };
+
 
 // Define the structure of the submenu
 interface categoryCourse {

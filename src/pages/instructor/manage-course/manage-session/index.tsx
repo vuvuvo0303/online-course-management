@@ -6,7 +6,7 @@ import { Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { host_main } from "../../../../consts";
-import axiosInstance from "../../../../services/api";
+import axiosInstance from "../../../../services/axiosInstance.ts";
 
 const ManageSession = () => {
     const { courseId } = useParams<{ courseId: string }>();
@@ -79,7 +79,7 @@ const ManageSession = () => {
                         },
                         "pageInfo": {
                             "pageNum": 1,
-                            "pageSize": 10
+                            "pageSize": 30
                         }
                     });
                 if (res) {
@@ -128,16 +128,6 @@ const ManageSession = () => {
             render: (date: string) => new Date(date).toLocaleDateString(),
         },
         {
-            title: 'Course Id',
-            dataIndex: 'course_id',
-            key: 'course_id',
-        },
-        {
-            title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
-        },
-        {
             title: 'Is deleted',
             dataIndex: 'is_deleted',
             key: 'is_deleted',
@@ -149,18 +139,18 @@ const ManageSession = () => {
                 </>
             )
         },
-        {
-            title: '__v',
-            dataIndex: '__v',
-            key: '__v',
-        },
+        // {
+        //     title: '__v',
+        //     dataIndex: '__v',
+        //     key: '__v',
+        // },
         {
             title: 'Action',
             dataIndex: '_id',
             key: '_id',
             render: (_id: string) => (
                 <>
-                    <Button type="primary" className="m-2">Detail</Button>
+                    {/* <Button type="primary" className="m-2">Detail</Button> */}
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${_id}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/update-session/${_id}`}><EditOutlined className="m-2 text-blue-500" /></Link>
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id)} />

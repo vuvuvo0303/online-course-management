@@ -5,8 +5,8 @@ import { Course, Lecture, Session } from "../../../../../../models";
 import { HomeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { User } from "../../../../../../models/User";
-import axiosInstance from "../../../../../../services/api";
-
+import axiosInstance from "../../../../../../services/axiosInstance.ts";
+import { Editor } from '@tinymce/tinymce-react';
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -29,7 +29,7 @@ const CreateLecture = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [userId, setUserId] = useState<string>('');
   const [course_id, setCourse_id] = useState<string>('');
-
+  const [value, setValue] = useState<string>('<p>TinyMCE editor text<p/>');
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
@@ -57,6 +57,7 @@ const CreateLecture = () => {
             position_order: data.position_order,
           });
           setCourse_id(data.course_id);
+          setValue(data.description);
         } catch (error) {
           console.error("Error fetching data:", error);
         } finally {
@@ -135,7 +136,7 @@ const CreateLecture = () => {
           setLoading(false)
         }
       } else {
-        if(course_id){
+        if (course_id) {
           try {
             const res = await axiosInstance.post(`/api/session/search`, {
               "searchCondition": {
@@ -172,14 +173,18 @@ const CreateLecture = () => {
     if (typeof values.position_order === 'string') {
       values.position_order = parseFloat(values.position_order);
     }
+    values.description = value;
     setLoading(true);
     try {
+      //Update lecture
       if (lectureId) {
         console.log("check value update: ", values)
         await axiosInstance.put(`/api/lesson/${lectureId}`, values, {
         });
         toast.success("Update Lecture Successfully!")
-      } else {
+      }
+      //create lecture
+      else {
         console.log("check value create: ", values)
         await axiosInstance.post(`/api/lesson`, values);
         toast.success("Create Lecture Successfully!")
@@ -201,11 +206,11 @@ const CreateLecture = () => {
   }
 
   return (
-    <div className="flex justify-center items-center h-full mt-10">
+    <div className="flex justify-center items-center  h-full mt-10">
       {loading ? (
         <div>Loading ...</div>
       ) : (
-        <div className="w-full max-w-2xl bg-white p-8 rounded shadow">
+        <div className="w-full max-w-7xl bg-white  p-8 rounded shadow">
           {
             courseId && sessionId != undefined ? (
               <Breadcrumb className="py-2">
@@ -238,7 +243,7 @@ const CreateLecture = () => {
                 label="Course Name"
                 name="course_id"
                 hidden
-                rules={[{ required: true, message: "Please choose course name!" }]}
+                initialValue={courseId}
               >
                 <Input defaultValue={courseId} disabled />
               </Form.Item>
@@ -249,7 +254,7 @@ const CreateLecture = () => {
               <Form.Item
                 label="Course Name"
                 name="course_id"
-                rules={[{ required: true, message: "Please choose course name!" }]}
+
               >
                 <Select
                   // Save course_id to use to call the session api
@@ -268,7 +273,6 @@ const CreateLecture = () => {
                 label="Session Name"
                 name="session_id"
                 hidden
-                rules={[{ required: true, message: "Please input session name!" }]}
               >
                 <Input defaultValue={session?._id} disabled />
               </Form.Item>
@@ -322,7 +326,22 @@ const CreateLecture = () => {
               label="Description"
               name="description"
             >
-              <Input.TextArea />
+              <Editor
+                apiKey="lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u"
+                onEditorChange={(newValue) => setValue(newValue)}
+                initialValue={value}
+                init={{
+                  plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+                  toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                  tinycomments_mode: 'embedded',
+                  tinycomments_author: 'Author name',
+                  mergetags_list: [
+                    { value: 'First.Name', title: 'First Name' },
+                    { value: 'Email', title: 'Email' },
+                  ],
+                  ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                }}
+              />
             </Form.Item>
 
             <Form.Item
@@ -357,7 +376,9 @@ const CreateLecture = () => {
                 Submit
               </Button>
             </Form.Item>
+
           </Form>
+
         </div>
       )}
     </div>
