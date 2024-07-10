@@ -1,74 +1,146 @@
-import { Rate, Progress, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import 'tailwindcss/tailwind.css'; // Make sure Tailwind CSS is configured
+import { useState, useCallback, useEffect } from 'react';
+import { Rate, Input, Button, Modal, Form, Select } from 'antd';
+import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import axiosInstance from '../../../services/axiosInstance.ts';
+import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 
-const InstructorManageFeedBacks: React.FC = () => {
-    const reviews = [
-        {
-            name: 'John Doe',
-            time: '2 hours ago',
-            rating: 4.5,
-            text: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
-        },
-        {
-            name: 'Jessica William',
-            time: '12 hours ago',
-            rating: 4.0,
-            text: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
-        },
-        {
-            name: 'Alice Johnson',
-            time: '1 day ago',
-            rating: 3.5,
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi lorem egestas odio, vitae scelerisque enim ligula venenatis dolor.',
-        },
-        {
-            name: 'Bob Smith',
-            time: '2 days ago',
-            rating: 5.0,
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi lorem egestas odio, vitae scelerisque enim ligula venenatis dolor.',
-        },
-    ];
+interface Review {
+    name: string;
+    time: string;
+    rating: number;
+    text: string;
+}
+
+interface ReviewFormValues {
+    course_id: string;
+    comment: string;
+    rating: number;
+}
+
+const ReviewPage: React.FC = () => {
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
+    const [courses, setCourses] = useState<{ _id: string; name: string }[]>([]);
+    const [selectedCourse, setSelectedCourse] = useState<string>('');
+    const { courseId } = useParams<{ courseId: string }>();
+
+    const fetchReviews = useCallback(async () => {
+        try {
+            const response = await axiosInstance.get(`/api/review?course_id=${courseId}`);
+            if (response.data) {
+                setReviews(response.data);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }, [courseId]);
+
+    useEffect(() => {
+        fetchReviews();
+    }, [fetchReviews]);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await axiosInstance.post('/api/course/search', {
+                    searchCondition: {
+                        keyword: '',
+                        category: '',
+                        status: 'new',
+                        is_deleted: false,
+                    },
+                    pageInfo: {
+                        pageNum: 1,
+                        pageSize: 10,
+                    },
+                });
+                if (response.data) {
+                    setCourses(response.data.pageData);
+                    if (response.data.pageData.length > 0) {
+                        setSelectedCourse(response.data.pageData[0]._id);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+            }
+        };
+
+        if (!courseId) {
+            fetchCourses();
+        }
+    }, [courseId]);
+
+    const addNewReview = useCallback(async (values: ReviewFormValues) => {
+        try {
+            setLoading(true);
+            const newReview: Review = {
+                name: 'New User',
+                time: 'Just now',
+                rating: values.rating,
+                text: values.comment,
+            };
+
+            const response = await axiosInstance.post('/api/review', {
+                ...values,
+                course_id: values.course_id || selectedCourse,
+            });
+
+            if (response.data) {
+                setReviews((prevReviews) => [newReview, ...prevReviews]);
+                setIsModalVisible(false);
+                form.resetFields();
+                toast.success('Review added successfully.');
+            }
+        } catch (error) {
+            // console.error(error);
+            // toast.error('Failed to add review.');
+        } finally {
+            setLoading(false);
+        }
+    }, [selectedCourse, form]);
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
+    const handleAddReview = (values: ReviewFormValues) => {
+        addNewReview(values);
+    };
+
+    const handleChangeCourse = (value: string) => {
+        setSelectedCourse(value);
+    };
 
     return (
-        <div className="flex flex-col p-4 bg-white min-h-screen text-black space-y-4 sm:flex-row sm:space-x-4">
-            <div className="bg-gray-800 p-4 rounded-md w-full sm:w-1/2 lg:ml-[3rem]">
+        <div className="flex flex-col p-4 bg-white min-h-screen text-black space-y-4 sm:flex-row sm:space-x-4 w-full">
+            <div className="bg-white-transparent p-4 rounded-md w-full sm:w-1/2 lg:ml-[3rem] lg:mt-[1rem] lg:h-[20rem]">
                 <h2 className="text-xl mb-4">Student Feedback</h2>
                 <div className="flex items-center mb-4">
                     <span className="text-3xl mr-2">4.6</span>
                     <Rate allowHalf defaultValue={4.5} disabled />
                     <span className="ml-4">Course Rating</span>
                 </div>
-                <div>
-                    {[70, 40, 5, 1, 1].map((percent, index) => (
-                        <div className="flex items-center mb-2" key={index}>
-                            <Progress
-                                percent={percent}
-                                showInfo={false}
-                                strokeColor="#ff4d4f"
-                                trailColor="lightgray"
-                                className="w-1/2"
-                            />
-                            <Rate
-                                className="ml-4"
-                                disabled
-                                defaultValue={5 - index}
-                                count={5}
-                            />
-                            <span className="ml-2">{percent}%</span>
-                        </div>
-                    ))}
-                </div>
             </div>
-            <div className="bg-gray-900 p-4 rounded-md w-full sm:w-1/2">
-                <h2 className="text-xl mb-4">Reviews</h2>
+            <div className="bg-white-transparent p-4 rounded-md w-full sm:w-1/2">
+                <div className="flex justify-between items-center mb-4 w-full">
+                    <h2 className="text-xl mb-0">Reviews</h2>
+                    <Button type="default" icon={<PlusOutlined />} onClick={showModal}>
+                        Add Your Review
+                    </Button>
+                </div>
                 <Input
                     placeholder="Search reviews..."
                     prefix={<SearchOutlined />}
                     className="mb-4"
-                // Add onChange event handler for search functionality
                 />
-                <div className="h-96 overflow-y-auto pr-2">
+                <div className="h-[35rem] overflow-y-auto pr-2">
                     {reviews.map((review, index) => (
                         <div
                             className="bg-gray-900 p-4 rounded-md mb-4"
@@ -94,8 +166,56 @@ const InstructorManageFeedBacks: React.FC = () => {
                     ))}
                 </div>
             </div>
+            <Modal
+                title="Add Your Review"
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                footer={null}
+            >
+                <Form form={form} onFinish={handleAddReview}>
+                    {
+                        !courseId &&
+                        <Form.Item
+                            name="course_id"
+                            label="Course"
+                            initialValue={selectedCourse}
+                            rules={[{ required: true, message: 'Please select a course' }]}
+                        >
+                            <Select onChange={handleChangeCourse}>
+                                {courses.map(course => (
+                                    <Select.Option key={course._id} value={course._id}>
+                                        {course.name}
+                                    </Select.Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+                    }
+                    <Form.Item
+                        name="rating"
+                        label="Rating"
+                        rules={[{ required: true, message: 'Please provide a rating' }]}
+                    >
+                        <Rate allowHalf />
+                    </Form.Item>
+                    <Form.Item
+                        name="comment"
+                        label="Review"
+                        rules={[{ required: true, message: 'Please provide a review' }]}
+                    >
+                        <Input.TextArea rows={4} />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="default" onClick={handleCancel}>
+                            Cancel
+                        </Button>
+                        <Button type="primary" htmlType="submit" loading={loading}>
+                            Submit
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 };
 
-export default InstructorManageFeedBacks;
+export default ReviewPage;

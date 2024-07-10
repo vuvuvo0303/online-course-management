@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Rate, Progress, Input, Button, Modal, Form } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import 'tailwindcss/tailwind.css'; // Make sure Tailwind CSS is configured
+import axiosInstance from "../../../services/axiosInstance.ts";
+import { toast } from 'react-toastify'; // Assuming you're using react-toastify for notifications
 
 interface Review {
     name: string;
@@ -45,18 +47,41 @@ const ReviewPage: React.FC = () => {
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
 
-    const handleAddReview = (values: ReviewFormValues) => {
-        const newReview: Review = {
-            name: 'New User',
-            time: 'Just now',
-            rating: values.rating,
-            text: values.text,
-        };
-        setReviews([newReview, ...reviews]);
-        form.resetFields();
-        setIsModalVisible(false);
-    };
+    const fetchReviews = useCallback(async () => {
+        try {
+            const response = await axiosInstance.get('/api/review');
+            if (response.data) {
+                setReviews(response.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }, []);
+
+    const addNewReview = useCallback(
+        async (values: ReviewFormValues) => {
+            try {
+                setLoading(true);
+                const response = await axiosInstance.post('/api/review', values);
+                if (response.data) {
+                    const newReview = response.data;
+                    setReviews((prevReviews) => [newReview, ...prevReviews]);
+                    setIsModalVisible(false);
+                    form.resetFields();
+                    fetchReviews();
+                    toast.success('Review added successfully.');
+                }
+            } catch (error) {
+                console.log(error);
+                toast.error('Failed to add review.');
+            } finally {
+                setLoading(false);
+            }
+        },
+        [form, fetchReviews]
+    );
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -66,9 +91,13 @@ const ReviewPage: React.FC = () => {
         setIsModalVisible(false);
     };
 
+    const handleAddReview = (values: ReviewFormValues) => {
+        addNewReview(values);
+    };
+
     return (
-        <div className="flex flex-col p-4 bg-white min-h-screen text-black space-y-4 sm:flex-row sm:space-x-4">
-            <div className="bg-gray-800 p-4 rounded-md w-full sm:w-1/2 lg:ml-[3rem]">
+        <div className="flex flex-col p-4 bg-white min-h-screen text-black space-y-4 sm:flex-row sm:space-x-4 w-full">
+            <div className="bg-white-transparent p-4 rounded-md w-full sm:w-1/2 lg:ml-[3rem] lg:mt-[1rem] lg:h-[20rem]">
                 <h2 className="text-xl mb-4">Student Feedback</h2>
                 <div className="flex items-center mb-4">
                     <span className="text-3xl mr-2">4.6</span>
@@ -96,7 +125,7 @@ const ReviewPage: React.FC = () => {
                     ))}
                 </div>
             </div>
-            <div className="bg-gray-900 p-4 rounded-md w-full sm:w-1/2">
+            <div className="bg-white-transparent p-4 rounded-md w-full sm:w-1/2">
                 <div className="flex justify-between items-center mb-4 w-full">
                     <h2 className="text-xl mb-0">Reviews</h2>
                     <Button type="default" icon={<PlusOutlined />} onClick={showModal}>
@@ -108,7 +137,7 @@ const ReviewPage: React.FC = () => {
                     prefix={<SearchOutlined />}
                     className="mb-4"
                 />
-                <div className="h-96 overflow-y-auto pr-2">
+                <div className="h-[35rem] overflow-y-auto pr-2">
                     {reviews.map((review, index) => (
                         <div
                             className="bg-gray-900 p-4 rounded-md mb-4"
@@ -156,10 +185,10 @@ const ReviewPage: React.FC = () => {
                         <Input.TextArea rows={4} />
                     </Form.Item>
                     <Form.Item>
-                        <Button type="default" htmlType="submit" className='border-none'>
+                        <Button type="default" onClick={handleCancel} className='border-none'>
                             Cancel
                         </Button>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="submit" loading={loading}>
                             Submit
                         </Button>
                     </Form.Item>

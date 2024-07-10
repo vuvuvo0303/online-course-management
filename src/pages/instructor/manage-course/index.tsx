@@ -262,7 +262,7 @@ const InstructorManageCourses: React.FC = () => {
           />
         </div>
         <div>
-        <Link to={"/instructor/manage-courses/create-course"}><Button type="primary" className="float-right m-5">Add New</Button></Link>
+          <Link to={"/instructor/manage-courses/create-course"}><Button type="primary" className="float-right m-5">Add New</Button></Link>
         </div>
       </div>
       <Table columns={columnsCourses} dataSource={courses} />
