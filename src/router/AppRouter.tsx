@@ -43,8 +43,6 @@ import {
     ForgotPassword,
     ManageSession,
     CreateUpdateSession,
-    AdminManageSession,
-    AdminManageLecture,
     InstructorManageCoursesDetail,
     ManageAllSession,
     AdminLoginPage,
@@ -260,12 +258,8 @@ const AppRouter: React.FC = () => {
         <Route path={paths.ADMIN_MANAGE_BLOGS} element={<AdminManageBlogs />} />
         <Route path={paths.ADMIN_MANAGE_COURSES} element={<AdminManageCourses />} />
         <Route path={paths.ADMIN_MANAGE_FEEDBACKS} element={<AdminManageFeedbacks />} />
-        <Route path={paths.ADMIN_MANAGE_SESSION_OF_COURSE} element={<AdminManageSession />} />
-        <Route path={paths.ADMIN_MANAGE_LECTURES_OF_COURSE} element={<AdminManageLecture />} />
         <Route path={paths.ADMIN_MANAGE_ALL_SESSION} element={<ManageAllSession />} />
         <Route path={paths.ADMIN_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS} element={<CreateUpdateSession />} />
-        <Route path={paths.ADMIN_MANAGE_ALL_LECTURES} element={<AdminManageLecture />} />
-        <Route path={paths.ADMIN_MANAGE_LECTURES_OF_MANAGE_ALL_SESSIONS} element={<AdminManageLecture/>} />
         <Route path={paths.ADMIN_CATEGORY_DETAIL} element={<AdminCategoryDetail/>} />
         <Route path="*" element={<NotFound />} />
       </Route>
