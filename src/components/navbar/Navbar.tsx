@@ -1,9 +1,8 @@
-import { Menu, Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover } from 'antd';
+import { Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { paths } from '../../consts';
-import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined, MenuOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import { useMediaQuery } from 'react-responsive';
 import SearchTool from '../SearchTool';
 import Drawer from '../Drawer';
 import PopoverContent from '../PopoverContent';
@@ -21,7 +20,6 @@ const Navbar: React.FC = () => {
     avatarUrl: null,
   });
   const isLoginOrRegister = location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
-  const isMobile = useMediaQuery({ maxWidth: 768 });
   const navigate = useNavigate();
   const isLoginPage = location.pathname === '/login';
   const isRegisterPage = location.pathname === '/register';
@@ -114,60 +112,18 @@ const Navbar: React.FC = () => {
     },
   ];
 
-  const items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: (
-        <Link to={paths.STUDENT_ENROLLMENT}>
-          <Badge count={4}>
-            <HeartOutlined className="text-gray-400 text-3xl" />
-          </Badge>
-        </Link>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <Badge count={2}>
-          <MailOutlined className="text-gray-400 text-3xl" />
-        </Badge>
-      ),
-      disabled: true,
-    },
-    {
-      key: "3",
-      label: (
-        <Badge count={3}>
-          <BellOutlined className="text-gray-400 text-3xl" />
-        </Badge>
-      ),
-      disabled: true,
-    },
-    {
-      key: "4",
-      danger: true,
-      label: (
-        <Link to={paths.STUDENT_CART}>
-          <Badge count={2}>
-            <ShoppingCartOutlined className="text-gray-400 text-3xl" />
-          </Badge>
-        </Link>
-      ),
-    },
-  ];
 
   return (
-    <nav className={`flexBetween navbar ${isLoginOrRegister ? 'justify-center' : ''}`}>
-      <div className={`flex-1 flexStart gap-10 ${isLoginOrRegister ? 'justify-center' : ''}`}>
-        <div>
+    <nav className="flex items-center justify-between navbar">
+      <div className="flex gap-10">
+        <div className=''>
           {!isLoginPage && !isRegisterPage && !isForgotPassword && <Drawer />}
         </div>
         <Link to="/">
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
-            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} `}
-            style={{ maxHeight: '40px' }}
+            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} h-[2rem] w-[5rem]`}
           />
         </Link>
         <div>
@@ -176,83 +132,73 @@ const Navbar: React.FC = () => {
       </div>
       {!isLoginOrRegister && !isForgotPassword && (
         <div className="flexCenter gap-10 mr-5">
-          {isMobile ? (
-            <Dropdown overlay={<Menu items={items} />} className='mt-5 mb-44' placement="bottomRight">
-              <p onClick={(e) => e.preventDefault()}>
-                <Space>
-                  <MenuOutlined className="text-gray-400 text-3xl" />
-                </Space>
-              </p>
-            </Dropdown>
-          ) : (
-            <>
-              <Popover
-                content={<PopoverContent />}
-                overlayInnerStyle={{ padding: 0 }}
-                trigger="hover"
-                placement="bottom"
-              >
-                <Link to={paths.STUDENT_ENROLLMENT}>
-                  <Badge count={4}>
-                    <HeartOutlined className="text-gray-400 text-3xl" />
-                  </Badge>
-                </Link>
-              </Popover>
+          <>
+            <Popover
+              content={<PopoverContent />}
+              overlayInnerStyle={{ padding: 0 }}
+              trigger="hover"
+              placement="bottom"
+            >
+              <Link to={paths.STUDENT_ENROLLMENT}>
+                <Badge className='hidden md:block' count={4}>
+                  <HeartOutlined className="text-gray-400 text-3xl" />
+                </Badge>
+              </Link>
+            </Popover>
 
-              <Popover
-                content={<Popup />}
-                overlayInnerStyle={{ padding: 0 }}
-                trigger="click"
-                placement="bottom"
-              >
+            <Popover
+              content={<Popup />}
+              overlayInnerStyle={{ padding: 0 }}
+              trigger="click"
+              placement="bottom"
+            >
+              <Badge className='hidden md:block' count={2}>
+                <MailOutlined className="text-gray-400 text-3xl" />
+              </Badge>
+            </Popover>
+
+            <Popover
+              content={<Popup />}
+              overlayInnerStyle={{ padding: 0 }}
+              trigger="click"
+              placement="bottom"
+            >
+              <Badge className='hidden md:block' count={3}>
+                <BellOutlined className="text-gray-400 text-3xl" />
+              </Badge>
+            </Popover>
+
+            <Popover
+              content={<PopoverContent />}
+              overlayInnerStyle={{ padding: 0 }}
+              trigger="hover"
+              placement="bottom"
+            >
+              <Link to={paths.STUDENT_CART}>
                 <Badge count={2}>
-                  <MailOutlined className="text-gray-400 text-3xl" />
+                  <ShoppingCartOutlined className="text-gray-400 text-3xl" />
                 </Badge>
-              </Popover>
+              </Link>
+            </Popover>
 
-              <Popover
-                content={<Popup />}
-                overlayInnerStyle={{ padding: 0 }}
-                trigger="click"
-                placement="bottom"
-              >
-                <Badge count={3}>
-                  <BellOutlined className="text-gray-400 text-3xl" />
-                </Badge>
-              </Popover>
-
-              <Popover
-                content={<PopoverContent />}
-                overlayInnerStyle={{ padding: 0 }}
-                trigger="hover"
-                placement="bottom"
-              >
-                <Link to={paths.STUDENT_CART}>
-                  <Badge count={2}>
-                    <ShoppingCartOutlined className="text-gray-400 text-3xl" />
-                  </Badge>
-                </Link>
-              </Popover>
-
-              {user ? (
-                <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
-                  <p onClick={(e) => e.preventDefault()}>
-                    <Space>
-                      <Avatar
-                        src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
-                        className="hover:cursor-pointer"
-                        icon={<UserOutlined />}
-                      />
-                    </Space>
-                  </p>
-                </Dropdown>
-              ) : (
-                <Link to={paths.LOGIN}>
-                  <UserOutlined className="text-gray-400 text-3xl cursor-pointer" />
-                </Link>
-              )}
-            </>
-          )}
+            {user ? (
+              <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
+                <p onClick={(e) => e.preventDefault()}>
+                  <Space>
+                    <Avatar
+                      src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
+                      className="hover:cursor-pointer"
+                      icon={<UserOutlined />}
+                    />
+                  </Space>
+                </p>
+              </Dropdown>
+            ) : (
+              <Link to={paths.LOGIN}>
+                <UserOutlined className="text-gray-400 text-3xl cursor-pointer hidden md:block" />
+              </Link>
+            )}
+          </>
         </div>
       )}
     </nav>

@@ -25,8 +25,8 @@ const TeacherCategories: React.FC = () => {
 
     return (
         <div className="w-full">
-            <h2 className="text-2xl font-bold mb-4">Popular Instructors</h2>
-            <p className="text-gray-600 mb-4">These real-world experts are highly rated by learners like you.</p>
+            <h2 className="text-2xl font-bold mb-2 p-2">Popular Instructors</h2>
+            <p className="text-gray-600 mb-4 p-2">These real-world experts are highly rated by learners like you.</p>
             <Carousel
                 responsive={responsive}
                 itemClass="carousel-item-padding-10px"
