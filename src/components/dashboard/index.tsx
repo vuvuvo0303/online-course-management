@@ -20,6 +20,7 @@ import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
 import logo2 from "../../assets/logo2.jpg";
+import {paths, roles} from "../../consts";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -57,7 +58,11 @@ const Dashboard: React.FC = () => {
         email: user.email,
       });
     } else {
-      navigate("/login"); // Redirect to login if role is not found
+      if(userRole === roles.ADMIN){
+        navigate(paths.ADMIN_HOME);
+      }else{
+      navigate(paths.HOME);
+      }
     }
   }, [navigate]);
 
@@ -65,7 +70,7 @@ const Dashboard: React.FC = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("exp-token")
-    navigate("/");
+    navigate(paths.HOME);
   };
 
   function getItem(
@@ -144,16 +149,6 @@ const Dashboard: React.FC = () => {
             "Manage Courses",
             "/admin/manage-courses",
             <FundProjectionScreenOutlined />
-          ),
-          getItem(
-            "Manage All Sessions",
-            "/admin/manage-all-sessions",
-            <DesktopOutlined />
-          ),
-          getItem(
-            "Manage All Lectures",
-            "/admin/manage-all-lectures",
-            <DesktopOutlined />
           ),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
           getItem(
