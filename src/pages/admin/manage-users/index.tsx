@@ -43,6 +43,7 @@ import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
 import { API_CHANGE_STATUS, API_CREATE_USER, API_DELETE_USER, API_GET_USERS } from "../../../consts";
+import { fa } from "@faker-js/faker";
 
 interface ApiError {
   code: number;
@@ -78,7 +79,7 @@ const AdminManageUsers: React.FC = () => {
   const [searchedColumn, setSearchedColumn] = useState<DataIndex | "">("");
   const searchInput = useRef<InputRef>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -112,6 +113,7 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
+    
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
 
   const fetchUsers = useCallback(async () => {
@@ -645,6 +647,10 @@ const AdminManageUsers: React.FC = () => {
   const handleStatus = useCallback((value: string) => {
     setSelectedStatus(value);
   }, []);
+
+  if(loading === true){
+       return <p className="text-center flex justify-center">Loading ...</p>       
+  }
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -670,16 +676,14 @@ const AdminManageUsers: React.FC = () => {
           </Button>
         </div>
       </div>
-
-      <Spin spinning={loading}>
-        <Table
+            
+      <Table
           columns={columns}
           dataSource={data}
           rowKey="_id"
           pagination={false} // Disable the default pagination
           onChange={handleTableChange}
         />
-      </Spin>
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

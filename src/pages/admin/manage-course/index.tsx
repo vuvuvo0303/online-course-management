@@ -1,4 +1,4 @@
-import {DeleteOutlined, DownOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined} from "@ant-design/icons";
+import { DeleteOutlined, DownOutlined, EditOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -8,64 +8,141 @@ import {
   Image,
   Input, MenuProps,
   Modal,
+  Select,
   Space,
   Table,
   TableColumnsType,
-  TablePaginationConfig
+  TablePaginationConfig,
+  Tag
 } from "antd";
-import { API_GET_COURSE } from "../../../consts";
+import { API_GET_COURSE, getColor } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import {Course} from "../../../models";
+import { Course } from "../../../models";
+import { toast } from "react-toastify";
 
 const AdminManageCourses: React.FC = () => {
+  const [openChangeStatus, setOpenChangeStatus] = useState(false);
+  const [changeStatus, setChangeStatus] = useState<string>('');
   const [courses, setCourses] = useState<Course[]>([]);
+  const [courseId, setCourseId] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalText, setModalText] = useState('')
+  const [status, setStatus] = useState<string>('new');
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
 
-  const fetchCourses = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await axiosInstance.post(API_GET_COURSE, {
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
-        },
-        searchCondition: {
-          status: "new",
-        },
-      });
+  // const fetchCourses = useCallback(async () => {
 
-      if (response.data && response.data.pageData) {
-        setCourses(response.data.pageData);
-        setPagination((prev) => ({
-          ...prev,
-          total: response.data.pageInfo.totalItems,
-        }));
-      } else {
-        throw new Error("Failed to fetch courses");
-      }
-    } catch (error) {
-      setError("An unexpected error occurred.");
-    } finally {
-      setLoading(false);
-    }
-  }, [pagination.current, pagination.pageSize]);
+  //   setLoading(true);
+  //   try {
+  //     const response = await axiosInstance.post(API_GET_COURSE, {
+  //       pageInfo: {
+  //         pageNum: pagination.current,
+  //         pageSize: pagination.pageSize,
+  //       },
+  //       searchCondition: {
+  //         status: status,
+  //       },
+  //     });
+
+  //     if (response.data && response.data.pageData) {
+  //       setCourses(response.data.pageData);
+  //       setPagination((prev) => ({
+  //         ...prev,
+  //         total: response.data.pageInfo.totalItems,
+  //       }));
+  //     } else {
+  //       throw new Error("Failed to fetch courses");
+  //     }
+  //   } catch (error) {
+  //     setError("An unexpected error occurred.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [pagination.current, pagination.pageSize]);
+
+  // useEffect(() => {
+  //   fetchCourses();
+  // }, [fetchCourses]);
 
   useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await axiosInstance.post(`/api/course/search`, {
+          "searchCondition": {
+            "keyword": "",
+            "category": "",
+            "status": status,
+            "is_deleted": false
+          },
+          "pageInfo": {
+            "pageNum": 1,
+            "pageSize": 100
+          }
+        });
+        if (res.data.pageData) {
+          console.log("check res: ", res);
+          setCourses(res.data.pageData);
+          console.log("check courses: ", res.data);
+        }
+      } catch (error) {
+        console.log("Error: ", error);
+      } finally {
+        setLoading(false)
+      }
+    };
     fetchCourses();
-  }, [fetchCourses]);
+  }, [status])
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
+  };
+
+  const handleChangeStatus = async (value: string) => {
+    console.log("check status: ", value)
+    setChangeStatus(value);
+    console.log("check status: ", status)
+  };
+
+  const showModalChangeStatus = (course_id: string) => {
+    setOpenChangeStatus(true);
+    setCourseId(course_id);
+  };
+
+  const handleOkChangeStatus = async () => {
+    try {
+      await axiosInstance.put("/api/course/change-status",
+        {
+          "course_id": courseId,
+          "new_status": changeStatus,
+          "comment": "This course not match for approve. Please rereview session and lesson in this course!"
+        }
+      )
+      setCourses(courses.filter(course => course._id != courseId))
+    } catch (error) {
+      console.log("Error occurred: ", error);
+      toast.error("Change Status Failed!")
+    }
+    setModalText('The modal will be closed after two seconds');
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpenChangeStatus(false);
+      setConfirmLoading(false);
+    }, 500);
+  };
+
+  const handleCancel = () => {
+    console.log('Clicked cancel button');
+    setOpenChangeStatus(false);
   };
 
   const columnsCourses: TableColumnsType<Course> = [
@@ -85,6 +162,24 @@ const AdminManageCourses: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (status: string, record: Course) => (
+        <>
+          <div className="flex justify-between">
+            <Tag color={getColor(status)}
+            >
+              {status}
+            </Tag>
+            {
+              status === "waiting_approve" ?
+                (
+                  <EditOutlined onClick={() => showModalChangeStatus(record._id)} className="text-blue-500" />
+                )
+                :
+                ""
+            }
+          </div>
+        </>
+      )
     },
 
     {
@@ -150,8 +245,40 @@ const AdminManageCourses: React.FC = () => {
       label: "Students",
     },
   ];
+  // set status for filter course by status
+  const handleChangeFilterStatus = (value: string) => {
+    setStatus(value);
+  };
+
   return (
     <div>
+      {/* modal change status */}
+      <Modal
+        title="Change Status"
+        open={openChangeStatus}
+        onOk={handleOkChangeStatus}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <div className="text-center">
+          <p>Status: </p>
+          <Select
+            defaultValue="waiting_approve"
+            style={{ width: 200 }}
+            className="my-5"
+            onChange={handleChangeStatus}
+            options={[
+              {
+                options: [
+                  { label: <span>approve</span>, value: 'approve' },
+                  { label: <span>reject</span>, value: 'reject' },
+                ],
+              },
+            ]}
+          />
+        </div>
+      </Modal>
+
       <Modal
         title={
           <span className="text-2xl font-bold flex justify-center text-amber-700">
@@ -202,7 +329,7 @@ const AdminManageCourses: React.FC = () => {
           </div>
         )}
         <div className="flex justify-end">
-          <Button type="primary"  onClick={() => setIsModalVisible(false)}>
+          <Button type="primary" onClick={() => setIsModalVisible(false)}>
             Close
           </Button>
         </div>
@@ -223,15 +350,15 @@ const AdminManageCourses: React.FC = () => {
 
       <Space style={{ marginTop: 32, marginBottom: 16 }}>
         <Input
-            placeholder="Search..."
-            style={{ width: 200 }}
+          placeholder="Search..."
+          style={{ width: 200 }}
         />
         <Dropdown
-            menu={{
-              items,
-              selectable: true,
-              defaultSelectedKeys: ["1"],
-            }}
+          menu={{
+            items,
+            selectable: true,
+            defaultSelectedKeys: ["1"],
+          }}
         >
           <Button>
             <Space>
@@ -240,13 +367,30 @@ const AdminManageCourses: React.FC = () => {
             </Space>
           </Button>
         </Dropdown>
-
+        <Select
+          defaultValue="new"
+          style={{ width: 200 }}
+          className="m-5"
+          onChange={handleChangeFilterStatus}
+          options={[
+            {
+              options: [
+                { label: <span>new</span>, value: 'new' },
+                { label: <span>waiting_approve</span>, value: 'waiting_approve' },
+                { label: <span>approve</span>, value: 'approve' },
+                { label: <span>reject</span>, value: 'reject' },
+                { label: <span>active</span>, value: 'active' },
+                { label: <span>inactive</span>, value: 'inactive' },
+              ],
+            },
+          ]}
+        />
         <Dropdown
-            menu={{
-              items,
-              selectable: true,
-              defaultSelectedKeys: ["1"],
-            }}
+          menu={{
+            items,
+            selectable: true,
+            defaultSelectedKeys: ["1"],
+          }}
         >
           <Button>
             <Space>

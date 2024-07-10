@@ -526,7 +526,9 @@ const AdminManageCategories: React.FC = () => {
       label: "Students",
     },
   ];
-
+  if (loading === true) {
+    return <p className="text-center flex justify-center">Loading ...</p>
+  }
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -539,15 +541,15 @@ const AdminManageCategories: React.FC = () => {
         </Breadcrumb>
         <Space style={{ marginTop: 32, marginBottom: 16 }}>
           <Input
-              placeholder="Search..."
-              style={{ width: 200 }}
+            placeholder="Search..."
+            style={{ width: 200 }}
           />
           <Dropdown
-              menu={{
-                items,
-                selectable: true,
-                defaultSelectedKeys: ["1"],
-              }}
+            menu={{
+              items,
+              selectable: true,
+              defaultSelectedKeys: ["1"],
+            }}
           >
             <Button>
               <Space>
@@ -558,11 +560,11 @@ const AdminManageCategories: React.FC = () => {
           </Dropdown>
 
           <Dropdown
-              menu={{
-                items,
-                selectable: true,
-                defaultSelectedKeys: ["1"],
-              }}
+            menu={{
+              items,
+              selectable: true,
+              defaultSelectedKeys: ["1"],
+            }}
           >
             <Button>
               <Space>
@@ -578,15 +580,13 @@ const AdminManageCategories: React.FC = () => {
           Add New Category
         </Button>
       </div>
-      <Spin spinning={loading}>
-        <Table
-          columns={columns}
-          dataSource={data}
-          rowKey="_id"
-          pagination={false}
-          onChange={handleTableChange}
-        />
-      </Spin>
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey="_id"
+        pagination={false}
+        onChange={handleTableChange}
+      />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

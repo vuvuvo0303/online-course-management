@@ -1,10 +1,9 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps, Tag } from "antd";
 import { Category, Course } from "../../../models";
 import { User } from "../../../models/User";
-import { getColor, host_main } from "../../../consts";
+import { getColor } from "../../../consts";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
@@ -15,26 +14,54 @@ const InstructorManageCourses: React.FC = () => {
   const [userId, setUserId] = useState<string>('');
   const [courseId, setCourseId] = useState<string>('');
   const [open, setOpen] = useState(false);
+  const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('');
   const token = localStorage.getItem('token');
+  //status for filter course by status
   const [status, setStatus] = useState<string>('new');
+  //status for change status
+  const [changeStatus, setChangeStatus] = useState<string>('new');
   const [cateId, setCateId] = useState<string>('java');
   const [keyword, setKeyword] = useState<string>('');
   const [categories, setCategories] = useState<Category[]>([]);
+
   const showModal = (_id: string) => {
     setOpen(true);
     setModalText("Do you want to delete course with id: " + _id);
     setCourseId(_id);
   };
 
+  const showModalChangeStatus = (course_id: string) => {
+    setOpenChangeStatus(true);
+    setCourseId(course_id);
+  };
+  // handle to change status
+  const handleOkChangeStatus = async () => {
+    try {
+      await axiosInstance.put("/api/course/change-status",
+        {
+          "course_id": courseId,
+          "new_status": changeStatus,
+          "comment": "This course not match for approve. Please rereview session and lesson in this course!"
+        }
+      )
+      setCourses(courses.filter(course => course._id!= courseId))
+    } catch (error) {
+      console.log("Error occurred: ", error);
+      toast.error("Change Status Failed!")
+    }
+    setModalText('The modal will be closed after two seconds');
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpenChangeStatus(false);
+      setConfirmLoading(false);
+    }, 500);
+  };
+  // handle delete ok
   const handleOk = async () => {
     try {
-      const deleted = await axios.delete<Course>(`${host_main}/api/course/${courseId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
+      const deleted = await axiosInstance.delete(`/api/course/${courseId}`)
       console.log("check deleted: ", deleted);
       toast.success("Delete Successfully!")
       setCourses(courses.filter(course => course._id != courseId))
@@ -53,18 +80,18 @@ const InstructorManageCourses: React.FC = () => {
   const handleCancel = () => {
     console.log('Clicked cancel button');
     setOpen(false);
+    setOpenChangeStatus(false);
   };
 
   useEffect(() => {
     const userString = localStorage.getItem("user");
-
     const user: User = userString ? JSON.parse(userString) : null;
     console.log("check user: ", user);
     setUserId(user?._id);
     console.log("check userId: ", user?._id);
 
   }, []);
-
+  //fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -88,7 +115,7 @@ const InstructorManageCourses: React.FC = () => {
     };
     fetchCategories();
   }, [token])
-
+  //fetch courses
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -121,9 +148,13 @@ const InstructorManageCourses: React.FC = () => {
   if (loading) {
     return <p className="flex justify-center items-center">Loading ...</p>
   }
-  //setStatus
+  //setStatus for filter course by status
   const handleChange = (value: string) => {
     setStatus(value);
+  };
+  // set status for chang status
+  const handleChangeStatus = async (value: string) => {
+    setChangeStatus(value);
   };
   // setCateId
   const handleCateChange = (value: string) => {
@@ -150,12 +181,15 @@ const InstructorManageCourses: React.FC = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status: string) => (
+      render: (status: string, record: Course) => (
         <>
-          <Tag color={getColor(status)}
-          >
-            {status}
-          </Tag>
+          <div className="flex justify-between">
+            <Tag color={getColor(status)}
+            >
+              {status}
+            </Tag>
+            <EditOutlined onClick={()=>showModalChangeStatus(record._id)} className="text-blue-500" />
+          </div>
         </>
       )
     },
@@ -190,8 +224,37 @@ const InstructorManageCourses: React.FC = () => {
 
   return (
     <div>
+      {/* modal change status */}
       <Modal
-        title="Title"
+        title="Change Status"
+        open={openChangeStatus}
+        onOk={handleOkChangeStatus}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <div className="text-center">
+          <p>Status: </p>
+          <Select
+            defaultValue="new"
+            style={{ width: 200 }}
+            className="my-5"
+            onChange={handleChangeStatus}
+            options={[
+              {
+                options: [
+                  { label: <span>new</span>, value: 'new' },
+                  { label: <span>waiting_approve</span>, value: 'waiting_approve' },
+                  { label: <span>active</span>, value: 'active' },
+                  { label: <span>inactive</span>, value: 'inactive' },
+                ],
+              },
+            ]}
+          />
+        </div>
+      </Modal>
+      {/* modal delete course */}
+      <Modal
+        title="Delete Course"
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
@@ -251,7 +314,7 @@ const InstructorManageCourses: React.FC = () => {
           />
         </div>
         <div>
-        <Link to={"/instructor/manage-courses/create-course"}><Button type="primary" className="float-right m-5">Add New</Button></Link>
+          <Link to={"/instructor/manage-courses/create-course"}><Button type="primary" className="float-right m-5">Add New</Button></Link>
         </div>
       </div>
       <Table columns={columnsCourses} dataSource={courses} />
