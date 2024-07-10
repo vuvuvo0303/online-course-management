@@ -1,7 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import config from "../secret/config.ts";
-import {useNavigate} from "react-router-dom";
 import {paths} from "../consts";
 
 const axiosInstance = axios.create({
@@ -53,13 +52,11 @@ axiosInstance.interceptors.response.use(
                 }
                 else if(error.response.status === 404){
                     toast.error(data.message);
-                    const navigate = useNavigate();
-                    navigate(paths.NOTFOUND);
+                    window.location.href = paths.NOTFOUND;
                 }
                 else if(error.response.status === 500){
-                    const navigate = useNavigate();
                     toast.error(data.message);
-                    navigate(paths.INTERNAL_SERVER_ERROR);
+                    window.location.href = paths.INTERNAL_SERVER_ERROR;
                 }
                 else {
                     toast.error(data.message);

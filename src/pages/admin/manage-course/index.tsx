@@ -13,7 +13,7 @@ import {
   TableColumnsType,
   TablePaginationConfig
 } from "antd";
-import { API_GET_COURSE } from "../../../consts";
+import {API_GET_COURSES} from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -34,7 +34,7 @@ const AdminManageCourses: React.FC = () => {
   const fetchCourses = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.post(API_GET_COURSE, {
+      const response = await axiosInstance.post(API_GET_COURSES, {
         pageInfo: {
           pageNum: pagination.current,
           pageSize: pagination.pageSize,
