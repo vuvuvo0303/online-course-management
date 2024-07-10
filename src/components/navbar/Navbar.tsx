@@ -8,7 +8,7 @@ import SearchTool from '../SearchTool';
 import Drawer from '../Drawer';
 import PopoverContent from '../PopoverContent';
 import Popup from '../Popup';
-import {checkTokenExpiration} from "../../services/auth.ts";
+import { checkTokenExpiration } from "../../services/auth.ts";
 
 
 const Navbar: React.FC = () => {
@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
           <Row>
             <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
-                src={dataUser.avatarUrl ? dataUser.avatarUrl : "https://firebasestorage.googleapis.com/v0/b/online-course-management-e9629.appspot.com/o/z5598376234724_b337fb917be166afee20d01ef791b592.jpg?alt=media&token=c4e29e03-47bc-406b-a326-f4ea52c9fdcc"}
+                src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
                 className="hover:cursor-pointer mt-1"
                 size={50}
                 icon={<UserOutlined />}
@@ -166,7 +166,7 @@ const Navbar: React.FC = () => {
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
-            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} max-h-30px`}
+            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} `}
             style={{ maxHeight: '40px' }}
           />
         </Link>
@@ -239,8 +239,7 @@ const Navbar: React.FC = () => {
                   <p onClick={(e) => e.preventDefault()}>
                     <Space>
                       <Avatar
-                        src={dataUser.avatarUrl ? dataUser.avatarUrl : "https://firebasestorage.googleapis.com/v0/b/online-course-management-e9629.appspot.com/o/z5598376234724_b337fb917be166afee20d01ef791b592.jpg?alt=media&token=c4e29e03-47bc-406b-a326-f4ea52c9fdcc"}
-                        size={40}
+                        src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
                         className="hover:cursor-pointer"
                         icon={<UserOutlined />}
                       />

@@ -1,30 +1,39 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { paths } from '../consts';
+import { Link, useNavigate } from 'react-router-dom';
 import { Drawer, Space, Avatar } from 'antd';
 import { MenuOutlined, CaretRightOutlined, CaretLeftOutlined } from '@ant-design/icons';
 import { categoryFilters, categoryCourse } from '../consts/index';
+import { checkTokenExpiration } from "../services/auth.ts";
 
 const SideBar: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [courseOpen, setCourseOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const navigate = useNavigate();
     const [placement] = useState<'left'>('left');
-    const [userData, setUserData] = useState<{ fullName: string | null, avatarUrl: string | null }>({
+    const [dataUser, setDataUser] = useState<{ role: string | null; fullName: string | null; email: string | null; avatarUrl: string | null }>({
+        role: null,
         fullName: null,
+        email: null,
         avatarUrl: null,
     });
 
+    const user = localStorage.getItem("user");
+
     useEffect(() => {
-        const user = localStorage.getItem('user');
+        if (checkTokenExpiration(navigate)) {
+            return;
+        }
         if (user) {
             try {
-                const parsedUser = JSON.parse(user);
-                setUserData({ fullName: parsedUser.fullName, avatarUrl: parsedUser.avatar });
+                const userData = JSON.parse(user);
+                setDataUser({ role: userData.role, fullName: userData.name, email: userData.email, avatarUrl: userData.avatar });
             } catch (error) {
-                console.error('Error parsing user data from localStorage', error);
+                //
             }
         }
-    }, []);
+    }, [navigate, user]);
 
     const showDrawer = () => {
         setOpen(true);
@@ -46,6 +55,7 @@ const SideBar: React.FC = () => {
         setSelectedCategory(null);
     };
 
+
     return (
         <>
             <Space>
@@ -62,11 +72,13 @@ const SideBar: React.FC = () => {
             >
                 <div className="p-4">
                     <div className="flex items-center">
-                        <Avatar size="large" src={userData.avatarUrl} className="bg-purple-500 mr-3">
-                            {userData.fullName ? userData.fullName[0] : 'U'}
+                        <Avatar size="large"
+                            src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
+                            className="bg-purple-500 mr-3">
+                            {dataUser.fullName ? dataUser.fullName[0] : 'U'}
                         </Avatar>
                         <div>
-                            <div className="font-bold text-lg">Hi, {userData.fullName || 'Guest'}</div>
+                            <div className="font-bold text-lg">Hi, {dataUser.fullName || 'Guest'}</div>
                         </div>
                     </div>
                 </div>

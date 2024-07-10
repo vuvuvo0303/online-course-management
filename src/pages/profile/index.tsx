@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Student, Admin, Instructor } from "../../models";
-import { Modal, Button, Form, Input, Tabs, Empty } from "antd";
+import { Modal, Button, Form, Input, Tabs } from "antd";
 import styles from "./profile.module.css";
-import axios from "axios";
 
 const { TabPane } = Tabs;
 
@@ -11,7 +10,6 @@ const Profile: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [forceUpdateFlag, setForceUpdateFlag] = useState(false);
-  const [courses, setCourses] = useState<any[]>([]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -25,30 +23,14 @@ const Profile: React.FC = () => {
     setUser(userObj);
   }, [forceUpdateFlag]);
 
-  useEffect(() => {
-    if (user && user.role === "Student") {
-      fetchCourses();
-    }
-  }, [user]);
-
-  const fetchCourses = async () => {
-    try {
-      const response = await axios.get(
-        "https://665fbf245425580055b0b23d.mockapi.io/courses"
-      );
-      setCourses(response.data);
-    } catch (error) {
-      console.error("Failed to fetch courses:", error);
-    }
+  const handleInputChange = (field: string, value: any) => {
+    setUser((prevState: any) => ({
+      ...prevState,
+      [field]: value,
+    }));
+    localStorage.setItem("user", JSON.stringify({ ...user, [field]: value }));
   };
 
-  const showEditModal = () => {
-    setIsModalVisible(true);
-    form.setFieldsValue({
-      fullName: user.fullName,
-      avatarUrl: user.avatarUrl,
-    });
-  };
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -71,7 +53,6 @@ const Profile: React.FC = () => {
       localStorage.setItem("user", JSON.stringify(updatedUser));
 
       setIsModalVisible(false);
-
       setForceUpdateFlag(!forceUpdateFlag);
     } catch (error) {
       console.error("Validation failed:", error);
@@ -88,8 +69,7 @@ const Profile: React.FC = () => {
   const storedCreatedDate = new Date(user.createdDate).toUTCString();
   let storedLastLogin = user.lastLogin;
 
-  // Convert storedLastLogin to UTC format
-  if (role === "Admin" && storedLastLogin) {
+  if (role === "admin" && storedLastLogin) {
     storedLastLogin = new Date(storedLastLogin).toUTCString();
   }
 
@@ -100,7 +80,13 @@ const Profile: React.FC = () => {
       user.email,
       "student",
       user.avatarUrl,
-      storedCreatedDate
+      storedCreatedDate,
+      user.status,
+      user.biography,
+      user.facebook,
+      user.github,
+      user.linkedin,
+      user.twitter
     );
   } else if (role === "admin") {
     displayUser = new Admin(
@@ -131,54 +117,125 @@ const Profile: React.FC = () => {
     return <div>Error: User role is not recognized.</div>;
   }
 
-  return (
-    <div>
-      <div className={styles.profileContainer}>
-        <div className={styles.coverPhoto}>
-          <img
-            src="https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="Cover"
-            className={styles.coverImage}
-          />
-          <img
-            src={user.avatarUrl}
-            alt="Avatar"
-            className={styles.profileAvatar}
-          />
-        </div>
-        <div className={styles.tab}>
-          <Tabs defaultActiveKey="1" centered>
-            <TabPane tab="About Me" key="1">
-              <div className={styles.profileDetails}>
-                <h1 className={styles.profileHeader}>Profile</h1>
-                <Button
-                  type="primary"
-                  onClick={showEditModal}
-                  className={styles.editButton}
-                >
-                  Edit Profile
-                </Button>
-                <p className={styles.profileDetailItem}>
-                  <strong>Full Name: </strong>
-                  {displayUser.name}
-                </p>
-                <p className={styles.profileDetailItem}>
-                  <strong>Email: </strong>
-                  {displayUser.email}
-                </p>
-                {/* <p className={styles.profileDetailItem}>
-                  <strong>Created Date: </strong>
-                  {displayUser.created_at}
-                </p> */}
+  // const handleSaveChanges = () => {
+  //   // Here you can implement your logic to save editedUser
+  //   // For example, you might send a request to your backend API
 
-                {displayUser instanceof Student && (
+  //   // Replace this with your actual saving logic
+  //   console.log("Saving changes:", displayUser);
+  //   alert("Changes saved successfully!"); // Example alert, replace with your actual saving code
+  // };
+
+  return (
+    <div className="w-full">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-4">Profiles and Settings</h1>
+        <div>
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="F-learn Profile" key="1">
+              <div className="space-y-4">
+                {/* <Button type="primary" onClick={showEditModal} className="bg-blue-500 text-white py-2 px-4 rounded">
+                  Edit Profile
+                </Button> */}
+                {/* <button
+                  onClick={handleSaveChanges}
+                  className="bg-blue-500 text-white py-2 px-4 rounded"
+                >
+                  Save Changes
+                </button> */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p className={styles.profileDetailItem}>
-                      <strong>Status: </strong>
-                      {displayUser.status ? "Active" : "Inactive"}
-                    </p>
+                    <div className="mb-4 max-w-[30rem]">
+                      <strong className="block mb-2">Full Name:</strong>
+                      <input
+                        type="fullname"
+                        className="p-4 border border-gray-300 h-[3.5rem] text-base w-full"
+                        value={displayUser.name}
+                        onChange={(e) => handleInputChange('name', e.target.value)}
+                      />
+                    </div>
+                    <div className="mb-4 max-w-[30rem]">
+                      <strong className="block mb-2">Email:</strong>
+                      <div className="p-4 border border-gray-300 h-[3.5rem] text-base">
+                        {displayUser.email}
+                      </div>
+                    </div>
+                    {displayUser instanceof Student && (
+                      <>
+                        <div className="mb-4 max-w-[30rem]">
+                          <strong className="block mb-2">Status:</strong>
+                          <div className="p-4 border border-gray-300 h-[3.5rem] text-base">
+                            {displayUser.status ? "Active" : "Inactive"}
+                          </div>
+                        </div>
+                        <div className="mb-4 max-w-[30rem]">
+                          <strong className="block mb-2">Biography:</strong>
+                          <input
+                            type="text"
+                            className="p-4 border border-gray-300 h-[3.5rem] text-base w-full"
+                            // value={displayUser.biography || ''}
+                            onChange={(e) => handleInputChange('biography', e.target.value)}
+                          />
+                        </div>
+                        <Button>
+                          Save
+                        </Button>
+                      </>
+                    )}
                   </div>
-                )}
+                  {displayUser instanceof Student && (
+                    <div>
+                      <div className="mb-4 w-full">
+                        <strong className="block mb-2">Twitter:</strong>
+                        <div >
+                          <span className="p-4 bg-gray-200 border border-gray-300 h-[3.5rem] text-base">http://www.twitter.com/</span>
+                          <input
+                            type="text"
+                            className="p-4 border border-gray-300 h-[3.5rem] text-base"
+                            // value={displayUser.biography || ''}
+                            onChange={(e) => handleInputChange('biography', e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-4 w-full">
+                        <strong className="block mb-2">Facebook:</strong>
+                        <div>
+                          <span className="p-4 bg-gray-200 border border-gray-300 h-[3.5rem] text-base">http://www.facebook.com/</span>
+                          <input
+                            type="text"
+                            className="p-4 border border-gray-300 h-[3.5rem] text-base"
+                            // value={displayUser.biography || ''}
+                            onChange={(e) => handleInputChange('facebook', e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-4 w-full">
+                        <strong className="block mb-2">Linkedin:</strong>
+                        <div>
+                          <span className="p-4 bg-gray-200 border border-gray-300 h-[3.5rem] text-base">http://www.linkedin.com/</span>
+                          <input
+                            type="text"
+                            className="p-4 border border-gray-300 h-[3.5rem] text-base"
+                            // value={displayUser.biography || ''}
+                            onChange={(e) => handleInputChange('linkedin', e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-4 w-full">
+                        <strong className="block mb-2">Youtube:</strong>
+                        <div>
+                          <span className="p-4 bg-gray-200 border border-gray-300 h-[3.5rem] text-base">http://www.youtube.com/</span>
+                          <input
+                            type="text"
+                            className="p-4 border border-gray-300 h-[3.5rem] text-base"
+                            // value={displayUser.biography || ''}
+                            onChange={(e) => handleInputChange('youtube', e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 {displayUser instanceof Admin && (
                   <div>
                     <p className={styles.profileDetailItem}>
@@ -204,24 +261,26 @@ const Profile: React.FC = () => {
                 )}
               </div>
             </TabPane>
-            {role === "Student" && (
-              <TabPane tab="Purchased Courses" key="2">
-                <div className={styles.coursesContainer}>
-                  <h1 className={styles.coursesHeader}>My Courses</h1>
-                  {courses.length > 0 ? (
-                    <ul className={styles.coursesList}>
-                      {courses.map((course: any, index: number) => (
-                        <li key={index} className={styles.courseItem}>
-                          {course.name}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <Empty description="No courses purchased" />
-                  )}
+            <TabPane tab="Profile Picture" key="2">
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <p>
+                    <span className="text-lg">Image preview</span> <br />
+                    <span className="text-[0.8rem]">Minimum 200x200 pixels, Maximum 6000x6000 pixels</span>
+                  </p>
+                  <div className="p-4 border border-gray-300 mb-4 h-[20rem] max-w-[40rem] text-base flex items-center justify-center">
+                    <img
+                      src="../public/x1.jpg"
+                      alt="Avatar"
+                      className="h-full object-contain"
+                    />
+                  </div>
                 </div>
-              </TabPane>
-            )}
+                <Button>
+                  Save
+                </Button>
+              </div>
+            </TabPane>
           </Tabs>
         </div>
       </div>
