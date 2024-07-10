@@ -37,7 +37,7 @@ import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
-import { API_CHANGE_STATUS, API_CREATE_USER, API_GET_USERS } from "../../../consts";
+import {API_CHANGE_STATUS, API_CREATE_USER, API_DELETE_USER, API_GET_USERS} from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 
 interface ApiError {
@@ -75,7 +75,7 @@ const AdminManageUsers: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<User>({});
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
   const [selectedRole, setSelectedRole] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("true");
@@ -164,7 +164,7 @@ const AdminManageUsers: React.FC = () => {
         setLoading(true);
 
         let avatarUrl = values.avatar;
-
+        
         if (
           values.avatar &&
           typeof values.avatar !== "string" &&
@@ -390,7 +390,7 @@ const AdminManageUsers: React.FC = () => {
         ),
       },
     ],
-    [sortColumn, formatDate, handleDelete]
+    [formatDate, handleStatusChange, form, handleDelete]
   );
 
   const handleTableChange = (pagination: PaginationProps) => {
@@ -431,20 +431,24 @@ const AdminManageUsers: React.FC = () => {
         email: values.email,
       };
 
-      const response: AxiosResponse<any> = await axiosInstance.put(
+      const response = await axiosInstance.put(
         `/api/users/${formData._id}`,
         updatedUser
       );
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       if (response.success) {
         // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
-          const roleChangeResponse: AxiosResponse<any> =
+          const roleChangeResponse =
             await axiosInstance.put(`/api/users/change-role`, {
               user_id: formData._id,
               role: values.role,
             });
 
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
           if (!roleChangeResponse.success) {
             throw new Error("Failed to change user role");
           }
