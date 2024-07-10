@@ -1,23 +1,12 @@
-import {DeleteOutlined, DownOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined} from "@ant-design/icons";
+import { EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import {
-  Breadcrumb,
-  Button,
-  Dropdown,
-  Image,
-  Input, MenuProps,
-  Modal,
-  Space,
-  Table,
-  TableColumnsType,
-  TablePaginationConfig
-} from "antd";
+import { Breadcrumb, Button, Image, Input, Modal, Select, Space, Table, TableColumnsType, TablePaginationConfig } from "antd";
 import { API_GET_COURSE } from "../../../consts";
 import axiosInstance from "../../../services/api";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import {Course} from "../../../models";
+import { Course } from "../../../models";
 
 const AdminManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -25,6 +14,9 @@ const AdminManageCourses: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectCategory, setSelecCategory] = useState<string>();
+  const [searchText, setSearchText] = useState("");
+
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -34,6 +26,7 @@ const AdminManageCourses: React.FC = () => {
   const fetchCourses = useCallback(async () => {
     setLoading(true);
     try {
+      console.log("Fetching courses with category:", selectCategory);
       const response = await axiosInstance.post(API_GET_COURSE, {
         pageInfo: {
           pageNum: pagination.current,
@@ -41,8 +34,13 @@ const AdminManageCourses: React.FC = () => {
         },
         searchCondition: {
           status: "new",
+          category_name: selectCategory,
+          keyword: searchText,
+
         },
       });
+
+      console.log("API Response:", response.data);
 
       if (response.data && response.data.pageData) {
         setCourses(response.data.pageData);
@@ -58,11 +56,21 @@ const AdminManageCourses: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [pagination.current, pagination.pageSize]);
+  }, [pagination.current, pagination.pageSize, selectCategory,searchText]);
 
   useEffect(() => {
     fetchCourses();
+  }, [fetchCourses, selectCategory]);
+
+  const handleSearch = useCallback(() => {
+    setPagination((prev) => ({
+      ...prev,
+      current: 1,
+    }));
+    fetchCourses();
   }, [fetchCourses]);
+
+
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
@@ -74,7 +82,6 @@ const AdminManageCourses: React.FC = () => {
       width: "50",
       dataIndex: "name",
       key: "name",
-
       render: (text, record) => (
         <Button type="link" onClick={() => showModal(record)}>
           {text}
@@ -86,7 +93,6 @@ const AdminManageCourses: React.FC = () => {
       dataIndex: "status",
       key: "status",
     },
-
     {
       title: "Created Date",
       dataIndex: "created_at",
@@ -108,7 +114,6 @@ const AdminManageCourses: React.FC = () => {
           <Link to={`/admin/manage-course/${record._id}/manage-session`}>
             <EyeOutlined className="text-purple-500 m-2" />
           </Link>
-          <DeleteOutlined className="text-red-500 m-2" />
         </>
       ),
     },
@@ -126,32 +131,33 @@ const AdminManageCourses: React.FC = () => {
     setSelectedCourse(record);
     setIsModalVisible(true);
   };
+
+  
+
   const formatVND = (value: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(value);
   };
-  const items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: "All",
-    },
-    {
-      key: "2",
-      label: "Admins",
-    },
-    {
-      key: "3",
-      label: "Instructors",
-    },
-    {
-      key: "4",
-      label: "Students",
-    },
-  ];
+
+
+  const uniqueCategories = Array.from(new Set(courses.map((course) => course.category_name)));
+
+  const handleCategory = (value: string) => {
+    setSelecCategory(value);
+    console.log("Selected Category:", value);
+  };
+
+
+
+  
+  
+
   return (
+    
     <div>
+      
       <Modal
         title={
           <span className="text-2xl font-bold flex justify-center text-amber-700">
@@ -202,7 +208,7 @@ const AdminManageCourses: React.FC = () => {
           </div>
         )}
         <div className="flex justify-end">
-          <Button type="primary"  onClick={() => setIsModalVisible(false)}>
+          <Button type="primary" onClick={() => setIsModalVisible(false)}>
             Close
           </Button>
         </div>
@@ -222,41 +228,20 @@ const AdminManageCourses: React.FC = () => {
       />
 
       <Space style={{ marginTop: 32, marginBottom: 16 }}>
-        <Input
-            placeholder="Search..."
+      <Input.Search
+            placeholder="Search By Name"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onSearch={handleSearch}
             style={{ width: 200 }}
-        />
-        <Dropdown
-            menu={{
-              items,
-              selectable: true,
-              defaultSelectedKeys: ["1"],
-            }}
-        >
-          <Button>
-            <Space>
-              Filter Categories
-              <DownOutlined />
-            </Space>
-          </Button>
-        </Dropdown>
-
-        <Dropdown
-            menu={{
-              items,
-              selectable: true,
-              defaultSelectedKeys: ["1"],
-            }}
-        >
-          <Button>
-            <Space>
-              Filter Parent Categories
-              <DownOutlined />
-            </Space>
-          </Button>
-        </Dropdown>
-        <Button >Clear filters</Button>
-        <Button >Clear filters and sorters</Button>
+          />
+        <Select value={selectCategory} onChange={handleCategory} style={{ width: 120 }}>
+          {uniqueCategories.map((category) => (
+            <Select.Option key={category} value={category}>
+              {category}
+            </Select.Option>
+          ))}
+        </Select>
       </Space>
       <h1 className="text-center mb-10">Manage Course</h1>
       <Table columns={columnsCourses} dataSource={courses} pagination={pagination} onChange={handleTableChange} />

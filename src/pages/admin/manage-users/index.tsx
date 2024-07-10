@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Breadcrumb,
   Button,
@@ -20,21 +20,23 @@ import {
   DeleteOutlined,
   EditOutlined,
   HomeOutlined,
+  OpenAIOutlined,
   PlusOutlined,
-  SearchOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
+
 import { format } from "date-fns";
 import { Student } from "../../../models";
 import { toast } from "react-toastify";
-import Highlighter from "react-highlight-words";
+
 import axiosInstance from "../../../services/api.ts";
-import type { GetProp, InputRef, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
-import type { FilterDropdownProps } from "antd/es/table/interface";
+import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
+
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
 import { API_CHANGE_STATUS, API_CREATE_USER, API_GET_USERS } from "../../../consts";
+
 
 interface ApiError {
   code: number;
@@ -56,8 +58,6 @@ type AxiosResponse<T> = {
   error?: [];
 };
 
-type DataIndex = keyof User;
-
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
   const [sortOrder, setSortOrder] = useState<{
@@ -67,8 +67,6 @@ const AdminManageUsers: React.FC = () => {
     updated_at: "ascend",
   });
   const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState<DataIndex | "">("");
-  const searchInput = useRef<InputRef>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
@@ -100,7 +98,7 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -113,6 +111,7 @@ const AdminManageUsers: React.FC = () => {
           role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
           status: selectedStatus === "true" ? true : selectedStatus === "false" ? false : undefined,
           is_delete: false,
+          keyword: searchText,
         },
         pageInfo: {
           pageNum: pagination.current,
@@ -135,7 +134,7 @@ const AdminManageUsers: React.FC = () => {
       //
     }
     setLoading(false);
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
 
   const handleDelete = useCallback(
     async (_id: string, email: string) => {
@@ -147,7 +146,7 @@ const AdminManageUsers: React.FC = () => {
 
         localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
-        // Handle error silently
+        //
       }
     },
     [fetchUsers]
@@ -222,20 +221,6 @@ const AdminManageUsers: React.FC = () => {
     [data, sortOrder]
   );
 
-  const handleSearch = useCallback(
-    (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
-      confirm();
-      setSearchText(selectedKeys[0]);
-      setSearchedColumn(dataIndex);
-    },
-    []
-  );
-
-  const handleReset = useCallback((clearFilters: () => void) => {
-    clearFilters();
-    setSearchText("");
-  }, []);
-
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -279,77 +264,6 @@ const AdminManageUsers: React.FC = () => {
     </button>
   );
 
-  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Student> => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-          style={{ marginBottom: 8, display: "block" }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            Close
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
-    onFilter: (value, record) =>
-      record[dataIndex]
-        ?.toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()) || false,
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
-      }
-    },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
-      ),
-  });
-
   const columns: TableColumnsType<Student> = useMemo(
     () => [
       {
@@ -357,21 +271,12 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "name",
         key: "name",
         width: "20%",
-        ...getColumnSearchProps("name"),
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("name"),
-        }),
       },
       {
         title: "Email",
         dataIndex: "email",
         key: "email",
         width: "20%",
-
-        ...getColumnSearchProps("email"),
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("email"),
-        }),
       },
       {
         title: "Role",
@@ -483,7 +388,7 @@ const AdminManageUsers: React.FC = () => {
         ),
       },
     ],
-    [getColumnSearchProps, sortColumn, formatDate, handleDelete]
+    [sortColumn, formatDate, handleDelete]
   );
 
   const handleTableChange = (pagination: PaginationProps) => {
@@ -564,15 +469,24 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleRoleChange = (value: string) => {
     setSelectedRole(value);
+    console.log("hadelRole ", value);
   };
   const handleStatus = useCallback((value: string) => {
     setSelectedStatus(value);
   }, []);
+  const handleSearch = useCallback(() => {
+    setPagination((prev) => ({
+      ...prev,
+      current: 1,
+    }));
+    fetchUsers();
+  }, [fetchUsers]);
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
-          <Breadcrumb.Item href="/">
+          <Breadcrumb.Item href="">
             <HomeOutlined />
           </Breadcrumb.Item>
           <Breadcrumb.Item>Admin</Breadcrumb.Item>
@@ -580,6 +494,13 @@ const AdminManageUsers: React.FC = () => {
         </Breadcrumb>
 
         <Space>
+          <Input.Search
+            placeholder="Search By Name"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onSearch={handleSearch}
+            style={{ width: 200 }}
+          />
           <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }}>
             <Select.Option value="All">All Roles</Select.Option>
             <Select.Option value="Admin">Admin</Select.Option>
@@ -607,13 +528,12 @@ const AdminManageUsers: React.FC = () => {
         </div>
       </div>
 
-
       <Spin spinning={loading}>
         <Table
           columns={columns}
           dataSource={data}
           rowKey="_id"
-          pagination={false} // Disable the default pagination
+          pagination={false} 
           onChange={handleTableChange}
         />
       </Spin>
