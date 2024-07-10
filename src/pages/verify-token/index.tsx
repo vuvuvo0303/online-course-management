@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { Button, Form, Input } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import axiosInstance from "../../services/api.ts";
+import axiosInstance from "../../services/axiosInstance.ts";
 import { toast } from "react-toastify";
 import { API_RESEND_TOKEN, API_VERIFY_TOKEN, paths } from "../../consts";
 

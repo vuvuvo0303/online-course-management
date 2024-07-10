@@ -8,7 +8,7 @@ import { Course, Session } from "../../../../../models";
 import { toast } from "react-toastify";
 import { User } from "../../../../../models/User";
 import { host_main } from "../../../../../consts";
-import axiosInstance from "../../../../../services/api";
+import axiosInstance from "../../../../../services/axiosInstance.ts";
 
 const formItemLayout = {
   labelCol: {

@@ -14,7 +14,7 @@ import {
   TablePaginationConfig
 } from "antd";
 import { API_GET_COURSE } from "../../../consts";
-import axiosInstance from "../../../services/api";
+import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {Course} from "../../../models";
@@ -192,7 +192,7 @@ const AdminManageCourses: React.FC = () => {
               <span className="text-base font-bold">Course Video:</span>
               <span>
                 <Link to={selectedCourse.video_url ?? "https://youtube.com"} target="_blank" rel="noopener noreferrer">
-                  <Button className="bg-rose-500" type="primary">
+                  <Button className="bg-blue-500" type="primary">
                     <PlayCircleOutlined />
                     Watch Video
                   </Button>

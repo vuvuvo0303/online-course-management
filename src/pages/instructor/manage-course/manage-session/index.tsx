@@ -6,7 +6,7 @@ import { Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { host_main } from "../../../../consts";
-import axiosInstance from "../../../../services/api";
+import axiosInstance from "../../../../services/axiosInstance.ts";
 
 const ManageSession = () => {
     const { courseId } = useParams<{ courseId: string }>();

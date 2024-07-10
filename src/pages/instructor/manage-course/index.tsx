@@ -7,7 +7,7 @@ import { User } from "../../../models/User";
 import { getColor, host_main } from "../../../consts";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import axiosInstance from "../../../services/api";
+import axiosInstance from "../../../services/axiosInstance.ts";
 
 const InstructorManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Course, Lecture, Session } from "../../../../../models";
 import { toast } from "react-toastify";
-import axiosInstance from "../../../../../services/api";
+import axiosInstance from "../../../../../services/axiosInstance.ts";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);

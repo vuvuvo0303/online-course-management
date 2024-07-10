@@ -48,7 +48,7 @@ const ReviewPage: React.FC = () => {
 
     const handleAddReview = (values: ReviewFormValues) => {
         const newReview: Review = {
-            name: 'New User', // Replace with actual user data
+            name: 'New User',
             time: 'Just now',
             rating: values.rating,
             text: values.text,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import axiosInstance from '../../services/api.ts';
+import axiosInstance from '../../services/axiosInstance.ts';
 import styles from './forgot.module.css';
 import {API_FORGOT_PASSWORD, paths} from '../../consts';
 

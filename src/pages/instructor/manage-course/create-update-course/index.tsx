@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { Editor } from '@tinymce/tinymce-react';
-import axiosInstance from "../../../../services/api";
+import axiosInstance from "../../../../services/axiosInstance.ts";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },

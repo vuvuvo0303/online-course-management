@@ -123,6 +123,7 @@ export const paths = {
   ADMIN_CREATE_COURSE: "create-course",
   ADMIN_MANAGE_LECTURES: "manage-lectures",
   ADMIN_MANAGE_USERS: "manage-users",
+  ADMIN_LOGIN: "admin/login",
 
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
@@ -142,6 +143,10 @@ export const paths = {
   ADMIN_MANAGE_ALL_LECTURES: "manage-all-lectures",
   ADMIN_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/create-lecture",
   ADMIN_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
+
+  /* IMG */
+  AVATAR: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PyKYrBKAWWy6YCbQzWQcwIRqH8wYMPluIZiMpV1w0NYSbocTZz0ICWFkLcXhaMyvCwQ&usqp=CAU",
+
 };
 
 /* ROLE */
@@ -150,6 +155,7 @@ export const roles = {
   INSTRUCTOR: "instructor",
   ADMIN: "admin",
 };
+
 
 // Define the structure of the submenu
 interface categoryCourse {
