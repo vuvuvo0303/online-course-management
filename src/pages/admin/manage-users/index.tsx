@@ -35,7 +35,14 @@ import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
-import { API_CHANGE_STATUS, API_CREATE_USER, API_DELETE_USER, API_GET_USERS } from "../../../consts";
+import {
+  API_CHANGE_ROLE,
+  API_CHANGE_STATUS,
+  API_CREATE_USER,
+  API_DELETE_USER,
+  API_GET_USERS,
+  paths
+} from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { vi } from "date-fns/locale";
 
@@ -481,13 +488,6 @@ const AdminManageUsers: React.FC = () => {
   const handleStatus = useCallback((value: string) => {
     setSelectedStatus(value);
   }, []);
-  const handleSearch = useCallback(() => {
-    setPagination((prev) => ({
-      ...prev,
-      current: 1,
-    }));
-    fetchUsers();
-  }, [fetchUsers]);
 
   return (
     <div>
@@ -534,7 +534,6 @@ const AdminManageUsers: React.FC = () => {
         </div>
       </div>
 
-      <Spin spinning={loading}>
         <Table
           columns={columns}
           dataSource={data}
@@ -542,7 +541,6 @@ const AdminManageUsers: React.FC = () => {
           pagination={false}
           onChange={handleTableChange}
         />
-      </Spin>
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

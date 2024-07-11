@@ -15,7 +15,7 @@ import {
   TablePaginationConfig,
   Tag
 } from "antd";
-import { getColor } from "../../../consts";
+import {API_COURSE_STATUS, getColor} from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -40,39 +40,6 @@ const AdminManageCourses: React.FC = () => {
     total: 0,
   });
 
-  // const fetchCourses = useCallback(async () => {
-
-  //   setLoading(true);
-  //   try {
-  //     const response = await axiosInstance.post(API_GET_COURSE, {
-  //       pageInfo: {
-  //         pageNum: pagination.current,
-  //         pageSize: pagination.pageSize,
-  //       },
-  //       searchCondition: {
-  //         status: status,
-  //       },
-  //     });
-
-  //     if (response.data && response.data.pageData) {
-  //       setCourses(response.data.pageData);
-  //       setPagination((prev) => ({
-  //         ...prev,
-  //         total: response.data.pageInfo.totalItems,
-  //       }));
-  //     } else {
-  //       throw new Error("Failed to fetch courses");
-  //     }
-  //   } catch (error) {
-  //     setError("An unexpected error occurred.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }, [pagination.current, pagination.pageSize]);
-
-  // useEffect(() => {
-  //   fetchCourses();
-  // }, [fetchCourses]);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -90,9 +57,7 @@ const AdminManageCourses: React.FC = () => {
           }
         });
         if (res.data.pageData) {
-          console.log("check res: ", res);
           setCourses(res.data.pageData);
-          console.log("check courses: ", res.data);
         }
       } catch (error) {
         console.log("Error: ", error);
@@ -110,9 +75,7 @@ const AdminManageCourses: React.FC = () => {
   };
 
   const handleChangeStatus = async (value: string) => {
-    console.log("check status: ", value)
     setChangeStatus(value);
-    console.log("check status: ", status)
   };
 
   const showModalChangeStatus = (course_id: string) => {
@@ -122,16 +85,15 @@ const AdminManageCourses: React.FC = () => {
 
   const handleOkChangeStatus = async () => {
     try {
-      await axiosInstance.put("/api/course/change-status",
+      await axiosInstance.put(API_COURSE_STATUS,
         {
           "course_id": courseId,
           "new_status": changeStatus,
-          "comment": "This course not match for approve. Please rereview session and lesson in this course!"
+          "comment": "This course not match for approve. Please review session and lesson in this course!"
         }
       )
       setCourses(courses.filter(course => course._id != courseId))
     } catch (error) {
-      console.log("Error occurred: ", error);
       toast.error("Change Status Failed!")
     }
     setModalText('The modal will be closed after two seconds');
@@ -143,7 +105,6 @@ const AdminManageCourses: React.FC = () => {
   };
 
   const handleCancel = () => {
-    console.log('Clicked cancel button');
     setOpenChangeStatus(false);
   };
 
@@ -220,8 +181,6 @@ const AdminManageCourses: React.FC = () => {
     setSelectedCourse(record);
     setIsModalVisible(true);
   };
-
-  
 
   const formatVND = (value: number) => {
     return new Intl.NumberFormat("vi-VN", {
