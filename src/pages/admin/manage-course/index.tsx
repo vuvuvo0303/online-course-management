@@ -1,5 +1,5 @@
-import { DeleteOutlined, DownOutlined, EditOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import React, { useEffect, useState, useCallback } from "react";
+import { DownOutlined, EditOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
@@ -15,7 +15,7 @@ import {
   TablePaginationConfig,
   Tag
 } from "antd";
-import { API_GET_COURSE, getColor } from "../../../consts";
+import { getColor } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -186,13 +186,13 @@ const AdminManageCourses: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Action",

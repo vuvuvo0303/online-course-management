@@ -36,8 +36,16 @@ import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
-import {API_CHANGE_STATUS, API_CREATE_USER, API_DELETE_USER, API_GET_USERS, paths} from "../../../consts";
+import {
+  API_CHANGE_ROLE,
+  API_CHANGE_STATUS,
+  API_CREATE_USER,
+  API_DELETE_USER,
+  API_GET_USERS,
+  paths
+} from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
+import {vi} from "date-fns/locale";
 
 interface ApiError {
   code: number;
@@ -195,14 +203,6 @@ const AdminManageUsers: React.FC = () => {
     [fetchUsers, form]
   );
 
-  const formatDate = useCallback((dateString: string) => {
-    try {
-      return format(new Date(dateString), "dd/MM/yyyy");
-    } catch (error) {
-      console.error("Invalid date:", dateString);
-      return "Invalid date";
-    }
-  }, []);
 
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -294,14 +294,14 @@ const AdminManageUsers: React.FC = () => {
         title: "Created Date",
         dataIndex: "created_at",
         key: "created_at",
-        render: (created_at: string) => formatDate(created_at),
+        render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
         width: "10%",
       },
       {
         title: "Updated Date",
         dataIndex: "updated_at",
         key: "updated_at",
-        render: (updated_at: string) => formatDate(updated_at),
+        render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
         width: "10%",
       },
       {
@@ -387,7 +387,7 @@ const AdminManageUsers: React.FC = () => {
         ),
       },
     ],
-    [formatDate, handleStatusChange, form, handleDelete]
+    [handleStatusChange, form, handleDelete]
   );
 
   const handleTableChange = (pagination: PaginationProps) => {
@@ -439,7 +439,7 @@ const AdminManageUsers: React.FC = () => {
         // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
           const roleChangeResponse =
-            await axiosInstance.put(`/api/users/change-role`, {
+            await axiosInstance.put(API_CHANGE_ROLE, {
               user_id: formData._id,
               role: values.role,
             });

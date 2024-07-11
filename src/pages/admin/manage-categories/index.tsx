@@ -7,7 +7,6 @@ import {
   Table,
   Modal,
   Form,
-  Spin,
   Pagination,
   Popconfirm, Dropdown, MenuProps, InputRef,
 } from "antd";
@@ -27,18 +26,19 @@ import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { Link } from "react-router-dom";
-import {paths} from "../../../consts";
+import {
+  API_CREATE_CATEGORY,
+  API_DELETE_CATEGORY,
+  API_GET_CATEGORIES,
+  API_UPDATE_CATEGORY,
+  paths
+} from "../../../consts";
+import {vi} from "date-fns/locale";
 
 type DataIndex = keyof Category;
 
 const AdminManageCategories: React.FC = () => {
   const [data, setData] = useState<Category[]>([]);
-  const [sortOrder, setSortOrder] = useState<{
-    [key in DataIndex]?: "ascend" | "descend";
-  }>({
-    created_at: "ascend",
-    updated_at: "ascend",
-  });
   const [searchText, setSearchText] = useState<string>("");
   const [searchedColumn, setSearchedColumn] = useState<DataIndex | "">("");
   const searchInput = useRef<InputRef>(null);
@@ -58,9 +58,9 @@ const AdminManageCategories: React.FC = () => {
       try {
         let response;
         if (refresh) {
-          response = await axiosInstance.post("/api/category");
+          response = await axiosInstance.post(API_CREATE_CATEGORY);
         } else {
-          response = await axiosInstance.post("/api/category/search", {
+          response = await axiosInstance.post(API_GET_CATEGORIES, {
             searchCondition: {
               role: "all",
               status: true,
@@ -115,7 +115,7 @@ const AdminManageCategories: React.FC = () => {
       }
 
       try {
-        await axiosInstance.delete(`/api/category/${_id}`);
+        await axiosInstance.delete(`${API_DELETE_CATEGORY}/${_id}`);
         setData((prevData) =>
           prevData.filter((category) => category._id !== _id)
         );
@@ -226,7 +226,7 @@ const AdminManageCategories: React.FC = () => {
           updated_at: new Date().toISOString(),
         };
 
-        await axiosInstance.put(`/api/category/${values._id}`, updatedCategory);
+        await axiosInstance.put(`${API_UPDATE_CATEGORY}/${values._id}`, updatedCategory);
 
         const updatedData = data.map((category) =>
           category._id === values._id ? updatedCategory : category
@@ -286,52 +286,6 @@ const AdminManageCategories: React.FC = () => {
     [data, form, fetchCategories]
   );
 
-  const formatDate = useCallback((dateString: string) => {
-    try {
-      return format(new Date(dateString), "dd/MM/yyyy HH:mm:ss");
-    } catch (error) {
-      console.error("Invalid date:", dateString);
-      return "Invalid date";
-    }
-  }, []);
-
-  const sortColumn = useCallback(
-    (columnKey: DataIndex) => {
-      const newOrder = sortOrder[columnKey] === "ascend" ? "descend" : "ascend";
-
-      const sortedData = [...data].sort((a: Category, b: Category) => {
-        let aValue: string | number | boolean | Date | null = a[columnKey];
-        let bValue: string | number | boolean | Date | null = b[columnKey];
-
-        if (columnKey === "created_at" || columnKey === "updated_at") {
-          if (typeof aValue === "string" || typeof aValue === "number") {
-            aValue = new Date(aValue).getTime();
-          }
-          if (typeof bValue === "string" || typeof bValue === "number") {
-            bValue = new Date(bValue).getTime();
-          }
-        }
-
-        if (typeof aValue === "number" && typeof bValue === "number") {
-          return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
-        } else if (typeof aValue === "string" && typeof bValue === "string") {
-          return newOrder === "ascend"
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
-        } else if (typeof aValue === "boolean" && typeof bValue === "boolean") {
-          return newOrder === "ascend"
-            ? Number(aValue) - Number(bValue)
-            : Number(bValue) - Number(aValue);
-        } else {
-          return 0;
-        }
-      });
-
-      setSortOrder({ ...sortOrder, [columnKey]: newOrder });
-      setData(sortedData);
-    },
-    [data, sortOrder]
-  );
   const handleSearch = useCallback(
     (selectedKeys: string[], confirm: () => void, dataIndex: DataIndex) => {
       confirm();
@@ -427,9 +381,6 @@ const AdminManageCategories: React.FC = () => {
       dataIndex: "name",
       key: "name",
       ...getColumnSearchProps("name"),
-      onHeaderCell: () => ({
-        onClick: () => sortColumn("name"),
-      }),
     },
     {
       title: "Parent Category",
@@ -452,21 +403,13 @@ const AdminManageCategories: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => formatDate(created_at.toString()),
-      sortDirections: ["descend", "ascend"],
-      onHeaderCell: () => ({
-        onClick: () => sortColumn("created_at"),
-      }),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => formatDate(updated_at.toString()),
-      sortDirections: ["descend", "ascend"],
-      onHeaderCell: () => ({
-        onClick: () => sortColumn("updated_at"),
-      }),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Action",
