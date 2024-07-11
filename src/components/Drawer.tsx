@@ -59,7 +59,7 @@ const SideBar: React.FC = () => {
     return (
         <>
             <Space>
-                <MenuOutlined className="mt-1 cursor-pointer pl-6" onClick={showDrawer} style={{ fontSize: '1.5rem' }} />
+                <MenuOutlined className="mt-1 cursor-pointer " onClick={showDrawer} style={{ fontSize: '1.5rem' }} />
             </Space>
             <Drawer
                 placement={placement}

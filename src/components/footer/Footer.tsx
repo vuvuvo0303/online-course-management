@@ -3,7 +3,7 @@ import FooterColumn from './FooterColumn';
 import { footerLinks } from '../../consts/index';
 
 const Footer: React.FC = () => (
-  <section className="flex flex-col justify-start bg-[#f0f0f0] p-8">
+  <section className="flex flex-col justify-start bg-[#f0f0f0] p-8 w-full">
     <div className="flex flex-col w-full gap-12">
       <div className="flex justify-between w-full items-start">
         <div className="flex items-start flex-col">

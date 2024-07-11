@@ -10,7 +10,6 @@ import {
   Table,
   Modal,
   Form,
-  Spin,
   Pagination,
   Upload,
   Popconfirm,
@@ -36,16 +35,9 @@ import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
-import {
-  API_CHANGE_ROLE,
-  API_CHANGE_STATUS,
-  API_CREATE_USER,
-  API_DELETE_USER,
-  API_GET_USERS,
-  paths
-} from "../../../consts";
+import { API_CHANGE_STATUS, API_CREATE_USER, API_DELETE_USER, API_GET_USERS } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
-import {vi} from "date-fns/locale";
+import { vi } from "date-fns/locale";
 
 interface ApiError {
   code: number;
@@ -69,7 +61,7 @@ type AxiosResponse<T> = {
 
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
-  
+
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -171,7 +163,7 @@ const AdminManageUsers: React.FC = () => {
         setLoading(true);
 
         let avatarUrl = values.avatar;
-        
+
         if (
           values.avatar &&
           typeof values.avatar !== "string" &&
@@ -278,12 +270,12 @@ const AdminManageUsers: React.FC = () => {
         render: (role) => (
           <div
             className={`tag ${role === "student"
-                ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl p-2 border border-blue-500 text-xs"
-                : role === "instructor"
-                  ? "bg-lime-100 text-lime-400 flex justify-center rounded-xl p-2 border border-lime-500 text-xs"
-                  : role === "admin"
-                    ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl p-2 border border-yellow-500 text-xs"
-                    : "bg-gray-500 text-white"
+              ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl p-2 border border-blue-500 text-xs"
+              : role === "instructor"
+                ? "bg-lime-100 text-lime-400 flex justify-center rounded-xl p-2 border border-lime-500 text-xs"
+                : role === "admin"
+                  ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl p-2 border border-yellow-500 text-xs"
+                  : "bg-gray-500 text-white"
               }`}
           >
             {role ? role.toUpperCase() : "UNKNOWN"}
@@ -512,7 +504,7 @@ const AdminManageUsers: React.FC = () => {
             placeholder="Search By Name"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            onSearch={handleSearch}
+            // onSearch={handleSearch}
             style={{ width: 200 }}
           />
           <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }}>
@@ -547,7 +539,7 @@ const AdminManageUsers: React.FC = () => {
           columns={columns}
           dataSource={data}
           rowKey="_id"
-          pagination={false} 
+          pagination={false}
           onChange={handleTableChange}
         />
       </Spin>

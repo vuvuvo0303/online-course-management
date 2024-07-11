@@ -1,8 +1,7 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps, Tag } from "antd";
-import { Category, Course } from "../../../models";
-import { User } from "../../../models/User";
+import { Category, Course, Log } from "../../../models";
 import { getColor } from "../../../consts";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
@@ -11,13 +10,20 @@ import axiosInstance from "../../../services/axiosInstance.ts";
 const InstructorManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [userId, setUserId] = useState<string>('');
   const [courseId, setCourseId] = useState<string>('');
   const [open, setOpen] = useState(false);
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
+  const [openLogStatus, setOpenLogStatus] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('');
-  const token = localStorage.getItem('token');
+  const [logs, setLogs] = useState<Log[]>([]);
+
+  // Status default of course, before change
+  const [statusDefaultChange, setDefaultChange] = useState<string>('');
+  //status for filter log by new status
+  const [newStatus, setNewStatus] = useState<string>('');
+  //status for filter log by old status
+  const [oldStatus, setOldStatus] = useState<string>('');
   //status for filter course by status
   const [status, setStatus] = useState<string>('new');
   //status for change status
@@ -25,18 +31,67 @@ const InstructorManageCourses: React.FC = () => {
   const [cateId, setCateId] = useState<string>('java');
   const [keyword, setKeyword] = useState<string>('');
   const [categories, setCategories] = useState<Category[]>([]);
-
+  //show delete modal
   const showModal = (_id: string) => {
     setOpen(true);
     setModalText("Do you want to delete course with id: " + _id);
+    //set course id that instructor want to delete
     setCourseId(_id);
   };
-
-  const showModalChangeStatus = (course_id: string) => {
+  //show change status modal
+  const showModalChangeStatus = (status: string, course_id: string) => {
     setOpenChangeStatus(true);
+    //set course id that instructor want to change status
     setCourseId(course_id);
+    setDefaultChange(status);
+  };
+  //show log status modal
+  useEffect(() => {
+    //fetch logs
+    const fetchLog = async () => {
+      try {
+        const res = await axiosInstance.post("/api/course/log/search", {
+          "searchCondition": {
+            "course_id": courseId,
+            "keyword": "",
+            "old_status": oldStatus,
+            "new_status": newStatus,
+            "is_deleted": false
+          },
+          "pageInfo": {
+            "pageNum": 1,
+            "pageSize": 100
+          }
+        })
+        if (res) {
+          console.log("check log: ", res.data.pageData);
+          
+          setLogs(res.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
+            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+          }));
+        }
+      } catch (error) {
+        console.log("Error occurred: ", error);
+      }
+    }
+    fetchLog();
+  }, [courseId, oldStatus, newStatus]);
+
+  const showModalLogStatus = async (course_id: string) => {
+    setCourseId(course_id);
+
+    setOpenLogStatus(true);
   };
   // handle to change status
+  const handleOkLogStatus = () => {
+
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpenLogStatus(false);
+      setConfirmLoading(false);
+    }, 500);
+  };
+
   const handleOkChangeStatus = async () => {
     try {
       await axiosInstance.put("/api/course/change-status",
@@ -46,7 +101,8 @@ const InstructorManageCourses: React.FC = () => {
           "comment": "This course not match for approve. Please rereview session and lesson in this course!"
         }
       )
-      setCourses(courses.filter(course => course._id!= courseId))
+      toast.success("Change Status Successfully!");
+      setCourses(courses.filter(course => course._id != courseId))
     } catch (error) {
       console.log("Error occurred: ", error);
       toast.error("Change Status Failed!")
@@ -80,14 +136,9 @@ const InstructorManageCourses: React.FC = () => {
   const handleCancel = () => {
     setOpen(false);
     setOpenChangeStatus(false);
+    setOpenLogStatus(false);
   };
 
-  useEffect(() => {
-    const userString = localStorage.getItem("user");
-    const user: User = userString ? JSON.parse(userString) : null;
-    setUserId(user?._id);
-
-  }, []);
   //fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
@@ -102,7 +153,7 @@ const InstructorManageCourses: React.FC = () => {
               "pageNum": 1,
               "pageSize": 100
             }
-          })  
+          })
         if (res) {
           setCategories(res.data.pageData);
         }
@@ -111,12 +162,12 @@ const InstructorManageCourses: React.FC = () => {
       }
     };
     fetchCategories();
-  }, [token])
+  }, [])
   //fetch courses
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axiosInstance.post(API_GET_COURSES, {
+        const res = await axiosInstance.post(`/api/course/search`, {
           "searchCondition": {
             "keyword": keyword,
             "category": cateId,
@@ -140,11 +191,27 @@ const InstructorManageCourses: React.FC = () => {
       }
     };
     fetchCourses();
-  }, [userId, token, status, cateId, keyword])
+  }, [status, cateId, keyword])
 
   if (loading) {
     return <p className="flex justify-center items-center">Loading ...</p>
   }
+  //setStatus for filter log by status
+  const handleAllLog = () => {
+    setOldStatus("");
+    setNewStatus("");
+  };
+  //setOldStatus for filter log by status
+  const handleChangeOldStatus = (value: string) => {
+    setNewStatus("")
+    setOldStatus(value);
+  };
+  //setNewStatus for filter log by status
+  const handleChangeNewStatus = (value: string) => {
+    console.log("check new: ", value)
+    setOldStatus("");
+    setNewStatus(value);
+  };
   //setStatus for filter course by status
   const handleChange = (value: string) => {
     setStatus(value);
@@ -166,7 +233,12 @@ const InstructorManageCourses: React.FC = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      width: 300
+      width: 300,
+      render: (name: string, record: Course) => (
+        <>
+          <div onClick={() => showModalLogStatus(record._id)} className="text-blue-500">{name}</div>
+        </>
+      )
     },
     {
       title: 'Category',
@@ -185,7 +257,7 @@ const InstructorManageCourses: React.FC = () => {
             >
               {status}
             </Tag>
-            <EditOutlined onClick={()=>showModalChangeStatus(record._id)} className="text-blue-500" />
+            {(status !== "waiting_approve" && status !== "reject") && <EditOutlined onClick={() => showModalChangeStatus(status, record._id)} className="text-blue-500" />}
           </div>
         </>
       )
@@ -221,6 +293,73 @@ const InstructorManageCourses: React.FC = () => {
 
   return (
     <div>
+      {/* modal log status */}
+      <Modal
+        width={1200}
+        title="Log Status"
+        open={openLogStatus}
+        onOk={handleOkLogStatus}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <div>
+          {/* Filter all log  */}
+          <Button onClick={handleAllLog} type="primary">All log</Button>
+          {/* Filter log by old status */}
+          <Select
+            defaultValue="Filter by old status"
+            style={{ width: 200 }}
+            className="m-5"
+            onChange={handleChangeOldStatus}
+            options={[
+              {
+                options: [
+                  { label: <span>new</span>, value: 'new' },
+                  { label: <span>waiting_approve</span>, value: 'waiting_approve' },
+                  { label: <span>approve</span>, value: 'approve' },
+                  { label: <span>reject</span>, value: 'reject' },
+                  { label: <span>active</span>, value: 'active' },
+                  { label: <span>inactive</span>, value: 'inactive' },
+                ],
+              },
+            ]}
+          />
+          {/* Filter log by new status */}
+          <Select
+            defaultValue="Filter by new status"
+            style={{ width: 200 }}
+            className="m-5"
+            onChange={handleChangeNewStatus}
+            options={[
+              {
+                options: [
+                  { label: <span>new</span>, value: 'new' },
+                  { label: <span>waiting_approve</span>, value: 'waiting_approve' },
+                  { label: <span>approve</span>, value: 'approve' },
+                  { label: <span>reject</span>, value: 'reject' },
+                  { label: <span>active</span>, value: 'active' },
+                  { label: <span>inactive</span>, value: 'inactive' },
+                ],
+              },
+            ]}
+          />
+          <div>
+            {
+              logs.map((log, index) => (
+                <>
+                  <div><span className="text-red-500">time: </span> {index + 1}</div>
+                  <div><span className="text-yellow-500">Course name: </span> {log.course_name}</div>
+                  <div><span className="text-blue-500">Old status: </span> {log.old_status}</div>
+                  <div><span className="text-blue-500">New status: </span>{log.new_status}</div>
+                  <div><span className="text-blue-500">Comment:</span> {log.comment}</div>
+                  <div className="border-t-2 my-5"></div>
+                </>
+              ))
+            }
+          </div>
+
+        </div>
+      </Modal>
       {/* modal change status */}
       <Modal
         title="Change Status"
@@ -232,7 +371,7 @@ const InstructorManageCourses: React.FC = () => {
         <div className="text-center">
           <p>Status: </p>
           <Select
-            defaultValue="new"
+            defaultValue={statusDefaultChange}
             style={{ width: 200 }}
             className="my-5"
             onChange={handleChangeStatus}
@@ -272,8 +411,10 @@ const InstructorManageCourses: React.FC = () => {
         ]}
       />
       <h1 className="text-center">Manage Course</h1>
+
       <div className="grid grid-cols-2">
         <div className="grid xl:grid-cols-3 grid-cols-1 gap-10">
+          {/* filter course by status */}
           <Select
             defaultValue="new"
             style={{ width: 200 }}
