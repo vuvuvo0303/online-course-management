@@ -62,7 +62,9 @@ axiosInstance.interceptors.response.use(
                     toast.error(data.message);
                 }
             } else {
-                toast.error(error.response.errors.message);
+                data.errors.forEach((error: {field: string, message: string}) => {
+                    toast.error(error.field + ": " + error.message);
+                })
             }
             return Promise.reject(error.response.data);
         } else {
