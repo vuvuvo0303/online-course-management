@@ -8,11 +8,9 @@ import {
   Modal,
   Form,
   Pagination,
-  Popconfirm,
-  Dropdown,
-  MenuProps,
+  Popconfirm, Spin,
 } from "antd";
-import { DeleteOutlined, DownOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Category } from "../../../models";
 import { toast } from "react-toastify";
@@ -31,7 +29,6 @@ import {
 } from "../../../consts";
 import {vi} from "date-fns/locale";
 
-type DataIndex = keyof Category;
 
 const AdminManageCategories: React.FC = () => {
   const [data, setData] = useState<Category[]>([]);
@@ -259,15 +256,6 @@ const AdminManageCategories: React.FC = () => {
     [data, form, fetchCategories]
   );
 
-  const formatDate = useCallback((dateString: string) => {
-    try {
-      return format(new Date(dateString), "dd/MM/yyyy HH:mm:ss");
-    } catch (error) {
-      console.error("Invalid date:", dateString);
-      return "Invalid date";
-    }
-  }, []);
-
   const columns: ColumnType<Category>[] = [
     {
       title: "Name",
@@ -293,13 +281,13 @@ const AdminManageCategories: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => formatDate(created_at.toString()),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => formatDate(updated_at.toString()),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Action",
@@ -349,24 +337,6 @@ const AdminManageCategories: React.FC = () => {
     fetchCategories();
   }, [fetchCategories]);
 
-  const items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: "All",
-    },
-    {
-      key: "2",
-      label: "Admins",
-    },
-    {
-      key: "3",
-      label: "Instructors",
-    },
-    {
-      key: "4",
-      label: "Students",
-    },
-  ];
   if (loading === true) {
     return <p className="text-center flex justify-center">Loading ...</p>
   }
@@ -395,13 +365,7 @@ const AdminManageCategories: React.FC = () => {
       <Spin spinning={loading}>
         <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
       </Spin>
-      <Table
-        columns={columns}
-        dataSource={data}
-        rowKey="_id"
-        pagination={false}
-        onChange={handleTableChange}
-      />
+
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

@@ -1,12 +1,11 @@
-import { DownOutlined, EditOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
+import { EditOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import React, {useCallback, useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
   Button,
-  Dropdown,
   Image,
-  Input, MenuProps,
+  Input,
   Modal,
   Select,
   Space,
@@ -44,33 +43,36 @@ const AdminManageCourses: React.FC = () => {
     total: 0,
   });
 
+  const fetchCourses = async () => {
+    try {
+      const res = await axiosInstance.post(`/api/course/search`, {
+        "searchCondition": {
+          "keyword": "",
+          "category": "",
+          "status": status,
+          "is_deleted": false
+        },
+        "pageInfo": {
+          "pageNum": 1,
+          "pageSize": 100
+        }
+      });
+      if (res.data.pageData) {
+        setCourses(res.data.pageData);
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+    } finally {
+      setLoading(false)
+    }
+  };
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const res = await axiosInstance.post(`/api/course/search`, {
-          "searchCondition": {
-            "keyword": "",
-            "category": "",
-            "status": status,
-            "is_deleted": false
-          },
-          "pageInfo": {
-            "pageNum": 1,
-            "pageSize": 100
-          }
-        });
-        if (res.data.pageData) {
-          setCourses(res.data.pageData);
-        }
-      } catch (error) {
-        console.log("Error: ", error);
-      } finally {
-        setLoading(false)
-      }
-    };
+
     fetchCourses();
-  }, [fetchCourses]);
+  }, []);
+
+
 
   const handleSearch = useCallback(() => {
     setPagination((prev) => ({
