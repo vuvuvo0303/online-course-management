@@ -67,7 +67,7 @@ const Categories: React.FC = () => {
         };
 
         return (
-            <div className="popover-content">
+            <div className="popover-content w-full">
                 <Meta
                     title={course}
                     description={
@@ -135,7 +135,7 @@ const Categories: React.FC = () => {
                 <h1 className="categories-header">{selectedCategory}</h1>
                 <Button
                     type="primary"
-                    className="categories-button"
+                    className="categories-button ml-0"
                     onClick={handleExploreClick}
                     disabled={!selectedCategory}
                 >

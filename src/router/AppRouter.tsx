@@ -46,11 +46,10 @@ import {
     InstructorManageCoursesDetail,
     ManageAllSession,
     AdminLoginPage,
-    AdminCategoryDetail, VerifyToken, InternalServerError,
+    AdminCategoryDetail, VerifyToken, InternalServerError, AdminManageUsers,
 } from "../pages";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
-import AdminManageUsers from "../pages/admin/manage-users";
 
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
@@ -138,12 +137,6 @@ const AppRouter: React.FC = () => {
             )
           }
         />
-        {/* <Route
-          path="manage-lectures"
-          element={
-            canAccess(["Instructor"]) ? <ManageLectures /> : <Navigate to="/" />
-          }
-        /> */}
         <Route path={paths.INSTRUCTOR_PROFILE} element={<Profile />} />
         <Route path={paths.INSTRUCTOR_MANAGE_FEEDBACKS} element={<InstructorManageFeedbacks />} />
         <Route

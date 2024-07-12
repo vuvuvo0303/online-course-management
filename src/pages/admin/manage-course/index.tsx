@@ -1,25 +1,32 @@
-import { EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import React, { useEffect, useState, useCallback } from "react";
+import { DownOutlined, EditOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
   Button,
+  Dropdown,
   Image,
-  Input,
-  Modal, Select,
+  Input, MenuProps,
+  Modal,
+  Select,
   Space,
   Table,
   TableColumnsType,
-  TablePaginationConfig
+  TablePaginationConfig,
+  Tag
 } from "antd";
-import { API_GET_COURSES } from "../../../consts";
+import {API_COURSE_STATUS, getColor} from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Course } from "../../../models";
+import { toast } from "react-toastify";
 
 const AdminManageCourses: React.FC = () => {
+  const [openChangeStatus, setOpenChangeStatus] = useState(false);
+  const [changeStatus, setChangeStatus] = useState<string>('');
   const [courses, setCourses] = useState<Course[]>([]);
+  const [courseId, setCourseId] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -28,46 +35,40 @@ const AdminManageCourses: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>("All Categories");
 
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalText, setModalText] = useState('')
+  const [status, setStatus] = useState<string>('new');
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
 
-  const fetchCourses = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await axiosInstance.post(API_GET_COURSES, {
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
-        },
-        searchCondition: {
-          status: "new",
-          category_id: categoryId,
-          keyword: searchText,
-        },
-      });
-
-      console.log("API Response:", response.data);
-
-      if (response.data && response.data.pageData) {
-        setCourses(response.data.pageData);
-        setPagination((prev) => ({
-          ...prev,
-          total: response.data.pageInfo.totalItems,
-        }));
-      } else {
-        throw new Error("Failed to fetch courses");
-      }
-    } catch (error) {
-      setError("An unexpected error occurred.");
-    } finally {
-      setLoading(false);
-    }
-  }, [pagination.current, pagination.pageSize, categoryId, searchText]);
 
   useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await axiosInstance.post(`/api/course/search`, {
+          "searchCondition": {
+            "keyword": "",
+            "category": "",
+            "status": status,
+            "is_deleted": false
+          },
+          "pageInfo": {
+            "pageNum": 1,
+            "pageSize": 100
+          }
+        });
+        if (res.data.pageData) {
+          setCourses(res.data.pageData);
+        }
+      } catch (error) {
+        console.log("Error: ", error);
+      } finally {
+        setLoading(false)
+      }
+    };
     fetchCourses();
   }, [fetchCourses]);
 
@@ -81,6 +82,40 @@ const AdminManageCourses: React.FC = () => {
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
+  };
+
+  const handleChangeStatus = async (value: string) => {
+    setChangeStatus(value);
+  };
+
+  const showModalChangeStatus = (course_id: string) => {
+    setOpenChangeStatus(true);
+    setCourseId(course_id);
+  };
+
+  const handleOkChangeStatus = async () => {
+    try {
+      await axiosInstance.put(API_COURSE_STATUS,
+        {
+          "course_id": courseId,
+          "new_status": changeStatus,
+          "comment": "This course not match for approve. Please review session and lesson in this course!"
+        }
+      )
+      setCourses(courses.filter(course => course._id != courseId))
+    } catch (error) {
+      toast.error("Change Status Failed!")
+    }
+    setModalText('The modal will be closed after two seconds');
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpenChangeStatus(false);
+      setConfirmLoading(false);
+    }, 500);
+  };
+
+  const handleCancel = () => {
+    setOpenChangeStatus(false);
   };
 
   const columnsCourses: TableColumnsType<Course> = [
@@ -99,18 +134,36 @@ const AdminManageCourses: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (status: string, record: Course) => (
+        <>
+          <div className="flex justify-between">
+            <Tag color={getColor(status)}
+            >
+              {status}
+            </Tag>
+            {
+              status === "waiting_approve" ?
+                (
+                  <EditOutlined onClick={() => showModalChangeStatus(record._id)} className="text-blue-500" />
+                )
+                :
+                ""
+            }
+          </div>
+        </>
+      )
     },
     {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Action",
@@ -171,6 +224,33 @@ const AdminManageCourses: React.FC = () => {
 
   return (
     <div>
+      {/* modal change status */}
+      <Modal
+        title="Change Status"
+        open={openChangeStatus}
+        onOk={handleOkChangeStatus}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <div className="text-center">
+          <p>Status: </p>
+          <Select
+            defaultValue="waiting_approve"
+            style={{ width: 200 }}
+            className="my-5"
+            onChange={handleChangeStatus}
+            options={[
+              {
+                options: [
+                  { label: <span>approve</span>, value: 'approve' },
+                  { label: <span>reject</span>, value: 'reject' },
+                ],
+              },
+            ]}
+          />
+        </div>
+      </Modal>
+
       <Modal
         title={
           <span className="text-2xl font-bold flex justify-center text-amber-700">

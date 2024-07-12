@@ -115,7 +115,7 @@ class NewSection extends Component<NewSectionProps, NewSectionState> {
         };
 
         return (
-            <div className="section_blog-1">
+            <div className="section_blog-1 w-full">
                 <div className="container-1">
                     <div className="block-title-1">
                         <p>News &amp; Updated</p>

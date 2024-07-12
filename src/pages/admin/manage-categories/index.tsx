@@ -7,7 +7,6 @@ import {
   Table,
   Modal,
   Form,
-  Spin,
   Pagination,
   Popconfirm,
   Dropdown,
@@ -23,6 +22,16 @@ import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
 
 import { Link } from "react-router-dom";
+import {
+  API_CREATE_CATEGORY,
+  API_DELETE_CATEGORY,
+  API_GET_CATEGORIES,
+  API_UPDATE_CATEGORY,
+  paths
+} from "../../../consts";
+import {vi} from "date-fns/locale";
+
+type DataIndex = keyof Category;
 
 const AdminManageCategories: React.FC = () => {
   const [data, setData] = useState<Category[]>([]);
@@ -45,9 +54,9 @@ const AdminManageCategories: React.FC = () => {
       try {
         let response;
         if (refresh) {
-          response = await axiosInstance.post("/api/category");
+          response = await axiosInstance.post(API_CREATE_CATEGORY);
         } else {
-          response = await axiosInstance.post("/api/category/search", {
+          response = await axiosInstance.post(API_GET_CATEGORIES, {
             searchCondition: {
               role: "all",
               status: true,
@@ -99,8 +108,10 @@ const AdminManageCategories: React.FC = () => {
       }
 
       try {
-        await axiosInstance.delete(`/api/category/${_id}`);
-        setData((prevData) => prevData.filter((category) => category._id !== _id));
+        await axiosInstance.delete(`${API_DELETE_CATEGORY}/${_id}`);
+        setData((prevData) =>
+          prevData.filter((category) => category._id !== _id)
+        );
         fetchCategories();
         toast.success(`Category ${name} deleted successfully.`);
       } catch (error) {
@@ -195,7 +206,7 @@ const AdminManageCategories: React.FC = () => {
           updated_at: new Date().toISOString(),
         };
 
-        await axiosInstance.put(`/api/category/${values._id}`, updatedCategory);
+        await axiosInstance.put(`${API_UPDATE_CATEGORY}/${values._id}`, updatedCategory);
 
         const updatedData = data.map((category) => (category._id === values._id ? updatedCategory : category));
         setData(updatedData);
@@ -240,7 +251,7 @@ const AdminManageCategories: React.FC = () => {
           toast.success(`Category ${values.name} created successfully.`);
         }
       } catch (error) {
-        console.log(error);
+        //handle error add new category
       } finally {
         setLoading(false);
       }
@@ -356,15 +367,16 @@ const AdminManageCategories: React.FC = () => {
       label: "Students",
     },
   ];
-
+  if (loading === true) {
+    return <p className="text-center flex justify-center">Loading ...</p>
+  }
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
-          <Breadcrumb.Item href="/">
+          <Breadcrumb.Item href={paths.ADMIN_HOME}>
             <HomeOutlined />
           </Breadcrumb.Item>
-          <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Categories</Breadcrumb.Item>
         </Breadcrumb>
         <Space style={{ marginTop: 32, marginBottom: 16 }}>
@@ -383,6 +395,13 @@ const AdminManageCategories: React.FC = () => {
       <Spin spinning={loading}>
         <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
       </Spin>
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey="_id"
+        pagination={false}
+        onChange={handleTableChange}
+      />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

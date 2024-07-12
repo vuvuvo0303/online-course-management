@@ -9,14 +9,19 @@ import {
   Table,
   Modal,
   Form,
-  Spin,
   Pagination,
   Upload,
   Popconfirm,
   Radio,
   Select,
 } from "antd";
-import { DeleteOutlined, EditOutlined, HomeOutlined, PlusOutlined, UserAddOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  HomeOutlined,
+  PlusOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
 
 import { format } from "date-fns";
 import { Student } from "../../../models";
@@ -27,8 +32,16 @@ import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
-import { API_CHANGE_STATUS, API_CREATE_USER, API_GET_USERS } from "../../../consts";
+import {
+  API_CHANGE_ROLE,
+  API_CHANGE_STATUS,
+  API_CREATE_USER,
+  API_DELETE_USER,
+  API_GET_USERS,
+  paths
+} from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
+import { vi } from "date-fns/locale";
 
 interface ApiError {
   code: number;
@@ -52,6 +65,7 @@ type AxiosResponse<T> = {
 
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
+
 
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -150,7 +164,11 @@ const AdminManageUsers: React.FC = () => {
 
         let avatarUrl = values.avatar;
 
-        if (values.avatar && typeof values.avatar !== "string" && values.avatar?.file?.originFileObj) {
+        if (
+          values.avatar &&
+          typeof values.avatar !== "string" &&
+          values.avatar?.file?.originFileObj
+        ) {
           avatarUrl = await uploadFile(values.avatar.file.originFileObj);
         }
 
@@ -268,14 +286,14 @@ const AdminManageUsers: React.FC = () => {
         title: "Created Date",
         dataIndex: "created_at",
         key: "created_at",
-        render: (created_at: string) => formatDate(created_at),
+        render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
         width: "10%",
       },
       {
         title: "Updated Date",
         dataIndex: "updated_at",
         key: "updated_at",
-        render: (updated_at: string) => formatDate(updated_at),
+        render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
         width: "10%",
       },
       {
@@ -352,7 +370,7 @@ const AdminManageUsers: React.FC = () => {
         ),
       },
     ],
-    [formatDate, handleDelete]
+    [handleStatusChange, form, handleDelete]
   );
 
   const handleTableChange = (pagination: PaginationProps) => {
@@ -393,10 +411,11 @@ const AdminManageUsers: React.FC = () => {
       if (response.success) {
         // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
-          const roleChangeResponse: AxiosResponse<any> = await axiosInstance.put(`/api/users/change-role`, {
-            user_id: formData._id,
-            role: values.role,
-          });
+          const roleChangeResponse =
+            await axiosInstance.put(API_CHANGE_ROLE, {
+              user_id: formData._id,
+              role: values.role,
+            });
 
           if (!roleChangeResponse.success) {
             throw new Error("Failed to change user role");
@@ -412,7 +431,7 @@ const AdminManageUsers: React.FC = () => {
         form.resetFields();
         fetchUsers();
       } else {
-        //
+        //handle error for edit users
       }
     } catch (error) {
       //
@@ -433,7 +452,6 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleRoleChange = (value: string) => {
     setSelectedRole(value);
-    console.log("hadelRole ", value);
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
@@ -451,10 +469,9 @@ const AdminManageUsers: React.FC = () => {
     <div>
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
-          <Breadcrumb.Item href="">
+          <Breadcrumb.Item href={paths.ADMIN_HOME}>
             <HomeOutlined />
           </Breadcrumb.Item>
-          <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
 
@@ -463,7 +480,7 @@ const AdminManageUsers: React.FC = () => {
             placeholder="Search By Name"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            onSearch={handleSearch}
+            // onSearch={handleSearch}
             style={{ width: 200 }}
           />
           <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }}>

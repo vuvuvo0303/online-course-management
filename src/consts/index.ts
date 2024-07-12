@@ -29,6 +29,12 @@ export const API_CHANGE_PASSWORD = "/api/users/change-password";
 export const API_CHANGE_STATUS = "/api/users/change-status";
 export const API_CHANGE_ROLE = "/api/users/change-role";
 export const API_DELETE_USER = "/api/users";
+//Category
+export const API_CREATE_CATEGORY = "/api/category";
+export const API_GET_CATEGORIES = "/api/category/search";
+export const API_GET_CATEGORY = "/api/category";
+export const API_UPDATE_CATEGORY = "/api/category";
+export const API_DELETE_CATEGORY = "/api/category";
 //Course
 //export const API_CREATE_COURSE: "/api/course";
 export const API_GET_COURSES = "/api/course/search";
@@ -49,7 +55,12 @@ export const API_GET_LESSONS = "/api/lesson/search";
 export const API_GET_LESSON = "/api/lesson";
 export const API_UPDATE_LESSON = "api/lesson";
 export const API_DELETE_LESSON = "/api/lesson";
-
+//Review
+export const API_CREATE_REVIEW = "/api/review";
+export const API_GET_REVIEWS = "/api/review/search";
+//export const API_GET_REVIEW: "/api/review";
+export const API_UPDATE_REVIEW = "/api/review";
+export const API_DELETE_REVIEW = "/api/review";
 
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {

@@ -3,45 +3,65 @@ import { Rate, Progress, Input, Button, Modal, Form } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import 'tailwindcss/tailwind.css'; // Make sure Tailwind CSS is configured
 import axiosInstance from "../../../services/axiosInstance.ts";
-import { toast } from 'react-toastify'; // Assuming you're using react-toastify for notifications
+import { toast } from 'react-toastify';
+import {API_CREATE_REVIEW, API_GET_REVIEWS} from "../../../consts";
+import {Review} from "../../../models"; // Assuming you're using react-toastify for notifications
 
-interface Review {
-    name: string;
-    time: string;
-    rating: number;
-    text: string;
-}
 
-interface ReviewFormValues {
-    rating: number;
-    text: string;
-}
 
 const ReviewPage: React.FC = () => {
     const [reviews, setReviews] = useState<Review[]>([
         {
-            name: 'John Doe',
-            time: '2 hours ago',
+            reviewer_name: 'John Doe',
+            created_at: new Date(),
             rating: 4.5,
-            text: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
+            comment: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
+            _id: '',
+            updated_at: new Date(),
+            user_id: '',
+            course_id: '',
+            is_deleted: false,
+            reviewer_id: '',
+            course_name: ''
         },
         {
-            name: 'Jessica William',
-            time: '12 hours ago',
-            rating: 4.0,
-            text: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
+            reviewer_name: 'John Doe',
+            created_at: new Date(),
+            rating: 4.5,
+            comment: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
+            _id: '',
+            updated_at: new Date(),
+            user_id: '',
+            course_id: '',
+            is_deleted: false,
+            reviewer_id: '',
+            course_name: ' ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
         },
         {
-            name: 'Alice Johnson',
-            time: '1 day ago',
-            rating: 3.5,
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi lorem egestas odio, vitae scelerisque enim ligula venenatis dolor.',
+            reviewer_name: 'John Doe',
+            created_at: new Date(),
+            rating: 4.5,
+            comment: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
+            _id: '',
+            updated_at: new Date(),
+            user_id: '',
+            course_id: '',
+            is_deleted: false,
+            reviewer_id: '',
+            course_name: ' ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
         },
         {
-            name: 'Bob Smith',
-            time: '2 days ago',
-            rating: 5.0,
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus imperdiet, nulla et dictum interdum, nisi lorem egestas odio, vitae scelerisque enim ligula venenatis dolor.',
+            reviewer_name: 'John Doe',
+            created_at: new Date(),
+            rating: 4.5,
+            comment: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
+            _id: '',
+            updated_at: new Date(),
+            user_id: '',
+            course_id: '',
+            is_deleted: false,
+            reviewer_id: '',
+            course_name: ' ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
         },
     ]);
 
@@ -51,20 +71,20 @@ const ReviewPage: React.FC = () => {
 
     const fetchReviews = useCallback(async () => {
         try {
-            const response = await axiosInstance.get('/api/review');
-            if (response.data) {
-                setReviews(response.data);
+            const response = await axiosInstance.get(API_GET_REVIEWS);
+            if (response.data.pageData) {
+                setReviews(response.data.pageData);
             }
         } catch (error) {
             console.log(error);
         }
     }, []);
 
-    const addNewReview = useCallback(
-        async (values: ReviewFormValues) => {
+    const handleAddNewReview = useCallback(
+        async (values: Review) => {
             try {
                 setLoading(true);
-                const response = await axiosInstance.post('/api/review', values);
+                const response = await axiosInstance.post(API_CREATE_REVIEW, values);
                 if (response.data) {
                     const newReview = response.data;
                     setReviews((prevReviews) => [newReview, ...prevReviews]);
@@ -75,7 +95,6 @@ const ReviewPage: React.FC = () => {
                 }
             } catch (error) {
                 console.log(error);
-                toast.error('Failed to add review.');
             } finally {
                 setLoading(false);
             }
@@ -91,8 +110,8 @@ const ReviewPage: React.FC = () => {
         setIsModalVisible(false);
     };
 
-    const handleAddReview = (values: ReviewFormValues) => {
-        addNewReview(values);
+    const handleAddReview = (values: Review) => {
+        handleAddNewReview(values);
     };
 
     return (
@@ -145,11 +164,10 @@ const ReviewPage: React.FC = () => {
                         >
                             <div className="flex items-center mb-2">
                                 <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-lg mr-4">
-                                    {review.name[0]}
+                                    {review.reviewer_name[0]}
                                 </div>
                                 <div>
-                                    <div className="text-lg">{review.name}</div>
-                                    <div className="text-sm text-gray-400">{review.time}</div>
+                                    <div className="text-lg">{review.reviewer_name}</div>
                                 </div>
                             </div>
                             <Rate
@@ -158,7 +176,7 @@ const ReviewPage: React.FC = () => {
                                 disabled
                                 className="mb-2"
                             />
-                            <p>{review.text}</p>
+                            <p>{review.comment}</p>
                         </div>
                     ))}
                 </div>
