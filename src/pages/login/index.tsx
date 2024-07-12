@@ -127,7 +127,7 @@ const LoginPage: React.FC = () => {
                 <Form.Item
                 label="Email"
                   name="email"
-                  label="Email"
+                
                   rules={[
                     { required: true, message: "Please input your email!" },
                     {
@@ -150,7 +150,7 @@ const LoginPage: React.FC = () => {
                 <Form.Item
                 label="Password"
                   name="password"
-                  label="Password"
+                  
                   rules={[
                     { required: true, message: "Please input your password!" },
                     {

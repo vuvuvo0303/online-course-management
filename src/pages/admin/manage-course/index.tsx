@@ -12,7 +12,7 @@ import {
   TableColumnsType,
   TablePaginationConfig
 } from "antd";
-import {API_GET_COURSES} from "../../../consts";
+import { API_GET_COURSES } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -24,8 +24,9 @@ const AdminManageCourses: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectCategory, setSelecCategory] = useState<string>();
-  const [searchText, setSearchText] = useState("");
+  const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
+  const [searchText, setSearchText] = useState<string>("");
+  const [selectedCategoryName, setSelectedCategoryName] = useState<string>("All Categories");
 
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -43,9 +44,8 @@ const AdminManageCourses: React.FC = () => {
         },
         searchCondition: {
           status: "new",
-          category_name: selectCategory,
+          category_id: categoryId,
           keyword: searchText,
-
         },
       });
 
@@ -65,11 +65,11 @@ const AdminManageCourses: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [pagination.current, pagination.pageSize, selectCategory,searchText]);
+  }, [pagination.current, pagination.pageSize, categoryId, searchText]);
 
   useEffect(() => {
     fetchCourses();
-  }, [fetchCourses, selectCategory]);
+  }, [fetchCourses]);
 
   const handleSearch = useCallback(() => {
     setPagination((prev) => ({
@@ -78,8 +78,6 @@ const AdminManageCourses: React.FC = () => {
     }));
     fetchCourses();
   }, [fetchCourses]);
-
-
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
@@ -141,8 +139,6 @@ const AdminManageCourses: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  
-
   const formatVND = (value: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -150,23 +146,31 @@ const AdminManageCourses: React.FC = () => {
     }).format(value);
   };
 
+  // Lọc các danh mục trùng lặp
+  const uniqueCategoriesMap = new Map();
+  courses.forEach(course => {
+    if (!uniqueCategoriesMap.has(course.category_name)) {
+      uniqueCategoriesMap.set(course.category_name, {
+        category_id: course.category_id,
+        category_name: course.category_name,
+      });
+    }
+  });
 
-  const uniqueCategories = Array.from(new Set(courses.map((course) => course.category_name)));
+  const uniqueCategories = Array.from(uniqueCategoriesMap.values());
+  
+  // Thêm tùy chọn "All Categories"
+  uniqueCategories.unshift({ category_id: "", category_name: "All Categories" });
 
-  const handleCategory = (value: string) => {
-    setSelecCategory(value);
-    console.log("Selected Category:", value);
+  const handleCategoryChange = (categoryName: string) => {
+    const category = uniqueCategories.find(c => c.category_name === categoryName);
+    setCategoryId(category && category.category_name !== "All Categories" ? category.category_id : undefined);
+    setSelectedCategoryName(categoryName);
+    handleSearch();
   };
 
-
-
-  
-  
-
   return (
-    
     <div>
-      
       <Modal
         title={
           <span className="text-2xl font-bold flex justify-center text-amber-700">
@@ -237,23 +241,35 @@ const AdminManageCourses: React.FC = () => {
       />
 
       <Space style={{ marginTop: 32, marginBottom: 16 }}>
-      <Input.Search
-            placeholder="Search By Name"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            onSearch={handleSearch}
-            style={{ width: 200 }}
-          />
-        <Select value={selectCategory} onChange={handleCategory} style={{ width: 120 }}>
+        <Input.Search
+          placeholder="Search By Name"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          onSearch={handleSearch}
+          style={{ width: 200 }}
+        />
+        <Select
+          showSearch
+          placeholder="Select Category"
+          optionFilterProp="children"
+          onChange={handleCategoryChange}
+          value={selectedCategoryName}
+          style={{ width: 200 }}
+        >
           {uniqueCategories.map((category) => (
-            <Select.Option key={category} value={category}>
-              {category}
+            <Select.Option key={category.category_id} value={category.category_name}>
+              {category.category_name}
             </Select.Option>
           ))}
         </Select>
       </Space>
       <h1 className="text-center mb-10">Manage Course</h1>
-      <Table columns={columnsCourses} dataSource={courses} pagination={pagination} onChange={handleTableChange} />
+      <Table
+        columns={columnsCourses}
+        dataSource={courses}
+        pagination={pagination}
+        onChange={handleTableChange}
+      />
     </div>
   );
 };
