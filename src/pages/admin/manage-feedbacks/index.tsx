@@ -80,13 +80,14 @@ const AdminManageFeedbacks: React.FC = () => {
     {
       title: "Created Date",
       dataIndex: "created_at",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
-      width: "10%",
+      key: "created_at",
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
     },
+    
     {
       title: "Updated Date",
       dataIndex: "updated_at",
-      render: (updated_at: string) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+      render: (updatedDate: Date) => format(new Date(updatedDate),"dd/MM/yyyy"),
       width: "10%",
     },
     {

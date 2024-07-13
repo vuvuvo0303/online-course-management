@@ -9,14 +9,11 @@ import {
   Form,
   Pagination,
   Popconfirm,
+  Dropdown,
+  MenuProps,
   Spin,
 } from "antd";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  EyeOutlined,
-  HomeOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, DownOutlined, EditOutlined, EyeOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Category } from "../../../models";
 import { toast } from "react-toastify";
@@ -34,6 +31,7 @@ import {
   paths,
 } from "../../../consts";
 import { vi } from "date-fns/locale";
+
 
 const AdminManageCategories: React.FC = () => {
   const [data, setData] = useState<Category[]>([]);
@@ -115,9 +113,7 @@ const AdminManageCategories: React.FC = () => {
 
       try {
         await axiosInstance.delete(`${API_DELETE_CATEGORY}/${_id}`);
-        setData((prevData) =>
-          prevData.filter((category) => category._id !== _id)
-        );
+        setData((prevData) => prevData.filter((category) => category._id !== _id));
         fetchCategories();
         toast.success(`Category ${name} deleted successfully.`);
       } catch (error) {
@@ -392,6 +388,7 @@ const AdminManageCategories: React.FC = () => {
             onChange={(e) => setSearchText(e.target.value)}
             onSearch={handleSearch}
             style={{ width: 200 }}
+            enterButton={<SearchOutlined className="text-white" />}
           />
         </Space>
         <Button type="primary" onClick={handleOpenModal}>
@@ -407,6 +404,7 @@ const AdminManageCategories: React.FC = () => {
           onChange={handleTableChange}
         />
       </Spin>
+
 
       <div className="flex justify-end py-8">
         <Pagination
