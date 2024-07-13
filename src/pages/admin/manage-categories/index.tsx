@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Breadcrumb,
   Button,
@@ -8,10 +8,13 @@ import {
   Modal,
   Form,
   Pagination,
-  Popconfirm, Dropdown, MenuProps, InputRef,
+  Popconfirm,
+  // Dropdown,
+  // MenuProps,
+  Spin,
 } from "antd";
 import {
-  DeleteOutlined, DownOutlined,
+  DeleteOutlined,
   EditOutlined,
   EyeOutlined,
   HomeOutlined,
@@ -20,28 +23,26 @@ import {
 import { format } from "date-fns";
 import { Category } from "../../../models";
 import { toast } from "react-toastify";
-import Highlighter from "react-highlight-words";
+
 import axiosInstance from "../../../services/axiosInstance.ts";
 import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
-import type { FilterDropdownProps } from "antd/es/table/interface";
+
 import { Link } from "react-router-dom";
 import {
   API_CREATE_CATEGORY,
   API_DELETE_CATEGORY,
   API_GET_CATEGORIES,
   API_UPDATE_CATEGORY,
-  paths
+  paths,
 } from "../../../consts";
-import {vi} from "date-fns/locale";
-
-type DataIndex = keyof Category;
+import { vi } from "date-fns/locale";
 
 const AdminManageCategories: React.FC = () => {
   const [data, setData] = useState<Category[]>([]);
+
   const [searchText, setSearchText] = useState<string>("");
-  const [searchedColumn, setSearchedColumn] = useState<DataIndex | "">("");
-  const searchInput = useRef<InputRef>(null);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [validateOnOpen, setValidateOnOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -65,6 +66,7 @@ const AdminManageCategories: React.FC = () => {
               role: "all",
               status: true,
               is_deleted: false,
+              keyword: searchText,
             },
             pageInfo: {
               pageNum: pagination.current,
@@ -88,12 +90,12 @@ const AdminManageCategories: React.FC = () => {
         setLoading(false);
       }
     },
-    [pagination.current, pagination.pageSize]
+    [pagination.current, pagination.pageSize, searchText]
   );
 
   useEffect(() => {
     fetchCategories();
-  }, [fetchCategories]);
+  }, [fetchCategories, searchText]);
 
   const handleOpenModal = useCallback(() => {
     setIsModalVisible(true);
@@ -226,7 +228,10 @@ const AdminManageCategories: React.FC = () => {
           updated_at: new Date().toISOString(),
         };
 
-        await axiosInstance.put(`${API_UPDATE_CATEGORY}/${values._id}`, updatedCategory);
+        await axiosInstance.put(
+          `${API_UPDATE_CATEGORY}/${values._id}`,
+          updatedCategory
+        );
 
         const updatedData = data.map((category) =>
           category._id === values._id ? updatedCategory : category
@@ -286,101 +291,11 @@ const AdminManageCategories: React.FC = () => {
     [data, form, fetchCategories]
   );
 
-  const handleSearch = useCallback(
-    (selectedKeys: string[], confirm: () => void, dataIndex: DataIndex) => {
-      confirm();
-      setSearchText(selectedKeys[0]);
-      setSearchedColumn(dataIndex);
-    },
-    []
-  );
-  const handleReset = useCallback((clearFilters: () => void) => {
-    clearFilters();
-    setSearchText("");
-  }, []);
-
-  const getColumnSearchProps = useCallback(
-    (dataIndex: DataIndex): ColumnType<Category> => ({
-      filterDropdown: ({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters,
-      }: FilterDropdownProps) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            ref={searchInput}
-            placeholder={`Search ${dataIndex}`}
-            value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
-            style={{ marginBottom: 8, display: "block" }}
-          />
-          <Space>
-            <Button
-              type="primary"
-              onClick={() =>
-                handleSearch(selectedKeys as string[], confirm, dataIndex)
-              }
-              icon={<SearchOutlined />}
-              size="small"
-              style={{ width: 90 }}
-            >
-              Search
-            </Button>
-            <Button
-              onClick={() => clearFilters && handleReset(clearFilters)}
-              size="small"
-              style={{ width: 90 }}
-            >
-              Reset
-            </Button>
-          </Space>
-        </div>
-      ),
-      filterIcon: (filtered: boolean) => (
-        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
-      ),
-      onFilter: (value, record) => {
-        const recordValue = record[dataIndex];
-        if (recordValue) {
-          return recordValue
-            .toString()
-            .toLowerCase()
-            .includes((value as string).toLowerCase());
-        }
-        return false;
-      },
-      onFilterDropdownVisibleChange: (visible) => {
-        if (visible) {
-          setTimeout(() => searchInput.current?.select(), 100);
-        }
-      },
-      render: (text) =>
-        searchedColumn === dataIndex ? (
-          <Highlighter
-            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-            searchWords={[searchText]}
-            autoEscape
-            textToHighlight={text ? text.toString() : ""}
-          />
-        ) : (
-          text
-        ),
-    }),
-    [handleSearch, handleReset, searchText, searchedColumn]
-  );
-
   const columns: ColumnType<Category>[] = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      ...getColumnSearchProps("name"),
     },
     {
       title: "Parent Category",
@@ -403,13 +318,15 @@ const AdminManageCategories: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: Date) =>
+        format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+      render: (updated_at: Date) =>
+        format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Action",
@@ -451,27 +368,16 @@ const AdminManageCategories: React.FC = () => {
       pageSize: pageSize || 10,
     }));
   };
+  const handleSearch = useCallback(() => {
+    setPagination((prev) => ({
+      ...prev,
+      current: 1,
+    }));
+    fetchCategories();
+  }, [fetchCategories]);
 
-  const items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: "All",
-    },
-    {
-      key: "2",
-      label: "Admins",
-    },
-    {
-      key: "3",
-      label: "Instructors",
-    },
-    {
-      key: "4",
-      label: "Students",
-    },
-  ];
   if (loading === true) {
-    return <p className="text-center flex justify-center">Loading ...</p>
+    return <p className="text-center flex justify-center">Loading ...</p>;
   }
   return (
     <div>
@@ -483,53 +389,29 @@ const AdminManageCategories: React.FC = () => {
           <Breadcrumb.Item>Manage Categories</Breadcrumb.Item>
         </Breadcrumb>
         <Space style={{ marginTop: 32, marginBottom: 16 }}>
-          <Input
-            placeholder="Search..."
+          <Input.Search
+            placeholder="Search By Name"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onSearch={handleSearch}
             style={{ width: 200 }}
+            enterButton={<SearchOutlined className="text-white" />}
           />
-          <Dropdown
-            menu={{
-              items,
-              selectable: true,
-              defaultSelectedKeys: ["1"],
-            }}
-          >
-            <Button>
-              <Space>
-                Filter Categories
-                <DownOutlined />
-              </Space>
-            </Button>
-          </Dropdown>
-
-          <Dropdown
-            menu={{
-              items,
-              selectable: true,
-              defaultSelectedKeys: ["1"],
-            }}
-          >
-            <Button>
-              <Space>
-                Filter Parent Categories
-                <DownOutlined />
-              </Space>
-            </Button>
-          </Dropdown>
-          <Button >Clear filters</Button>
-          <Button >Clear filters and sorters</Button>
         </Space>
         <Button type="primary" onClick={handleOpenModal}>
           Add New Category
         </Button>
       </div>
-      <Table
-        columns={columns}
-        dataSource={data}
-        rowKey="_id"
-        pagination={false}
-        onChange={handleTableChange}
-      />
+      <Spin spinning={loading}>
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowKey="_id"
+          pagination={false}
+          onChange={handleTableChange}
+        />
+      </Spin>
+
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

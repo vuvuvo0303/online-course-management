@@ -117,7 +117,7 @@ const SideBar: React.FC = () => {
                     </div>
                 )}
                 <div className="p-4">
-                    <div className="font-semibold text-gray-900 text-base">More from Udemy</div>
+                    <div className="font-semibold text-gray-900 text-base">More from Flearn</div>
                     <Link to="/teaching" onClick={onClose} className="link text-sm">
                         Be an Instructor
                     </Link>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Breadcrumb,
@@ -15,20 +14,19 @@ import {
   Popconfirm,
   Radio,
   Select,
-
+  Spin,
 } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
   HomeOutlined,
   PlusOutlined,
+  SearchOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
 
 import { format } from "date-fns";
-import { Student } from "../../../models";
 import { toast } from "react-toastify";
-
 
 import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 
@@ -53,7 +51,7 @@ interface ApiError {
 
 interface CreateUserResponse {
   success: boolean;
-  data: Student;
+  data: User;
   message?: string;
   error?: ApiError[];
 }
@@ -69,6 +67,7 @@ type AxiosResponse<T> = {
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
 
+
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -81,7 +80,7 @@ const AdminManageUsers: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
-  const [formData, setFormData] = useState<User>({});
+  const [formData, setFormData] = useState<any>({});
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
   const [selectedRole, setSelectedRole] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("true");
@@ -116,12 +115,7 @@ const AdminManageUsers: React.FC = () => {
       }> = await axiosInstance.post(API_GET_USERS, {
         searchCondition: {
           role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
-          status:
-            selectedStatus === "true"
-              ? true
-              : selectedStatus === "false"
-                ? false
-                : undefined,
+          status: selectedStatus === "true" ? true : selectedStatus === "false" ? false : undefined,
           is_delete: false,
           keyword: searchText,
         },
@@ -140,10 +134,10 @@ const AdminManageUsers: React.FC = () => {
           pageSize: response.data.pageInfo.pageSize,
         }));
       } else {
-        //
+        // Xử lý khi không có dữ liệu
       }
     } catch (error) {
-      //
+      // Xử lý lỗi
     }
     setLoading(false);
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
@@ -165,7 +159,7 @@ const AdminManageUsers: React.FC = () => {
   );
 
   const handleAddNewUser = useCallback(
-    async (values: Student) => {
+    async (values: User) => {
       try {
         setLoading(true);
 
@@ -181,11 +175,10 @@ const AdminManageUsers: React.FC = () => {
 
         const userData = { ...values, avatar: avatarUrl };
 
-        const response: AxiosResponse<CreateUserResponse> =
-          await axiosInstance.post<Student, AxiosResponse<CreateUserResponse>>(
-            API_CREATE_USER,
-            userData
-          );
+        const response: AxiosResponse<CreateUserResponse> = await axiosInstance.post<
+          User,
+          AxiosResponse<CreateUserResponse>
+        >(API_CREATE_USER, userData);
 
         const newUser = response.data.data;
         setData((prevData) => [...prevData, newUser]);
@@ -220,32 +213,24 @@ const AdminManageUsers: React.FC = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
-    setFileList(newFileList);
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
-  const handleStatusChange = useCallback(
-    async (checked: boolean, userId: string) => {
-      try {
-        await axiosInstance.put(API_CHANGE_STATUS, {
-          user_id: userId,
-          status: checked,
-        });
-        fetchUsers();
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const handleStatusChange = useCallback(async (checked: boolean, userId: string) => {
+    try {
+      await axiosInstance.put(API_CHANGE_STATUS, {
+        user_id: userId,
+        status: checked,
+      });
+      fetchUsers();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
-        setData((prevData) =>
-          prevData.map((user) =>
-            user._id === userId ? { ...user, status: checked } : user
-          )
-        );
-        toast.success(`User status updated successfully`);
-        localStorage.setItem("users_updated", new Date().toISOString());
-      } catch (error) {
-        // Handle error silently
-      }
-    },
-    []
-  );
+      setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
+      toast.success(`User status updated successfully`);
+      localStorage.setItem("users_updated", new Date().toISOString());
+    } catch (error) {
+      // Handle error silently
+    }
+  }, []);
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -254,7 +239,7 @@ const AdminManageUsers: React.FC = () => {
     </button>
   );
 
-  const columns: TableColumnsType<Student> = useMemo(
+  const columns: TableColumnsType<User> = useMemo(
     () => [
       {
         title: "Name",
@@ -276,14 +261,15 @@ const AdminManageUsers: React.FC = () => {
 
         render: (role) => (
           <div
-            className={`tag ${role === "student"
-              ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl p-2 border border-blue-500 text-xs"
-              : role === "instructor"
+            className={`tag ${
+              role === "student"
+                ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl p-2 border border-blue-500 text-xs"
+                : role === "instructor"
                 ? "bg-lime-100 text-lime-400 flex justify-center rounded-xl p-2 border border-lime-500 text-xs"
                 : role === "admin"
-                  ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl p-2 border border-yellow-500 text-xs"
-                  : "bg-gray-500 text-white"
-              }`}
+                ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl p-2 border border-yellow-500 text-xs"
+                : "bg-gray-500 text-white"
+            }`}
           >
             {role ? role.toUpperCase() : "UNKNOWN"}
           </div>
@@ -315,10 +301,7 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "status",
         width: "10%",
         render: (status: boolean, record: User) => (
-          <Switch
-            defaultChecked={status}
-            onChange={(checked) => handleStatusChange(checked, record._id)}
-          />
+          <Switch defaultChecked={status} onChange={(checked) => handleStatusChange(checked, record._id)} />
         ),
       },
       {
@@ -328,15 +311,9 @@ const AdminManageUsers: React.FC = () => {
         render: (is_verified: boolean) => (
           <span>
             {is_verified ? (
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png"
-                alt=""
-              />
+              <img src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png" alt="" />
             ) : (
-              <img
-                src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png"
-                alt=""
-              />
+              <img src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png" alt="" />
             )}
           </span>
         ),
@@ -346,7 +323,7 @@ const AdminManageUsers: React.FC = () => {
         title: "Action",
         key: "action",
         width: "15%",
-        render: (record: Student) => (
+        render: (record: User) => (
           <div>
             <EditOutlined
               className="hover:cursor-pointer text-blue-400 hover:opacity-60"
@@ -359,13 +336,13 @@ const AdminManageUsers: React.FC = () => {
                 setFileList(
                   record.avatar
                     ? [
-                      {
-                        uid: "-1",
-                        name: "avatar.png",
-                        status: "done",
-                        url: record.avatar,
-                      },
-                    ]
+                        {
+                          uid: "-1",
+                          name: "avatar.png",
+                          status: "done",
+                          url: record.avatar,
+                        },
+                      ]
                     : []
                 );
               }}
@@ -390,8 +367,7 @@ const AdminManageUsers: React.FC = () => {
   );
 
   const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } =
-    {
+    const newPagination: { current: number; pageSize: number; total: number } = {
       current: pagination.current ?? 1,
       pageSize: pagination.pageSize ?? 10,
       total: pagination.total ?? 0,
@@ -413,11 +389,7 @@ const AdminManageUsers: React.FC = () => {
     setLoading(true);
     try {
       let avatarUrl = values.avatar;
-      if (
-        values.avatar &&
-        typeof values.avatar !== "string" &&
-        values.avatar.file.originFileObj
-      ) {
+      if (values.avatar && typeof values.avatar !== "string" && values.avatar.file.originFileObj) {
         avatarUrl = await uploadFile(values.avatar.file.originFileObj);
       }
 
@@ -427,13 +399,8 @@ const AdminManageUsers: React.FC = () => {
         email: values.email,
       };
 
-      const response = await axiosInstance.put(
-        `/api/users/${formData._id}`,
-        updatedUser
-      );
+      const response: AxiosResponse<any> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
       if (response.success) {
         // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
@@ -443,19 +410,13 @@ const AdminManageUsers: React.FC = () => {
               role: values.role,
             });
 
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-expect-error
           if (!roleChangeResponse.success) {
             throw new Error("Failed to change user role");
           }
         }
 
         setData((prevData) =>
-          prevData.map((user) =>
-            user._id === formData._id
-              ? { ...user, ...updatedUser, role: values.role }
-              : user
-          )
+          prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
         );
 
         toast.success("Updated user successfully");
@@ -485,9 +446,10 @@ const AdminManageUsers: React.FC = () => {
   const handleRoleChange = (value: string) => {
     setSelectedRole(value);
   };
-  const handleStatus = useCallback((value: string) => {
+  const handleStatus = (value: string) => {
     setSelectedStatus(value);
-  }, []);
+    fetchUsers();
+  };
 
   return (
     <div>
@@ -506,6 +468,7 @@ const AdminManageUsers: React.FC = () => {
             onChange={(e) => setSearchText(e.target.value)}
             // onSearch={handleSearch}
             style={{ width: 200 }}
+            enterButton={<SearchOutlined className="text-white" />}
           />
           <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }}>
             <Select.Option value="All">All Roles</Select.Option>
@@ -534,19 +497,13 @@ const AdminManageUsers: React.FC = () => {
         </div>
       </div>
 
-        <Table
-          columns={columns}
-          dataSource={data}
-          rowKey="_id"
-          pagination={false}
-          onChange={handleTableChange}
-        />
+      <Spin spinning={loading}>
+        <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
+      </Spin>
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
-          showTotal={(total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`
-          }
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           current={pagination.current}
           pageSize={pagination.pageSize}
           onChange={handlePaginationChange}
@@ -561,19 +518,11 @@ const AdminManageUsers: React.FC = () => {
         footer={null}
       >
         <Form form={form} onFinish={onFinish} layout="vertical">
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please input the name!" }]}
-          >
+          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
             <Input />
           </Form.Item>
           {modalMode === "Add" && (
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[{ required: true, message: "Please input the email!" }]}
-            >
+            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
               <Input />
             </Form.Item>
           )}
@@ -581,9 +530,7 @@ const AdminManageUsers: React.FC = () => {
             <Form.Item
               name="password"
               label="Password"
-              rules={[
-                { required: true, message: "Please input the password!" },
-              ]}
+              rules={[{ required: true, message: "Please input the password!" }]}
             >
               <Input.Password />
             </Form.Item>
