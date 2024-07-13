@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Breadcrumb,
   Button,
@@ -15,45 +9,38 @@ import {
   Table,
   Modal,
   Form,
-  Spin,
   Pagination,
   Upload,
   Popconfirm,
   Radio,
-  Dropdown,
-  Typography,
-  MenuProps,
+  Select, Spin,
 } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
   HomeOutlined,
   PlusOutlined,
-  SearchOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
+
 import { format } from "date-fns";
-import { Student } from "../../../models";
 import { toast } from "react-toastify";
-import Highlighter from "react-highlight-words";
-import axiosInstance from "../../../services/api.ts";
-import type {
-  GetProp,
-  InputRef,
-  TableColumnsType,
-  TableColumnType,
-  UploadFile,
-  UploadProps,
-} from "antd";
-import type { FilterDropdownProps } from "antd/es/table/interface";
+
+import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
+
 import { User } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
 import {
+  API_CHANGE_ROLE,
   API_CHANGE_STATUS,
   API_CREATE_USER,
+  API_DELETE_USER,
   API_GET_USERS,
+  paths
 } from "../../../consts";
+import axiosInstance from "../../../services/axiosInstance.ts";
+import { vi } from "date-fns/locale";
 
 interface ApiError {
   code: number;
@@ -62,7 +49,7 @@ interface ApiError {
 
 interface CreateUserResponse {
   success: boolean;
-  data: Student;
+  data: User;
   message?: string;
   error?: ApiError[];
 }
@@ -75,19 +62,11 @@ type AxiosResponse<T> = {
   error?: [];
 };
 
-type DataIndex = keyof User;
-
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
-  const [sortOrder, setSortOrder] = useState<{
-    [key: string]: "ascend" | "descend";
-  }>({
-    created_at: "ascend",
-    updated_at: "ascend",
-  });
+
+
   const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState<DataIndex | "">("");
-  const searchInput = useRef<InputRef>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
@@ -123,7 +102,7 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -134,13 +113,9 @@ const AdminManageUsers: React.FC = () => {
       }> = await axiosInstance.post(API_GET_USERS, {
         searchCondition: {
           role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
-          status:
-            selectedStatus === "true"
-              ? true
-              : selectedStatus === "false"
-              ? false
-              : undefined,
+          status: selectedStatus === "true" ? true : selectedStatus === "false" ? false : undefined,
           is_delete: false,
+          keyword: searchText,
         },
         pageInfo: {
           pageNum: pagination.current,
@@ -157,32 +132,32 @@ const AdminManageUsers: React.FC = () => {
           pageSize: response.data.pageInfo.pageSize,
         }));
       } else {
-        //
+        // Xử lý khi không có dữ liệu
       }
     } catch (error) {
-      //
+      // Xử lý lỗi
     }
     setLoading(false);
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
 
   const handleDelete = useCallback(
     async (_id: string, email: string) => {
       try {
-        await axiosInstance.delete(`/api/users/${_id}`);
+        await axiosInstance.delete(`${API_DELETE_USER}/${_id}`);
         setData((prevData) => prevData.filter((user) => user._id !== _id));
         toast.success(`Deleted user ${email} successfully`);
         fetchUsers();
 
         localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
-        // Handle error silently
+        //
       }
     },
     [fetchUsers]
   );
 
   const handleAddNewUser = useCallback(
-    async (values: Student) => {
+    async (values: User) => {
       try {
         setLoading(true);
 
@@ -198,11 +173,10 @@ const AdminManageUsers: React.FC = () => {
 
         const userData = { ...values, avatar: avatarUrl };
 
-        const response: AxiosResponse<CreateUserResponse> =
-          await axiosInstance.post<Student, AxiosResponse<CreateUserResponse>>(
-            API_CREATE_USER,
-            userData
-          );
+        const response: AxiosResponse<CreateUserResponse> = await axiosInstance.post<
+          User,
+          AxiosResponse<CreateUserResponse>
+        >(API_CREATE_USER, userData);
 
         const newUser = response.data.data;
         setData((prevData) => [...prevData, newUser]);
@@ -219,61 +193,6 @@ const AdminManageUsers: React.FC = () => {
     [fetchUsers, form]
   );
 
-  const formatDate = useCallback((dateString: string) => {
-    try {
-      return format(new Date(dateString), "dd/MM/yyyy");
-    } catch (error) {
-      console.error("Invalid date:", dateString);
-      return "Invalid date";
-    }
-  }, []);
-
-  const sortColumn = useCallback(
-    (columnKey: keyof User) => {
-      const newOrder = sortOrder[columnKey] === "ascend" ? "descend" : "ascend";
-      const sortedData = [...data].sort((a, b) => {
-        let aValue = a[columnKey] as string | number | Date | undefined;
-        let bValue = b[columnKey] as string | number | Date | undefined;
-
-        if (columnKey === "created_at" || columnKey === "updated_at") {
-          aValue = aValue ? new Date(aValue).getTime() : 0;
-          bValue = bValue ? new Date(bValue).getTime() : 0;
-        }
-
-        if (typeof aValue === "number" && typeof bValue === "number") {
-          return newOrder === "ascend" ? aValue - bValue : bValue - aValue;
-        } else if (typeof aValue === "string" && typeof bValue === "string") {
-          return newOrder === "ascend"
-            ? aValue.localeCompare(bValue)
-            : bValue.localeCompare(aValue);
-        } else {
-          return 0;
-        }
-      });
-
-      setData(sortedData);
-      setSortOrder((prev) => ({ ...prev, [columnKey]: newOrder }));
-    },
-    [data, sortOrder]
-  );
-
-  const handleSearch = useCallback(
-    (
-      selectedKeys: string[],
-      confirm: FilterDropdownProps["confirm"],
-      dataIndex: DataIndex
-    ) => {
-      confirm();
-      setSearchText(selectedKeys[0]);
-      setSearchedColumn(dataIndex);
-    },
-    []
-  );
-
-  const handleReset = useCallback((clearFilters: () => void) => {
-    clearFilters();
-    setSearchText("");
-  }, []);
 
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -292,32 +211,24 @@ const AdminManageUsers: React.FC = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
-    setFileList(newFileList);
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
-  const handleStatusChange = useCallback(
-    async (checked: boolean, userId: string) => {
-      try {
-        await axiosInstance.put(API_CHANGE_STATUS, {
-          user_id: userId,
-          status: checked,
-        });
-        fetchUsers();
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const handleStatusChange = useCallback(async (checked: boolean, userId: string) => {
+    try {
+      await axiosInstance.put(API_CHANGE_STATUS, {
+        user_id: userId,
+        status: checked,
+      });
+      fetchUsers();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
-        setData((prevData) =>
-          prevData.map((user) =>
-            user._id === userId ? { ...user, status: checked } : user
-          )
-        );
-        toast.success(`User status updated successfully`);
-        localStorage.setItem("users_updated", new Date().toISOString());
-      } catch (error) {
-        // Handle error silently
-      }
-    },
-    []
-  );
+      setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
+      toast.success(`User status updated successfully`);
+      localStorage.setItem("users_updated", new Date().toISOString());
+    } catch (error) {
+      // Handle error silently
+    }
+  }, []);
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -326,119 +237,19 @@ const AdminManageUsers: React.FC = () => {
     </button>
   );
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): TableColumnType<Student> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
-          style={{ marginBottom: 8, display: "block" }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            Close
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        ?.toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()) || false,
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
-      }
-    },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
-      ),
-  });
-
-  const columns: TableColumnsType<Student> = useMemo(
+  const columns: TableColumnsType<User> = useMemo(
     () => [
       {
         title: "Name",
         dataIndex: "name",
         key: "name",
         width: "20%",
-        ...getColumnSearchProps("name"),
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("name"),
-        }),
       },
       {
         title: "Email",
         dataIndex: "email",
         key: "email",
         width: "20%",
-
-        ...getColumnSearchProps("email"),
-        onHeaderCell: () => ({
-          onClick: () => sortColumn("email"),
-        }),
       },
       {
         title: "Role",
@@ -466,14 +277,14 @@ const AdminManageUsers: React.FC = () => {
         title: "Created Date",
         dataIndex: "created_at",
         key: "created_at",
-        render: (created_at: string) => formatDate(created_at),
+        render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
         width: "10%",
       },
       {
         title: "Updated Date",
         dataIndex: "updated_at",
         key: "updated_at",
-        render: (updated_at: string) => formatDate(updated_at),
+        render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
         width: "10%",
       },
       {
@@ -488,10 +299,7 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "status",
         width: "10%",
         render: (status: boolean, record: User) => (
-          <Switch
-            defaultChecked={status}
-            onChange={(checked) => handleStatusChange(checked, record._id)}
-          />
+          <Switch defaultChecked={status} onChange={(checked) => handleStatusChange(checked, record._id)} />
         ),
       },
       {
@@ -501,15 +309,9 @@ const AdminManageUsers: React.FC = () => {
         render: (is_verified: boolean) => (
           <span>
             {is_verified ? (
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png"
-                alt=""
-              />
+              <img src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png" alt="" />
             ) : (
-              <img
-                src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png"
-                alt=""
-              />
+              <img src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png" alt="" />
             )}
           </span>
         ),
@@ -519,7 +321,7 @@ const AdminManageUsers: React.FC = () => {
         title: "Action",
         key: "action",
         width: "15%",
-        render: (record: Student) => (
+        render: (record: User) => (
           <div>
             <EditOutlined
               className="hover:cursor-pointer text-blue-400 hover:opacity-60"
@@ -559,16 +361,15 @@ const AdminManageUsers: React.FC = () => {
         ),
       },
     ],
-    [getColumnSearchProps, sortColumn, formatDate, handleDelete]
+    [handleStatusChange, form, handleDelete]
   );
 
   const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } =
-      {
-        current: pagination.current ?? 1,
-        pageSize: pagination.pageSize ?? 10,
-        total: pagination.total ?? 0,
-      };
+    const newPagination: { current: number; pageSize: number; total: number } = {
+      current: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      total: pagination.total ?? 0,
+    };
 
     setPagination(newPagination);
   };
@@ -586,11 +387,7 @@ const AdminManageUsers: React.FC = () => {
     setLoading(true);
     try {
       let avatarUrl = values.avatar;
-      if (
-        values.avatar &&
-        typeof values.avatar !== "string" &&
-        values.avatar.file.originFileObj
-      ) {
+      if (values.avatar && typeof values.avatar !== "string" && values.avatar.file.originFileObj) {
         avatarUrl = await uploadFile(values.avatar.file.originFileObj);
       }
 
@@ -600,16 +397,13 @@ const AdminManageUsers: React.FC = () => {
         email: values.email,
       };
 
-      const response: AxiosResponse<any> = await axiosInstance.put(
-        `/api/users/${formData._id}`,
-        updatedUser
-      );
+      const response: AxiosResponse<any> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
 
       if (response.success) {
         // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
-          const roleChangeResponse: AxiosResponse<any> =
-            await axiosInstance.put(`/api/users/change-role`, {
+          const roleChangeResponse =
+            await axiosInstance.put(API_CHANGE_ROLE, {
               user_id: formData._id,
               role: values.role,
             });
@@ -620,11 +414,7 @@ const AdminManageUsers: React.FC = () => {
         }
 
         setData((prevData) =>
-          prevData.map((user) =>
-            user._id === formData._id
-              ? { ...user, ...updatedUser, role: values.role }
-              : user
-          )
+          prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
         );
 
         toast.success("Updated user successfully");
@@ -632,7 +422,7 @@ const AdminManageUsers: React.FC = () => {
         form.resetFields();
         fetchUsers();
       } else {
-        //
+        //handle error for edit users
       }
     } catch (error) {
       //
@@ -654,19 +444,40 @@ const AdminManageUsers: React.FC = () => {
   const handleRoleChange = (value: string) => {
     setSelectedRole(value);
   };
-  const handleStatus = useCallback((value: string) => {
+  const handleStatus = (value: string) => {
     setSelectedStatus(value);
-  }, []);
+    fetchUsers();
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <Breadcrumb>
-          <Breadcrumb.Item href="/">
+          <Breadcrumb.Item href={paths.ADMIN_HOME}>
             <HomeOutlined />
           </Breadcrumb.Item>
-          <Breadcrumb.Item>Admin</Breadcrumb.Item>
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
+
+        <Space>
+          <Input.Search
+            placeholder="Search By Name"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            // onSearch={handleSearch}
+            style={{ width: 200 }}
+          />
+          <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }}>
+            <Select.Option value="All">All Roles</Select.Option>
+            <Select.Option value="Admin">Admin</Select.Option>
+            <Select.Option value="Student">Student</Select.Option>
+            <Select.Option value="Instructor">Instructor</Select.Option>
+          </Select>
+          <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
+            <Select.Option value="true">Active</Select.Option>
+            <Select.Option value="false">Inactive</Select.Option>
+          </Select>
+        </Space>
 
         <div className="mt-3">
           {" "}
@@ -684,20 +495,12 @@ const AdminManageUsers: React.FC = () => {
       </div>
 
       <Spin spinning={loading}>
-        <Table
-          columns={columns}
-          dataSource={data}
-          rowKey="_id"
-          pagination={false} // Disable the default pagination
-          onChange={handleTableChange}
-        />
+        <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
       </Spin>
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
-          showTotal={(total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`
-          }
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           current={pagination.current}
           pageSize={pagination.pageSize}
           onChange={handlePaginationChange}
@@ -712,19 +515,11 @@ const AdminManageUsers: React.FC = () => {
         footer={null}
       >
         <Form form={form} onFinish={onFinish} layout="vertical">
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please input the name!" }]}
-          >
+          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
             <Input />
           </Form.Item>
           {modalMode === "Add" && (
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[{ required: true, message: "Please input the email!" }]}
-            >
+            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
               <Input />
             </Form.Item>
           )}
@@ -732,9 +527,7 @@ const AdminManageUsers: React.FC = () => {
             <Form.Item
               name="password"
               label="Password"
-              rules={[
-                { required: true, message: "Please input the password!" },
-              ]}
+              rules={[{ required: true, message: "Please input the password!" }]}
             >
               <Input.Password />
             </Form.Item>

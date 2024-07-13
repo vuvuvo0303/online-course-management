@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { Editor } from '@tinymce/tinymce-react';
-import axiosInstance from "../../../../services/api";
+import axiosInstance from "../../../../services/axiosInstance.ts";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -141,7 +141,7 @@ const InstructorCreateCourse = () => {
             }
             //Create Course
             else {
-                await axiosInstance.post(`${host_main}/api/course`, values, {
+                await axiosInstance.post(`/api/course`, values, {
                     
                 });
                 toast.success("Create New Course Successfully");
@@ -244,10 +244,12 @@ const InstructorCreateCourse = () => {
       
                     >
                         <Editor
+                        
                             apiKey="lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u"
                             onEditorChange={(newValue) => setValue(newValue)}
                             initialValue={value}
                             init={{
+                                directionality: 'ltr',
                                 plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
                                 toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
                                 tinycomments_mode: 'embedded',

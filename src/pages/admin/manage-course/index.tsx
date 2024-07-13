@@ -1,71 +1,123 @@
-import {DeleteOutlined, DownOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined} from "@ant-design/icons";
-import React, { useEffect, useState, useCallback } from "react";
+import { EditOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import React, {useCallback, useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
   Button,
-  Dropdown,
   Image,
-  Input, MenuProps,
+  Input,
   Modal,
+  Select,
   Space,
   Table,
   TableColumnsType,
-  TablePaginationConfig
+  TablePaginationConfig,
+  Tag
 } from "antd";
-import { API_GET_COURSE } from "../../../consts";
-import axiosInstance from "../../../services/api";
+import {API_COURSE_STATUS, getColor} from "../../../consts";
+import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import {Course} from "../../../models";
+import { Course } from "../../../models";
+import { toast } from "react-toastify";
 
 const AdminManageCourses: React.FC = () => {
+  const [openChangeStatus, setOpenChangeStatus] = useState(false);
+  const [changeStatus, setChangeStatus] = useState<string>('');
   const [courses, setCourses] = useState<Course[]>([]);
+  const [courseId, setCourseId] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
+  const [searchText, setSearchText] = useState<string>("");
+  const [selectedCategoryName, setSelectedCategoryName] = useState<string>("All Categories");
+
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalText, setModalText] = useState('')
+  const [status, setStatus] = useState<string>('new');
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
 
-  const fetchCourses = useCallback(async () => {
-    setLoading(true);
+  const fetchCourses = async () => {
     try {
-      const response = await axiosInstance.post(API_GET_COURSE, {
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
+      const res = await axiosInstance.post(`/api/course/search`, {
+        "searchCondition": {
+          "keyword": "",
+          "category": "",
+          "status": status,
+          "is_deleted": false
         },
-        searchCondition: {
-          status: "new",
-        },
+        "pageInfo": {
+          "pageNum": 1,
+          "pageSize": 100
+        }
       });
-
-      if (response.data && response.data.pageData) {
-        setCourses(response.data.pageData);
-        setPagination((prev) => ({
-          ...prev,
-          total: response.data.pageInfo.totalItems,
-        }));
-      } else {
-        throw new Error("Failed to fetch courses");
+      if (res.data.pageData) {
+        setCourses(res.data.pageData);
       }
     } catch (error) {
-      setError("An unexpected error occurred.");
+      console.log("Error: ", error);
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [pagination.current, pagination.pageSize]);
+  };
 
   useEffect(() => {
+
+    fetchCourses();
+  }, []);
+
+
+
+  const handleSearch = useCallback(() => {
+    setPagination((prev) => ({
+      ...prev,
+      current: 1,
+    }));
     fetchCourses();
   }, [fetchCourses]);
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
+  };
+
+  const handleChangeStatus = async (value: string) => {
+    setChangeStatus(value);
+  };
+
+  const showModalChangeStatus = (course_id: string) => {
+    setOpenChangeStatus(true);
+    setCourseId(course_id);
+  };
+
+  const handleOkChangeStatus = async () => {
+    try {
+      await axiosInstance.put(API_COURSE_STATUS,
+        {
+          "course_id": courseId,
+          "new_status": changeStatus,
+          "comment": "This course not match for approve. Please review session and lesson in this course!"
+        }
+      )
+      setCourses(courses.filter(course => course._id != courseId))
+    } catch (error) {
+      toast.error("Change Status Failed!")
+    }
+    setModalText('The modal will be closed after two seconds');
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpenChangeStatus(false);
+      setConfirmLoading(false);
+    }, 500);
+  };
+
+  const handleCancel = () => {
+    setOpenChangeStatus(false);
   };
 
   const columnsCourses: TableColumnsType<Course> = [
@@ -74,7 +126,6 @@ const AdminManageCourses: React.FC = () => {
       width: "50",
       dataIndex: "name",
       key: "name",
-
       render: (text, record) => (
         <Button type="link" onClick={() => showModal(record)}>
           {text}
@@ -85,19 +136,36 @@ const AdminManageCourses: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (status: string, record: Course) => (
+        <>
+          <div className="flex justify-between">
+            <Tag color={getColor(status)}
+            >
+              {status}
+            </Tag>
+            {
+              status === "waiting_approve" ?
+                (
+                  <EditOutlined onClick={() => showModalChangeStatus(record._id)} className="text-blue-500" />
+                )
+                :
+                ""
+            }
+          </div>
+        </>
+      )
     },
-
     {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (date: string) => format(new Date(date), "dd/MM/yyyy", { locale: vi }),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Action",
@@ -108,7 +176,6 @@ const AdminManageCourses: React.FC = () => {
           <Link to={`/admin/manage-course/${record._id}/manage-session`}>
             <EyeOutlined className="text-purple-500 m-2" />
           </Link>
-          <DeleteOutlined className="text-red-500 m-2" />
         </>
       ),
     },
@@ -126,32 +193,66 @@ const AdminManageCourses: React.FC = () => {
     setSelectedCourse(record);
     setIsModalVisible(true);
   };
+
   const formatVND = (value: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(value);
   };
-  const items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: "All",
-    },
-    {
-      key: "2",
-      label: "Admins",
-    },
-    {
-      key: "3",
-      label: "Instructors",
-    },
-    {
-      key: "4",
-      label: "Students",
-    },
-  ];
+
+  // Lọc các danh mục trùng lặp
+  const uniqueCategoriesMap = new Map();
+  courses.forEach(course => {
+    if (!uniqueCategoriesMap.has(course.category_name)) {
+      uniqueCategoriesMap.set(course.category_name, {
+        category_id: course.category_id,
+        category_name: course.category_name,
+      });
+    }
+  });
+
+  const uniqueCategories = Array.from(uniqueCategoriesMap.values());
+  
+  // Thêm tùy chọn "All Categories"
+  uniqueCategories.unshift({ category_id: "", category_name: "All Categories" });
+
+  const handleCategoryChange = (categoryName: string) => {
+    const category = uniqueCategories.find(c => c.category_name === categoryName);
+    setCategoryId(category && category.category_name !== "All Categories" ? category.category_id : undefined);
+    setSelectedCategoryName(categoryName);
+    handleSearch();
+  };
+
   return (
     <div>
+      {/* modal change status */}
+      <Modal
+        title="Change Status"
+        open={openChangeStatus}
+        onOk={handleOkChangeStatus}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <div className="text-center">
+          <p>Status: </p>
+          <Select
+            defaultValue="waiting_approve"
+            style={{ width: 200 }}
+            className="my-5"
+            onChange={handleChangeStatus}
+            options={[
+              {
+                options: [
+                  { label: <span>approve</span>, value: 'approve' },
+                  { label: <span>reject</span>, value: 'reject' },
+                ],
+              },
+            ]}
+          />
+        </div>
+      </Modal>
+
       <Modal
         title={
           <span className="text-2xl font-bold flex justify-center text-amber-700">
@@ -192,7 +293,7 @@ const AdminManageCourses: React.FC = () => {
               <span className="text-base font-bold">Course Video:</span>
               <span>
                 <Link to={selectedCourse.video_url ?? "https://youtube.com"} target="_blank" rel="noopener noreferrer">
-                  <Button className="bg-rose-500" type="primary">
+                  <Button className="bg-blue-500" type="primary">
                     <PlayCircleOutlined />
                     Watch Video
                   </Button>
@@ -202,7 +303,7 @@ const AdminManageCourses: React.FC = () => {
           </div>
         )}
         <div className="flex justify-end">
-          <Button type="primary"  onClick={() => setIsModalVisible(false)}>
+          <Button type="primary" onClick={() => setIsModalVisible(false)}>
             Close
           </Button>
         </div>
@@ -222,44 +323,35 @@ const AdminManageCourses: React.FC = () => {
       />
 
       <Space style={{ marginTop: 32, marginBottom: 16 }}>
-        <Input
-            placeholder="Search..."
-            style={{ width: 200 }}
+        <Input.Search
+          placeholder="Search By Name"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          onSearch={handleSearch}
+          style={{ width: 200 }}
         />
-        <Dropdown
-            menu={{
-              items,
-              selectable: true,
-              defaultSelectedKeys: ["1"],
-            }}
+        <Select
+          showSearch
+          placeholder="Select Category"
+          optionFilterProp="children"
+          onChange={handleCategoryChange}
+          value={selectedCategoryName}
+          style={{ width: 200 }}
         >
-          <Button>
-            <Space>
-              Filter Categories
-              <DownOutlined />
-            </Space>
-          </Button>
-        </Dropdown>
-
-        <Dropdown
-            menu={{
-              items,
-              selectable: true,
-              defaultSelectedKeys: ["1"],
-            }}
-        >
-          <Button>
-            <Space>
-              Filter Parent Categories
-              <DownOutlined />
-            </Space>
-          </Button>
-        </Dropdown>
-        <Button >Clear filters</Button>
-        <Button >Clear filters and sorters</Button>
+          {uniqueCategories.map((category) => (
+            <Select.Option key={category.category_id} value={category.category_name}>
+              {category.category_name}
+            </Select.Option>
+          ))}
+        </Select>
       </Space>
       <h1 className="text-center mb-10">Manage Course</h1>
-      <Table columns={columnsCourses} dataSource={courses} pagination={pagination} onChange={handleTableChange} />
+      <Table
+        columns={columnsCourses}
+        dataSource={courses}
+        pagination={pagination}
+        onChange={handleTableChange}
+      />
     </div>
   );
 };

@@ -130,7 +130,7 @@ const BasicStep: React.FC = () => {
                                 options={CourseOption}
                                 optionRender={(option) => (
                                     <Space>
-                                        <span role="img" aria-label={option.data.label}>
+                                        <span role="img">
                                             {option.data.emoji}
                                         </span>
                                         {option.data.desc}
@@ -149,7 +149,7 @@ const BasicStep: React.FC = () => {
                                 options={AudioOption}
                                 optionRender={(option) => (
                                     <Space>
-                                        <span role="img" aria-label={option.data.label}>
+                                        <span role="img">
                                             {option.data.emoji}
                                         </span>
                                         {option.data.desc}
@@ -172,7 +172,7 @@ const BasicStep: React.FC = () => {
                                 options={CloseCaptionOption}
                                 optionRender={(option) => (
                                     <Space>
-                                        <span role="img" aria-label={option.data.label}>
+                                        <span role="img">
                                             {option.data.emoji}
                                         </span>
                                         {option.data.desc}
@@ -191,7 +191,7 @@ const BasicStep: React.FC = () => {
                                 options={AudioOption}
                                 optionRender={(option) => (
                                     <Space>
-                                        <span role="img" aria-label={option.data.label}>
+                                        <span role="img">
                                             {option.data.emoji}
                                         </span>
                                         {option.data.desc}

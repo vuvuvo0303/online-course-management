@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Input, Dropdown, Typography, Button } from 'antd';
-import type { MenuProps } from 'antd';
+import { Input, Dropdown, Typography, Button, Drawer } from 'antd';
 import { SearchOutlined, TagOutlined, FileTextOutlined, ImportOutlined } from '@ant-design/icons';
 import { categoryFilters } from '../consts';
 
 const SearchTool = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedItem, setSelectedItem] = useState('All'); // Default selected item
+    const [drawerVisible, setDrawerVisible] = useState(false);
 
     const handleSearch = () => {
         // Implement your search logic here
@@ -16,7 +16,7 @@ const SearchTool = () => {
         console.log(results);
     };
 
-    const items: MenuProps['items'] = [
+    const items = [
         {
             key: '1',
             label: 'All',
@@ -39,41 +39,64 @@ const SearchTool = () => {
         },
     ];
 
-    const handleMenuClick: MenuProps['onClick'] = (e) => {
-        const selectedItem = items.find(item => item && 'label' in item && item.key === e.key);
-        if (selectedItem && 'label' in selectedItem) {
-            setSelectedItem(selectedItem.label as string || 'Selectable');
+    const handleMenuClick = (e) => {
+        const selectedItem = items.find(item => item.key === e.key);
+        if (selectedItem) {
+            setSelectedItem(selectedItem.label);
         } else {
-            setSelectedItem('Selectable');
+            setSelectedItem('All'); // Default fallback
         }
     };
 
+    const toggleDrawer = () => {
+        setDrawerVisible(!drawerVisible);
+    };
+
     return (
-        <div className="relative w-full md:w-[650px] md:ml-[9rem]">
+        <div className="relative w-full md:w-[650px] md:ml-[3.5rem]">
             <div className="flex items-center">
-                <Dropdown
-                    menu={{
-                        items,
-                        selectable: true,
-                        defaultSelectedKeys: ['1'],
-                        onClick: handleMenuClick,
-                    }}
-                >
-                    <Typography.Link>
-                        <Button className="rounded-l-lg md:rounded-r-none border border-black md:border-r-0">
-                            {selectedItem}
-                        </Button>
-                    </Typography.Link>
-                </Dropdown>
-                <Input
-                    className="w-full md:rounded-l-none rounded-r-lg border-black"
+                <Input.Search
+                    addonBefore={<Dropdown
+                        menu={{
+                            items,
+                            selectable: true,
+                            defaultSelectedKeys: ['1'],
+                            onClick: handleMenuClick,
+                        }}
+                    >
+                        <Typography.Link>
+                            <Button className="border-none h-[1rem]">
+                                {selectedItem}
+                            </Button>
+                        </Typography.Link>
+                    </Dropdown>}
+                    className="w-full hidden md:block"
                     placeholder="Search categories..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    onPressEnter={handleSearch}
-                    suffix={<SearchOutlined className='ml-2' />}
+                    onSearch={handleSearch}
+                />
+                <Button
+                    className="md:hidden border border-none h-[31.6px] "
+                    onClick={toggleDrawer}
+                    icon={<SearchOutlined />}
                 />
             </div>
+            <Drawer
+                placement="right"
+                closable={true}
+                onClose={toggleDrawer}
+                open={drawerVisible}
+                width={Math.min(window.innerWidth - 100, 320)} // Adjust the width to be responsive
+            >
+                <Input.Search
+                    className="w-full rounded-lg border-black"
+                    placeholder="Search categories..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onSearch={handleSearch}
+                />
+            </Drawer>
         </div>
     );
 };

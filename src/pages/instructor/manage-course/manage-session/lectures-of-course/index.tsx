@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Course, Lecture, Session } from "../../../../../models";
 import { toast } from "react-toastify";
-import axiosInstance from "../../../../../services/api";
+import axiosInstance from "../../../../../services/axiosInstance.ts";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
@@ -70,7 +70,7 @@ const LectureOfCourse: React.FC = () => {
                     },
                     "pageInfo": {
                         "pageNum": 1,
-                        "pageSize": 10
+                        "pageSize": 100
                     }
                 })
                 if (res) {
@@ -96,7 +96,7 @@ const LectureOfCourse: React.FC = () => {
                     },
                     "pageInfo": {
                         "pageNum": 1,
-                        "pageSize": 10
+                        "pageSize": 100
                     }
                 })
                 if (res) {
@@ -129,7 +129,7 @@ const LectureOfCourse: React.FC = () => {
                             },
                             "pageInfo": {
                                 "pageNum": 1,
-                                "pageSize": 10
+                                "pageSize": 100
                             }
                         }
                     );
@@ -159,7 +159,7 @@ const LectureOfCourse: React.FC = () => {
                         },
                         "pageInfo": {
                             "pageNum": 1,
-                            "pageSize": 10
+                            "pageSize": 100
                         }
                     },);
                     if (res) {

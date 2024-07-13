@@ -5,7 +5,7 @@ import { Course, Lecture, Session } from "../../../../../../models";
 import { HomeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { User } from "../../../../../../models/User";
-import axiosInstance from "../../../../../../services/api";
+import axiosInstance from "../../../../../../services/axiosInstance.ts";
 import { Editor } from '@tinymce/tinymce-react';
 const formItemLayout = {
   labelCol: {
@@ -29,7 +29,7 @@ const CreateLecture = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [userId, setUserId] = useState<string>('');
   const [course_id, setCourse_id] = useState<string>('');
-  const [value, setValue] = useState<string>('TinyMCE editor text');
+  const [value, setValue] = useState<string>('<p>TinyMCE editor text<p/>');
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
@@ -182,7 +182,7 @@ const CreateLecture = () => {
         await axiosInstance.put(`/api/lesson/${lectureId}`, values, {
         });
         toast.success("Update Lecture Successfully!")
-      } 
+      }
       //create lecture
       else {
         console.log("check value create: ", values)
@@ -243,7 +243,7 @@ const CreateLecture = () => {
                 label="Course Name"
                 name="course_id"
                 hidden
-                rules={[{ required: true, message: "Please choose course name!" }]}
+                initialValue={courseId}
               >
                 <Input defaultValue={courseId} disabled />
               </Form.Item>
@@ -254,7 +254,7 @@ const CreateLecture = () => {
               <Form.Item
                 label="Course Name"
                 name="course_id"
-                rules={[{ required: true, message: "Please choose course name!" }]}
+
               >
                 <Select
                   // Save course_id to use to call the session api
@@ -273,7 +273,6 @@ const CreateLecture = () => {
                 label="Session Name"
                 name="session_id"
                 hidden
-                rules={[{ required: true, message: "Please input session name!" }]}
               >
                 <Input defaultValue={session?._id} disabled />
               </Form.Item>

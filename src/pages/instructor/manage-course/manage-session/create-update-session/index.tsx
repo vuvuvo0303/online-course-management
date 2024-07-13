@@ -8,7 +8,7 @@ import { Course, Session } from "../../../../../models";
 import { toast } from "react-toastify";
 import { User } from "../../../../../models/User";
 import { host_main } from "../../../../../consts";
-import axiosInstance from "../../../../../services/api";
+import axiosInstance from "../../../../../services/axiosInstance.ts";
 
 const formItemLayout = {
   labelCol: {
@@ -30,7 +30,6 @@ const CreateUpdateSession = () => {
   const [role, setRole] = useState<string>('');
   const [courseId2, setCourseId2] = useState<string>("");
   const [courses, setCourses] = useState<Course[]>([]);
-  const [course, setCourse] = useState<Course | null>();
   const [userId, setUserId] = useState<string>('');
   //value of tinymce (field: description)
   const [value, setValue] = useState<string>('TinyMCE editor text');
@@ -165,7 +164,7 @@ const CreateUpdateSession = () => {
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
-
+  
   return (
     <div className="flex justify-center items-center h-full mt-10">
       {loading ? (

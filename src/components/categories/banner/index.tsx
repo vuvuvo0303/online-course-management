@@ -18,7 +18,7 @@ const Banner: React.FC = () => {
     }, [images.length]);
 
     return (
-        <div className="w-full">
+        <div className="w-full p-1">
             <img src={images[current]} alt="Banner Image" className="w-full" />
         </div>
     );

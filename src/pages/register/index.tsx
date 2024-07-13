@@ -10,7 +10,7 @@ import Lottie from "lottie-react";
 import { toast } from "react-toastify";
 import { useForm } from "antd/es/form/Form";
 import uploadFile from "../../utils/upload";
-import axiosInstance from "../../services/api.ts";
+import axiosInstance from "../../services/axiosInstance.ts";
 import Recaptcha from "../register/reCaptcha.tsx";
 import {API_REGISTER, paths, roles} from "../../consts";
 
