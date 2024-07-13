@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Button, Spin, message, Radio, Input, Form } from "antd";
+import { Button, Spin, Radio, Input, Form } from "antd";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { API_PAYMENT_URL, API_COURSES_URL } from "../../consts";
 import styles from "./checkout.module.css";
 
@@ -38,14 +40,14 @@ const Checkout: React.FC = () => {
           paymentData.createdDate = createdDateUTC;
           setPayment(paymentData);
         } else {
-          message.error("No payment found.");
+          toast.error("No payment found.");
         }
       } else {
-        message.error("Failed to fetch payment details.");
+        toast.error("Failed to fetch payment details.");
       }
     } catch (error) {
       console.error("Error fetching payment details:", error);
-      message.error("Error fetching payment details.");
+      toast.error("Error fetching payment details.");
     } finally {
       setLoading(false);
     }
@@ -61,14 +63,14 @@ const Checkout: React.FC = () => {
           setCourse(firstCourse);
           setCourseImage(firstCourse.courseImgUrl);
         } else {
-          message.error("No course found.");
+          toast.error("No course found.");
         }
       } else {
-        message.error("Failed to fetch course details.");
+        toast.error("Failed to fetch course details.");
       }
     } catch (error) {
       console.error("Error fetching course details:", error);
-      message.error("Error fetching course details.");
+      toast.error("Error fetching course details.");
     }
   };
 
@@ -81,7 +83,7 @@ const Checkout: React.FC = () => {
 
   const handlePayment = async () => {
     if (!paymentMethod) {
-      message.error("Please select a payment method.");
+      toast.error("Please select a payment method.");
       return;
     }
     form
@@ -91,11 +93,11 @@ const Checkout: React.FC = () => {
         try {
           await new Promise((resolve) => setTimeout(resolve, 2000));
           setLoading(false);
-          message.success("Payment successful!");
+          toast.success("Payment successful!");
         } catch (error) {
           console.error("Payment failed:", error);
           setLoading(false);
-          message.error("Payment failed. Please try again later.");
+          toast.error("Payment failed. Please try again later.");
         }
       })
       .catch((info) => {
@@ -117,6 +119,7 @@ const Checkout: React.FC = () => {
         <h1 className={`${styles.title} font-playfair`}>Checkout</h1>
         <div className={styles.paymentDetails}>
           <div className={styles.paymentDetailsContent}>
+            <ToastContainer />
             <h2 className={`${styles.sectionTitle}`}>
               <strong>Billing Details</strong>
             </h2>
