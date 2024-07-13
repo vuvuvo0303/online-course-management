@@ -8,9 +8,18 @@ import {
   Modal,
   Form,
   Pagination,
-  Popconfirm, Spin,
+  Popconfirm,
+  // Dropdown,
+  // MenuProps,
+  Spin,
 } from "antd";
-import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  EyeOutlined,
+  HomeOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { format } from "date-fns";
 import { Category } from "../../../models";
 import { toast } from "react-toastify";
@@ -25,10 +34,9 @@ import {
   API_DELETE_CATEGORY,
   API_GET_CATEGORIES,
   API_UPDATE_CATEGORY,
-  paths
+  paths,
 } from "../../../consts";
-import {vi} from "date-fns/locale";
-
+import { vi } from "date-fns/locale";
 
 const AdminManageCategories: React.FC = () => {
   const [data, setData] = useState<Category[]>([]);
@@ -97,10 +105,14 @@ const AdminManageCategories: React.FC = () => {
 
   const handleDelete = useCallback(
     async (_id: string, name: string) => {
-      const isParentCategory = data.some((category) => category.parent_category_id === _id);
+      const isParentCategory = data.some(
+        (category) => category.parent_category_id === _id
+      );
 
       if (isParentCategory) {
-        toast.error(`Cannot delete category ${name} as it is a parent category of another category.`);
+        toast.error(
+          `Cannot delete category ${name} as it is a parent category of another category.`
+        );
         return;
       }
 
@@ -158,10 +170,18 @@ const AdminManageCategories: React.FC = () => {
             >
               <Input />
             </Form.Item>
-            <Form.Item label="Parent Category" name="parent_category_id" rules={[{ required: false }]}>
+            <Form.Item
+              label="Parent Category"
+              name="parent_category_id"
+              rules={[{ required: false }]}
+            >
               <Input placeholder="Input parent category" />
             </Form.Item>
-            <Form.Item label="Description" name="description" rules={[{ required: false }]}>
+            <Form.Item
+              label="Description"
+              name="description"
+              rules={[{ required: false }]}
+            >
               <Input.TextArea rows={4} />
             </Form.Item>
             <Form.Item name="_id" style={{ display: "none" }}>
@@ -177,13 +197,18 @@ const AdminManageCategories: React.FC = () => {
   );
 
   const updateCategory = useCallback(
-    async (values: Partial<Category> & { _id: string | null }, originalCreatedAt: string) => {
+    async (
+      values: Partial<Category> & { _id: string | null },
+      originalCreatedAt: string
+    ) => {
       let parentCategoryId = null;
 
       if (values.parent_category_id === "none") {
         parentCategoryId = null;
       } else if (values.parent_category_id) {
-        const parentCategory = data.find((category) => category.name === values.parent_category_id);
+        const parentCategory = data.find(
+          (category) => category.name === values.parent_category_id
+        );
         if (parentCategory) {
           parentCategoryId = parentCategory._id;
         }
@@ -203,9 +228,14 @@ const AdminManageCategories: React.FC = () => {
           updated_at: new Date().toISOString(),
         };
 
-        await axiosInstance.put(`${API_UPDATE_CATEGORY}/${values._id}`, updatedCategory);
+        await axiosInstance.put(
+          `${API_UPDATE_CATEGORY}/${values._id}`,
+          updatedCategory
+        );
 
-        const updatedData = data.map((category) => (category._id === values._id ? updatedCategory : category));
+        const updatedData = data.map((category) =>
+          category._id === values._id ? updatedCategory : category
+        );
         setData(updatedData);
 
         setIsModalVisible(false);
@@ -227,7 +257,9 @@ const AdminManageCategories: React.FC = () => {
 
         let parentCategoryId = null;
         if (values.parent_category_id) {
-          const parentCategory = data.find((category) => category.name === values.parent_category_id);
+          const parentCategory = data.find(
+            (category) => category.name === values.parent_category_id
+          );
           if (parentCategory) {
             parentCategoryId = parentCategory._id;
           }
@@ -238,7 +270,10 @@ const AdminManageCategories: React.FC = () => {
           parent_category_id: parentCategoryId,
         };
 
-        const response = await axiosInstance.post(`/api/category`, categoryData);
+        const response = await axiosInstance.post(
+          `/api/category`,
+          categoryData
+        );
         if (response.data) {
           const newCategory = response.data;
           setData((prevData) => [...prevData, newCategory]);
@@ -267,7 +302,9 @@ const AdminManageCategories: React.FC = () => {
       dataIndex: "parent_category_id",
       key: "parent_category_id",
       render: (parent_category_id: string) => {
-        const category = data.find((category) => category._id === parent_category_id);
+        const category = data.find(
+          (category) => category._id === parent_category_id
+        );
         return category ? category.name : "None";
       },
     },
@@ -281,13 +318,15 @@ const AdminManageCategories: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: Date) =>
+        format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+      render: (updated_at: Date) =>
+        format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: "Action",
@@ -338,7 +377,7 @@ const AdminManageCategories: React.FC = () => {
   }, [fetchCategories]);
 
   if (loading === true) {
-    return <p className="text-center flex justify-center">Loading ...</p>
+    return <p className="text-center flex justify-center">Loading ...</p>;
   }
   return (
     <div>
@@ -356,6 +395,7 @@ const AdminManageCategories: React.FC = () => {
             onChange={(e) => setSearchText(e.target.value)}
             onSearch={handleSearch}
             style={{ width: 200 }}
+            enterButton={<SearchOutlined className="text-white" />}
           />
         </Space>
         <Button type="primary" onClick={handleOpenModal}>
@@ -363,7 +403,13 @@ const AdminManageCategories: React.FC = () => {
         </Button>
       </div>
       <Spin spinning={loading}>
-        <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          rowKey="_id"
+          pagination={false}
+          onChange={handleTableChange}
+        />
       </Spin>
 
       <div className="flex justify-end py-8">
@@ -391,13 +437,25 @@ const AdminManageCategories: React.FC = () => {
           labelCol={{ span: 24 }}
           validateTrigger={validateOnOpen ? "onSubmit" : "onChange"}
         >
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input the name!" }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Parent Category" name="parent_category_id" rules={[{ required: false }]}>
+          <Form.Item
+            label="Parent Category"
+            name="parent_category_id"
+            rules={[{ required: false }]}
+          >
             <Input placeholder="Input parent category" />
           </Form.Item>
-          <Form.Item label="Description" name="description" rules={[{ required: false }]}>
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[{ required: false }]}
+          >
             <Input.TextArea rows={4} />
           </Form.Item>
           <Form.Item>

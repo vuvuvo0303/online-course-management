@@ -1,4 +1,4 @@
-import { EditOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import React, {useCallback, useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 import {
@@ -6,15 +6,16 @@ import {
   Button,
   Image,
   Input,
+  MenuProps,
   Modal,
   Select,
   Space,
   Table,
   TableColumnsType,
   TablePaginationConfig,
-  Tag
+  Tag,
 } from "antd";
-import {API_COURSE_STATUS, getColor} from "../../../consts";
+import { API_COURSE_STATUS, getColor } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -23,9 +24,9 @@ import { toast } from "react-toastify";
 
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
-  const [changeStatus, setChangeStatus] = useState<string>('');
+  const [changeStatus, setChangeStatus] = useState<string>("");
   const [courses, setCourses] = useState<Course[]>([]);
-  const [courseId, setCourseId] = useState<string>('');
+  const [courseId, setCourseId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -35,8 +36,8 @@ const AdminManageCourses: React.FC = () => {
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>("All Categories");
 
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState('')
-  const [status, setStatus] = useState<string>('new');
+  const [modalText, setModalText] = useState("");
+  const [status, setStatus] = useState<string>("new");
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -44,46 +45,52 @@ const AdminManageCourses: React.FC = () => {
   });
 
   const fetchCourses = async () => {
+    setLoading(true);
     try {
-      const res = await axiosInstance.post(`/api/course/search`, {
-        "searchCondition": {
-          "keyword": "",
-          "category": "",
-          "status": status,
-          "is_deleted": false
+      const params = {
+        searchCondition: {
+          keyword: searchText,
+          category_id: categoryId,
+          status: status,
+          is_deleted: false,
         },
-        "pageInfo": {
-          "pageNum": 1,
-          "pageSize": 100
-        }
-      });
+        pageInfo: {
+          pageNum: pagination.current,
+          pageSize: pagination.pageSize,
+        },
+      };
+      console.log("Fetching courses with params:", params);
+      const res = await axiosInstance.post(`/api/course/search`, params);
       if (res.data.pageData) {
         setCourses(res.data.pageData);
+        setPagination((prev) => ({
+          ...prev,
+          total: res.data.totalCount,
+        }));
       }
     } catch (error) {
       console.log("Error: ", error);
+      setError("Failed to fetch courses.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-
     fetchCourses();
-  }, []);
+  }, [categoryId, pagination.current, pagination.pageSize, status, searchText]);
 
-
-
-  const handleSearch = useCallback(() => {
+  const handleSearch = () => {
     setPagination((prev) => ({
       ...prev,
       current: 1,
     }));
     fetchCourses();
-  }, [fetchCourses]);
+  };
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
+    fetchCourses();
   };
 
   const handleChangeStatus = async (value: string) => {
@@ -97,18 +104,16 @@ const AdminManageCourses: React.FC = () => {
 
   const handleOkChangeStatus = async () => {
     try {
-      await axiosInstance.put(API_COURSE_STATUS,
-        {
-          "course_id": courseId,
-          "new_status": changeStatus,
-          "comment": "This course not match for approve. Please review session and lesson in this course!"
-        }
-      )
-      setCourses(courses.filter(course => course._id != courseId))
+      await axiosInstance.put(API_COURSE_STATUS, {
+        course_id: courseId,
+        new_status: changeStatus,
+        comment: "This course not match for approve. Please review session and lesson in this course!",
+      });
+      setCourses(courses.filter((course) => course._id !== courseId));
     } catch (error) {
-      toast.error("Change Status Failed!")
+      toast.error("Change Status Failed!");
     }
-    setModalText('The modal will be closed after two seconds');
+    setModalText("The modal will be closed after two seconds");
     setConfirmLoading(true);
     setTimeout(() => {
       setOpenChangeStatus(false);
@@ -139,21 +144,15 @@ const AdminManageCourses: React.FC = () => {
       render: (status: string, record: Course) => (
         <>
           <div className="flex justify-between">
-            <Tag color={getColor(status)}
-            >
-              {status}
-            </Tag>
-            {
-              status === "waiting_approve" ?
-                (
-                  <EditOutlined onClick={() => showModalChangeStatus(record._id)} className="text-blue-500" />
-                )
-                :
-                ""
-            }
+            <Tag color={getColor(status)}>{status}</Tag>
+            {status === "waiting_approve" ? (
+              <EditOutlined onClick={() => showModalChangeStatus(record._id)} className="text-blue-500" />
+            ) : (
+              ""
+            )}
           </div>
         </>
-      )
+      ),
     },
     {
       title: "Created Date",
@@ -201,9 +200,8 @@ const AdminManageCourses: React.FC = () => {
     }).format(value);
   };
 
-  // Lọc các danh mục trùng lặp
   const uniqueCategoriesMap = new Map();
-  courses.forEach(course => {
+  courses.forEach((course) => {
     if (!uniqueCategoriesMap.has(course.category_name)) {
       uniqueCategoriesMap.set(course.category_name, {
         category_id: course.category_id,
@@ -213,15 +211,19 @@ const AdminManageCourses: React.FC = () => {
   });
 
   const uniqueCategories = Array.from(uniqueCategoriesMap.values());
-  
-  // Thêm tùy chọn "All Categories"
   uniqueCategories.unshift({ category_id: "", category_name: "All Categories" });
 
   const handleCategoryChange = (categoryName: string) => {
-    const category = uniqueCategories.find(c => c.category_name === categoryName);
-    setCategoryId(category && category.category_name !== "All Categories" ? category.category_id : undefined);
+    const category = uniqueCategories.find((c) => c.category_name === categoryName);
+    const newCategoryId = category && category.category_name !== "All Categories" ? category.category_id : undefined;
+    console.log("Selected categoryName:", categoryName);
+    console.log("Selected categoryId:", newCategoryId);
+    setCategoryId(newCategoryId);
     setSelectedCategoryName(categoryName);
-    handleSearch();
+    setPagination((prev) => ({
+      ...prev,
+      current: 1,
+    }));
   };
 
   return (
@@ -244,8 +246,8 @@ const AdminManageCourses: React.FC = () => {
             options={[
               {
                 options: [
-                  { label: <span>approve</span>, value: 'approve' },
-                  { label: <span>reject</span>, value: 'reject' },
+                  { label: <span>approve</span>, value: "approve" },
+                  { label: <span>reject</span>, value: "reject" },
                 ],
               },
             ]}
@@ -329,6 +331,7 @@ const AdminManageCourses: React.FC = () => {
           onChange={(e) => setSearchText(e.target.value)}
           onSearch={handleSearch}
           style={{ width: 200 }}
+          enterButton={<SearchOutlined className="text-white" />}
         />
         <Select
           showSearch
@@ -346,12 +349,7 @@ const AdminManageCourses: React.FC = () => {
         </Select>
       </Space>
       <h1 className="text-center mb-10">Manage Course</h1>
-      <Table
-        columns={columnsCourses}
-        dataSource={courses}
-        pagination={pagination}
-        onChange={handleTableChange}
-      />
+      <Table columns={columnsCourses} dataSource={courses} pagination={pagination} onChange={handleTableChange} />
     </div>
   );
 };
