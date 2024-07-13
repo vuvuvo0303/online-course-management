@@ -9,10 +9,14 @@ import {
   Form,
   Spin,
   Pagination,
-  Popconfirm, Dropdown, MenuProps,
+  Popconfirm,
+  Dropdown,
+  MenuProps,
+  InputRef,
 } from "antd";
 import {
-  DeleteOutlined, DownOutlined,
+  DeleteOutlined,
+  DownOutlined,
   EditOutlined,
   EyeOutlined,
   HomeOutlined,
@@ -538,16 +542,13 @@ const AdminManageCategories: React.FC = () => {
           <Breadcrumb.Item>Manage Categories</Breadcrumb.Item>
         </Breadcrumb>
         <Space style={{ marginTop: 32, marginBottom: 16 }}>
-          <Input
-              placeholder="Search..."
-              style={{ width: 200 }}
-          />
+          <Input placeholder="Search..." style={{ width: 200 }} />
           <Dropdown
-              menu={{
-                items,
-                selectable: true,
-                defaultSelectedKeys: ["1"],
-              }}
+            menu={{
+              items,
+              selectable: true,
+              defaultSelectedKeys: ["1"],
+            }}
           >
             <Button>
               <Space>
@@ -558,11 +559,11 @@ const AdminManageCategories: React.FC = () => {
           </Dropdown>
 
           <Dropdown
-              menu={{
-                items,
-                selectable: true,
-                defaultSelectedKeys: ["1"],
-              }}
+            menu={{
+              items,
+              selectable: true,
+              defaultSelectedKeys: ["1"],
+            }}
           >
             <Button>
               <Space>
@@ -571,8 +572,8 @@ const AdminManageCategories: React.FC = () => {
               </Space>
             </Button>
           </Dropdown>
-          <Button >Clear filters</Button>
-          <Button >Clear filters and sorters</Button>
+          <Button>Clear filters</Button>
+          <Button>Clear filters and sorters</Button>
         </Space>
         <Button type="primary" onClick={handleOpenModal}>
           Add New Category
