@@ -432,6 +432,9 @@ const AdminManageUsers: React.FC = () => {
     setLoading(false);
   };
 
+  if(loading){
+    return <p className="text-center">Loading...</p>
+  }
   const onFinish = (values: any) => {
     if (modalMode === "Edit") {
       if (formData._id) {
@@ -497,9 +500,7 @@ const AdminManageUsers: React.FC = () => {
         </div>
       </div>
 
-      <Spin spinning={loading}>
-        <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
-      </Spin>
+      <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

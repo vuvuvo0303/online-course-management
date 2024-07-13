@@ -7,6 +7,7 @@ import { User } from "../../models/User";
 import { toast } from "react-toastify";
 import axiosInstance from "../../services/axiosInstance.ts";
 import { colorIs_delete } from "../../consts";
+import useDebounce from "../../hooks/useDebounce";
 
 const ManageAllSession = () => {
     const [keyword, setKeyword] = useState<string>('');
@@ -20,7 +21,7 @@ const ManageAllSession = () => {
     const [userId, setUserId] = useState<string>('');
     const [modalText, setModalText] = useState('');
     const [selectedSessionID, setSelectedSessionID] = useState<string>('');
-
+    const debouncedSearchTerm = useDebounce(keyword, 500);
     const showModal = (sessionId: string) => {
         setModalText(`Do you want to delete this session with id = ${sessionId} and the lessons of this session `)
         setSelectedSessionID(sessionId)
@@ -75,7 +76,7 @@ const ManageAllSession = () => {
                 if (role === "instructor") {
                     const res = await axiosInstance.post(`/api/session/search`, {
                         "searchCondition": {
-                            "keyword": keyword,
+                            "keyword": debouncedSearchTerm,
                             "course_id": "",
                             "is_position_order": true,
                             "is_deleted": is_deleted
