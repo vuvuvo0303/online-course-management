@@ -45,11 +45,11 @@ axiosInstance.interceptors.response.use(
                 if (data.message.includes("Your email")) {
                     return Promise.reject(data);
                 }
-                else if(error.response.status === 403){
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("user");
-                    toast.error(data.message)
-                }
+                // else if(error.response.status === 403){
+                //     localStorage.removeItem("token");
+                //     localStorage.removeItem("user");
+                //     toast.error(data.message)
+                // }
                 else if(error.response.status === 404){
                     toast.error(data.message);
                     window.location.href = paths.NOTFOUND;
@@ -62,7 +62,9 @@ axiosInstance.interceptors.response.use(
                     toast.error(data.message);
                 }
             } else {
-                toast.error(error.response.errors.message);
+                data.errors.forEach((error: {field: string, message: string}) => {
+                    toast.error(error.field + ": " + error.message);
+                })
             }
             return Promise.reject(error.response.data);
         } else {
