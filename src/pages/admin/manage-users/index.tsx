@@ -461,26 +461,7 @@ const AdminManageUsers: React.FC = () => {
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
 
-        <Space>
-          <Input.Search
-            placeholder="Search By Name"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            // onSearch={handleSearch}
-            style={{ width: 200 }}
-            enterButton={<SearchOutlined className="text-white" />}
-          />
-          <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }}>
-            <Select.Option value="All">All Roles</Select.Option>
-            <Select.Option value="Admin">Admin</Select.Option>
-            <Select.Option value="Student">Student</Select.Option>
-            <Select.Option value="Instructor">Instructor</Select.Option>
-          </Select>
-          <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
-            <Select.Option value="true">Active</Select.Option>
-            <Select.Option value="false">Inactive</Select.Option>
-          </Select>
-        </Space>
+      
 
         <div className="mt-3">
           {" "}
@@ -496,7 +477,28 @@ const AdminManageUsers: React.FC = () => {
           </Button>
         </div>
       </div>
-
+      
+      <Space className="mb-2" >
+          <Input.Search
+            placeholder="Search By Name"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            // onSearch={handleSearch}
+            style={{ width: 200 }}
+            enterButton={<SearchOutlined className="text-white" />}
+          />
+          
+          <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }} >
+            <Select.Option value="All">All Roles</Select.Option>
+            <Select.Option value="Admin">Admin</Select.Option>
+            <Select.Option value="Student">Student</Select.Option>
+            <Select.Option value="Instructor">Instructor</Select.Option>
+          </Select>
+          <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
+            <Select.Option value="true">Active</Select.Option>
+            <Select.Option value="false">Inactive</Select.Option>
+          </Select>
+        </Space>
       <Spin spinning={loading}>
         <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
       </Spin>

@@ -350,7 +350,12 @@ const AdminManageCategories: React.FC = () => {
           </Breadcrumb.Item>
           <Breadcrumb.Item>Manage Categories</Breadcrumb.Item>
         </Breadcrumb>
-        <Space style={{ marginTop: 32, marginBottom: 16 }}>
+        
+        <Button type="primary" onClick={handleOpenModal}>
+          Add New Category
+        </Button>
+      </div>
+      <Space style={{ marginTop: 32, marginBottom: 16 }}>
           <Input.Search
             placeholder="Search By Name"
             value={searchText}
@@ -360,10 +365,6 @@ const AdminManageCategories: React.FC = () => {
             enterButton={<SearchOutlined className="text-white" />}
           />
         </Space>
-        <Button type="primary" onClick={handleOpenModal}>
-          Add New Category
-        </Button>
-      </div>
       <Spin spinning={loading}>
         <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
       </Spin>

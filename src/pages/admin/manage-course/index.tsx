@@ -1,5 +1,5 @@
 import { EditOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined, SearchOutlined } from "@ant-design/icons";
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
@@ -8,6 +8,7 @@ import {
   Input,
   MenuProps,
   Modal,
+  Pagination,
   Select,
   Space,
   Table,
@@ -34,6 +35,7 @@ const AdminManageCourses: React.FC = () => {
   const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
   const [searchText, setSearchText] = useState<string>("");
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>("All Categories");
+  const [selectedStatus, setSelectedStatus] = useState<string>("All Statuses");
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState("");
@@ -44,7 +46,7 @@ const AdminManageCourses: React.FC = () => {
     total: 0,
   });
 
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     setLoading(true);
     try {
       const params = {
@@ -61,20 +63,21 @@ const AdminManageCourses: React.FC = () => {
       };
       console.log("Fetching courses with params:", params);
       const res = await axiosInstance.post(`/api/course/search`, params);
-      if (res.data.pageData) {
-        setCourses(res.data.pageData);
+      if (res.data) {
+        setCourses(res.data.pageData || res.data);
         setPagination((prev) => ({
           ...prev,
-          total: res.data.totalCount,
+          total: res.data.pageInfo?.totalItems || res.data.length,
+          current: res.data.pageInfo?.pageNum || 1,
+          pageSize: res.data.pageInfo?.pageSize || res.data.length,
         }));
       }
     } catch (error) {
-      console.log("Error: ", error);
-      setError("Failed to fetch courses.");
+      console.log(error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [categoryId, pagination.current, pagination.pageSize, searchText, status]);
 
   useEffect(() => {
     fetchCourses();
@@ -90,9 +93,15 @@ const AdminManageCourses: React.FC = () => {
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
-    fetchCourses();
   };
 
+  const handlePaginationChange = (page: number, pageSize?: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize || 10,
+    }));
+  };
   const handleChangeStatus = async (value: string) => {
     setChangeStatus(value);
   };
@@ -136,6 +145,10 @@ const AdminManageCourses: React.FC = () => {
           {text}
         </Button>
       ),
+    },
+    {title:"Category",
+      dataIndex:"category_name",
+      key:"category_name"
     },
     {
       title: "Status",
@@ -225,7 +238,14 @@ const AdminManageCourses: React.FC = () => {
       current: 1,
     }));
   };
-
+  const handleStatusChange = (value: string) => {
+    setStatus(value);
+    setSelectedStatus(value || "All Statuses");
+    setPagination((prev) => ({
+      ...prev,
+      current: 1,
+    }));
+  };
   return (
     <div>
       {/* modal change status */}
@@ -324,7 +344,7 @@ const AdminManageCourses: React.FC = () => {
         ]}
       />
 
-      <Space style={{ marginTop: 32, marginBottom: 16 }}>
+      <Space style={{ marginBottom: 16 }}>
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
@@ -347,9 +367,34 @@ const AdminManageCourses: React.FC = () => {
             </Select.Option>
           ))}
         </Select>
+        <Select
+          showSearch
+          placeholder="Select Status"
+          optionFilterProp="children"
+          onChange={handleStatusChange}
+          value={selectedStatus}
+          style={{ width: 200 }}
+        >
+          <Select.Option value="">All Statuses</Select.Option>
+          <Select.Option value="new">New</Select.Option>
+          <Select.Option value="waiting_approve">Waiting for Approve</Select.Option>
+          <Select.Option value="approve">Approved</Select.Option>
+          <Select.Option value="reject">Rejected</Select.Option>
+          <Select.Option value="active">Active</Select.Option>
+          <Select.Option value="inactive">Inactive</Select.Option>
+        </Select>
       </Space>
-      <h1 className="text-center mb-10">Manage Course</h1>
-      <Table columns={columnsCourses} dataSource={courses} pagination={pagination} onChange={handleTableChange} />
+      <Table columns={columnsCourses} dataSource={courses} pagination={false} onChange={handleTableChange} />
+      <div className="flex justify-end py-8">
+        <Pagination
+          total={pagination.total}
+          showTotal={(total) => `Total ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
+      </div>
     </div>
   );
 };
