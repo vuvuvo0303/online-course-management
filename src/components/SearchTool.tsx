@@ -55,42 +55,39 @@ const SearchTool = () => {
     return (
         <div className="relative w-full md:w-[650px] md:ml-[3.5rem]">
             <div className="flex items-center">
-                {/* Toggle button for desktop */}
-                <Dropdown
-                    menu={{
-                        items,
-                        selectable: true,
-                        defaultSelectedKeys: ['1'],
-                        onClick: handleMenuClick,
-                    }}
-                >
-                    <Typography.Link>
-                        <Button className="border hidden md:block h-[31.6px]">
-                            {selectedItem}
-                        </Button>
-                    </Typography.Link>
-                </Dropdown>
-                {/* Input for search */}
                 <Input.Search
+                    addonBefore={<Dropdown
+                        menu={{
+                            items,
+                            selectable: true,
+                            defaultSelectedKeys: ['1'],
+                            onClick: handleMenuClick,
+                        }}
+                    >
+                        <Typography.Link>
+                            <Button className="border-none h-[1rem]">
+                                {selectedItem}
+                            </Button>
+                        </Typography.Link>
+                    </Dropdown>}
                     className="w-full hidden md:block"
                     placeholder="Search categories..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onSearch={handleSearch}
                 />
-                {/* Drawer button for mobile */}
                 <Button
-                    className="rounded-l-lg md:hidden border border-black h-[31.6px]"
+                    className="md:hidden border border-none h-[31.6px] "
                     onClick={toggleDrawer}
                     icon={<SearchOutlined />}
                 />
             </div>
-            {/* Drawer for mobile */}
             <Drawer
                 placement="right"
                 closable={true}
                 onClose={toggleDrawer}
-                visible={drawerVisible}
+                open={drawerVisible}
+                width={Math.min(window.innerWidth - 100, 320)} // Adjust the width to be responsive
             >
                 <Input.Search
                     className="w-full rounded-lg border-black"

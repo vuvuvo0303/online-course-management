@@ -67,8 +67,8 @@ const CourseDetail: React.FC = () => {
                     <Button type="default"> {'<'} </Button>
                 </Link>
                 <h1 className="text-[1.1rem] font-bold ml-[2rem]">Node & ExpressJS</h1>
-                <QuestionCircleOutlined className="ml-auto" />
-                {isMobile && <Button type="primary" onClick={showDrawer}>Course Content</Button>}
+                <QuestionCircleOutlined className="ml-auto hidden md:block" />
+                {isMobile && <Button type="primary" onClick={showDrawer} className='ml-3'>Course Content</Button>}
             </div>
             <div className='flex flex-1'>
                 <div className={`p-6 bg-white overflow-auto ${isMobile ? 'w-full' : 'w-3/4'}`} style={{ height: 'calc(100vh - 112px)' }}>

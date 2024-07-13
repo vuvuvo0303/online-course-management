@@ -196,8 +196,8 @@ const ReviewPage: React.FC = () => {
                         <Rate allowHalf />
                     </Form.Item>
                     <Form.Item
-                        name="text"
-                        label="Review"
+                        name="comment"
+                        label="Comment"
                         rules={[{ required: true, message: 'Please provide a review' }]}
                     >
                         <Input.TextArea rows={4} />

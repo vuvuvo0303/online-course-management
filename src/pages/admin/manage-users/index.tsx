@@ -26,7 +26,6 @@ import {
 } from "@ant-design/icons";
 
 import { format } from "date-fns";
-import { Student } from "../../../models";
 import { toast } from "react-toastify";
 
 import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
@@ -52,7 +51,7 @@ interface ApiError {
 
 interface CreateUserResponse {
   success: boolean;
-  data: Student;
+  data: User;
   message?: string;
   error?: ApiError[];
 }
@@ -160,7 +159,7 @@ const AdminManageUsers: React.FC = () => {
   );
 
   const handleAddNewUser = useCallback(
-    async (values: Student) => {
+    async (values: User) => {
       try {
         setLoading(true);
 
@@ -177,7 +176,7 @@ const AdminManageUsers: React.FC = () => {
         const userData = { ...values, avatar: avatarUrl };
 
         const response: AxiosResponse<CreateUserResponse> = await axiosInstance.post<
-          Student,
+          User,
           AxiosResponse<CreateUserResponse>
         >(API_CREATE_USER, userData);
 
@@ -196,14 +195,6 @@ const AdminManageUsers: React.FC = () => {
     [fetchUsers, form]
   );
 
-  const formatDate = useCallback((dateString: string) => {
-    try {
-      return format(new Date(dateString), "dd/MM/yyyy");
-    } catch (error) {
-      console.error("Invalid date:", dateString);
-      return "Invalid date";
-    }
-  }, []);
 
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -248,7 +239,7 @@ const AdminManageUsers: React.FC = () => {
     </button>
   );
 
-  const columns: TableColumnsType<Student> = useMemo(
+  const columns: TableColumnsType<User> = useMemo(
     () => [
       {
         title: "Name",
@@ -332,7 +323,7 @@ const AdminManageUsers: React.FC = () => {
         title: "Action",
         key: "action",
         width: "15%",
-        render: (record: Student) => (
+        render: (record: User) => (
           <div>
             <EditOutlined
               className="hover:cursor-pointer text-blue-400 hover:opacity-60"
@@ -459,13 +450,6 @@ const AdminManageUsers: React.FC = () => {
     setSelectedStatus(value);
     fetchUsers();
   };
-  const handleSearch = useCallback(() => {
-    setPagination((prev) => ({
-      ...prev,
-      current: 1,
-    }));
-    fetchUsers();
-  }, [fetchUsers]);
 
   return (
     <div>

@@ -114,24 +114,24 @@ const Navbar: React.FC = () => {
 
 
   return (
-    <nav className="flex items-center justify-between navbar">
-      <div className="flex gap-10">
-        <div className=''>
+    <nav className="flex navbar justify-between w-full md:flex-row">
+      <div className="flex gap-10 w-full">
+        <div className='mt-1'>
           {!isLoginPage && !isRegisterPage && !isForgotPassword && <Drawer />}
         </div>
         <Link to="/">
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
-            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} h-[2rem] w-[5rem]`}
+            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} h-[2rem] w-[5rem] mt-1 ml-[50px]`}
           />
         </Link>
-        <div>
-          {!isLoginPage && !isRegisterPage && !isForgotPassword && <SearchTool />}
-        </div>
       </div>
       {!isLoginOrRegister && !isForgotPassword && (
-        <div className="flexCenter gap-10 mr-5">
+        <div className="flexCenter lg:gap-10 gap-1">
+          <div>
+            {!isLoginPage && !isRegisterPage && !isForgotPassword && <SearchTool />}
+          </div>
           <>
             <Popover
               content={<PopoverContent />}
@@ -175,8 +175,8 @@ const Navbar: React.FC = () => {
               placement="bottom"
             >
               <Link to={paths.STUDENT_CART}>
-                <Badge count={2}>
-                  <ShoppingCartOutlined className="text-gray-400 text-3xl" />
+                <Badge count={2} className='mt-[4px'>
+                  <ShoppingCartOutlined className="text-gray-400 text-3xl mt-[3px]" />
                 </Badge>
               </Link>
             </Popover>
@@ -195,7 +195,7 @@ const Navbar: React.FC = () => {
               </Dropdown>
             ) : (
               <Link to={paths.LOGIN}>
-                <UserOutlined className="text-gray-400 text-3xl cursor-pointer hidden md:block" />
+                <UserOutlined className="text-gray-400 text-3xl cursor-pointer hidden md:block mb-[5px]" />
               </Link>
             )}
           </>

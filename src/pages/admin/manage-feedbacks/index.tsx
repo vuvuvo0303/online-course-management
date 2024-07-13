@@ -6,7 +6,8 @@ import { Review } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import {API_DELETE_REVIEW, API_GET_REVIEWS, paths} from "../../../consts";
 import {toast} from "react-toastify";
-import { format } from "date-fns";
+import {format} from "date-fns";
+import {vi} from "date-fns/locale";
 
 
 const AdminManageFeedbacks: React.FC = () => {
@@ -17,43 +18,46 @@ const AdminManageFeedbacks: React.FC = () => {
   });
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await axiosInstance.post(API_GET_REVIEWS,
-            {
-              searchCondition: {
-                course_id: "",
-                rating: 0,
-                is_instructor: false,
-                is_rating_order: false,
-                is_deleted: false
-              },
-              pageInfo: {
-                pageNum: 1,
-                pageSize: 10
-              }
-            }
-            );
-        setData(response.data.pageData)
-      } catch (error) {
-        console.error("Error fetching students:", error);
-      }
-    };
 
     fetchReviews();
   }, [pagination.pageSize, pagination.pageNum]);
 
-  const handleDeleteReview = useCallback(
-      async (_id: string, user_id: string, course_id: string) => {
+
+    const fetchReviews = async () => {
         try {
-          await axiosInstance.delete(API_DELETE_REVIEW);
+            const response = await axiosInstance.post(API_GET_REVIEWS,
+                {
+                    searchCondition: {
+                        course_id: "",
+                        rating: 0,
+                        is_instructor: false,
+                        is_rating_order: false,
+                        is_deleted: false
+                    },
+                    pageInfo: {
+                        pageNum: 1,
+                        pageSize: 10
+                    }
+                }
+            );
+            setData(response.data.pageData)
+        } catch (error) {
+            console.error("Error fetching students:", error);
+        }
+    };
+
+  const handleDeleteReview = useCallback(
+      async (_id: string, reviewer_name: string, course_name: string) => {
+        try {
+          await axiosInstance.delete(`${API_DELETE_REVIEW}/${_id}`);
           setData(prevReview => prevReview.filter(review => review._id === _id));
-          toast.success(`Review of ${user_id} for course ${course_id} deleted successfully.`);
+          toast.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
+          fetchReviews();
         }catch{
           //
         }
       }
-      ,[])
+      ,[fetchReviews])
 
   const columns: TableProps<Review>["columns"] = [
     {
@@ -90,7 +94,7 @@ const AdminManageFeedbacks: React.FC = () => {
       title: "Rating",
       dataIndex: "rating",
       key: "rating",
-      render: (rating: number) => <Rate allowHalf defaultValue={rating} />,
+      render: (rating: number) => <Rate disabled allowHalf defaultValue={rating} />,
     },
     {
       title: "Action",
@@ -100,7 +104,7 @@ const AdminManageFeedbacks: React.FC = () => {
           <Popconfirm
               title="Delete the User"
               description="Are you sure to delete this User?"
-              onConfirm={() => handleDeleteReview(record._id, record.user_id, record.course_id)}
+              onConfirm={() => handleDeleteReview(record._id, record.reviewer_name, record.course_name)}
               okText="Yes"
               cancelText="No"
           >
@@ -128,7 +132,7 @@ const AdminManageFeedbacks: React.FC = () => {
           },
         ]}
       />
-      <Table rowKey="_id" columns={columns} dataSource={data} />;
+      <Table rowKey="_id" columns={columns} dataSource={data} />
     </div>
   );
 };

@@ -11,7 +11,7 @@ type FooterColumnProps = {
 };
 
 const FooterColumn: React.FC<FooterColumnProps> = ({ title, links }) => (
-  <div className="flex flex-col">
+  <div className="flex flex-col w-full md:flex-col">
     <h3 className="font-semibold text-lg mb-4">{title}</h3>
     <ul className="list-none mt-4">
       {links.map((link, index) => (
