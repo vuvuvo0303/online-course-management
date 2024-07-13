@@ -70,6 +70,15 @@ export const colorIs_delete = (is_delete: boolean) => {
   }
 }
 
+export const optionStatus =()=>[
+  {label: "new", value: "new"},
+  {label: "waiting_approve", value: "waiting_approve"},
+  {label: "approve", value: "approve"},
+  {label: "reject", value: "reject"},
+  {label: "active", value: "active"},
+  {label: "inactive", value: "inactive"},
+]
+
 export const getColor = (status: string) => {
   switch (status) {
     case "new":

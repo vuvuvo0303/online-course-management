@@ -1,11 +1,12 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Button, Empty, Input, Modal, Pagination, Select, Table, TableProps, Tag } from "antd";
+import { Breadcrumb, Button, Empty, Form, Input, Modal, Select, Table, TableProps, Tag } from "antd";
 import { Category, Course, Log } from "../../../models";
 import { getColor } from "../../../consts";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
+import TextArea from "antd/es/input/TextArea";
 
 const InstructorManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -18,14 +19,17 @@ const InstructorManageCourses: React.FC = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('');
   const [logs, setLogs] = useState<Log[]>([]);
-  const [pageNum, setPageNum] = useState<number>(0);
-  const [pageSize, setPageSize] = useState<number>(0);
+  // const [pageNum, setPageNum] = useState<number>(0);
+  // const [pageSize, setPageSize] = useState<number>(0);
   // Status default of course, before change
   const [statusDefaultChange, setStatusDefaultChange] = useState<string>('');
   //status for filter log by new status
   const [newStatus, setNewStatus] = useState<string>('');
   //status for filter log by old status
   const [oldStatus, setOldStatus] = useState<string>('');
+  //keyword for filter log by old status
+  const [keywordLogStatus, setKeywordLogStatus] = useState<string>('');
+  const [comment, setComment] = useState<string>('');
   //status for filter course by status
   const [status, setStatus] = useState<string>('new');
   //status for change status
@@ -46,6 +50,7 @@ const InstructorManageCourses: React.FC = () => {
     setStatusDefaultChange(status)
     console.log("check showModalChangeStatus: ", status);
     console.log("check statusDefaultChange: ", statusDefaultChange);
+    // const res = axiosInstance.post("/api/course/change-status")
     setCourseId(course_id);
     setOpenChangeStatus(true);
     setCourse_name(name)
@@ -59,14 +64,14 @@ const InstructorManageCourses: React.FC = () => {
         const res = await axiosInstance.post("/api/course/log/search", {
           "searchCondition": {
             "course_id": courseId,
-            "keyword": "",
+            "keyword": keywordLogStatus,
             "old_status": oldStatus,
             "new_status": newStatus,
             "is_deleted": false
           },
           "pageInfo": {
             "pageNum": 1,
-            "pageSize": 10
+            "pageSize": 100
           }
         })
         if (res) {
@@ -74,8 +79,9 @@ const InstructorManageCourses: React.FC = () => {
           setLogs(res.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
             return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
           }));
-          setPageSize(res.data.pageInfo.pageSize);
-          setPageNum(res.data.pageInfo.pageNum);
+          // setLogs(res.data.pageData.filter(log => log._))
+          // setPageSize(res.data.pageInfo.pageSize);
+          // setPageNum(res.data.pageInfo.pageNum);
           setLogLoading(false);
         }
       } catch (error) {
@@ -85,7 +91,7 @@ const InstructorManageCourses: React.FC = () => {
     fetchLog();
   }, [courseId, oldStatus, newStatus]);
 
-  const showModalLogStatus = async ( course_id: string) => {
+  const showModalLogStatus = async (course_id: string) => {
     setCourseId(course_id);
     setOpenLogStatus(true);
   };
@@ -100,14 +106,16 @@ const InstructorManageCourses: React.FC = () => {
   };
   //click ok on modal to change status of course
   const handleOkChangeStatus = async () => {
+    console.log("check comment: ", comment)
     try {
       await axiosInstance.put("/api/course/change-status",
         {
           "course_id": courseId,
           "new_status": changeStatus,
-          "comment": "This course not match for approve. Please rereview session and lesson in this course!"
+          "comment": comment
         }
       )
+      setComment("");
       toast.success("Change Status Successfully!");
       setCourses(courses.filter(course => course._id != courseId))
     } catch (error) {
@@ -230,11 +238,20 @@ const InstructorManageCourses: React.FC = () => {
     console.log("check handleChangeStatus: ", value);
     setChangeStatus(value);
   };
+
   // setCateId
   const handleCateChange = (value: string) => {
     setCateId(value + "");
   };
+  //search course by course name
+  const handleSearchLogStatus = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeywordLogStatus(e.target.value);
+  };
 
+  const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(e.target.value);
+  };
+  //search course by course name
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
   };
@@ -246,7 +263,7 @@ const InstructorManageCourses: React.FC = () => {
       width: 300,
       render: (name: string, record: Course) => (
         <>
-          <div onClick={() => showModalLogStatus( record._id)} className="text-blue-500">{name}</div>
+          <div onClick={() => showModalLogStatus(record._id)} className="text-blue-500">{name}</div>
         </>
       )
     },
@@ -268,7 +285,7 @@ const InstructorManageCourses: React.FC = () => {
               {status}
             </Tag>
             {(status !== "waiting_approve" && status !== "reject") &&
-            <EditOutlined onClick={() => {showModalChangeStatus(status, record._id, record.name);}} className="text-blue-500" />}
+              <EditOutlined onClick={() => { showModalChangeStatus(status, record._id, record.name); }} className="text-blue-500" />}
           </div>
         </>
       )
@@ -304,6 +321,7 @@ const InstructorManageCourses: React.FC = () => {
 
   return (
     <div>
+      
       {/* modal log status */}
       <Modal
         width={1200}
@@ -315,7 +333,15 @@ const InstructorManageCourses: React.FC = () => {
       >
         <div>
           {/* Filter all log  */}
+
           <Button onClick={handleAllLog} type="primary">All log</Button>
+          <Input
+            placeholder="Search"
+            value={keywordLogStatus}
+            onChange={handleSearchLogStatus}
+            className="m-5"
+            style={{ width: 200 }}
+          />
           {/* Filter log by old status */}
           <Select
             defaultValue="Filter by old status"
@@ -367,7 +393,8 @@ const InstructorManageCourses: React.FC = () => {
                           <div><span className="text-yellow-500">Course name: </span> {log.course_name}</div>
                           <div><span className="text-blue-500">Old status: </span> {log.old_status}</div>
                           <div><span className="text-blue-500">New status: </span>{log.new_status}</div>
-                          <div><span className="text-blue-500">Comment:</span> {log.comment}</div>
+                          <div><span className="text-blue-500">Comment: </span> {log.comment}</div>
+                          <div><span className="text-blue-500">Create At: </span>{new Date(log.created_at).toLocaleDateString()}</div>
                           <div className="border-t-2 my-5"></div>
                         </>
                       ))
@@ -386,11 +413,13 @@ const InstructorManageCourses: React.FC = () => {
                   </div>
                 )
             }
+
           </div>
 
         </div>
-        <Pagination defaultCurrent={pageNum} total={pageSize} />
+
       </Modal>
+
       {/* modal change status */}
       <Modal
         title="Change Status"
@@ -399,27 +428,45 @@ const InstructorManageCourses: React.FC = () => {
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-        <div className="text-center">
-          <p className="my-5">Course name: <span className="text-blue-500">{course_name}</span></p>
-          <p>Current Status: <Tag color={getColor(statusDefaultChange)}>{statusDefaultChange}</Tag></p>
-          <Select
-            defaultValue={"new"}
-            style={{ width: 200 }}
-            className="my-5"
-            onChange={handleChangeStatus}
-            options={[
-              {
-                options: [
-                  { label: <span>new</span>, value: 'new' },
-                  { label: <span>waiting_approve</span>, value: 'waiting_approve' },
-                  { label: <span>active</span>, value: 'active' },
-                  { label: <span>inactive</span>, value: 'inactive' },
-                ],
-              },
-            ]}
-          />
-        </div>
+      <div>
+      <p className="my-5">Course name: <span className="text-blue-500">{course_name}</span></p>
+      <p className="my-5">Current Status: <Tag color={getColor(statusDefaultChange)}>{statusDefaultChange}</Tag></p>
+      </div>
+        <Form>
+          <div className="text-center">
+            <Form.Item
+              label="Select Status"
+              name="new_status"
+            >
+              <Select
+                defaultValue={"choose status to change"}
+                style={{ width: 200 }}
+                className="my-5"
+                onChange={handleChangeStatus}
+                options={[
+                  {
+                    options: [
+                      { label: <span>new</span>, value: 'new' },
+                      { label: <span>waiting_approve</span>, value: 'waiting_approve' },
+                      { label: <span>active</span>, value: 'active' },
+                      { label: <span>inactive</span>, value: 'inactive' },
+                    ],
+                  },
+                ]}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Comment"
+              name="comment"
+            >
+                <TextArea value={comment} onChange={handleSaveComment}/>
+            </Form.Item>
+          
+          </div>
+        </Form>
       </Modal>
+
+
       {/* modal delete course */}
       <Modal
         title="Delete Course"
