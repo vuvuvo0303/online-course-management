@@ -6,6 +6,7 @@ import { Review } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import {API_DELETE_REVIEW, API_GET_REVIEWS, paths} from "../../../consts";
 import {toast} from "react-toastify";
+import { format } from "date-fns";
 
 
 const AdminManageFeedbacks: React.FC = () => {
@@ -75,13 +76,14 @@ const AdminManageFeedbacks: React.FC = () => {
     {
       title: "Created Date",
       dataIndex: "created_at",
-      render: (createdDate: string) =>(createdDate),
-      width: "10%",
+      key: "created_at",
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
     },
+    
     {
       title: "Updated Date",
       dataIndex: "updated_at",
-      render: (updatedDate: string) => (updatedDate),
+      render: (updatedDate: Date) => format(new Date(updatedDate),"dd/MM/yyyy"),
       width: "10%",
     },
     {

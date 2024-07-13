@@ -14,12 +14,14 @@ import {
   Popconfirm,
   Radio,
   Select,
+  Spin,
 } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
   HomeOutlined,
   PlusOutlined,
+  SearchOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
 
@@ -482,6 +484,7 @@ const AdminManageUsers: React.FC = () => {
             onChange={(e) => setSearchText(e.target.value)}
             // onSearch={handleSearch}
             style={{ width: 200 }}
+            enterButton={<SearchOutlined className="text-white" />}
           />
           <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }}>
             <Select.Option value="All">All Roles</Select.Option>

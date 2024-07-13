@@ -11,8 +11,9 @@ import {
   Popconfirm,
   Dropdown,
   MenuProps,
+  Spin,
 } from "antd";
-import { DeleteOutlined, DownOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, DownOutlined, EditOutlined, EyeOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Category } from "../../../models";
 import { toast } from "react-toastify";
@@ -27,9 +28,9 @@ import {
   API_DELETE_CATEGORY,
   API_GET_CATEGORIES,
   API_UPDATE_CATEGORY,
-  paths
+  paths,
 } from "../../../consts";
-import {vi} from "date-fns/locale";
+import { vi } from "date-fns/locale";
 
 type DataIndex = keyof Category;
 
@@ -109,9 +110,7 @@ const AdminManageCategories: React.FC = () => {
 
       try {
         await axiosInstance.delete(`${API_DELETE_CATEGORY}/${_id}`);
-        setData((prevData) =>
-          prevData.filter((category) => category._id !== _id)
-        );
+        setData((prevData) => prevData.filter((category) => category._id !== _id));
         fetchCategories();
         toast.success(`Category ${name} deleted successfully.`);
       } catch (error) {
@@ -368,7 +367,7 @@ const AdminManageCategories: React.FC = () => {
     },
   ];
   if (loading === true) {
-    return <p className="text-center flex justify-center">Loading ...</p>
+    return <p className="text-center flex justify-center">Loading ...</p>;
   }
   return (
     <div>
@@ -386,6 +385,7 @@ const AdminManageCategories: React.FC = () => {
             onChange={(e) => setSearchText(e.target.value)}
             onSearch={handleSearch}
             style={{ width: 200 }}
+            enterButton={<SearchOutlined className="text-white" />}
           />
         </Space>
         <Button type="primary" onClick={handleOpenModal}>
@@ -395,13 +395,7 @@ const AdminManageCategories: React.FC = () => {
       <Spin spinning={loading}>
         <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
       </Spin>
-      <Table
-        columns={columns}
-        dataSource={data}
-        rowKey="_id"
-        pagination={false}
-        onChange={handleTableChange}
-      />
+
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
