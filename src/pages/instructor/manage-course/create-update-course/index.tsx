@@ -68,7 +68,7 @@ const InstructorCreateCourse = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await axios.post(`${host_main}/api/category/search`, {
+                const res = await axiosInstance.post(`/api/category/search`, {
                     "searchCondition": {
                         "keyword": "",
                         "is_delete": false
@@ -77,16 +77,11 @@ const InstructorCreateCourse = () => {
                         "pageNum": 1,
                         "pageSize": 10
                     }
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-
                 });
 
                 if (res) {
                     console.log("check fetchCategories res: ", res);
-                    setCates(res.data.data.pageData);
+                    setCates(res.data.pageData);
                 }
             } catch (error) {
                 console.log("Erro occurred: ", error);

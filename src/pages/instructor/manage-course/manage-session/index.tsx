@@ -7,7 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { host_main } from "../../../../consts";
 import axiosInstance from "../../../../services/axiosInstance.ts";
-
+import useDebounce from "../../../../hooks/useDebounce";
 const ManageSession = () => {
     const { courseId } = useParams<{ courseId: string }>();
     const [sessions, setSessions] = useState<Session[]>([]);
@@ -18,6 +18,7 @@ const ManageSession = () => {
     const [open, setOpen] = useState(false);
     const [keyword, setKeyword] = useState<string>('');
     const [selectedSessionID, setSelectedSessionID] = useState<string>('');
+    const debouncedSearchTerm = useDebounce(keyword, 500);
     const token = localStorage.getItem("token")
     const showModal = (sessionId: string) => {
         setModalText(`Do you want to delete this session with id = ${sessionId} and the lessons of this session `)
@@ -72,7 +73,7 @@ const ManageSession = () => {
                 const res = await axiosInstance.post(`/api/session/search`,
                     {
                         "searchCondition": {
-                            "keyword": keyword,
+                            "keyword": debouncedSearchTerm,
                             "course_id": courseId,
                             "is_position_order": false,
                             "is_deleted": is_deleted
@@ -97,7 +98,7 @@ const ManageSession = () => {
         if (courseId) {
             fetchSession();
         }
-    }, [courseId, keyword, is_deleted]);
+    }, [courseId, keyword, is_deleted, debouncedSearchTerm]);
 
     const colorStatus = (is_delete: boolean) => {
         if (is_delete) {

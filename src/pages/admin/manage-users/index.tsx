@@ -432,6 +432,9 @@ const AdminManageUsers: React.FC = () => {
     setLoading(false);
   };
 
+  if(loading){
+    return <p className="text-center">Loading...</p>
+  }
   const onFinish = (values: any) => {
     if (modalMode === "Edit") {
       if (formData._id) {

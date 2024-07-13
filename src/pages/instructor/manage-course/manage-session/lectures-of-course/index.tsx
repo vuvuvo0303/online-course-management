@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import { Course, Lecture, Session } from "../../../../../models";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
+import useDebounce from "../../../../../hooks/useDebounce.ts";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
@@ -19,7 +20,8 @@ const LectureOfCourse: React.FC = () => {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [courses, setCourses] = useState<Course[]>([]);
     const [course_id, setCourse_id] = useState<string>('');
-
+    
+    const debouncedSearchTerm = useDebounce(keyword, 300);
 
     const showModal = (lectureId: string, name: string) => {
         setModalText(`Do you want to delete this lecture with name is "${name}"`)
@@ -120,7 +122,7 @@ const LectureOfCourse: React.FC = () => {
                     const res = await axiosInstance.post(`/api/lesson/search`,
                         {
                             "searchCondition": {
-                                "keyword": keyword,
+                                "keyword": debouncedSearchTerm,
                                 "course_id": courseId,
                                 "session_id": sessionId,
                                 "lesson_type": "",
@@ -150,7 +152,7 @@ const LectureOfCourse: React.FC = () => {
                 try {
                     const res = await axiosInstance.post(`/api/lesson/search`, {
                         "searchCondition": {
-                            "keyword": keyword,
+                            "keyword": debouncedSearchTerm,
                             "course_id": "",
                             "session_id": session_id,
                             "lesson_type": "",
@@ -173,7 +175,7 @@ const LectureOfCourse: React.FC = () => {
             };
             fetchLecture();
         }
-    }, [courseId, sessionId, keyword, session_id, course_id]);
+    }, [courseId, sessionId, keyword, session_id, course_id, debouncedSearchTerm]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setKeyword(e.target.value);

@@ -16,7 +16,7 @@ const AdminManageBlogs: React.FC = () => {
   const searchInput = useRef<InputRef>(null);
   const [data, setData] = useState<Blog[]>([]);
   const [sortOrder, setSortOrder] = useState<"ascend" | "descend">("ascend");
-
+  const [loading, setLoading] = useState<boolean>(true);
 
   const handleDelete = async (id: string, title: string) => {
     try {
@@ -38,6 +38,7 @@ const AdminManageBlogs: React.FC = () => {
       setData(response.data);
     };
     fetchBlogs();
+    setLoading(false)
   }, []);
 
   const handleSearch = (
@@ -66,6 +67,7 @@ const AdminManageBlogs: React.FC = () => {
     setSortOrder(newOrder);
   };
 
+  
   const getColumnSearchProps = (
     dataIndex: DataIndex
   ): TableColumnType<Blog> => ({
@@ -223,6 +225,11 @@ const AdminManageBlogs: React.FC = () => {
       ),
     },
   ];
+
+  if(loading){
+    return <p className="text-center">Loading...</p>
+  }
+  
   return (
     <div>
       <div className="flex justify-between">

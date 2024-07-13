@@ -12,11 +12,13 @@ import {vi} from "date-fns/locale";
 
 const AdminManageFeedbacks: React.FC = () => {
   const [data, setData] = useState<Review[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  
   const [pagination, setPagination] = useState({
     pageNum: 1,
     pageSize: 10,
   });
-
+  
   useEffect(() => {
 
     fetchReviews();
@@ -41,11 +43,13 @@ const AdminManageFeedbacks: React.FC = () => {
                 }
             );
             setData(response.data.pageData)
+            setLoading(false)
         } catch (error) {
             console.error("Error fetching students:", error);
         }
     };
 
+ 
   const handleDeleteReview = useCallback(
       async (_id: string, reviewer_name: string, course_name: string) => {
         try {
@@ -118,6 +122,9 @@ const AdminManageFeedbacks: React.FC = () => {
     },
   ];
 
+  if(loading){
+    return <p className="text-center">Loading...</p>
+  }
   return (
     <div>
       <Breadcrumb

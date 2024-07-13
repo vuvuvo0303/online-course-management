@@ -170,7 +170,7 @@ const CreateUpdateSession = () => {
       {loading ? (
         <div>Loading ...</div>
       ) : (
-        <div className="w-full max-w-2xl bg-white p-8 rounded shadow">
+        <div className="w-full max-w-6xl bg-white p-8 rounded shadow">
           {
             courseId ? (<Breadcrumb className="py-2" >
               <Breadcrumb.Item href="/dashboard">
