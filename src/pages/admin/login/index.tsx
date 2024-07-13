@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { login } from "../../../services/auth.ts";
 import { paths } from "../../../consts";
 // import vutru from "../../../assets/vutru.json";
-import axiosInstance from "../../../services/api.ts";
+import axiosInstance from "../../../services/axiosInstance.ts";
 
 type FieldType = {
   email: string;
