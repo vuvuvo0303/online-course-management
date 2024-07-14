@@ -9,8 +9,6 @@ import {
   Form,
   Pagination,
   Popconfirm,
-  // Dropdown,
-  // MenuProps,
   Spin,
 } from "antd";
 import {
@@ -23,11 +21,9 @@ import {
 import { format } from "date-fns";
 import { Category } from "../../../models";
 import { toast } from "react-toastify";
-
 import axiosInstance from "../../../services/axiosInstance.ts";
 import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
-
 import { Link } from "react-router-dom";
 import {
   API_CREATE_CATEGORY,
@@ -40,9 +36,7 @@ import { vi } from "date-fns/locale";
 
 const AdminManageCategories: React.FC = () => {
   const [data, setData] = useState<Category[]>([]);
-
   const [searchText, setSearchText] = useState<string>("");
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [validateOnOpen, setValidateOnOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -59,7 +53,18 @@ const AdminManageCategories: React.FC = () => {
       try {
         let response;
         if (refresh) {
-          response = await axiosInstance.post(API_CREATE_CATEGORY);
+          response = await axiosInstance.post(API_GET_CATEGORIES, {
+            searchCondition: {
+              role: "all",
+              status: true,
+              is_deleted: false,
+              keyword: searchText,
+            },
+            pageInfo: {
+              pageNum: pagination.current,
+              pageSize: pagination.pageSize,
+            },
+          });
         } else {
           response = await axiosInstance.post(API_GET_CATEGORIES, {
             searchCondition: {
@@ -81,11 +86,11 @@ const AdminManageCategories: React.FC = () => {
             ...prev,
             total: response.data.pageInfo?.totalItems || response.data.length,
             current: response.data.pageInfo?.pageNum || 1,
-            pageSize: response.data.pageInfo?.pageSize || response.data.length,
+            pageSize: response.data.pageInfo?.pageSize || prev.pageSize,
           }));
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -118,9 +123,9 @@ const AdminManageCategories: React.FC = () => {
 
       try {
         await axiosInstance.delete(`${API_DELETE_CATEGORY}/${_id}`);
-        setData((prevData) =>
-          prevData.filter((category) => category._id !== _id)
-        );
+        // setData((prevData) =>
+        //   prevData.filter((category) => category._id !== _id)
+        // );
         fetchCategories();
         toast.success(`Category ${name} deleted successfully.`);
       } catch (error) {
@@ -130,22 +135,77 @@ const AdminManageCategories: React.FC = () => {
     [data, fetchCategories]
   );
 
+  const updateCategory = useCallback(
+    async (
+      values: Partial<Category> & { _id: string | null },
+      originalCreatedAt: string
+    ) => {
+      let parentCategoryId = null;
+
+      if (values.parent_category_id === "none") {
+        parentCategoryId = null;
+      } else if (values.parent_category_id) {
+        const parentCategory = data.find(
+          (category) => category.name === values.parent_category_id
+        );
+        if (parentCategory) {
+          parentCategoryId = parentCategory._id;
+        }
+      }
+
+      try {
+        setLoading(true);
+
+        const updatedCategory: Category = {
+          _id: values._id!,
+          name: values.name ?? "",
+          description: values.description ?? "",
+          parent_category_id: parentCategoryId,
+          user_id: values.user_id ?? "",
+          is_deleted: values.is_deleted ?? false,
+          created_at: originalCreatedAt,
+          updated_at: new Date().toISOString(),
+        };
+
+        const response = await axiosInstance.put(
+          `${API_UPDATE_CATEGORY}/${values._id}`,
+          updatedCategory
+        );
+
+        if (response.data) {
+          setData((prevData) =>
+            prevData.map((category) =>
+              category._id === values._id
+                ? { ...category, ...response.data }
+                : category
+            )
+          );
+          setIsModalVisible(false);
+          form.resetFields();
+          toast.success(`Category ${values.name} updated successfully.`);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [data, form]
+  );
+
   const handleEditCategory = useCallback(
     (category: Category) => {
-      form.setFieldsValue({
-        _id: category._id,
-        name: category.name,
-        parent_category_id: category.parent_category_id,
-        description: category.description,
-        created_at: category.created_at,
-      });
+      console.log("Editing category:", category);
 
       Modal.confirm({
         title: `Edit Category - ${category.name}`,
         content: (
           <Form
             form={form}
-            onFinish={(values) => updateCategory(values, category.created_at)}
+            onFinish={(values) => {
+              console.log("Updating with values:", values);
+              updateCategory(values, category.created_at);
+            }}
             initialValues={{
               _id: category._id,
               name: category.name,
@@ -184,70 +244,16 @@ const AdminManageCategories: React.FC = () => {
             >
               <Input.TextArea rows={4} />
             </Form.Item>
-            <Form.Item name="_id" style={{ display: "none" }}>
-              <Input type="hidden" />
-            </Form.Item>
           </Form>
         ),
         okText: "Save",
+        onOk: () => {
+          form.submit();
+        },
         onCancel: () => form.resetFields(),
       });
     },
-    [data, form]
-  );
-
-  const updateCategory = useCallback(
-    async (
-      values: Partial<Category> & { _id: string | null },
-      originalCreatedAt: string
-    ) => {
-      let parentCategoryId = null;
-
-      if (values.parent_category_id === "none") {
-        parentCategoryId = null;
-      } else if (values.parent_category_id) {
-        const parentCategory = data.find(
-          (category) => category.name === values.parent_category_id
-        );
-        if (parentCategory) {
-          parentCategoryId = parentCategory._id;
-        }
-      }
-
-      try {
-        setLoading(true);
-
-        const updatedCategory: Category = {
-          _id: values._id!,
-          name: values.name ?? "",
-          description: values.description ?? "",
-          parent_category_id: parentCategoryId,
-          user_id: values.user_id ?? "",
-          is_deleted: values.is_deleted ?? false,
-          created_at: originalCreatedAt,
-          updated_at: new Date().toISOString(),
-        };
-
-        await axiosInstance.put(
-          `${API_UPDATE_CATEGORY}/${values._id}`,
-          updatedCategory
-        );
-
-        const updatedData = data.map((category) =>
-          category._id === values._id ? updatedCategory : category
-        );
-        setData(updatedData);
-
-        setIsModalVisible(false);
-        form.resetFields();
-        toast.success(`Category ${values.name} updated successfully.`);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [data, form]
+    [form, updateCategory]
   );
 
   const addNewCategory = useCallback(
@@ -388,21 +394,21 @@ const AdminManageCategories: React.FC = () => {
           </Breadcrumb.Item>
           <Breadcrumb.Item>Manage Categories</Breadcrumb.Item>
         </Breadcrumb>
-        
+
         <Button type="primary" onClick={handleOpenModal}>
           Add New Category
         </Button>
       </div>
       <Space style={{ marginTop: 32, marginBottom: 16 }}>
-          <Input.Search
-            placeholder="Search By Name"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            onSearch={handleSearch}
-            style={{ width: 200 }}
-            enterButton={<SearchOutlined className="text-white" />}
-          />
-        </Space>
+        <Input.Search
+          placeholder="Search By Name"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          onSearch={handleSearch}
+          style={{ width: 200 }}
+          enterButton={<SearchOutlined className="text-white" />}
+        />
+      </Space>
       <Spin spinning={loading}>
         <Table
           columns={columns}
