@@ -42,15 +42,20 @@ axiosInstance.interceptors.response.use(
             const { data } = error.response;
             console.log(error.response)
             if (data && data.message) {
-                if (data.message.includes("Your email")) {
-                    return Promise.reject(data);
+                 if(error.response.status === 403){
+                     const userString = localStorage.getItem("user");
+                     const user = userString ? JSON.parse(userString) : null;
+                     toast.error(data.message)
+                     if(user.role === "admin"){
+                         window.location.href = paths.ADMIN_LOGIN;
+                     }
+                     else{
+                         window.location.href = paths.LOGIN;
+                     }
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
                 }
-                // else if(error.response.status === 403){
-                //     localStorage.removeItem("token");
-                //     localStorage.removeItem("user");
-                //     toast.error(data.message)
-                // }
-                else if(error.response.status === 404){
+                 else if(error.response.status === 404){
                     toast.error(data.message);
                     window.location.href = paths.NOTFOUND;
                 }

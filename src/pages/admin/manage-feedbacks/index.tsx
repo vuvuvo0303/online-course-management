@@ -1,4 +1,4 @@
-import {Breadcrumb, Popconfirm, Rate, Table} from "antd";
+import {Breadcrumb, Pagination, Popconfirm, Rate, Table} from "antd";
 import type { TableProps } from "antd";
 import {useCallback, useEffect, useState} from "react";
 import { DeleteOutlined, HomeOutlined } from "@ant-design/icons";
@@ -7,7 +7,6 @@ import axiosInstance from "../../../services/axiosInstance.ts";
 import {API_DELETE_REVIEW, API_GET_REVIEWS, paths} from "../../../consts";
 import {toast} from "react-toastify";
 import {format} from "date-fns";
-import {vi} from "date-fns/locale";
 
 
 const AdminManageFeedbacks: React.FC = () => {
@@ -17,6 +16,7 @@ const AdminManageFeedbacks: React.FC = () => {
   const [pagination, setPagination] = useState({
     pageNum: 1,
     pageSize: 10,
+      totalItems: 0
   });
   
   useEffect(() => {
@@ -126,21 +126,30 @@ const AdminManageFeedbacks: React.FC = () => {
     return <p className="text-center">Loading...</p>
   }
   return (
-    <div>
-      <Breadcrumb
-        className="py-2"
-        items={[
-          {
-            title: <HomeOutlined />,
-            href: paths.ADMIN_HOME
-          },
-          {
-            title: "Manage Feedbacks",
-          },
-        ]}
-      />
-      <Table rowKey="_id" columns={columns} dataSource={data} />
-    </div>
+      <div>
+          <Breadcrumb
+              className="py-2"
+              items={[
+                  {
+                      title: <HomeOutlined/>,
+                      href: paths.ADMIN_HOME
+                  },
+                  {
+                      title: "Manage Feedbacks",
+                  },
+              ]}
+          />
+          <Table rowKey="_id" columns={columns} dataSource={data}/>
+          <div className="flex justify-end py-8">
+              <Pagination
+                  total={pagination.totalItems}
+                  showTotal={(total) => `Total ${total} items`}
+                  current={pagination.pageNum}
+                  pageSize={pagination.pageSize}
+                  showSizeChanger
+              />
+          </div>
+      </div>
   );
 };
 
