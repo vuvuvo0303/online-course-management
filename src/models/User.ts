@@ -1,4 +1,4 @@
-type UserRole = "admin" | "instructor" | "student";
+export type UserRole = "admin" | "instructor" | "student";
 
 export class User {
   _id: string;
@@ -10,12 +10,19 @@ export class User {
   status: boolean; //default is true, set false if want disabled user status
   phone_number?: string;
   description?: string; //required if user role is instructor
-  avatar?: string; //url
+  avatar: {
+    file?: {
+      originFileObj?: File;
+      // Các thuộc tính khác của File
+    };
+    // Các thuộc tính khác của Avatar
+  } | string; 
   video?: string; //url
   dob?: Date; //date of birth
   created_at?: Date;
   updated_at?: Date;
   is_deleted?: boolean; //flag remove logic when user is deleted
+
 
   constructor(
     _id: string = "",

@@ -64,35 +64,35 @@ export const API_DELETE_REVIEW = "/api/review";
 
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
-      return "red"
+    return "red";
   } else {
-      return "blue"
+    return "blue";
   }
-}
+};
 
-export const optionStatus =()=>[
-  {label: "new", value: "new"},
-  {label: "waiting_approve", value: "waiting_approve"},
-  {label: "approve", value: "approve"},
-  {label: "reject", value: "reject"},
-  {label: "active", value: "active"},
-  {label: "inactive", value: "inactive"},
-]
+export const optionStatus = () => [
+  { label: "new", value: "new" },
+  { label: "waiting_approve", value: "waiting_approve" },
+  { label: "approve", value: "approve" },
+  { label: "reject", value: "reject" },
+  { label: "active", value: "active" },
+  { label: "inactive", value: "inactive" },
+];
 
 export const getColor = (status: string) => {
   switch (status) {
     case "new":
-      return 'red';
-    case 'waiting_approve':
-      return 'blue'
-    case 'approve':
-      return 'yellow'
-    case 'reject':
-      return 'purple'
-    case 'active':
-      return 'pink'
-    case 'inactive':
-      return 'orange'
+      return "red";
+    case "waiting_approve":
+      return "blue";
+    case "approve":
+      return "yellow";
+    case "reject":
+      return "purple";
+    case "active":
+      return "pink";
+    case "inactive":
+      return "orange";
   }
 };
 /* PATHS */
@@ -179,8 +179,8 @@ export const paths = {
   ADMIN_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
 
   /* IMG */
-  AVATAR: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PyKYrBKAWWy6YCbQzWQcwIRqH8wYMPluIZiMpV1w0NYSbocTZz0ICWFkLcXhaMyvCwQ&usqp=CAU",
-
+  AVATAR:
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PyKYrBKAWWy6YCbQzWQcwIRqH8wYMPluIZiMpV1w0NYSbocTZz0ICWFkLcXhaMyvCwQ&usqp=CAU",
 };
 
 /* ROLE */
@@ -189,7 +189,6 @@ export const roles = {
   INSTRUCTOR: "instructor",
   ADMIN: "admin",
 };
-
 
 // Define the structure of the submenu
 interface categoryCourse {
@@ -212,7 +211,17 @@ export const categoryFilters = [
 ];
 
 export const categoryCourse: categoryCourse = {
-  "Web Development": ["JavaScript", "React JS", "Angular", "Next.js", "CSS", "HTML", "ASP.NET Core", "Node.Js", "Microservices",],
+  "Web Development": [
+    "JavaScript",
+    "React JS",
+    "Angular",
+    "Next.js",
+    "CSS",
+    "HTML",
+    "ASP.NET Core",
+    "Node.Js",
+    "Microservices",
+  ],
   "Mobile Development": ["iOS", "Android", "Flutter", "React Native"],
   "Game Development": ["Unity", "Unreal Engine", "Godot"],
   Entrepreneurship: ["Startup", "Business Planning", "Marketing"],

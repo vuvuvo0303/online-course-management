@@ -16,7 +16,7 @@ import {
   TablePaginationConfig,
   Tag,
 } from "antd";
-import { API_COURSE_STATUS, getColor } from "../../../consts";
+import { API_COURSE_STATUS, getColor, paths } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -146,10 +146,8 @@ const AdminManageCourses: React.FC = () => {
         </Button>
       ),
     },
-    {title:"Category",
-      dataIndex:"category_name",
-      key:"category_name"
-    },
+
+    { title: "Category", dataIndex: "category_name", key: "category_name" },
     {
       title: "Status",
       dataIndex: "status",
