@@ -40,6 +40,7 @@ const AdminManageCategories: React.FC = () => {
   const [validateOnOpen, setValidateOnOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
+  const [parentCategories, setParentCategories] = useState<Category[]>([]);
   const debouncedSearchTerm = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -101,11 +102,37 @@ const AdminManageCategories: React.FC = () => {
     fetchCategories();
   }, [fetchCategories, searchText]);
 
+  const fetchParentCategories = useCallback(async () => {
+    try {
+      const response = await axiosInstance.post(API_GET_CATEGORIES, {
+        searchCondition: {
+          role: "all",
+          status: true,
+          is_deleted: false,
+        },
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 100,
+        },
+      });
+
+      if (response.data) {
+        setParentCategories(response.data.pageData || response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchParentCategories();
+  }, [fetchParentCategories]);
+
   const handleOpenModal = useCallback(() => {
+    form.resetFields();
     setIsModalVisible(true);
     setValidateOnOpen(true);
-    // fetchCategories(true);
-  }, []);
+  }, [form]);
 
   const handleDelete = useCallback(
     async (_id: string, name: string) => {
@@ -141,15 +168,8 @@ const AdminManageCategories: React.FC = () => {
     ) => {
       let parentCategoryId = null;
 
-      if (values.parent_category_id === "none") {
-        parentCategoryId = null;
-      } else if (values.parent_category_id) {
-        const parentCategory = data.find(
-          (category) => category.name === values.parent_category_id
-        );
-        if (parentCategory) {
-          parentCategoryId = parentCategory._id;
-        }
+      if (values.parent_category_id && values.parent_category_id !== "none") {
+        parentCategoryId = values.parent_category_id;
       }
 
       try {
@@ -194,6 +214,7 @@ const AdminManageCategories: React.FC = () => {
 
   const handleEditCategory = useCallback(
     async (category: Category) => {
+      form.resetFields();
       await fetchCategories();
 
       Modal.confirm({
@@ -234,20 +255,26 @@ const AdminManageCategories: React.FC = () => {
               name="parent_category_id"
               rules={[{ required: false }]}
             >
-              <Select
-                placeholder="Select parent category"
-                allowClear
-                disabled={category._id === category.parent_category_id}
-              >
-                {data
-                  .filter((cat) => cat._id !== category._id)
-                  .map((cat) => (
-                    <Select.Option key={cat._id} value={cat._id}>
-                      {cat.name}
+              <Select placeholder="Select parent category">
+                <Select.Option key="none" value="none">
+                  None
+                </Select.Option>
+                {parentCategories
+                  .filter(
+                    (parentCategory) =>
+                      parentCategory._id !== form.getFieldValue("_id")
+                  )
+                  .map((parentCategory) => (
+                    <Select.Option
+                      key={parentCategory._id}
+                      value={parentCategory._id}
+                    >
+                      {parentCategory.name}
                     </Select.Option>
                   ))}
               </Select>
             </Form.Item>
+
             <Form.Item
               label="Description"
               name="description"
@@ -261,7 +288,9 @@ const AdminManageCategories: React.FC = () => {
         onOk: () => {
           form.submit();
         },
-        onCancel: () => form.resetFields(),
+        onCancel: () => {
+          form.resetFields();
+        },
       });
     },
     [form, updateCategory, fetchCategories, data]
@@ -294,11 +323,9 @@ const AdminManageCategories: React.FC = () => {
         if (response.data) {
           const newCategory = response.data;
           setData((prevData) => [...prevData, newCategory]);
-          setIsModalVisible(false);
           form.resetFields();
           fetchCategories();
           toast.success(`Category ${values.name} created successfully.`);
-          form.resetFields();
           setIsModalVisible(false);
         }
       } catch (error) {
@@ -352,9 +379,6 @@ const AdminManageCategories: React.FC = () => {
       key: "action",
       render: (_: unknown, record: Category) => (
         <div>
-          {/* <Link to={`/admin/manage-categories/${record._id}`}>
-            <EyeOutlined className="text-purple-500 mr-2" />
-          </Link> */}
           <EditOutlined
             className="text-blue-500"
             style={{ fontSize: "16px", marginLeft: "8px", cursor: "pointer" }}
@@ -446,6 +470,7 @@ const AdminManageCategories: React.FC = () => {
         title="Add New Category"
         visible={isModalVisible}
         onCancel={() => {
+          form.resetFields();
           setIsModalVisible(false);
           setValidateOnOpen(false);
         }}
@@ -469,7 +494,13 @@ const AdminManageCategories: React.FC = () => {
             name="parent_category_id"
             rules={[{ required: false }]}
           >
-            <Input placeholder="Input parent category" />
+            <Select placeholder="Select parent category">
+              {parentCategories.map((category) => (
+                <Select.Option key={category._id} value={category.name}>
+                  {category.name}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item
             label="Description"

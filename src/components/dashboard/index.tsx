@@ -4,7 +4,6 @@ import {
   CommentOutlined,
   CopyOutlined,
   DesktopOutlined,
-  FolderViewOutlined,
   FundOutlined,
   FundProjectionScreenOutlined,
   ProfileOutlined,
@@ -20,7 +19,7 @@ import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
 import logo2 from "../../assets/logo2.jpg";
-import {paths, roles} from "../../consts";
+import { paths, roles } from "../../consts";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -29,8 +28,6 @@ type MenuItem = Required<MenuProps>["items"][number];
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState<MenuItem[]>([]);
-  const [role, setRole] = useState<string | null>(null);
-  const [fullName, setFullName] = useState<string | null>(null);
   const [dataUser, setDataUser] = useState<{
     role: string | null;
     fullName: string | null;
@@ -46,21 +43,13 @@ const Dashboard: React.FC = () => {
   const userRole = user?.role;
   useEffect(() => {
     if (userRole && user) {
-      setRole(userRole);
-      setFullName(user.name);
       setDataUser({
         role: userRole,
         fullName: user.name,
         email: user.email,
       });
-    } else {
-      if(userRole === roles.ADMIN){
-        navigate(paths.ADMIN_HOME);
-      }else{
-      navigate(paths.HOME);
-      }
     }
-  }, [fullName, navigate, role, user, userRole]);
+  }, [navigate]);
 
  
 
@@ -90,8 +79,8 @@ const Dashboard: React.FC = () => {
         setItems([
           getItem("Dashboard", "/instructor/dashboard", <FundOutlined />),
           getItem(
-            "Manage Feedbacks",
-            "/instructor/manage-feedbacks",
+            "Manage Reviews",
+            "/instructor/manage-reviews",
             <CommentOutlined />
           ),
           getItem(
@@ -116,11 +105,6 @@ const Dashboard: React.FC = () => {
           ),
           getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
-          getItem(
-            "Create New Course",
-            "/instructor/create-course",
-            <FolderViewOutlined />
-          ),
           getItem(
             "Payment History",
             "/instructor/payment-history",
@@ -150,8 +134,8 @@ const Dashboard: React.FC = () => {
           ),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
           getItem(
-            "Manage Feedbacks",
-            "/admin/manage-feedbacks",
+            "Manage Reviews",
+            "/admin/manage-reviews",
             <CommentOutlined />
           ),
           getItem(
@@ -165,7 +149,6 @@ const Dashboard: React.FC = () => {
 
     loadItems();
   }, [dataUser.role]);
-  // useEffect(loadItems, [role]);
 
   const [collapsed, setCollapsed] = useState(false);
   const {
@@ -179,7 +162,7 @@ const Dashboard: React.FC = () => {
           <Row>
             <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
-              src={user.avatar}
+                src={user.avatar}
                 className="hover:cursor-pointer"
                 size={50}
                 icon={<UserOutlined />}
@@ -213,7 +196,7 @@ const Dashboard: React.FC = () => {
         <Link
           className="mt-2 text-lg"
           to={
-            dataUser.role === "Instructor"
+            dataUser.role === roles.INSTRUCTOR
               ? "/instructor/paidMemberships"
               : "/admin/paidMemberships"
           }
@@ -228,7 +211,7 @@ const Dashboard: React.FC = () => {
         <Link
           className="text-lg"
           to={
-            dataUser.role === "Instructor"
+            dataUser.role === roles.INSTRUCTOR
               ? "/instructor/setting"
               : "/admin/setting"
           }
@@ -243,7 +226,7 @@ const Dashboard: React.FC = () => {
         <Link
           className="text-lg"
           to={
-            dataUser.role === "Instructor" ? "/instructor/help" : "/admin/help"
+            dataUser.role === roles.INSTRUCTOR ? "/instructor/help" : "/admin/help"
           }
         >
           Help
@@ -256,7 +239,7 @@ const Dashboard: React.FC = () => {
         <Link
           className="text-lg"
           to={
-            dataUser.role === "Instructor"
+            dataUser.role === roles.INSTRUCTOR
               ? "/instructor/sendFeedBack"
               : "/admin/sendFeedBack"
           }
@@ -303,7 +286,7 @@ const Dashboard: React.FC = () => {
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
                   <Avatar
-                    src= {user.avatar}
+                    src={user.avatar}
                     className="hover:cursor-pointer "
                     size={40}
                     icon={<UserOutlined />}

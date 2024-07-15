@@ -2,7 +2,7 @@ import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined } from "@ant
 import { useEffect, useState } from "react";
 import { Breadcrumb, Button, Empty, Form, Input, Modal, Select, Table, TableProps, Tag } from "antd";
 import { Category, Course, Log } from "../../../models";
-import { getColor } from "../../../consts";
+import { API_COURSE_LOGS, API_DELETE_COURSE, API_GET_CATEGORIES, API_GET_COURSES, getColor } from "../../../consts";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
@@ -21,8 +21,6 @@ const InstructorManageCourses: React.FC = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('');
   const [logs, setLogs] = useState<Log[]>([]);
-  // const [pageNum, setPageNum] = useState<number>(0);
-  // const [pageSize, setPageSize] = useState<number>(0);
   // Status default of course, before change
   const [statusDefaultChange, setStatusDefaultChange] = useState<string>('');
   //status for filter log by new status
@@ -51,9 +49,6 @@ const InstructorManageCourses: React.FC = () => {
   //show change status modal
   const showModalChangeStatus = async (status: string, course_id: string, name: string) => {
     setStatusDefaultChange(status)
-    console.log("check showModalChangeStatus: ", status);
-    console.log("check statusDefaultChange: ", statusDefaultChange);
-    // const res = axiosInstance.post("/api/course/change-status")
     setCourseId(course_id);
     setOpenChangeStatus(true);
     setCourse_name(name)
@@ -65,7 +60,7 @@ const InstructorManageCourses: React.FC = () => {
       const fetchLog = async () => {
         try {
           setLogLoading(true);
-          const res = await axiosInstance.post("/api/course/log/search", {
+          const res = await axiosInstance.post(API_COURSE_LOGS, {
             "searchCondition": {
               "course_id": courseId,
               "keyword": keywordLogStatus,
@@ -79,13 +74,9 @@ const InstructorManageCourses: React.FC = () => {
             }
           })
           if (res) {
-            console.log("check log: ", res.data.pageData);
             setLogs(res.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
               return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
             }));
-            // setLogs(res.data.pageData.filter(log => log._))
-            // setPageSize(res.data.pageInfo.pageSize);
-            // setPageNum(res.data.pageInfo.pageNum);
             setLogLoading(false);
           }
         } catch (error) {
@@ -113,12 +104,11 @@ const InstructorManageCourses: React.FC = () => {
   };
   //click ok on modal to change status of course
   const handleOkChangeStatus = async () => {
-    console.log("check comment: ", comment)
     if (!comment) {
       return toast.error("Please enter comment")
     }
     try {
-      await axiosInstance.put("/api/course/change-status",
+      await axiosInstance.put(API_COURSE_STATUS,
         {
           "course_id": courseId,
           "new_status": changeStatus,
@@ -141,12 +131,10 @@ const InstructorManageCourses: React.FC = () => {
   // handle delete ok
   const handleOk = async () => {
     try {
-      const deleted = await axiosInstance.delete(`/api/course/${courseId}`)
-      console.log("check deleted: ", deleted);
+      await axiosInstance.delete(`${API_DELETE_COURSE}/${courseId}`)
       toast.success("Delete Successfully!")
       setCourses(courses.filter(course => course._id != courseId))
     } catch (error) {
-      console.log("Error occurred: ", error);
       toast.error("Delete Failed!")
     }
     setModalText('The modal will be closed after two seconds');
@@ -167,7 +155,7 @@ const InstructorManageCourses: React.FC = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axiosInstance.post(`/api/category/search`,
+        const response = await axiosInstance.post(API_GET_CATEGORIES,
           {
             "searchCondition": {
               "keyword": "",
@@ -178,11 +166,11 @@ const InstructorManageCourses: React.FC = () => {
               "pageSize": 100
             }
           })
-        if (res) {
-          setCategories(res.data.pageData);
+        if (response) {
+          setCategories(response.data.pageData);
         }
       } catch (error) {
-        console.log("Error: ", error);
+        //
       }
     };
     fetchCategories();
@@ -191,7 +179,7 @@ const InstructorManageCourses: React.FC = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axiosInstance.post(`/api/course/search`, {
+        const response = await axiosInstance.post(API_GET_COURSES, {
           "searchCondition": {
             "keyword": debouncedSearchTerm,
             "category": cateId,
@@ -203,14 +191,11 @@ const InstructorManageCourses: React.FC = () => {
             "pageSize": 100
           }
         });
-        if (res.data.pageData) {
-          console.log("check res: ", res);
-
-          setCourses(res.data.pageData);
-          console.log("check courses: ", res.data);
+        if (response.data.pageData) {
+          setCourses(response.data.pageData);
         }
       } catch (error) {
-        console.log("Error: ", error);
+        //
       } finally {
         setLoading(false)
       }
@@ -578,7 +563,7 @@ const InstructorManageCourses: React.FC = () => {
           },
         ]}
       />
-      <h1 className="text-center">Manage Course</h1>
+      <h1 className="text-center">Manage Courses</h1>
 
       <div className="grid grid-cols-2">
         <div className="grid xl:grid-cols-3 grid-cols-1 gap-10">

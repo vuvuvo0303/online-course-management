@@ -60,6 +60,8 @@ export const API_GET_REVIEWS = "/api/review/search";
 //export const API_GET_REVIEW: "/api/review";
 export const API_UPDATE_REVIEW = "/api/review";
 export const API_DELETE_REVIEW = "/api/review";
+//Course Logs
+export const API_COURSE_LOGS = "/api/course/log/search"
 //Cart
 export const API_CREATE_CART = "/api/cart";
 export const API_GET_CARTS = "/api/cart/search";
@@ -159,7 +161,7 @@ export const paths = {
   INSTRUCTOR_UPDATE_COURSE: "manage-courses/update-course/:_id",
   INSTRUCTOR_UPDATE_COURSE_DETAIL: "manage-courses/course-detail/:id/update-course/:_id",
   INSTRUCTOR_PAYMENT_HISTORY: "payment-history",
-  INSTRUCTOR_MANAGE_FEEDBACKS: "manage-feedbacks",
+  INSTRUCTOR_MANAGE_REVIEWS: "manage-reviews",
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
@@ -190,7 +192,7 @@ export const paths = {
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
   ADMIN_MANAGE_BLOGS: "manage-blogs",
   ADMIN_MANAGE_COURSES: "manage-courses",
-  ADMIN_MANAGE_FEEDBACKS: "manage-feedbacks",
+  ADMIN_MANAGE_REVIEWS: "manage-reviews",
   ADMIN_PAYMENT_HISTORY: "payment-history",
   ADMIN_MANAGE_SESSION_OF_COURSE: "manage-course/:courseId/manage-session",
   ADMIN_MANAGE_LECTURES_OF_COURSE: "manage-course/:courseId/manage-session/:sessionId/lecture",
