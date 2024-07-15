@@ -306,11 +306,11 @@ const CreateLecture = () => {
             <Form.Item
               label="Lecture Type"
               name="lesson_type"
-              initialValue={"video"}
+              // initialValue={"video"}
               rules={[{ required: true, message: "Please input lecture name!" }]}
             >
               <Select
-                defaultValue="video"
+                defaultValue="choose lesson type"
                 options={[
                   {
                     options: [

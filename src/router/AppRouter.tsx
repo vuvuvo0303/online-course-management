@@ -3,6 +3,7 @@ import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
 import { Suspense, lazy } from "react";
 
+
 // Guest Page
 const Home = lazy(() => import("../pages/home"));
 const Contact = lazy(() => import("../pages/contact"));
@@ -44,9 +45,13 @@ const InstructorResources = lazy(() => import("../pages/instructor/resources"));
 const InstructorTools = lazy(() => import("../pages/instructor/tools"));
 const LectureOfCourse = lazy(() => import("../pages/instructor/manage-course/manage-session/lectures-of-course"));
 const CreateLecture = lazy(() => import("../pages/instructor/manage-course/manage-session/lectures-of-course/create-update-page"));
+const UpdateLecture = lazy(() => import("../pages/instructor/manage-course/manage-session/lectures-of-course/create-update-page"));
 const ManageSession = lazy(() => import("../pages/instructor/manage-course/manage-session/"));
+const InstructorCreateCourse = lazy(() => import ("../pages/instructor/manage-course/create-update-course"));
 const CreateUpdateSession = lazy(() => import("../pages/instructor/manage-course/manage-session/create-update-session"));
-const InstructorManageCoursesDetail = lazy(() => import("../pages/instructor/manage-course/course-detail"));
+const ManageAllLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/lectures-of-course"));
+const CreateUpdateLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/lectures-of-course/create-update-page"));
+// const InstructorManageCoursesDetail = lazy(() => import("../pages/instructor/manage-course/course-detail"));
 const ManageAllSession = lazy(() => import("../pages/manage-all-session"));
 
 // Admin Page
@@ -134,19 +139,35 @@ const AppRouter: React.FC = () => {
             path={paths.INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES}
             element={canAccess([roles.INSTRUCTOR]) ? <CreateLecture /> : <Navigate to={paths.HOME} />}
           />
+           <Route
+            path={paths.INSTRUCTOR_MANAGE_ALL_LECTURES}
+            element={canAccess([roles.INSTRUCTOR]) ? <ManageAllLesson/> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES}
+            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateLesson/> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES}
+            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateLesson/> : <Navigate to={paths.HOME} />}
+          />
+           <Route
+            path={paths.INSTRUCTOR_UPDATE_LECTURE}
+            element={canAccess([roles.INSTRUCTOR]) ? <UpdateLecture /> : <Navigate to={paths.HOME} />}
+          />
           <Route path={paths.INSTRUCTOR_PROFILE} element={<Profile />} />
           <Route
             path={paths.INSTRUCTOR_PAYMENT_HISTORY}
             element={canAccess([roles.INSTRUCTOR]) ? <PaymentHistory /> : <Navigate to={paths.HOME} />}
           />
-          {/* <Route
+          <Route
             path={paths.INSTRUCTOR_CREATE_COURSE}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to={paths.HOME} />}
           />
           <Route
             path={paths.INSTRUCTOR_UPDATE_COURSE}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to={paths.HOME} />}
-          /> */}
+          />
           {/* <Route
             path={paths.INSTRUCTOR_UPDATE_COURSE_DETAIL}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to={paths.HOME} />}
@@ -158,22 +179,34 @@ const AppRouter: React.FC = () => {
           {/* <Route
             path={paths.INSTRUCTOR_MANAGE_COURSES_DETAIL}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageCoursesDetail /> : <Navigate to={paths.HOME} />}
-          />
+          /> */}
           <Route
-            path={paths.LECTURE_OF_COURSE}
+            path={paths.INSTRUCTOR_LECTURES_OF_COURSE}
             element={canAccess([roles.INSTRUCTOR]) ? <LectureOfCourse /> : <Navigate to={paths.HOME} />}
           />
           <Route
-            path={paths.INSTRUCTOR_MANAGE_SESSION}
+            path={paths.INSTRUCTOR_MANAGE_SESSION_OF_COURSE}
             element={canAccess([roles.INSTRUCTOR]) ? <ManageSession /> : <Navigate to={paths.HOME} />}
           />
           <Route
-            path={paths.INSTRUCTOR_CREATE_UPDATE_SESSION}
+            path={paths.INSTRUCTOR_CREATE_SESSION}
             element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
-          /> */}
+          />
+           <Route
+            path={paths.INSTRUCTOR_UPDATE_SESSION}
+            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
+          />
           <Route
             path={paths.INSTRUCTOR_MANAGE_ALL_SESSION}
             element={canAccess([roles.INSTRUCTOR]) ? <ManageAllSession /> : <Navigate to={paths.HOME} />}
+          />
+           <Route
+            path={paths.INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS}
+            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS}
+            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
           />
         </Route>
 
