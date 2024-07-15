@@ -23,6 +23,7 @@
     "paths": {
       "app/*": ["/app/*"],
       "components/*": ["/components/*"],
+      
       "consts/*": ["/consts/*"],
       "hooks/*": ["/hooks/*"],
       "models/*": ["/models/*"],
