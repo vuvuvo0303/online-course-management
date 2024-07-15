@@ -6,7 +6,6 @@ import {
   Button,
   Image,
   Input,
-  MenuProps,
   Modal,
   Pagination,
   Select,
@@ -73,7 +72,7 @@ const AdminManageCourses: React.FC = () => {
         }));
       }
     } catch (error) {
-      console.log(error);
+      console.log(modalText,setError)
     } finally {
       setLoading(false);
     }

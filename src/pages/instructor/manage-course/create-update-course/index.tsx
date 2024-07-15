@@ -142,8 +142,12 @@ const InstructorCreateCourse = () => {
                 toast.success("Create New Course Successfully");
                 navigate(`/instructor/manage-courses`);
             }
-        } catch (error: any) {
+        } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             console.log("Error Occurred: ", error.response.data.errors[0].message);
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             toast.error(error.response.data.errors[0].message);
         }
     };

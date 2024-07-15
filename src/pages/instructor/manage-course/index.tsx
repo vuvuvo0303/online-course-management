@@ -256,7 +256,7 @@ const handleSearchLogStatus = (e: React.ChangeEvent<HTMLInputElement>) => {
   setKeywordLogStatus(e.target.value);
 };
 
-const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+const handleSaveComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
   setComment(e.target.value);
 };
 //search course by course name
