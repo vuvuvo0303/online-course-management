@@ -82,8 +82,12 @@ const AdminLoginPage: React.FC = () => {
               ]}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
+              style={{ marginBottom: "10px", height: "80px" }}
             >
-              <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+              <Input
+                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                style={{ width: "100%" }}
+              />
             </Form.Item>
             <Form.Item
               name="password"
@@ -98,8 +102,12 @@ const AdminLoginPage: React.FC = () => {
               ]}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
+              style={{ marginTop: "20px", height: "100px" }}
             >
-              <Input.Password className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+              <Input.Password
+                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                style={{ width: "100%" }}
+              />
             </Form.Item>
             <Form.Item>
               <Button
@@ -110,6 +118,7 @@ const AdminLoginPage: React.FC = () => {
                 loading={loading}
                 disabled={loading}
                 aria-label="Login Button"
+                style={{ width: "100%" }}
               >
                 {loading ? "Logging in..." : "Login"}
               </Button>
