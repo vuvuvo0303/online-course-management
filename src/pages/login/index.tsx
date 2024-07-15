@@ -15,7 +15,6 @@ import { GoogleLogin } from "@react-oauth/google";
 import Lottie from "lottie-react";
 import vutru from "../../assets/vutru.json";
 import axiosInstance from "../../services/axiosInstance.ts";
-import {jwtDecode} from "jwt-decode";
 
 type FieldType = {
   email: string;
@@ -236,14 +235,8 @@ const LoginPage: React.FC = () => {
             <div className="flex justify-center mr-10">
               <GoogleLogin
                   onSuccess={(credentialResponse) => {
-                    console.log(credentialResponse);
                     handleLoginWithGoogle(credentialResponse.credential as string);
                     localStorage.setItem("token", credentialResponse.credential as string);
-                    const credentialResponseDecoded = jwtDecode(
-                        credentialResponse.credential as string
-                    );
-
-                    console.log(credentialResponseDecoded);
                   }}
                   onError={() => {
                     console.log("Login Failed");

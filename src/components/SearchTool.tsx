@@ -39,7 +39,7 @@ const SearchTool = () => {
         },
     ];
 
-    const handleMenuClick = (e) => {
+    const handleMenuClick = (e: { key: string; }) => {
         const selectedItem = items.find(item => item.key === e.key);
         if (selectedItem) {
             setSelectedItem(selectedItem.label);

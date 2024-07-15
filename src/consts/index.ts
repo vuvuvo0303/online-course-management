@@ -1,7 +1,6 @@
 /* Fake API */
 const BASE_URL = "https://665fbf245425580055b0b23d.mockapi.io";
 export const API_COURSES_URL = `${BASE_URL}/courses`;
-export const API_COMMENT_URL = `${BASE_URL}/comments`;
 export const API_ENROLLMENT_URL = `${BASE_URL}/enrollments`;
 export const API_PAYMENT_URL = `${BASE_URL}/payments`;
 export const API_REVIEW_URL = `${BASE_URL}/reviews`;
@@ -61,6 +60,22 @@ export const API_GET_REVIEWS = "/api/review/search";
 //export const API_GET_REVIEW: "/api/review";
 export const API_UPDATE_REVIEW = "/api/review";
 export const API_DELETE_REVIEW = "/api/review";
+//Cart
+export const API_CREATE_CART = "/api/cart";
+export const API_GET_CARTS = "/api/cart/search";
+export const API_UPDATE_STATUS_CART = "/api/cart/update-status";
+//export const API_DELETE_CART: "/api/cart";
+//Purchase
+export const API_GET_ITEMS_BY_ADMIN = "/api/purchase/search";
+export const API_GET_ITEMS_BY_INSTRUCTOR = "api/purchase/search-for-instructor";
+export const API_GET_ITEMS_BY_STUDENT = "api/purchase/search-for-student";
+//Payout
+export const API_CREATE_PAYOUT = "/api/payout";
+export const API_GET_PAYOUTS = "/api/payout/search";
+export const API_UPDATE_STATUS_PAYOUT = "/api/payout/update-status";
+//Client
+export const API_CLIENT_GET_COURSES = "/api/client/course/search";
+export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course"
 
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {

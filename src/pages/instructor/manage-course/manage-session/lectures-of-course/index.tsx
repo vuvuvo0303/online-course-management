@@ -6,6 +6,7 @@ import { Course, Lecture, Session } from "../../../../../models";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../../hooks/useDebounce.ts";
+import {API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS} from "../../../../../consts";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
@@ -50,7 +51,7 @@ const LectureOfCourse: React.FC = () => {
     };
 
     const handleDelete = async (lectureId: string) => {
-        await axiosInstance.delete(`/api/lesson/${lectureId}`);
+        await axiosInstance.delete(`${API_DELETE_LESSON}/${lectureId}`);
         setData(data.filter(lecture => lecture._id !== lectureId));
         toast.success("Delete Lecture Successfully!")
     };
@@ -61,7 +62,7 @@ const LectureOfCourse: React.FC = () => {
     useEffect(() => {
         const fetchSession = async () => {
             try {
-                const res = await axiosInstance.post("api/session/search", {
+                const res = await axiosInstance.post(API_GET_SESSIONS, {
                     "searchCondition": {
                         "keyword": "",
                         "course_id": "",
@@ -89,7 +90,7 @@ const LectureOfCourse: React.FC = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const res = await axiosInstance.post("api/course/search", {
+                const res = await axiosInstance.post(API_GET_COURSES, {
                     "searchCondition": {
                         "keyword": "",
                         "category": "",
@@ -119,7 +120,7 @@ const LectureOfCourse: React.FC = () => {
             const fetchLecture = async () => {
                 try {
                     console.log("check cid: ", course_id)
-                    const res = await axiosInstance.post(`/api/lesson/search`,
+                    const res = await axiosInstance.post(API_GET_LESSONS,
                         {
                             "searchCondition": {
                                 "keyword": debouncedSearchTerm,
@@ -150,7 +151,7 @@ const LectureOfCourse: React.FC = () => {
             //Manage all lecture
             const fetchLecture = async () => {
                 try {
-                    const res = await axiosInstance.post(`/api/lesson/search`, {
+                    const res = await axiosInstance.post(API_GET_LESSONS, {
                         "searchCondition": {
                             "keyword": debouncedSearchTerm,
                             "course_id": "",

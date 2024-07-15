@@ -278,7 +278,7 @@ const AdminManageCategories: React.FC = () => {
         };
 
         const response = await axiosInstance.post(
-          `/api/category`,
+          API_CREATE_CATEGORY,
           categoryData
         );
         if (response.data) {
