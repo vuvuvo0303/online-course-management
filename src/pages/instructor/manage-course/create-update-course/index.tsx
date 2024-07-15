@@ -252,7 +252,7 @@ const InstructorCreateCourse = () => {
                                     { value: 'First.Name', title: 'First Name' },
                                     { value: 'Email', title: 'Email' },
                                 ],
-                                ai_request: (request: string, respondWith: { string: (callback: () => Promise<string>) => void }) =>
+                                ai_request: (respondWith: { string: (callback: () => Promise<string>) => void }) =>
                                     respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
                             }}
                         />

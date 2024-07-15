@@ -78,7 +78,7 @@ const AdminManageCourses: React.FC = () => {
         }));
       }
     } catch (error) {
-      console.log(modalText,setError)
+      //
     } finally {
       setLoading(false);
     }

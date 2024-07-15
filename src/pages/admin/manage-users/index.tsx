@@ -167,7 +167,7 @@ const AdminManageUsers: React.FC = () => {
         if (
           values.avatar &&
           typeof values.avatar !== "string" &&
-          values.avatar?.file?.originFileObj
+          values.avatar?.file.originFileObj
         ) {
           avatarUrl = await uploadFile(values.avatar.file.originFileObj);
         }
