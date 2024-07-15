@@ -137,7 +137,7 @@ const InstructorCreateCourse = () => {
             //Create Course
             else {
                 await axiosInstance.post(`/api/course`, values, {
-                    
+
                 });
                 toast.success("Create New Course Successfully");
                 navigate(`/instructor/manage-courses`);
@@ -236,10 +236,9 @@ const InstructorCreateCourse = () => {
                     <Form.Item
                         label="Description"
                         name="description"
-      
+
                     >
                         <Editor
-                        
                             apiKey="lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u"
                             onEditorChange={(newValue) => setValue(newValue)}
                             initialValue={value}
@@ -253,7 +252,8 @@ const InstructorCreateCourse = () => {
                                     { value: 'First.Name', title: 'First Name' },
                                     { value: 'Email', title: 'Email' },
                                 ],
-                                ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                                ai_request: (request: string, respondWith: { string: (callback: () => Promise<string>) => void }) =>
+                                    respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
                             }}
                         />
                     </Form.Item>
