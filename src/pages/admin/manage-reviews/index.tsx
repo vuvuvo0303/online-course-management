@@ -13,7 +13,7 @@ const AdminManageFeedbacks: React.FC = () => {
   const [data, setData] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [pagination, setPagination] = useState({
+  const [pagination, ] = useState({
     pageNum: 1,
     pageSize: 10,
     totalItems: 0

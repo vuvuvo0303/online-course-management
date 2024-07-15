@@ -162,7 +162,7 @@ const Dashboard: React.FC = () => {
           <Row>
             <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
-                src={user.avatar}
+              src={typeof user.avatar === 'string' ? user.avatar : undefined}
                 className="hover:cursor-pointer"
                 size={50}
                 icon={<UserOutlined />}
@@ -285,8 +285,9 @@ const Dashboard: React.FC = () => {
             <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
+                  
                   <Avatar
-                    src={user.avatar}
+                    src={typeof user.avatar === 'string' ? user.avatar : undefined}
                     className="hover:cursor-pointer "
                     size={40}
                     icon={<UserOutlined />}
