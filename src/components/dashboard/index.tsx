@@ -78,8 +78,8 @@ const Dashboard: React.FC = () => {
         setItems([
           getItem("Dashboard", "/instructor/dashboard", <FundOutlined />),
           getItem(
-            "Manage Feedbacks",
-            "/instructor/manage-feedbacks",
+            "Manage Reviews",
+            "/instructor/manage-reviews",
             <CommentOutlined />
           ),
           getItem(
@@ -133,8 +133,8 @@ const Dashboard: React.FC = () => {
           ),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
           getItem(
-            "Manage Feedbacks",
-            "/admin/manage-feedbacks",
+            "Manage Reviews",
+            "/admin/manage-reviews",
             <CommentOutlined />
           ),
           getItem(

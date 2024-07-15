@@ -6,8 +6,10 @@ import { Link } from "react-router-dom";
 import { User } from "../../models/User";
 import { toast } from "react-toastify";
 import axiosInstance from "../../services/axiosInstance.ts";
-import { colorIs_delete } from "../../consts";
+import { API_GET_SESSIONS, colorIs_delete } from "../../consts";
 import useDebounce from "../../hooks/useDebounce";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 const ManageAllSession = () => {
     const [keyword, setKeyword] = useState<string>('');
@@ -65,17 +67,17 @@ const ManageAllSession = () => {
         setUserId(user?._id)
     }, []);
 
-    
+
     const handleChange = (value: boolean) => {
         setIs_deleted(value);
     };
 
-    
+
     //fetch session
     useEffect(() => {
         const fetchSession = async () => {
             try {
-                const res = await axiosInstance.post(`/api/session/search`, {
+                const response = await axiosInstance.post(API_GET_SESSIONS, {
                     "searchCondition": {
                         "keyword": debouncedSearchTerm,
                         "course_id": "",
@@ -87,13 +89,11 @@ const ManageAllSession = () => {
                         "pageSize": 100
                     }
                 });
-                if (res) {
-                    console.log("check res:", res);
-                    setSessions(res.data.pageData);
+                if (response) {
+                    setSessions(response.data.pageData);
                 }
             } catch (error) {
-                console.log("error: ", error);
-                toast.error("failed")
+                //
             } finally {
                 setLoading(false);
             }
@@ -115,13 +115,13 @@ const ManageAllSession = () => {
             title: 'Created At',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (date: string) => new Date(date).toLocaleDateString(),
+            render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
         },
         {
             title: 'Updated At',
             dataIndex: 'updated_at',
             key: 'updated_at',
-            render: (date: string) => new Date(date).toLocaleDateString(),
+            render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
         },
         {
             title: 'User Name',
@@ -163,7 +163,7 @@ const ManageAllSession = () => {
         },
     ];
 
-  
+
     const handleCancel = () => {
         setOpen(false);
     };

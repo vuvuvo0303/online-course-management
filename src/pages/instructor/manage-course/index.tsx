@@ -9,6 +9,8 @@ import axiosInstance from "../../../services/axiosInstance.ts";
 import TextArea from "antd/es/input/TextArea";
 import useDebounce from "../../../hooks/useDebounce";
 import { API_COURSE_STATUS } from '../../../consts/index';
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 const InstructorManageCourses: React.FC = () => {
 
@@ -156,7 +158,7 @@ const InstructorManageCourses: React.FC = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axiosInstance.post(API_GET_CATEGORIES,
+        const response = await axiosInstance.post(API_GET_CATEGORIES,
           {
             "searchCondition": {
               "keyword": "",
@@ -167,11 +169,11 @@ const InstructorManageCourses: React.FC = () => {
               "pageSize": 100
             }
           })
-        if (res) {
-          setCategories(res.data.pageData);
+        if (response) {
+          setCategories(response.data.pageData);
         }
       } catch (error) {
-        console.log("Error: ", error);
+        //
       }
     };
     fetchCategories();
@@ -180,7 +182,7 @@ const InstructorManageCourses: React.FC = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axiosInstance.post(API_GET_COURSES, {
+        const response = await axiosInstance.post(API_GET_COURSES, {
           "searchCondition": {
             "keyword": debouncedSearchTerm,
             "category": cateId,
@@ -192,11 +194,11 @@ const InstructorManageCourses: React.FC = () => {
             "pageSize": 100
           }
         });
-        if (res.data.pageData) {
-          setCourses(res.data.pageData);
+        if (response.data.pageData) {
+          setCourses(response.data.pageData);
         }
       } catch (error) {
-        console.log("Error: ", error);
+        //
       } finally {
         setLoading(false)
       }
@@ -291,15 +293,13 @@ const InstructorManageCourses: React.FC = () => {
       title: 'Created At ',
       dataIndex: 'created_at',
       key: 'created_at',
-      defaultSortOrder: 'descend',
-      render: (date: string) => new Date(date).toLocaleDateString(),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: 'Updated At ',
       dataIndex: 'updated_at',
       key: 'updatedDate',
-      defaultSortOrder: 'descend',
-      render: (date: string) => new Date(date).toLocaleDateString(),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
     },
     {
       title: 'Action',
