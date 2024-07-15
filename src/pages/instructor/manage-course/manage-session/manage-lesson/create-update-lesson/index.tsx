@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Breadcrumb, Select } from "antd";
+import { Button, Form, Input, Breadcrumb, Select, 
+  // SelectProps, Tag 
+} from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import { Course, Lecture, Session } from "../../../../../../models";
+import { Course, Lecture, Session } from "../../../../../../models/index.ts";
 import { HomeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
-import { User } from "../../../../../../models/User";
+import { User } from "../../../../../../models/User.ts";
 import axiosInstance from "../../../../../../services/axiosInstance.ts";
-import { Editor } from '@tinymce/tinymce-react';
+// import { Editor } from '@tinymce/tinymce-react';
+// import { getColorLessonType } from "../../../../../../consts";
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -18,7 +21,7 @@ const formItemLayout = {
   },
 };
 
-const CreateLecture = () => {
+const CreateUpdateLesson = () => {
   const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string, sessionId: string }>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
@@ -205,6 +208,32 @@ const CreateLecture = () => {
     setCourse_id(value);
   }
 
+  // type TagRender = SelectProps['tagRender'];
+
+  // const options: SelectProps['options'] = [
+  //   { value: 'video' },
+  //   { value: 'text' },
+  //   { value: 'image' },
+  // ];
+
+  // const tagRender: TagRender = (props) => {
+  //   const { label, value, closable, onClose } = props;
+  //   const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
+  //     event.preventDefault();
+  //     event.stopPropagation();
+  //   };
+  //   return (
+  //     <Tag
+  //       color={getColorLessonType(value)}
+  //       onMouseDown={onPreventMouseDown}
+  //       closable={closable}
+  //       onClose={onClose}
+  //       style={{ marginInlineEnd: 4 }}
+  //     >
+  //       {label}
+  //     </Tag>
+  //   );
+  // };
   return (
     <div className="flex justify-center items-center  h-full mt-10">
       {loading ? (
@@ -220,19 +249,19 @@ const CreateLecture = () => {
                 <Breadcrumb.Item href="/instructor/manage-courses">Manage Courses</Breadcrumb.Item>
                 <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>Manage Sessions</Breadcrumb.Item>
                 <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}>Manage Lectures</Breadcrumb.Item>
-                <Breadcrumb.Item>{lectureId ? "Update Lecture" : "Create Lecture"}</Breadcrumb.Item>
+                <Breadcrumb.Item>{lectureId ? "Update Lesson" : "Create Lesson"}</Breadcrumb.Item>
               </Breadcrumb>
             ) : (
               <Breadcrumb className="py-2">
                 <Breadcrumb.Item href="/dashboard">
                   <HomeOutlined />
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/instructor/manage-all-lectures`}>Manage All Lectures</Breadcrumb.Item>
-                <Breadcrumb.Item>{lectureId ? "Update Lecture" : "Create Lecture"}</Breadcrumb.Item>
+                <Breadcrumb.Item href={`/instructor/manage-all-lectures`}>Manage All Lessons</Breadcrumb.Item>
+                <Breadcrumb.Item>{lectureId ? "Update Lesson" : "Create Lesson"}</Breadcrumb.Item>
               </Breadcrumb>
             )
           }
-          <h1 className="text-center mb-8">{lectureId ? "Update Lecture" : "Create Lecture"}</h1>
+          <h1 className="text-center mb-8">{lectureId ? "Update Lesson" : "Create Lesson"}</h1>
           <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
             <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input name!" }]}>
               <Input />
@@ -244,6 +273,7 @@ const CreateLecture = () => {
                 name="course_id"
                 hidden
                 initialValue={courseId}
+
               >
                 <Input defaultValue={courseId} disabled />
               </Form.Item>
@@ -254,12 +284,12 @@ const CreateLecture = () => {
               <Form.Item
                 label="Course Name"
                 name="course_id"
-
+                rules={[{ required: true, message: "Please input name!" }]}
               >
                 <Select
                   // Save course_id to use to call the session api
                   onChange={handleChangeCourseId}
-                  defaultValue="Choose course fo this lecture"
+                  defaultValue="Choose course for this lecture"
                   options={courses.map(course => ({
                     label: course.name,
                     value: course._id
@@ -287,7 +317,7 @@ const CreateLecture = () => {
                 rules={[{ required: true, message: "Please session name!" }]}
               >
                 <Select
-                  defaultValue="Choose session fo this lecture"
+                  defaultValue="Choose session for this lecture"
                   options={sessions.map(session => ({
                     label: session.name,
                     value: session._id
@@ -304,21 +334,27 @@ const CreateLecture = () => {
               <Input.TextArea />
             </Form.Item>
             <Form.Item
-              label="Lecture Type"
+              label="Lesson Type"
               name="lesson_type"
-              // initialValue={"video"}
-              rules={[{ required: true, message: "Please input lecture name!" }]}
+              rules={[{ required: true, message: "Please input lesson type!" }]}
             >
+              {/* <Select
+                mode="multiple"
+                tagRender={tagRender}
+                defaultValue="video"
+                style={{ width: '100%' }}
+                options={options}
+              /> */}
               <Select
-                defaultValue="choose lesson type"
+                defaultValue="video"
                 options={[
                   {
                     options: [
-                      { label: <span>video</span>, value: 'video' },
-                      { label: <span>text</span>, value: 'text' },
-                      { label: <span>image</span>, value: 'image' },
-                    ],
-                  },
+                      {label: "video", value:"video"},
+                      {label: "text", value:"text"},
+                      {label: "image", value:"image"},
+                    ]
+                  }
                 ]}
               />
             </Form.Item>
@@ -326,7 +362,8 @@ const CreateLecture = () => {
               label="Description"
               name="description"
             >
-              <Editor
+              <Input />
+              {/* <Editor
                 apiKey="lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u"
                 onEditorChange={(newValue) => setValue(newValue)}
                 initialValue={value}
@@ -343,7 +380,7 @@ const CreateLecture = () => {
                   ai_request: (respondWith: { string: (callback: () => Promise<string>) => void }) =>
                     respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
                 }}
-              />
+              /> */}
             </Form.Item>
 
             <Form.Item
@@ -385,6 +422,5 @@ const CreateLecture = () => {
       )}
     </div>
   );
-};
-
-export default CreateLecture;
+}
+export default CreateUpdateLesson;
