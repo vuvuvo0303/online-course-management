@@ -195,7 +195,7 @@ const AdminManageUsers: React.FC = () => {
         localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
         setLoading(false);
-        toast.error(`Failed to create new user: ${error.message}`);
+        // toast.error(`Failed to create new user: ${error.message}`);
       }
     },
     [fetchUsers, form]

@@ -16,7 +16,7 @@ import {
   TablePaginationConfig,
   Tag,
 } from "antd";
-import { API_COURSE_STATUS, getColor, paths } from "../../../consts";
+import { API_COURSE_STATUS, getColor } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -37,11 +37,11 @@ const AdminManageCourses: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>("All Categories");
   const [selectedStatus, setSelectedStatus] = useState<string>("All Statuses");
-  const [comment, setComment] = useState<string>('');
+  const [comment, setComment] = useState<string>("");
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const [status, setStatus] = useState<string>("new");
-  const debouncedSearchTerm = useDebounce(searchText, 500); 
+  const debouncedSearchTerm = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -118,7 +118,7 @@ const AdminManageCourses: React.FC = () => {
 
   const handleOkChangeStatus = async () => {
     if (!comment) {
-      return toast.error("Please enter comment")
+      return toast.error("Please enter comment");
     }
     try {
       await axiosInstance.put(API_COURSE_STATUS, {
@@ -274,13 +274,9 @@ const AdminManageCourses: React.FC = () => {
             ]}
           />
         </div>
-        <Form.Item
-              label="Comment"
-              name="comment"
-              rules={[{ required: true, message: 'Please enter comment!' }]}
-            >
-              <TextArea value={comment} onChange={handleSaveComment} />
-            </Form.Item>
+        <Form.Item label="Comment" name="comment" rules={[{ required: true, message: "Please enter comment!" }]}>
+          <TextArea value={comment} onChange={handleSaveComment} />
+        </Form.Item>
       </Modal>
 
       <Modal
@@ -375,7 +371,7 @@ const AdminManageCourses: React.FC = () => {
             </Select.Option>
           ))}
         </Select>
-     
+
         <Select
           showSearch
           placeholder="Select Status"
