@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { useParams } from "react-router-dom";
 import { Tabs, Collapse, Radio, Checkbox, Rate } from 'antd';
 import type { TabsProps } from 'antd';
@@ -9,6 +9,8 @@ import TeacherCategories from "../../components/categories/teacher";
 import { ExclamationCircleFilled, FilterOutlined } from "@ant-design/icons";
 import { CartComponents } from "../../components";
 import styles from './courses.module.css';
+// import axiosInstance from "../../services/axiosInstance";
+import {API_CLIENT_GET_COURSES} from "consts/index.ts";
 
 const CoursesCategory: React.FC = () => {
     const urlParams = useParams().id;
@@ -28,6 +30,24 @@ const CoursesCategory: React.FC = () => {
 
     const { Panel } = Collapse;
 
+
+    useEffect(() => {
+        fetchCourses();
+    }, []);
+
+    const fetchCourses = async() => {
+        // await axiosInstance.post(API_CLIENT_GET_COURSES, {
+        //     "searchCondition": {
+        //         "keyword": urlParams,
+        //         "category_id": "",
+        //         "is_deleted": false
+        //     },
+        //     "pageInfo": {
+        //         "pageNum": 1,
+        //         "pageSize": 10
+        //     }
+        // })
+    }
 
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);

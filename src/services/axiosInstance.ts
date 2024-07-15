@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import config from "../secret/config.ts";
-import {paths} from "../consts";
+import {paths, roles} from "../consts";
 
 const axiosInstance = axios.create({
     baseURL: config.BASE_URL,
@@ -46,7 +46,7 @@ axiosInstance.interceptors.response.use(
                      const userString = localStorage.getItem("user");
                      const user = userString ? JSON.parse(userString) : null;
                      toast.error(data.message)
-                     if(user.role === "admin"){
+                     if(user.role === roles.ADMIN){
                          window.location.href = paths.ADMIN_LOGIN;
                      }
                      else{
