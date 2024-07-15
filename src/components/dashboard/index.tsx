@@ -64,7 +64,7 @@ const Dashboard: React.FC = () => {
       navigate(paths.HOME);
       }
     }
-  }, [navigate]);
+  }, [fullName, navigate, role, user, userRole]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");

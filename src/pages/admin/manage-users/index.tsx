@@ -91,7 +91,6 @@ const AdminManageUsers: React.FC = () => {
         fetchUsers();
       }
     };
-
     window.addEventListener("storage", handleStorageChange);
 
     return () => {
@@ -385,11 +384,15 @@ const AdminManageUsers: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const editUser = async (values: any) => {
+  const editUser = async (values: User) => {
     setLoading(true);
     try {
       let avatarUrl = values.avatar;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       if (values.avatar && typeof values.avatar !== "string" && values.avatar.file.originFileObj) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         avatarUrl = await uploadFile(values.avatar.file.originFileObj);
       }
 
@@ -404,7 +407,7 @@ const AdminManageUsers: React.FC = () => {
       if (response.success) {
         // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
-          const roleChangeResponse =
+          const roleChangeResponse: AxiosResponse<any> =
             await axiosInstance.put(API_CHANGE_ROLE, {
               user_id: formData._id,
               role: values.role,
@@ -481,7 +484,7 @@ const AdminManageUsers: React.FC = () => {
         </div>
       </div>
       
-      <Space className="mb-2" >
+      <Space className="mb-5">
           <Input.Search
             placeholder="Search By Name"
             value={searchText}
