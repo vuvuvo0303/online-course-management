@@ -1,6 +1,8 @@
-import { StarFilled } from '@ant-design/icons'
 import styles from './cartComponents.module.css'
+import {Rate} from "antd";
+import {paths} from "../../consts/index.ts";
 const CartComponents = () => {
+
     return (
         <div className={styles.shopping_wrapper}>
             <div className={styles.item_container}>
@@ -19,13 +21,7 @@ const CartComponents = () => {
                 </div>
                 <div className={styles.item_rating}>
                     <span className={styles.star_rating}>
-                        <span className={styles.point}>4.6</span>
-                        <StarFilled className='text-yellow-300' />
-                        <StarFilled className='text-yellow-300' />
-                        <StarFilled className='text-yellow-300' />
-                        <StarFilled className='text-yellow-300' />
-                        <StarFilled className='text-yellow-300' />
-
+                       <Rate disabled defaultValue={4.5} style={{ fontSize: '12px' }} /> 4.5 (1,488)
                     </span>
                     <span className={styles.rating_quantity}>(300,946 ratings)</span>
                 </div>
@@ -37,12 +33,18 @@ const CartComponents = () => {
                     <span className='flex flex-wrap items-center'>All Levels</span>
                 </div>
                 <div className={styles.item_vertical}>
-                    <button type='button' className={styles.button}>
-                        <span>Remove</span>
-                    </button>
-                    <button type='button' className={styles.button}>
-                        <span>Save for later</span>
-                    </button>
+                    {
+                        location.pathname.includes(paths.STUDENT_CART) && (
+                            <>
+                                <button type='button' className={styles.button}>
+                                    <span>Remove</span>
+                                </button>
+                                <button type='button' className={styles.button}>
+                                    <span>Save for later</span>
+                                </button>
+                            </>
+                        )
+                    }
                 </div>
                 <div className={styles.price_container}>
                     <div className={styles.all_price}>

@@ -175,6 +175,7 @@ const AdminManageUsers: React.FC = () => {
         if (values.avatar && typeof values.avatar !== "string" && values.avatar?.file?.originFileObj) {
           avatarUrl = await uploadFile(values.avatar.file.originFileObj);
         }
+        console.log(avatarUrl);
 
         const userData = { ...values, avatar: avatarUrl };
 
@@ -194,6 +195,7 @@ const AdminManageUsers: React.FC = () => {
         localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
         setLoading(false);
+        toast.error(`Failed to create new user: ${error.message}`);
       }
     },
     [fetchUsers, form]

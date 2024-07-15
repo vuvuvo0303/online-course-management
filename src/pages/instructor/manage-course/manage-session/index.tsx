@@ -1,5 +1,5 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps, Tag } from "antd";
+import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Session } from "../../../../models";
@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { host_main } from "../../../../consts";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../hooks/useDebounce";
+import { format } from "date-fns";
 const ManageSession = () => {
     const { courseId } = useParams<{ courseId: string }>();
     const [sessions, setSessions] = useState<Session[]>([]);
@@ -26,7 +27,7 @@ const ManageSession = () => {
         setOpen(true);
     };
     const [is_deleted, setIs_deleted] = useState<boolean>(false);
-    
+
     const handleOk = async () => {
         if (selectedSessionID) {
             setModalText('Deleting...');
@@ -100,19 +101,14 @@ const ManageSession = () => {
         }
     }, [courseId, keyword, is_deleted, debouncedSearchTerm]);
 
-    const colorStatus = (is_delete: boolean) => {
-        if (is_delete) {
-            return "red"
-        } else {
-            return "blue"
-        }
-    }
-
-
-
     const columns: TableProps<Session>["columns"] = [
         {
-            title: 'Name',
+            title: 'Course Name',
+            dataIndex: 'course_name',
+            key: 'course_name',
+        },
+        {
+            title: 'Session Name',
             dataIndex: 'name',
             key: 'name',
         },
@@ -120,25 +116,17 @@ const ManageSession = () => {
             title: 'Created At',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (date: string) => new Date(date).toLocaleDateString(),
+            render: (date: string) => {
+                return format(new Date(date), 'dd/MM/yy');
+            },
         },
         {
             title: 'Updated At',
             dataIndex: 'updated_at',
             key: 'updated_at',
-            render: (date: string) => new Date(date).toLocaleDateString(),
-        },
-        {
-            title: 'Is deleted',
-            dataIndex: 'is_deleted',
-            key: 'is_deleted',
-            render: (is_delete: boolean) => (
-                <>
-                    <Tag color={colorStatus(is_delete)}>
-                        {is_delete ? "true" : "false"}
-                    </Tag>
-                </>
-            )
+            render: (date: string) => {
+                return format(new Date(date), 'dd/MM/yy');
+            },
         },
         // {
         //     title: '__v',
@@ -152,9 +140,19 @@ const ManageSession = () => {
             render: (_id: string) => (
                 <>
                     {/* <Button type="primary" className="m-2">Detail</Button> */}
-                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${_id}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/update-session/${_id}`}><EditOutlined className="m-2 text-blue-500" /></Link>
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id)} />
+                </>
+            )
+        },
+        {
+            title: 'Lesson',
+            dataIndex: '_id',
+            key: '_id',
+            render: (_id: number, record: Session) => (
+                <>
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${_id}/manage-lectures`}>
+                    <p className="text-blue-700">Lesson of "{record.name}"</p></Link>
                 </>
             )
         },

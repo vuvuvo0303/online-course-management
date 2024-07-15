@@ -306,11 +306,11 @@ const CreateLecture = () => {
             <Form.Item
               label="Lecture Type"
               name="lesson_type"
-              initialValue={"video"}
+              // initialValue={"video"}
               rules={[{ required: true, message: "Please input lecture name!" }]}
             >
               <Select
-                defaultValue="video"
+                defaultValue="choose lesson type"
                 options={[
                   {
                     options: [
@@ -331,6 +331,7 @@ const CreateLecture = () => {
                 onEditorChange={(newValue) => setValue(newValue)}
                 initialValue={value}
                 init={{
+                  directionality: 'ltr',
                   plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
                   toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
                   tinycomments_mode: 'embedded',
@@ -339,7 +340,8 @@ const CreateLecture = () => {
                     { value: 'First.Name', title: 'First Name' },
                     { value: 'Email', title: 'Email' },
                   ],
-                  ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                  ai_request: (respondWith: { string: (callback: () => Promise<string>) => void }) =>
+                    respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
                 }}
               />
             </Form.Item>

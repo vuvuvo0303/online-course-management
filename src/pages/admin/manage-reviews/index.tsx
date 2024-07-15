@@ -1,67 +1,67 @@
-import {Breadcrumb, Popconfirm, Rate, Table} from "antd";
+import { Breadcrumb, Pagination, Popconfirm, Rate, Table } from "antd";
 import type { TableProps } from "antd";
-import {useCallback, useEffect, useState} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined, HomeOutlined } from "@ant-design/icons";
 import { Review } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
-import {API_DELETE_REVIEW, API_GET_REVIEWS, paths} from "../../../consts";
-import {toast} from "react-toastify";
-import {format} from "date-fns";
-import {vi} from "date-fns/locale";
+import { API_DELETE_REVIEW, API_GET_REVIEWS, paths } from "../../../consts";
+import { toast } from "react-toastify";
+import { format } from "date-fns";
 
 
 const AdminManageFeedbacks: React.FC = () => {
   const [data, setData] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  
+
   const [pagination, setPagination] = useState({
     pageNum: 1,
     pageSize: 10,
+    totalItems: 0
   });
-  
+
   useEffect(() => {
 
     fetchReviews();
   }, [pagination.pageSize, pagination.pageNum]);
 
 
-    const fetchReviews = async () => {
-        try {
-            const response = await axiosInstance.post(API_GET_REVIEWS,
-                {
-                    searchCondition: {
-                        course_id: "",
-                        rating: 0,
-                        is_instructor: false,
-                        is_rating_order: false,
-                        is_deleted: false
-                    },
-                    pageInfo: {
-                        pageNum: 1,
-                        pageSize: 10
-                    }
-                }
-            );
-            setData(response.data.pageData)
-            setLoading(false)
-        } catch (error) {
-            console.error("Error fetching students:", error);
+  const fetchReviews = useCallback(async () => {
+    try {
+      const response = await axiosInstance.post(API_GET_REVIEWS,
+        {
+          searchCondition: {
+            course_id: "",
+            rating: 0,
+            is_instructor: false,
+            is_rating_order: false,
+            is_deleted: false
+          },
+          pageInfo: {
+            pageNum: 1,
+            pageSize: 10
+          }
         }
-    };
+      );
+      setData(response.data.pageData)
+      setLoading(false)
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    }
+  }, []);
 
- 
+
   const handleDeleteReview = useCallback(
-      async (_id: string, reviewer_name: string, course_name: string) => {
-        try {
-          await axiosInstance.delete(`${API_DELETE_REVIEW}/${_id}`);
-          setData(prevReview => prevReview.filter(review => review._id === _id));
-          toast.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
-          fetchReviews();
-        }catch{
-          //
-        }
+    async (_id: string, reviewer_name: string, course_name: string) => {
+      try {
+        await axiosInstance.delete(`${API_DELETE_REVIEW}/${_id}`);
+        setData(prevReview => prevReview.filter(review => review._id === _id));
+        toast.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
+        fetchReviews();
+      } catch {
+        //
       }
-      ,[fetchReviews])
+    }
+    , [fetchReviews])
 
   const columns: TableProps<Review>["columns"] = [
     {
@@ -87,11 +87,11 @@ const AdminManageFeedbacks: React.FC = () => {
       key: "created_at",
       render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
     },
-    
+
     {
       title: "Updated Date",
       dataIndex: "updated_at",
-      render: (updatedDate: Date) => format(new Date(updatedDate),"dd/MM/yyyy"),
+      render: (updatedDate: Date) => format(new Date(updatedDate), "dd/MM/yyyy"),
       width: "10%",
     },
     {
@@ -106,15 +106,15 @@ const AdminManageFeedbacks: React.FC = () => {
       render: (record: Review) => (
         <div>
           <Popconfirm
-              title="Delete the User"
-              description="Are you sure to delete this User?"
-              onConfirm={() => handleDeleteReview(record._id, record.reviewer_name, record.course_name)}
-              okText="Yes"
-              cancelText="No"
+            title="Delete the User"
+            description="Are you sure to delete this User?"
+            onConfirm={() => handleDeleteReview(record._id, record.reviewer_name, record.course_name)}
+            okText="Yes"
+            cancelText="No"
           >
             <DeleteOutlined
-                className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
-                style={{ fontSize: "20px" }}
+              className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
+              style={{ fontSize: "20px" }}
             />
           </Popconfirm>
         </div>
@@ -122,7 +122,7 @@ const AdminManageFeedbacks: React.FC = () => {
     },
   ];
 
-  if(loading){
+  if (loading) {
     return <p className="text-center">Loading...</p>
   }
   return (
@@ -140,6 +140,15 @@ const AdminManageFeedbacks: React.FC = () => {
         ]}
       />
       <Table rowKey="_id" columns={columns} dataSource={data} />
+      <div className="flex justify-end py-8">
+        <Pagination
+          total={pagination.totalItems}
+          showTotal={(total) => `Total ${total} items`}
+          current={pagination.pageNum}
+          pageSize={pagination.pageSize}
+          showSizeChanger
+        />
+      </div>
     </div>
   );
 };

@@ -4,7 +4,6 @@ import Carousel from "react-multi-carousel";
 import { Link } from 'react-router-dom';
 import { categoryFilters, categoryCourse, paths } from "../../../consts/index";
 import { CheckOutlined, HeartOutlined } from '@ant-design/icons';
-import { HashLink } from 'react-router-hash-link';
 import './Categories.css';
 
 const { Meta } = Card;
@@ -50,16 +49,6 @@ const Categories: React.FC = () => {
         setSelectedCategory(filter);
         setRatings(Array.from({ length: categoryCourse[filter].length }, () => 3));
     };
-
-    const handleExploreClick = () => {
-        if (selectedCategory) {
-            window.location.href = `/courses/${encodeURIComponent(selectedCategory)}`;
-        }
-    };
-
-    const handleStartTeaching = useCallback(() => {
-        window.location.href = paths.TEACHING;
-    }, []);
 
     const renderPopoverContent = (course: string) => {
         const handleGoToCourse = () => {
@@ -133,14 +122,16 @@ const Categories: React.FC = () => {
                     ))}
                 </div>
                 <h1 className="categories-header">{selectedCategory}</h1>
-                <Button
-                    type="primary"
-                    className="categories-button ml-0"
-                    onClick={handleExploreClick}
-                    disabled={!selectedCategory}
-                >
-                    Explore Course
-                </Button>
+                <Link to={`/courses/${selectedCategory}`}>
+                    <Button
+                        type="primary"
+                        className="categories-button ml-0"
+                        disabled={!selectedCategory}
+                    >
+                        Explore Course
+                    </Button>
+                </Link>
+
                 <Carousel
                     responsive={responsive}
                     itemClass="carousel-item-padding-10px"
@@ -165,20 +156,20 @@ const Categories: React.FC = () => {
                                     style={{ margin: '10px' }}
                                     cover={
                                         <div className="avatar-container">
-                                            <HashLink smooth to={`${paths.COURSE}#top`}>
+                                            <Link to={`${paths.COURSE}`}>
                                                 <img
                                                     alt="example"
                                                     src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
                                                     style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
                                                 />
-                                            </HashLink>
+                                            </Link>
                                             <div className="best-seller-label text-yellow-200 text-base">Best Seller</div>
                                         </div>
                                     }
                                 >
                                     <Meta
                                         className="card-meta"
-                                        title={<HashLink smooth to={`${paths.COURSE}#top`}>{course}</HashLink>}
+                                        title={<Link to={`${paths.COURSE}`}>{course}</Link>}
                                         description="This is the description"
                                     />
                                     <div className="rating-container card-meta">
@@ -202,10 +193,12 @@ const Categories: React.FC = () => {
                         alt="Instructor"
                         className="instructor-image"
                     />
-                    <p>Top instructors from around the world teach millions of students on Cursus. We provide the tools and skills to teach what you love.</p>
-                    <Button type="primary" onClick={handleStartTeaching} style={{ backgroundColor: 'gray', marginTop: '50px' }}>
-                        Start Teaching
-                    </Button>
+                    <p>Top instructors from around the world teach millions of students on FLearn. We provide the tools and skills to teach what you love.</p>
+                    <Link to={paths.TEACHING}>
+                        <Button type="primary" style={{ backgroundColor: 'gray', marginTop: '50px' }}>
+                            Start Teaching
+                        </Button>
+                    </Link>
                 </div>
             )}
         </div>

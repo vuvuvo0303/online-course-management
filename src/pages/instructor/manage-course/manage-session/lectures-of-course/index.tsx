@@ -1,11 +1,12 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, Modal, Select, Spin, Table, TableProps, } from "antd";
+import { Breadcrumb, Button, Input, Modal, Select, Spin, Table, TableProps, Tag, } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Course, Lecture, Session } from "../../../../../models";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../../hooks/useDebounce.ts";
+import {API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS, getColorLessonType} from "../../../../../consts";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
@@ -20,7 +21,7 @@ const LectureOfCourse: React.FC = () => {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [courses, setCourses] = useState<Course[]>([]);
     const [course_id, setCourse_id] = useState<string>('');
-    
+
     const debouncedSearchTerm = useDebounce(keyword, 300);
 
     const showModal = (lectureId: string, name: string) => {
@@ -50,7 +51,7 @@ const LectureOfCourse: React.FC = () => {
     };
 
     const handleDelete = async (lectureId: string) => {
-        await axiosInstance.delete(`/api/lesson/${lectureId}`);
+        await axiosInstance.delete(`${API_DELETE_LESSON}/${lectureId}`);
         setData(data.filter(lecture => lecture._id !== lectureId));
         toast.success("Delete Lecture Successfully!")
     };
@@ -61,7 +62,7 @@ const LectureOfCourse: React.FC = () => {
     useEffect(() => {
         const fetchSession = async () => {
             try {
-                const res = await axiosInstance.post("api/session/search", {
+                const res = await axiosInstance.post(API_GET_SESSIONS, {
                     "searchCondition": {
                         "keyword": "",
                         "course_id": "",
@@ -89,7 +90,7 @@ const LectureOfCourse: React.FC = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const res = await axiosInstance.post("api/course/search", {
+                const res = await axiosInstance.post(API_GET_COURSES, {
                     "searchCondition": {
                         "keyword": "",
                         "category": "",
@@ -119,7 +120,7 @@ const LectureOfCourse: React.FC = () => {
             const fetchLecture = async () => {
                 try {
                     console.log("check cid: ", course_id)
-                    const res = await axiosInstance.post(`/api/lesson/search`,
+                    const res = await axiosInstance.post(API_GET_LESSONS,
                         {
                             "searchCondition": {
                                 "keyword": debouncedSearchTerm,
@@ -150,7 +151,7 @@ const LectureOfCourse: React.FC = () => {
             //Manage all lecture
             const fetchLecture = async () => {
                 try {
-                    const res = await axiosInstance.post(`/api/lesson/search`, {
+                    const res = await axiosInstance.post(API_GET_LESSONS, {
                         "searchCondition": {
                             "keyword": debouncedSearchTerm,
                             "course_id": "",
@@ -195,6 +196,12 @@ const LectureOfCourse: React.FC = () => {
 
         },
         {
+            title: 'Session Name',
+            dataIndex: 'session_name',
+            key: 'session_name',
+
+        },
+        {
             title: 'Video Url',
             dataIndex: 'video_url',
             key: 'video_url',
@@ -209,6 +216,18 @@ const LectureOfCourse: React.FC = () => {
             dataIndex: 'image_url',
             key: 'image_url',
 
+        },
+        {
+            title: 'Lesson type',
+            dataIndex: 'lesson_type',
+            key: 'lesson_type',
+            render: (lesson_type)=>(
+                <>
+                <Tag color={getColorLessonType(lesson_type)}>
+                    {lesson_type}
+                </Tag>
+                </>
+            )
         },
         {
             title: 'Created At ',
@@ -293,9 +312,9 @@ const LectureOfCourse: React.FC = () => {
                                     <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>
                                         Manage Sessions
                                     </Breadcrumb.Item>
-                                    <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
+                                    <Breadcrumb.Item>Manage Lesson</Breadcrumb.Item>
                                 </Breadcrumb>
-                                <h1 className="text-center m-10">Manage Lectures</h1>
+                                <h1 className="text-center m-10">Manage Lessons</h1>
                             </>
                         ) : (
                             <>
@@ -305,7 +324,7 @@ const LectureOfCourse: React.FC = () => {
                                     </Breadcrumb.Item>
                                     <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
                                 </Breadcrumb>
-                                <h1 className="text-center m-10">Manage All Lectures</h1>
+                                <h1 className="text-center m-10">Manage All Lessons</h1>
                             </>
                         )
                     }
