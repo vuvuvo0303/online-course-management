@@ -1,11 +1,10 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps } from "antd";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { host_main } from "../../../../consts";
+import {API_GET_COURSE, API_GET_SESSIONS} from "../../../../consts";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../hooks/useDebounce";
 import { format } from "date-fns";
@@ -20,7 +19,6 @@ const ManageSession = () => {
     const [keyword, setKeyword] = useState<string>('');
     const [selectedSessionID, setSelectedSessionID] = useState<string>('');
     const debouncedSearchTerm = useDebounce(keyword, 500);
-    const token = localStorage.getItem("token")
     const showModal = (sessionId: string) => {
         setModalText(`Do you want to delete this session with id = ${sessionId} and the lessons of this session `)
         setSelectedSessionID(sessionId)
@@ -51,16 +49,11 @@ const ManageSession = () => {
     };
     const handleDelete = async (sessionId: string) => {
         try {
-            // Xóa session trước
-            await axios.delete(`${host_main}/api/session/${sessionId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            await axiosInstance.delete(`${API_GET_COURSE}/${sessionId}`);
             setSessions(sessions.filter(session => session._id !== sessionId));
-            toast.success("Delete Session Successfully!");
+            toast.success(`Delete Session Successfully!`);
         } catch (error) {
-            toast.error("Failed to delete session. Please try again.");
+            //
         }
     };
 
@@ -71,7 +64,7 @@ const ManageSession = () => {
     useEffect(() => {
         const fetchSession = async () => {
             try {
-                const res = await axiosInstance.post(`/api/session/search`,
+                const response = await axiosInstance.post(API_GET_SESSIONS,
                     {
                         "searchCondition": {
                             "keyword": debouncedSearchTerm,
@@ -84,12 +77,10 @@ const ManageSession = () => {
                             "pageSize": 30
                         }
                     });
-                if (res) {
-                    setSessions(res.data.pageData);
-                    console.log("check res: ", res);
+                if (response) {
+                    setSessions(response.data.pageData);
                 }
             } catch (error) {
-                console.log("error: ", error);
                 setError(error + "");
             } finally {
                 setLoading(false);
@@ -113,49 +104,40 @@ const ManageSession = () => {
             key: 'name',
         },
         {
-            title: 'Created At',
-            dataIndex: 'created_at',
-            key: 'created_at',
-            render: (date: string) => {
-                return format(new Date(date), 'dd/MM/yy');
-            },
-        },
-        {
-            title: 'Updated At',
-            dataIndex: 'updated_at',
-            key: 'updated_at',
-            render: (date: string) => {
-                return format(new Date(date), 'dd/MM/yy');
-            },
-        },
-        // {
-        //     title: '__v',
-        //     dataIndex: '__v',
-        //     key: '__v',
-        // },
-        {
-            title: 'Action',
-            dataIndex: '_id',
-            key: '_id',
-            render: (_id: string) => (
-                <>
-                    {/* <Button type="primary" className="m-2">Detail</Button> */}
-                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/update-session/${_id}`}><EditOutlined className="m-2 text-blue-500" /></Link>
-                    <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id)} />
-                </>
-            )
-        },
-        {
             title: 'Lesson',
             dataIndex: '_id',
             key: '_id',
             render: (_id: number, record: Session) => (
                 <>
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${_id}/manage-lectures`}>
-                    <p className="text-blue-700">Lesson of "{record.name}"</p></Link>
+                        <p className="text-blue-700">Lesson of "{record.name}"</p></Link>
                 </>
             )
         },
+        {
+            title: 'Created At',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+        },
+        {
+            title: 'Updated At',
+            dataIndex: 'updated_at',
+            key: 'updated_at',
+            render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+        },
+        {
+            title: 'Action',
+            dataIndex: '_id',
+            key: '_id',
+            render: (_id: string) => (
+                <>
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/update-session/${_id}`}><EditOutlined className="m-2 text-blue-500" /></Link>
+                    <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id)} />
+                </>
+            )
+        },
+
     ];
 
     if (loading) {
@@ -216,7 +198,7 @@ const ManageSession = () => {
                     />
                 </div>
                 <div>
-                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New</Button></Link>
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New Session</Button></Link>
                 </div>
             </div>
             <Table dataSource={sessions} columns={columns} rowKey="sessionId" />

@@ -60,7 +60,7 @@ const InstructorManageCourses: React.FC = () => {
       const fetchLog = async () => {
         try {
           setLogLoading(true);
-          const res = await axiosInstance.post(API_COURSE_LOGS, {
+          const response = await axiosInstance.post(API_COURSE_LOGS, {
             "searchCondition": {
               "course_id": courseId,
               "keyword": keywordLogStatus,
@@ -73,14 +73,14 @@ const InstructorManageCourses: React.FC = () => {
               "pageSize": 100
             }
           })
-          if (res) {
-            setLogs(res.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
+          if (response) {
+            setLogs(response.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
               return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
             }));
             setLogLoading(false);
           }
         } catch (error) {
-          console.log("Error occurred: ", error);
+          //
         }
       }
       fetchLog();
@@ -119,7 +119,7 @@ const InstructorManageCourses: React.FC = () => {
       toast.success("Change Status Successfully!");
       setCourses(courses.filter(course => course._id != courseId))
     } catch (error) {
-      console.log("Error occurred: ", error);
+      //
     }
     setModalText('The modal will be closed after two seconds');
     setConfirmLoading(true);
@@ -219,7 +219,6 @@ const InstructorManageCourses: React.FC = () => {
   };
   //setNewStatus for filter log by status
   const handleChangeNewStatus = (value: string) => {
-    console.log("check new: ", value)
     setOldStatus("");
     setNewStatus(value);
   };
@@ -230,7 +229,6 @@ const InstructorManageCourses: React.FC = () => {
   };
   // set status for chang status
   const handleChangeStatus = async (value: string) => {
-    console.log("check handleChangeStatus: ", value);
     setChangeStatus(value);
   };
 
@@ -259,7 +257,7 @@ const InstructorManageCourses: React.FC = () => {
       width: 300,
       render: (name: string, record: Course) => (
         <>
-          <div onClick={() => showModalLogStatus(record._id)} className="text-blue-500">{name}</div>
+          <div onClick={() => showModalLogStatus(record._id)} className="text-blue-500 cursor-pointer">{name}</div>
         </>
       )
     },
@@ -268,53 +266,6 @@ const InstructorManageCourses: React.FC = () => {
       dataIndex: 'category_name',
       key: 'category_name',
 
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: string, record: Course) => (
-        <>
-          <div className="flex justify-between">
-            <Tag color={getColor(status)}
-            >
-              {status}
-            </Tag>
-            {(status !== "waiting_approve" && status !== "reject") &&
-              <EditOutlined onClick={() => { showModalChangeStatus(status, record._id, record.name); }} className="text-blue-500" />}
-          </div>
-        </>
-      )
-    },
-    {
-      title: 'Created At ',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      defaultSortOrder: 'descend',
-      render: (date: string) => {
-        return format(new Date(date), 'dd/MM/yy');
-      },
-    },
-    {
-      title: 'Updated At ',
-      dataIndex: 'updated_at',
-      key: 'updatedDate',
-      render: (date: string) => {
-        return format(new Date(date), 'dd/MM/yy');
-      },
-    },
-    {
-      title: 'Action',
-      dataIndex: '_id',
-      key: '_id',
-      render: (_id: string, record: Course) => (
-        <>
-          {/* <Link to={`/instructor/manage-courses/${_id}`}><Button type="primary">Detail</Button></Link> */}
-          {/* <Link to={`/instructor/manage-courses/${_id}/manage-sessions`}><EyeOutlined className="text-purple-500 m-2" /></Link> */}
-          <Link to={`/instructor/manage-courses/update-course/${_id}`}><EditOutlined className="mt-2 text-blue-500" /></Link>
-          <DeleteOutlined onClick={() => showModal(_id, record)} className="text-red-500 m-2" />
-        </>
-      )
     },
     {
       title: 'Session',
@@ -336,9 +287,54 @@ const InstructorManageCourses: React.FC = () => {
         </>
       )
     },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status: string, record: Course) => (
+        <>
+          {(status !== "waiting_approve" && status !== "reject") &&
+            <Tag onClick={() => { showModalChangeStatus(status, record._id, record.name); }}
+              className="text-blue-500 cursor-pointer">
+              {status}
+            </Tag>}
+        </>
+      )
+    },
+    {
+      title: 'Created At ',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+    },
+    {
+      title: 'Updated At ',
+      dataIndex: 'updated_at',
+      key: 'updatedDate',
+      render: (update_at: Date) => format(new Date(update_at), "dd/MM/yyyy"),
+    },
+    {
+      title: 'Action',
+      dataIndex: '_id',
+      key: '_id',
+      render: (_id: string, record: Course) => (
+        <>
+          <Link to={`/instructor/manage-courses/update-course/${_id}`}><EditOutlined className="mt-2 text-blue-500" /></Link>
+          <DeleteOutlined onClick={() => showModal(_id, record)} className="text-red-500 m-2" />
+        </>
+      )
+    },
+
   ];
 
   const columnsLogs: TableProps["columns"] = [
+    {
+      title: 'Created At ',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      defaultSortOrder: 'descend',
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+    },
     {
       title: 'Name',
       dataIndex: 'course_name',
@@ -380,22 +376,12 @@ const InstructorManageCourses: React.FC = () => {
       render: (comment: string) => (
         <>
           <div className="truncate">
-            {comment === "" ? <Tag color="red">
-              No comment
-            </Tag> : comment}
+            {comment === "" ? "" : comment}
           </div>
         </>
       )
     },
-    {
-      title: 'Created At ',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      defaultSortOrder: 'descend',
-      render: (date: string) => {
-        return format(new Date(date), 'dd/MM/yy');
-      },
-    }
+
   ];
 
   return (
@@ -484,7 +470,6 @@ const InstructorManageCourses: React.FC = () => {
             }
 
           </div>
-
         </div>
 
       </Modal>
@@ -606,7 +591,7 @@ const InstructorManageCourses: React.FC = () => {
           />
         </div>
         <div>
-          <Link to={"/instructor/manage-courses/create-course"}><Button type="primary" className="float-right m-5">Add New</Button></Link>
+          <Link to={"/instructor/manage-courses/create-course"}><Button type="primary" className="float-right m-5">Add New Course</Button></Link>
         </div>
       </div>
       <Table columns={columnsCourses} dataSource={courses} />
