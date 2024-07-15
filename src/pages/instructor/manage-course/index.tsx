@@ -54,39 +54,39 @@ const InstructorManageCourses: React.FC = () => {
     setCourse_name(name)
   };
   //show log status modal
+  const fetchLog = async () => {
+    try {
+      setLogLoading(true);
+      const response = await axiosInstance.post(API_COURSE_LOGS, {
+        "searchCondition": {
+          "course_id": courseId,
+          "keyword": keywordLogStatus,
+          "old_status": oldStatus,
+          "new_status": newStatus,
+          "is_deleted": false
+        },
+        "pageInfo": {
+          "pageNum": 1,
+          "pageSize": 100
+        }
+      })
+      if (response) {
+        setLogs(response.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }));
+        setLogLoading(false);
+      }
+    } catch (error) {
+      //
+    }
+  }
   useEffect(() => {
     //fetch logs
     if (courseId) {
-      const fetchLog = async () => {
-        try {
-          setLogLoading(true);
-          const response = await axiosInstance.post(API_COURSE_LOGS, {
-            "searchCondition": {
-              "course_id": courseId,
-              "keyword": keywordLogStatus,
-              "old_status": oldStatus,
-              "new_status": newStatus,
-              "is_deleted": false
-            },
-            "pageInfo": {
-              "pageNum": 1,
-              "pageSize": 100
-            }
-          })
-          if (response) {
-            setLogs(response.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
-              return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-            }));
-            setLogLoading(false);
-          }
-        } catch (error) {
-          //
-        }
-      }
       fetchLog();
     }
 
-  }, [courseId, oldStatus, newStatus, keywordLogStatus]);
+  }, [courseId, oldStatus, newStatus, keywordLogStatus, setLogLoading, setLogs]);
 
   const showModalLogStatus = async (course_id: string) => {
     setCourseId(course_id);
@@ -135,7 +135,7 @@ const InstructorManageCourses: React.FC = () => {
       toast.success("Delete Successfully!")
       setCourses(courses.filter(course => course._id != courseId))
     } catch (error) {
-      toast.error("Delete Failed!")
+      //
     }
     setModalText('The modal will be closed after two seconds');
     setConfirmLoading(true);

@@ -32,7 +32,7 @@ const CreateUpdateSession = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [userId, setUserId] = useState<string>('');
   //value of tinymce (field: description)
-  const [value, setValue] = useState<string>('TinyMCE editor text');
+  const [value, setValue] = useState<string>('Enter something here');
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;

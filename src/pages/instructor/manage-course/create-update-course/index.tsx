@@ -1,7 +1,5 @@
-import axios from "axios";
-// import { useEffect, useState } from "react";
 import { Category, Course } from "../../../../models";
-import { host_main } from "../../../../consts";
+import {API_CREATE_COURSE, API_GET_CATEGORIES, API_GET_COURSE, API_UPDATE_COURSE} from "../../../../consts";
 import { useNavigate, useParams } from "react-router-dom";
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Form, Input, Select } from 'antd';
@@ -28,20 +26,14 @@ const InstructorCreateCourse = () => {
     const { id, _id } = useParams<{ _id: string, id: string }>();
     const [form] = useForm();
     const token = localStorage.getItem("token");
-    const [value, setValue] = useState<string>('TinyMCE editor text');
+    const [value, setValue] = useState<string>('Enter something here');
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await
-                    axios.get(`${host_main}/api/course/${_id}`, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-
-                    })
-                if (res) {
-                    console.log("check ress: ", res);
-                    const data = res.data.data
+                const response = await
+                    axiosInstance.get(`${API_GET_COURSE}/${_id}`)
+                if (response) {
+                    const data = response.data.data
                     form.setFieldsValue({
                         name: data?.name,
                         category_id: data?.category_id,
@@ -56,7 +48,7 @@ const InstructorCreateCourse = () => {
                 }
 
             } catch (error) {
-                console.log("Error occurred: ", error);
+                //
             }
         }
         if (_id) {
@@ -67,7 +59,7 @@ const InstructorCreateCourse = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await axiosInstance.post(`/api/category/search`, {
+                const response = await axiosInstance.post(API_GET_CATEGORIES, {
                     "searchCondition": {
                         "keyword": "",
                         "is_delete": false
@@ -78,12 +70,11 @@ const InstructorCreateCourse = () => {
                     }
                 });
 
-                if (res) {
-                    console.log("check fetchCategories res: ", res);
-                    setCates(res.data.pageData);
+                if (response) {
+                    setCates(response.data.pageData);
                 }
             } catch (error) {
-                console.log("Erro occurred: ", error);
+                //
             } finally {
                 setLoading(false);
             }
@@ -107,7 +98,6 @@ const InstructorCreateCourse = () => {
     }
 
     const onFinish = async (values: Course) => {
-        console.log("check value: ", values)
         if (typeof values.price === 'string') {
             values.price = parseFloat(values.price);
         }
@@ -118,14 +108,7 @@ const InstructorCreateCourse = () => {
         try {
             //Update Course
             if (_id) {
-
-                console.log("check value: ", value);
-                await axios.put<Course>(`${host_main}/api/course/${_id}`, values,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
+                await axiosInstance.put<Course>(`${API_UPDATE_COURSE}/${_id}`, values,);
                 toast.success("Update New Course Successfully");
                 if (id) {
                     navigate(`/instructor/manage-courses/${_id}`);
@@ -135,15 +118,14 @@ const InstructorCreateCourse = () => {
             }
             //Create Course
             else {
-                await axiosInstance.post(`/api/course`, values, {
+                await axiosInstance.post(API_CREATE_COURSE, values, {
 
                 });
                 toast.success("Create New Course Successfully");
                 navigate(`/instructor/manage-courses`);
             }
         } catch (error) {
-            console.log("Error Occurred: ", error);
-            // toast.error(error.response.data.errors[0].message);
+            //
         }
     };
 

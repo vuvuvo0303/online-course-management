@@ -2,15 +2,16 @@ import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Input, Modal, Select, Spin, Table, TableProps, Tag, } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Course, Lecture, Session } from "../../../../../models/index.ts";
+import { Course, Session } from "../../../../../models/index.ts";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../../hooks/useDebounce.ts";
 import { API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS, getColorLessonType } from "../../../../../consts";
 import { format } from "date-fns";
+import {Lessons} from "models/Lesson.ts";
 
 const LectureOfCourse: React.FC = () => {
-    const [data, setData] = useState<Lecture[]>([]);
+    const [data, setData] = useState<Lessons[]>([]);
     const { courseId, sessionId } = useParams<{ courseId: string, sessionId: string }>();
     const [loading, setLoading] = useState<boolean>(true);
     const [open, setOpen] = useState(false);
@@ -116,7 +117,7 @@ const LectureOfCourse: React.FC = () => {
         if (courseId && sessionId) {
             const fetchLecture = async () => {
                 try {
-                    const res = await axiosInstance.post(API_GET_LESSONS,
+                    const response = await axiosInstance.post(API_GET_LESSONS,
                         {
                             "searchCondition": {
                                 "keyword": debouncedSearchTerm,
@@ -132,8 +133,8 @@ const LectureOfCourse: React.FC = () => {
                             }
                         }
                     );
-                    if (res) {
-                        setData(res.data.pageData)
+                    if (response) {
+                        setData(response.data.pageData)
                     }
                 } catch (error) {
                     //
@@ -146,7 +147,7 @@ const LectureOfCourse: React.FC = () => {
             //Manage all lecture
             const fetchLecture = async () => {
                 try {
-                    const res = await axiosInstance.post(API_GET_LESSONS, {
+                    const response = await axiosInstance.post(API_GET_LESSONS, {
                         "searchCondition": {
                             "keyword": debouncedSearchTerm,
                             "course_id": "",
@@ -160,8 +161,8 @@ const LectureOfCourse: React.FC = () => {
                             "pageSize": 100
                         }
                     },);
-                    if (res) {
-                        setData(res.data.pageData);
+                    if (response) {
+                        setData(response.data.pageData);
                     }
                 } catch (error) {
                     //
@@ -242,7 +243,7 @@ const LectureOfCourse: React.FC = () => {
             title: 'Action',
             dataIndex: '_id',
             key: '_id',
-            render: (_id: string, record: Lecture) => (
+            render: (_id: string, record: Lessons) => (
                 <>
                     {
                         courseId && sessionId ? (
@@ -271,12 +272,10 @@ const LectureOfCourse: React.FC = () => {
 
     const handleCourseChange = (value: string) => {
         setCourse_id(value);
-        console.log("check value: ", value)
     };
-    console.log();
 
     return (
-        <div className="">
+        <div>
 
             <Modal
                 title="Confirm Delete"
@@ -360,7 +359,7 @@ const LectureOfCourse: React.FC = () => {
                             {
                                 courseId && sessionId ? (
                                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/create-lecture`}>
-                                        <Button className="bg-blue-500 my-10 float-right">Add New</Button>
+                                        <Button type="primary" className="my-10 float-right">Add New Lessons</Button>
                                     </Link>
                                 ) :
                                     (

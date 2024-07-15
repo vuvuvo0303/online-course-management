@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Breadcrumb, Select, 
+import {
+  Button, Form, Input, Breadcrumb, Select,
   // SelectProps, Tag 
 } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import { Course, Lecture, Session } from "../../../../../../models/index.ts";
+import { Course, Lessons, Session } from "../../../../../../models/index.ts";
 import { HomeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { User } from "../../../../../../models/User.ts";
 import axiosInstance from "../../../../../../services/axiosInstance.ts";
+import { API_CREATE_LESSON, API_GET_COURSE, API_GET_COURSES, API_GET_LESSON, API_GET_SESSION, API_GET_SESSIONS, API_UPDATE_LESSON, paths } from "consts/index.ts";
 // import { Editor } from '@tinymce/tinymce-react';
-// import { getColorLessonType } from "../../../../../../consts";
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -32,7 +33,7 @@ const CreateUpdateLesson = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [userId, setUserId] = useState<string>('');
   const [course_id, setCourse_id] = useState<string>('');
-  const [value, setValue] = useState<string>('<p>TinyMCE editor text<p/>');
+  const [value, setValue] = useState<string>('Enter something here');
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
@@ -43,9 +44,8 @@ const CreateUpdateLesson = () => {
     if (lectureId) {
       const fetchData = async () => {
         try {
-          const res = await axiosInstance.get(`/api/lesson/${lectureId}`);
-          console.log("check res lesson: ", res)
-          const data = res.data;
+          const response = await axiosInstance.get(`${API_GET_LESSON}/${lectureId}`);
+          const data = response.data;
           form.setFieldsValue({
             name: data.name,
             course_id: data.course_id,
@@ -62,7 +62,7 @@ const CreateUpdateLesson = () => {
           setCourse_id(data.course_id);
           setValue(data.description);
         } catch (error) {
-          console.error("Error fetching data:", error);
+          //
         } finally {
           setLoading(false);
         }
@@ -83,12 +83,12 @@ const CreateUpdateLesson = () => {
 
       if (courseId && sessionId) {
         try {
-          const res = await axiosInstance.get(`/api/course/${courseId}`);
+          const res = await axiosInstance.get(`${API_GET_COURSE}/${courseId}`);
           if (res.data) {
             setCourse(res.data);
           }
         } catch (error) {
-          console.log("Error: ", error);
+          //
         } finally {
           setLoading(false)
         }
@@ -96,7 +96,7 @@ const CreateUpdateLesson = () => {
       // if there is no sessionId and courseId 
       else {
         try {
-          const res = await axiosInstance.post(`/api/course/search`,
+          const response = await axiosInstance.post(API_GET_COURSES,
             {
               "searchCondition": {
                 "keyword": "",
@@ -110,12 +110,11 @@ const CreateUpdateLesson = () => {
               }
             }
           );
-          if (res.data) {
-            setCourses(res.data.pageData);
-            console.log("check courses of manage all lectures: ", res.data);
+          if (response.data) {
+            setCourses(response.data.pageData);
           }
         } catch (error) {
-          console.log("Error: ", error);
+          //
         } finally {
           setLoading(false)
         }
@@ -129,19 +128,19 @@ const CreateUpdateLesson = () => {
     const fetchSessions = async () => {
       if (courseId && sessionId) {
         try {
-          const res = await axiosInstance.get(`/api/session/${sessionId}`);
-          if (res) {
-            setSession(res.data);
+          const response = await axiosInstance.get(`${API_GET_SESSION}/${sessionId}`);
+          if (response) {
+            setSession(response.data);
           }
         } catch (error) {
-          console.log("Error: ", error);
+          //
         } finally {
           setLoading(false)
         }
       } else {
         if (course_id) {
           try {
-            const res = await axiosInstance.post(`/api/session/search`, {
+            const response = await axiosInstance.post(API_GET_SESSIONS, {
               "searchCondition": {
                 "keyword": "",
                 "course_id": course_id,
@@ -153,11 +152,11 @@ const CreateUpdateLesson = () => {
                 "pageSize": 10
               }
             });
-            if (res) {
-              setSessions(res.data.pageData);
+            if (response) {
+              setSessions(response.data.pageData);
             }
           } catch (error) {
-            console.log("Error: ", error);
+            //
           } finally {
             setLoading(false)
           }
@@ -169,7 +168,7 @@ const CreateUpdateLesson = () => {
 
 
 
-  const onFinish = async (values: Lecture) => {
+  const onFinish = async (values: Lessons) => {
     if (typeof values.full_time === 'string') {
       values.full_time = parseFloat(values.full_time);
     }
@@ -181,15 +180,12 @@ const CreateUpdateLesson = () => {
     try {
       //Update lecture
       if (lectureId) {
-        console.log("check value update: ", values)
-        await axiosInstance.put(`/api/lesson/${lectureId}`, values, {
-        });
+        await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values, {});
         toast.success("Update Lecture Successfully!")
       }
       //create lecture
       else {
-        console.log("check value create: ", values)
-        await axiosInstance.post(`/api/lesson`, values);
+        await axiosInstance.post(API_CREATE_LESSON, values);
         toast.success("Create Lecture Successfully!")
       }
       if (sessionId && courseId) {
@@ -198,7 +194,7 @@ const CreateUpdateLesson = () => {
         navigate(`/instructor/manage-all-lectures`);
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      //
     } finally {
       setLoading(false);
     }
@@ -208,32 +204,6 @@ const CreateUpdateLesson = () => {
     setCourse_id(value);
   }
 
-  // type TagRender = SelectProps['tagRender'];
-
-  // const options: SelectProps['options'] = [
-  //   { value: 'video' },
-  //   { value: 'text' },
-  //   { value: 'image' },
-  // ];
-
-  // const tagRender: TagRender = (props) => {
-  //   const { label, value, closable, onClose } = props;
-  //   const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
-  //     event.preventDefault();
-  //     event.stopPropagation();
-  //   };
-  //   return (
-  //     <Tag
-  //       color={getColorLessonType(value)}
-  //       onMouseDown={onPreventMouseDown}
-  //       closable={closable}
-  //       onClose={onClose}
-  //       style={{ marginInlineEnd: 4 }}
-  //     >
-  //       {label}
-  //     </Tag>
-  //   );
-  // };
   return (
     <div className="flex justify-center items-center  h-full mt-10">
       {loading ? (
@@ -243,7 +213,7 @@ const CreateUpdateLesson = () => {
           {
             courseId && sessionId != undefined ? (
               <Breadcrumb className="py-2">
-                <Breadcrumb.Item href="/dashboard">
+                <Breadcrumb.Item href={paths.INSTRUCTOR_DASHBOARD}>
                   <HomeOutlined />
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href="/instructor/manage-courses">Manage Courses</Breadcrumb.Item>
@@ -253,7 +223,7 @@ const CreateUpdateLesson = () => {
               </Breadcrumb>
             ) : (
               <Breadcrumb className="py-2">
-                <Breadcrumb.Item href="/dashboard">
+                <Breadcrumb.Item href={paths.INSTRUCTOR_DASHBOARD}>
                   <HomeOutlined />
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href={`/instructor/manage-all-lectures`}>Manage All Lessons</Breadcrumb.Item>
@@ -350,9 +320,9 @@ const CreateUpdateLesson = () => {
                 options={[
                   {
                     options: [
-                      {label: "video", value:"video"},
-                      {label: "text", value:"text"},
-                      {label: "image", value:"image"},
+                      { label: "video", value: "video" },
+                      { label: "text", value: "text" },
+                      { label: "image", value: "image" },
                     ]
                   }
                 ]}

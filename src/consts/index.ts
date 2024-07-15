@@ -35,8 +35,7 @@ export const API_GET_CATEGORY = "/api/category";
 export const API_UPDATE_CATEGORY = "/api/category";
 export const API_DELETE_CATEGORY = "/api/category";
 //Course
-
-//export const API_CREATE_COURSE: "/api/course";
+export const API_CREATE_COURSE = "/api/course";
 export const API_GET_COURSES = "/api/course/search";
 export const API_GET_COURSE = "/api/course";
 export const API_UPDATE_COURSE = "/api/course";
@@ -44,7 +43,7 @@ export const API_DELETE_COURSE = "/api/course";
 export const API_COURSE_STATUS = "/api/course/change-status";
 export const API_COURSE_DETAIL = "/api/course";
 //Session
-//export const API_CREATE_SESSION: "/api/session";
+export const API_CREATE_SESSION = "/api/session";
 export const API_GET_SESSIONS = "/api/session/search";
 export const API_GET_SESSION = "/api/session";
 export const API_UPDATE_SESSION = "/api/session";
