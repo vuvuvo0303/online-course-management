@@ -27,7 +27,6 @@ const InstructorCreateCourse = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const { id, _id } = useParams<{ _id: string, id: string }>();
     const [form] = useForm();
-    console.log("check id: ", _id);
     const token = localStorage.getItem("token");
     const [value, setValue] = useState<string>('TinyMCE editor text');
     useEffect(() => {

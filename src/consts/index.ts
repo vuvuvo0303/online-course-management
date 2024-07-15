@@ -60,6 +60,8 @@ export const API_GET_REVIEWS = "/api/review/search";
 //export const API_GET_REVIEW: "/api/review";
 export const API_UPDATE_REVIEW = "/api/review";
 export const API_DELETE_REVIEW = "/api/review";
+//Course Logs
+export const API_COURSE_LOGS = "/api/course/log/search"
 //Cart
 export const API_CREATE_CART = "/api/cart";
 export const API_GET_CARTS = "/api/cart/search";

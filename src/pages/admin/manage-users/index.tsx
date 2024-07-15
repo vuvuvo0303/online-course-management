@@ -56,6 +56,7 @@ interface CreateUserResponse {
   error?: ApiError[];
 }
 
+
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type AxiosResponse<T> = {
   success: boolean;
@@ -104,7 +105,7 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText,debouncedSearchTerm]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText, debouncedSearchTerm]);
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -139,7 +140,7 @@ const AdminManageUsers: React.FC = () => {
       // Xử lý lỗi
     }
     setLoading(false);
-  }, [pagination.current,debouncedSearchTerm, pagination.pageSize, selectedRole, selectedStatus, searchText]);
+  }, [pagination.current, debouncedSearchTerm, pagination.pageSize, selectedRole, selectedStatus, searchText]);
 
   const handleDelete = useCallback(
     async (_id: string, email: string) => {
@@ -260,15 +261,14 @@ const AdminManageUsers: React.FC = () => {
 
         render: (role) => (
           <div
-            className={`tag ${
-              role === "student"
-                ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl p-2 border border-blue-500 text-xs"
-                : role === "instructor"
+            className={`tag ${role === "student"
+              ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl p-2 border border-blue-500 text-xs"
+              : role === "instructor"
                 ? "bg-lime-100 text-lime-400 flex justify-center rounded-xl p-2 border border-lime-500 text-xs"
                 : role === "admin"
-                ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl p-2 border border-yellow-500 text-xs"
-                : "bg-gray-500 text-white"
-            }`}
+                  ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl p-2 border border-yellow-500 text-xs"
+                  : "bg-gray-500 text-white"
+              }`}
           >
             {role ? role.toUpperCase() : "UNKNOWN"}
           </div>
@@ -335,13 +335,13 @@ const AdminManageUsers: React.FC = () => {
                 setFileList(
                   record.avatar
                     ? [
-                        {
-                          uid: "-1",
-                          name: "avatar.png",
-                          status: "done",
-                          url: record.avatar,
-                        },
-                      ]
+                      {
+                        uid: "-1",
+                        name: "avatar.png",
+                        status: "done",
+                        url: record.avatar,
+                      },
+                    ]
                     : []
                 );
               }}
@@ -435,7 +435,7 @@ const AdminManageUsers: React.FC = () => {
     setLoading(false);
   };
 
-  if(loading){
+  if (loading) {
     return <p className="text-center">Loading...</p>
   }
   const onFinish = (values: any) => {
@@ -454,7 +454,6 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
-    fetchUsers();
   };
 
   return (
@@ -467,7 +466,7 @@ const AdminManageUsers: React.FC = () => {
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
 
-      
+
 
         <div className="mt-3">
           {" "}
@@ -483,28 +482,28 @@ const AdminManageUsers: React.FC = () => {
           </Button>
         </div>
       </div>
-      
+
       <Space className="mb-5">
-          <Input.Search
-            placeholder="Search By Name"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            // onSearch={handleSearch}
-            style={{ width: 200 }}
-            enterButton={<SearchOutlined className="text-white" />}
-          />
-          
-          <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }} >
-            <Select.Option value="All">All Roles</Select.Option>
-            <Select.Option value="Admin">Admin</Select.Option>
-            <Select.Option value="Student">Student</Select.Option>
-            <Select.Option value="Instructor">Instructor</Select.Option>
-          </Select>
-          <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
-            <Select.Option value="true">Active</Select.Option>
-            <Select.Option value="false">Inactive</Select.Option>
-          </Select>
-        </Space>
+        <Input.Search
+          placeholder="Search By Name"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          // onSearch={handleSearch}
+          style={{ width: 200 }}
+          enterButton={<SearchOutlined className="text-white" />}
+        />
+
+        <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }} >
+          <Select.Option value="All">All Roles</Select.Option>
+          <Select.Option value="Admin">Admin</Select.Option>
+          <Select.Option value="Student">Student</Select.Option>
+          <Select.Option value="Instructor">Instructor</Select.Option>
+        </Select>
+        <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
+          <Select.Option value="true">Active</Select.Option>
+          <Select.Option value="false">Inactive</Select.Option>
+        </Select>
+      </Space>
       <Spin spinning={loading}>
         <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
       </Spin>
@@ -584,7 +583,6 @@ const AdminManageUsers: React.FC = () => {
           preview={{
             visible: previewOpen,
             onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
           }}
           src={previewImage}
         />
