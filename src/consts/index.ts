@@ -110,6 +110,18 @@ export const getColor = (status: string) => {
       return 'orange'
   }
 };
+
+export const getColorLessonType = (type: string) => {
+  switch (type) {
+    case "video":
+      return 'red';
+    case 'text':
+      return 'blue'
+    case 'image':
+      return 'yellow'
+  }
+};
+
 /* PATHS */
 export const paths = {
   /* GUEST PATHS */

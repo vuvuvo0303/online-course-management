@@ -1,12 +1,12 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, Modal, Select, Spin, Table, TableProps, } from "antd";
+import { Breadcrumb, Button, Input, Modal, Select, Spin, Table, TableProps, Tag, } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Course, Lecture, Session } from "../../../../../models";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../../hooks/useDebounce.ts";
-import {API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS} from "../../../../../consts";
+import {API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS, getColorLessonType} from "../../../../../consts";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
@@ -196,6 +196,12 @@ const LectureOfCourse: React.FC = () => {
 
         },
         {
+            title: 'Session Name',
+            dataIndex: 'session_name',
+            key: 'session_name',
+
+        },
+        {
             title: 'Video Url',
             dataIndex: 'video_url',
             key: 'video_url',
@@ -210,6 +216,18 @@ const LectureOfCourse: React.FC = () => {
             dataIndex: 'image_url',
             key: 'image_url',
 
+        },
+        {
+            title: 'Lesson type',
+            dataIndex: 'lesson_type',
+            key: 'lesson_type',
+            render: (lesson_type)=>(
+                <>
+                <Tag color={getColorLessonType(lesson_type)}>
+                    {lesson_type}
+                </Tag>
+                </>
+            )
         },
         {
             title: 'Created At ',
@@ -296,7 +314,7 @@ const LectureOfCourse: React.FC = () => {
                                     </Breadcrumb.Item>
                                     <Breadcrumb.Item>Manage Lesson</Breadcrumb.Item>
                                 </Breadcrumb>
-                                <h1 className="text-center m-10">Manage Lectures</h1>
+                                <h1 className="text-center m-10">Manage Lessons</h1>
                             </>
                         ) : (
                             <>

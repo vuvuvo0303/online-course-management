@@ -4,8 +4,37 @@ import { Link } from "react-router-dom";
 import TopSelling from "./top3selling";
 import TopNews from "./topnew";
 import ProfileOverview from "./profile-overview";
+import axiosInstance from "../../../services/axiosInstance";
+import { useEffect, useState } from "react";
 
 const InstructorDashboard: React.FC = () => {
+  const [totalCourse, setTotalCourse] = useState<number>(0);
+   //fetch courses
+   useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await axiosInstance.post(`/api/course/search`, {
+          "searchCondition": {
+            "keyword": "",
+            "category": "",
+            "status": "",
+            "is_deleted": false
+          },
+          "pageInfo": {
+            "pageNum": 1,
+            "pageSize": 100
+          }
+        });
+        if (res.data.pageData) {
+          console.log("check res: ", res);
+          setTotalCourse(res.data.pageInfo.totalItems);
+        }
+      } catch (error) {
+        console.log("Error: ", error);
+      } 
+    };
+    fetchCourses();
+  }, [])
   return (
     <div>
       <Breadcrumb
@@ -37,7 +66,7 @@ const InstructorDashboard: React.FC = () => {
               <div className="flex justify-between items-center px-5">
                 {" "}
                 <div className="flex justify-center gap-2">
-                  <h1>50</h1>
+                  <h1>{totalCourse}</h1>
                   <PlaySquareOutlined style={{ fontSize: "20px", color: "red" }} />
                 </div>
                 <img src="https://cdn-icons-png.freepik.com/512/4762/4762311.png" width={50} />

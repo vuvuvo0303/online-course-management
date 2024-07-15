@@ -45,10 +45,6 @@ const Dashboard: React.FC = () => {
   const user: User = userString ? JSON.parse(userString) : null;
   const userRole = user?.role;
   useEffect(() => {
-
-
-    console.log(role, fullName);
-
     if (userRole && user) {
       setRole(userRole);
       setFullName(user.name);
@@ -65,6 +61,8 @@ const Dashboard: React.FC = () => {
       }
     }
   }, [fullName, navigate, role, user, userRole]);
+
+ 
 
   const handleLogout = () => {
     localStorage.removeItem("user");

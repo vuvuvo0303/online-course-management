@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Button, Empty, Form, Input, Modal, Select, Table, TableProps, Tag } from "antd";
 import { Category, Course, Log } from "../../../models";
@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import TextArea from "antd/es/input/TextArea";
 import useDebounce from "../../../hooks/useDebounce";
-
+import { format } from 'date-fns';
 const InstructorManageCourses: React.FC = () => {
 
   const [courses, setCourses] = useState<Course[]>([]);
@@ -130,7 +130,6 @@ const InstructorManageCourses: React.FC = () => {
       setCourses(courses.filter(course => course._id != courseId))
     } catch (error) {
       console.log("Error occurred: ", error);
-      toast.error("Change Status Failed!")
     }
     setModalText('The modal will be closed after two seconds');
     setConfirmLoading(true);
@@ -262,7 +261,7 @@ const InstructorManageCourses: React.FC = () => {
   const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setComment(e.target.value);
   };
-  
+
   //search course by course name
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
@@ -307,14 +306,17 @@ const InstructorManageCourses: React.FC = () => {
       dataIndex: 'created_at',
       key: 'created_at',
       defaultSortOrder: 'descend',
-      render: (date: string) => new Date(date).toLocaleDateString(),
+      render: (date: string) => {
+        return format(new Date(date), 'dd/MM/yy');
+      },
     },
     {
       title: 'Updated At ',
       dataIndex: 'updated_at',
       key: 'updatedDate',
-      defaultSortOrder: 'descend',
-      render: (date: string) => new Date(date).toLocaleDateString(),
+      render: (date: string) => {
+        return format(new Date(date), 'dd/MM/yy');
+      },
     },
     {
       title: 'Action',
@@ -323,11 +325,91 @@ const InstructorManageCourses: React.FC = () => {
       render: (_id: string, record: Course) => (
         <>
           {/* <Link to={`/instructor/manage-courses/${_id}`}><Button type="primary">Detail</Button></Link> */}
-          <Link to={`/instructor/manage-courses/${_id}/manage-sessions`}><EyeOutlined className="text-purple-500 m-2" /></Link>
+          {/* <Link to={`/instructor/manage-courses/${_id}/manage-sessions`}><EyeOutlined className="text-purple-500 m-2" /></Link> */}
           <Link to={`/instructor/manage-courses/update-course/${_id}`}><EditOutlined className="mt-2 text-blue-500" /></Link>
           <DeleteOutlined onClick={() => showModal(_id, record)} className="text-red-500 m-2" />
         </>
       )
+    },
+    {
+      title: 'Session',
+      dataIndex: 'session_count',
+      key: 'session_count',
+      render: (session_count: number, record: Course) => (
+        <>
+          <Link className="text-blue-700" to={`/instructor/manage-courses/${record._id}/manage-sessions`}>{session_count}</Link>
+        </>
+      )
+    },
+    {
+      title: 'Lesson',
+      dataIndex: 'lesson_count',
+      key: 'lesson_count',
+      render: (lesson_count: number) => (
+        <>
+          {lesson_count}
+        </>
+      )
+    },
+  ];
+
+  const columnsLogs: TableProps["columns"] = [
+    {
+      title: 'Name',
+      dataIndex: 'course_name',
+      key: 'course_name',
+      width: 200,
+    },
+    {
+      title: 'Old Status',
+      dataIndex: 'old_status',
+      key: 'old_status',
+      render: (old_status: string) => (
+        <>
+          <Tag color={getColor(old_status)}>
+            {old_status === "waiting_approve" ? "waiting approve"
+              : old_status
+            }
+          </Tag>
+        </>
+      )
+    },
+    {
+      title: 'New Status',
+      dataIndex: 'new_status',
+      key: 'new_status',
+      render: (new_status: string) => (
+        <>
+          <Tag color={getColor(new_status)}>
+            {new_status === "waiting_approve" ? "waiting approve"
+              : new_status
+            }
+          </Tag>
+        </>
+      )
+    },
+    {
+      title: 'Comment',
+      dataIndex: 'comment',
+      key: 'comment',
+      render: (comment: string) => (
+        <>
+          <div className="truncate">
+            {comment === "" ? <Tag color="red">
+              No comment
+            </Tag> : comment}
+          </div>
+        </>
+      )
+    },
+    {
+      title: 'Created At ',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      defaultSortOrder: 'descend',
+      render: (date: string) => {
+        return format(new Date(date), 'dd/MM/yy');
+      },
     }
   ];
 
@@ -399,17 +481,7 @@ const InstructorManageCourses: React.FC = () => {
                   logs && logs.length > 0
                     ?
                     (
-                      logs.map((log, index) => (
-                        <>
-                          <div><span className="text-red-500">time: </span> {index + 1}</div>
-                          <div><span className="text-yellow-500">Course name: </span> {log.course_name}</div>
-                          <div><span className="text-blue-500">Old status: </span> {log.old_status}</div>
-                          <div><span className="text-blue-500">New status: </span>{log.new_status}</div>
-                          <div><span className="text-blue-500">Comment: </span> {log.comment}</div>
-                          <div><span className="text-blue-500">Create At: </span>{new Date(log.created_at).toLocaleDateString()}</div>
-                          <div className="border-t-2 my-5"></div>
-                        </>
-                      ))
+                      <Table columns={columnsLogs} dataSource={logs} />
                     )
                     :
                     (
