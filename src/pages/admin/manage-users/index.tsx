@@ -241,6 +241,12 @@ const AdminManageUsers: React.FC = () => {
   const columns: TableColumnsType<User> = useMemo(
     () => [
       {
+        title: "Avatar",
+        dataIndex: "avatar",
+        key: "avatar",
+        render: (avatar: string) => <Image className="rounded-full" src={avatar} width={50} />,
+      },
+      {
         title: "Name",
         dataIndex: "name",
         key: "name",
@@ -288,12 +294,7 @@ const AdminManageUsers: React.FC = () => {
         render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
         width: "10%",
       },
-      {
-        title: "Image",
-        dataIndex: "avatar",
-        key: "avatar",
-        render: (avatar: string) => <Image src={avatar} width={50} />,
-      },
+
       {
         title: "Status",
         key: "status",
