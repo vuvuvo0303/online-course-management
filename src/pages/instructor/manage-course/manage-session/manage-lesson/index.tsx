@@ -2,11 +2,11 @@ import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Input, Modal, Select, Spin, Table, TableProps, Tag, } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Course, Lecture, Session } from "../../../../../models";
+import { Course, Lecture, Session } from "../../../../../models/index.ts";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../../hooks/useDebounce.ts";
-import {API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS, getColorLessonType} from "../../../../../consts";
+import {API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS, getColorLessonType} from "../../../../../consts/index.ts";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lecture[]>([]);
@@ -365,12 +365,12 @@ const LectureOfCourse: React.FC = () => {
                             {
                                 courseId && sessionId ? (
                                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/create-lecture`}>
-                                        <Button className="bg-yellow-500 my-10 float-right">Add New</Button>
+                                        <Button className="bg-blue-500 my-10 float-right">Add New</Button>
                                     </Link>
                                 ) :
                                     (
-                                        <Link to={`/instructor/manage-all-lectures/create-lecture`}>
-                                            <Button className="bg-yellow-500 my-10 float-right">Add New</Button>
+                                        <Link to={`/instructor/manage-all-lessons/create-lesson`}>
+                                            <Button className="bg-blue-500 my-10 float-right">Add New</Button>
                                         </Link>
                                     )
                             }

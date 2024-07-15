@@ -2,7 +2,7 @@ import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined } from "@ant
 import { useEffect, useState } from "react";
 import { Breadcrumb, Button, Empty, Form, Input, Modal, Select, Table, TableProps, Tag } from "antd";
 import { Category, Course, Log } from "../../../models";
-import { API_COURSE_LOGS, API_DELETE_COURSE, API_GET_CATEGORIES, API_GET_COURSES, getColor } from "../../../consts";
+import { API_COURSE_LOGS, API_COURSE_STATUS, API_DELETE_COURSE, API_GET_CATEGORIES, API_GET_COURSES, getColor } from "../../../consts";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";

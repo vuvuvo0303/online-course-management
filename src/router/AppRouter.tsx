@@ -43,14 +43,13 @@ const InstructorManageStudents = lazy(() => import("../pages/instructor/manage-s
 const InstructorManageBlogs = lazy(() => import("../pages/instructor/manage-blogs/index"));
 const InstructorResources = lazy(() => import("../pages/instructor/resources"));
 const InstructorTools = lazy(() => import("../pages/instructor/tools"));
-const LectureOfCourse = lazy(() => import("../pages/instructor/manage-course/manage-session/lectures-of-course"));
-const CreateLecture = lazy(() => import("../pages/instructor/manage-course/manage-session/lectures-of-course/create-update-page"));
-const UpdateLecture = lazy(() => import("../pages/instructor/manage-course/manage-session/lectures-of-course/create-update-page"));
+const LectureOfCourse = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
+const CreateUpdateLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson"));
+const UpdateLecture = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson"));
 const ManageSession = lazy(() => import("../pages/instructor/manage-course/manage-session/"));
 const InstructorCreateCourse = lazy(() => import ("../pages/instructor/manage-course/create-update-course"));
 const CreateUpdateSession = lazy(() => import("../pages/instructor/manage-course/manage-session/create-update-session"));
-const ManageAllLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/lectures-of-course"));
-const CreateUpdateLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/lectures-of-course/create-update-page"));
+const ManageAllLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
 // const InstructorManageCoursesDetail = lazy(() => import("../pages/instructor/manage-course/course-detail"));
 const ManageAllSession = lazy(() => import("../pages/manage-all-session"));
 
@@ -133,11 +132,11 @@ const AppRouter: React.FC = () => {
           />
           <Route
             path={paths.INSTRUCTOR_CREATE_LECTURE}
-            element={canAccess([roles.INSTRUCTOR]) ? <CreateLecture /> : <Navigate to={paths.HOME} />}
+            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateLesson /> : <Navigate to={paths.HOME} />}
           />
           <Route
             path={paths.INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES}
-            element={canAccess([roles.INSTRUCTOR]) ? <CreateLecture /> : <Navigate to={paths.HOME} />}
+            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateLesson /> : <Navigate to={paths.HOME} />}
           />
            <Route
             path={paths.INSTRUCTOR_MANAGE_ALL_LECTURES}

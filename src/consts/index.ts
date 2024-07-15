@@ -35,6 +35,7 @@ export const API_GET_CATEGORY = "/api/category";
 export const API_UPDATE_CATEGORY = "/api/category";
 export const API_DELETE_CATEGORY = "/api/category";
 //Course
+
 //export const API_CREATE_COURSE: "/api/course";
 export const API_GET_COURSES = "/api/course/search";
 export const API_GET_COURSE = "/api/course";
@@ -179,7 +180,7 @@ export const paths = {
   INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_ALL_LECTURES: "manage-all-lessons",
-  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/create-lecture",
+  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lessons/create-lesson",
   INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
