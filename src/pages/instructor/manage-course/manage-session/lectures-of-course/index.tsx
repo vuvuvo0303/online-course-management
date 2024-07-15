@@ -20,7 +20,7 @@ const LectureOfCourse: React.FC = () => {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [courses, setCourses] = useState<Course[]>([]);
     const [course_id, setCourse_id] = useState<string>('');
-    
+
     const debouncedSearchTerm = useDebounce(keyword, 300);
 
     const showModal = (lectureId: string, name: string) => {
@@ -293,7 +293,7 @@ const LectureOfCourse: React.FC = () => {
                                     <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>
                                         Manage Sessions
                                     </Breadcrumb.Item>
-                                    <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
+                                    <Breadcrumb.Item>Manage Lesson</Breadcrumb.Item>
                                 </Breadcrumb>
                                 <h1 className="text-center m-10">Manage Lectures</h1>
                             </>
@@ -305,7 +305,7 @@ const LectureOfCourse: React.FC = () => {
                                     </Breadcrumb.Item>
                                     <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
                                 </Breadcrumb>
-                                <h1 className="text-center m-10">Manage All Lectures</h1>
+                                <h1 className="text-center m-10">Manage All Lessons</h1>
                             </>
                         )
                     }

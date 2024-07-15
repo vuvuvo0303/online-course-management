@@ -142,9 +142,9 @@ const InstructorCreateCourse = () => {
                 toast.success("Create New Course Successfully");
                 navigate(`/instructor/manage-courses`);
             }
-        } catch (error: any) {
-            console.log("Error Occurred: ", error.response.data.errors[0].message);
-            toast.error(error.response.data.errors[0].message);
+        } catch (error) {
+            console.log("Error Occurred: ", error);
+            // toast.error(error.response.data.errors[0].message);
         }
     };
 

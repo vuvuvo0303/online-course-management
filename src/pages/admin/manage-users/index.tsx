@@ -27,7 +27,7 @@ import {
 
 import { format } from "date-fns";
 import { toast } from "react-toastify";
-
+import useDebounce from "../../../hooks/useDebounce";
 import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 
 import { User } from "../../../models/User.ts";
@@ -75,6 +75,7 @@ const AdminManageUsers: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const debouncedSearchTerm = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -104,10 +105,9 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText,debouncedSearchTerm]);
 
   const fetchUsers = useCallback(async () => {
-    setLoading(true);
     try {
       const response: AxiosResponse<{
         pageData: User[];
@@ -117,7 +117,7 @@ const AdminManageUsers: React.FC = () => {
           role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
           status: selectedStatus === "true" ? true : selectedStatus === "false" ? false : undefined,
           is_delete: false,
-          keyword: searchText,
+          keyword: debouncedSearchTerm,
         },
         pageInfo: {
           pageNum: pagination.current,
@@ -140,7 +140,7 @@ const AdminManageUsers: React.FC = () => {
       // Xử lý lỗi
     }
     setLoading(false);
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
+  }, [pagination.current,debouncedSearchTerm, pagination.pageSize, selectedRole, selectedStatus, searchText]);
 
   const handleDelete = useCallback(
     async (_id: string, email: string) => {

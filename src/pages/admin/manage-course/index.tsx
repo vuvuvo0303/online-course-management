@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import {
   Breadcrumb,
   Button,
+  Form,
   Image,
   Input,
-  MenuProps,
   Modal,
   Pagination,
   Select,
@@ -22,36 +22,41 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Course } from "../../../models";
 import { toast } from "react-toastify";
-
+import TextArea from "antd/es/input/TextArea";
+import useDebounce from "../../../hooks/useDebounce";
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [changeStatus, setChangeStatus] = useState<string>("");
   const [courses, setCourses] = useState<Course[]>([]);
   const [courseId, setCourseId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
   const [searchText, setSearchText] = useState<string>("");
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>("All Categories");
   const [selectedStatus, setSelectedStatus] = useState<string>("All Statuses");
-
+  const [comment, setComment] = useState<string>('');
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("");
+
   const [status, setStatus] = useState<string>("new");
+  const debouncedSearchTerm = useDebounce(searchText, 500); 
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
 
+  const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setComment(e.target.value);
+  };
+
   const fetchCourses = useCallback(async () => {
-    setLoading(true);
     try {
       const params = {
         searchCondition: {
-          keyword: searchText,
+          keyword: debouncedSearchTerm,
           category_id: categoryId,
           status: status,
           is_deleted: false,
@@ -77,11 +82,11 @@ const AdminManageCourses: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [categoryId, pagination.current, pagination.pageSize, searchText, status]);
+  }, [categoryId, pagination.current, pagination.pageSize, searchText, status, debouncedSearchTerm]);
 
   useEffect(() => {
     fetchCourses();
-  }, [categoryId, pagination.current, pagination.pageSize, status, searchText]);
+  }, [categoryId, pagination.current, pagination.pageSize, status, searchText, debouncedSearchTerm]);
 
   const handleSearch = () => {
     setPagination((prev) => ({
@@ -112,17 +117,19 @@ const AdminManageCourses: React.FC = () => {
   };
 
   const handleOkChangeStatus = async () => {
+    if (!comment) {
+      return toast.error("Please enter comment")
+    }
     try {
       await axiosInstance.put(API_COURSE_STATUS, {
         course_id: courseId,
         new_status: changeStatus,
-        comment: "This course not match for approve. Please review session and lesson in this course!",
+        comment: comment,
       });
       setCourses(courses.filter((course) => course._id !== courseId));
     } catch (error) {
-      toast.error("Change Status Failed!");
+      console.log("Error occurred: ", error);
     }
-    setModalText("The modal will be closed after two seconds");
     setConfirmLoading(true);
     setTimeout(() => {
       setOpenChangeStatus(false);
@@ -157,7 +164,7 @@ const AdminManageCourses: React.FC = () => {
       render: (status: string, record: Course) => (
         <>
           <div className="flex justify-between">
-            <Tag color={getColor(status)}>{status}</Tag>
+            <Tag color={getColor(status)}>{status === "waiting_approve" ? "waiting approve" : status}</Tag>
             {status === "waiting_approve" ? (
               <EditOutlined onClick={() => showModalChangeStatus(record._id)} className="text-blue-500" />
             ) : (
@@ -195,10 +202,6 @@ const AdminManageCourses: React.FC = () => {
 
   if (loading) {
     return <p className="flex justify-center items-center">Loading ...</p>;
-  }
-
-  if (error) {
-    return <p className="flex justify-center items-center text-red-500">{error}</p>;
   }
 
   const showModal = (record: Course) => {
@@ -273,6 +276,13 @@ const AdminManageCourses: React.FC = () => {
             ]}
           />
         </div>
+        <Form.Item
+              label="Comment"
+              name="comment"
+              rules={[{ required: true, message: 'Please enter comment!' }]}
+            >
+              <TextArea value={comment} onChange={handleSaveComment} />
+            </Form.Item>
       </Modal>
 
       <Modal
@@ -367,6 +377,7 @@ const AdminManageCourses: React.FC = () => {
             </Select.Option>
           ))}
         </Select>
+     
         <Select
           showSearch
           placeholder="Select Status"

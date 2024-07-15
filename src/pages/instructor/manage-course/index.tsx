@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Button, Empty, Form, Input, Modal, Select, Table, TableProps, Tag } from "antd";
 import { Category, Course, Log } from "../../../models";
@@ -42,9 +42,9 @@ const InstructorManageCourses: React.FC = () => {
   const [logLoading, setLogLoading] = useState<boolean>(true);
   const debouncedSearchTerm = useDebounce(keyword, 500); // Use debounce hook
   //show delete modal
-  const showModal = (_id: string) => {
+  const showModal = (_id: string, record: Course) => {
     setOpen(true);
-    setModalText("Do you want to delete course with id: " + _id);
+    setModalText(`Do you want to delete course with name "${record.name}"`);
     //set course id that instructor want to delete
     setCourseId(_id);
   };
@@ -114,6 +114,9 @@ const InstructorManageCourses: React.FC = () => {
   //click ok on modal to change status of course
   const handleOkChangeStatus = async () => {
     console.log("check comment: ", comment)
+    if (!comment) {
+      return toast.error("Please enter comment")
+    }
     try {
       await axiosInstance.put("/api/course/change-status",
         {
@@ -217,335 +220,341 @@ const InstructorManageCourses: React.FC = () => {
   }, [status, cateId, debouncedSearchTerm])
 
 
-if (loading) {
-  return <p className="flex justify-center items-center">Loading ...</p>
-}
-//setStatus for filter log by status
-const handleAllLog = () => {
-  setOldStatus("");
-  setNewStatus("");
-};
-//setOldStatus for filter log by status
-const handleChangeOldStatus = (value: string) => {
-  setNewStatus("")
-  setOldStatus(value);
-};
-//setNewStatus for filter log by status
-const handleChangeNewStatus = (value: string) => {
-  console.log("check new: ", value)
-  setOldStatus("");
-  setNewStatus(value);
-};
-//setStatus for filter course by status
-const handleChange = (value: string) => {
-  setStatus(value);
-
-};
-// set status for chang status
-const handleChangeStatus = async (value: string) => {
-  console.log("check handleChangeStatus: ", value);
-  setChangeStatus(value);
-};
-
-// setCateId
-const handleCateChange = (value: string) => {
-  setCateId(value + "");
-};
-//search course by course name
-const handleSearchLogStatus = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setKeywordLogStatus(e.target.value);
-};
-
-const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setComment(e.target.value);
-};
-//search course by course name
-const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setKeyword(e.target.value);
-
-};
-const columnsCourses: TableProps["columns"] = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    width: 300,
-    render: (name: string, record: Course) => (
-      <>
-        <div onClick={() => showModalLogStatus(record._id)} className="text-blue-500">{name}</div>
-      </>
-    )
-  },
-  {
-    title: 'Category',
-    dataIndex: 'category_name',
-    key: 'category_name',
-
-  },
-  {
-    title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
-    render: (status: string, record: Course) => (
-      <>
-        <div className="flex justify-between">
-          <Tag color={getColor(status)}
-          >
-            {status}
-          </Tag>
-          {(status !== "waiting_approve" && status !== "reject") &&
-            <EditOutlined onClick={() => { showModalChangeStatus(status, record._id, record.name); }} className="text-blue-500" />}
-        </div>
-      </>
-    )
-  },
-  {
-    title: 'Created At ',
-    dataIndex: 'created_at',
-    key: 'created_at',
-    defaultSortOrder: 'descend',
-    render: (date: string) => new Date(date).toLocaleDateString(),
-  },
-  {
-    title: 'Updated At ',
-    dataIndex: 'updated_at',
-    key: 'updatedDate',
-    defaultSortOrder: 'descend',
-    render: (date: string) => new Date(date).toLocaleDateString(),
-  },
-  {
-    title: 'Action',
-    dataIndex: '_id',
-    key: '_id',
-    render: (_id: string) => (
-      <>
-        {/* <Link to={`/instructor/manage-courses/${_id}`}><Button type="primary">Detail</Button></Link> */}
-        <Link to={`/instructor/manage-courses/${_id}/manage-sessions`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-        <Link to={`/instructor/manage-courses/update-course/${_id}`}><EditOutlined className="mt-2 text-blue-500" /></Link>
-        <DeleteOutlined onClick={() => showModal(_id)} className="text-red-500 m-2" />
-      </>
-    )
+  if (loading) {
+    return <p className="flex justify-center items-center">Loading ...</p>
   }
-];
+  //setStatus for filter log by status
+  const handleAllLog = () => {
+    setOldStatus("");
+    setNewStatus("");
+  };
+  //setOldStatus for filter log by status
+  const handleChangeOldStatus = (value: string) => {
+    setNewStatus("")
+    setOldStatus(value);
+  };
+  //setNewStatus for filter log by status
+  const handleChangeNewStatus = (value: string) => {
+    console.log("check new: ", value)
+    setOldStatus("");
+    setNewStatus(value);
+  };
+  //setStatus for filter course by status
+  const handleChange = (value: string) => {
+    setStatus(value);
 
-return (
-  <div>
+  };
+  // set status for chang status
+  const handleChangeStatus = async (value: string) => {
+    console.log("check handleChangeStatus: ", value);
+    setChangeStatus(value);
+  };
 
-    {/* modal log status */}
-    <Modal
-      width={1200}
-      title="Log Status"
-      open={openLogStatus}
-      onOk={handleOkLogStatus}
-      confirmLoading={confirmLoading}
-      onCancel={handleCancel}
-    >
-      <div>
-        {/* Filter all log  */}
+  // setCateId
+  const handleCateChange = (value: string) => {
+    setCateId(value + "");
+  };
+  //search course by course name
+  const handleSearchLogStatus = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeywordLogStatus(e.target.value);
+  };
 
-        <Button onClick={handleAllLog} type="primary">All log</Button>
-        <Input
-          placeholder="Search"
-          value={keywordLogStatus}
-          onChange={handleSearchLogStatus}
-          className="m-5"
-          style={{ width: 200 }}
-        />
-        {/* Filter log by old status */}
-        <Select
-          defaultValue="Filter by old status"
-          style={{ width: 200 }}
-          className="m-5"
-          onChange={handleChangeOldStatus}
-          options={[
-            {
-              options: [
-                { label: <span>new</span>, value: 'new' },
-                { label: <span>waiting_approve</span>, value: 'waiting_approve' },
-                { label: <span>approve</span>, value: 'approve' },
-                { label: <span>reject</span>, value: 'reject' },
-                { label: <span>active</span>, value: 'active' },
-                { label: <span>inactive</span>, value: 'inactive' },
-              ],
-            },
-          ]}
-        />
-        {/* Filter log by new status */}
-        <Select
-          defaultValue="Filter by new status"
-          style={{ width: 200 }}
-          className="m-5"
-          onChange={handleChangeNewStatus}
-          options={[
-            {
-              options: [
-                { label: <span>new</span>, value: 'new' },
-                { label: <span>waiting_approve</span>, value: 'waiting_approve' },
-                { label: <span>approve</span>, value: 'approve' },
-                { label: <span>reject</span>, value: 'reject' },
-                { label: <span>active</span>, value: 'active' },
-                { label: <span>inactive</span>, value: 'inactive' },
-              ],
-            },
-          ]}
-        />
+  const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setComment(e.target.value);
+  };
+  
+  //search course by course name
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+  };
+  const columnsCourses: TableProps["columns"] = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      width: 300,
+      render: (name: string, record: Course) => (
+        <>
+          <div onClick={() => showModalLogStatus(record._id)} className="text-blue-500">{name}</div>
+        </>
+      )
+    },
+    {
+      title: 'Category',
+      dataIndex: 'category_name',
+      key: 'category_name',
+
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status: string, record: Course) => (
+        <>
+          <div className="flex justify-between">
+            <Tag color={getColor(status)}
+            >
+              {status}
+            </Tag>
+            {(status !== "waiting_approve" && status !== "reject") &&
+              <EditOutlined onClick={() => { showModalChangeStatus(status, record._id, record.name); }} className="text-blue-500" />}
+          </div>
+        </>
+      )
+    },
+    {
+      title: 'Created At ',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      defaultSortOrder: 'descend',
+      render: (date: string) => new Date(date).toLocaleDateString(),
+    },
+    {
+      title: 'Updated At ',
+      dataIndex: 'updated_at',
+      key: 'updatedDate',
+      defaultSortOrder: 'descend',
+      render: (date: string) => new Date(date).toLocaleDateString(),
+    },
+    {
+      title: 'Action',
+      dataIndex: '_id',
+      key: '_id',
+      render: (_id: string, record: Course) => (
+        <>
+          {/* <Link to={`/instructor/manage-courses/${_id}`}><Button type="primary">Detail</Button></Link> */}
+          <Link to={`/instructor/manage-courses/${_id}/manage-sessions`}><EyeOutlined className="text-purple-500 m-2" /></Link>
+          <Link to={`/instructor/manage-courses/update-course/${_id}`}><EditOutlined className="mt-2 text-blue-500" /></Link>
+          <DeleteOutlined onClick={() => showModal(_id, record)} className="text-red-500 m-2" />
+        </>
+      )
+    }
+  ];
+
+  return (
+    <div>
+
+      {/* modal log status */}
+      <Modal
+        width={1200}
+        title="Log Status"
+        open={openLogStatus}
+        onOk={handleOkLogStatus}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
         <div>
-          {
-            logLoading === false ?
-              (
-                logs && logs.length > 0
-                  ?
-                  (
-                    logs.map((log, index) => (
-                      <>
-                        <div><span className="text-red-500">time: </span> {index + 1}</div>
-                        <div><span className="text-yellow-500">Course name: </span> {log.course_name}</div>
-                        <div><span className="text-blue-500">Old status: </span> {log.old_status}</div>
-                        <div><span className="text-blue-500">New status: </span>{log.new_status}</div>
-                        <div><span className="text-blue-500">Comment: </span> {log.comment}</div>
-                        <div><span className="text-blue-500">Create At: </span>{new Date(log.created_at).toLocaleDateString()}</div>
-                        <div className="border-t-2 my-5"></div>
-                      </>
-                    ))
-                  )
-                  :
-                  (
-                    <div>
-                      <Empty />
-                    </div>
-                  )
-              )
-              :
-              (
-                <div className="text-center">
-                  Loading ...
-                </div>
-              )
-          }
+          {/* Filter all log  */}
+
+          <Button onClick={handleAllLog} type="primary">All log</Button>
+          <Input
+            placeholder="Search"
+            value={keywordLogStatus}
+            onChange={handleSearchLogStatus}
+            className="m-5"
+            style={{ width: 200 }}
+          />
+          {/* Filter log by old status */}
+          <Select
+            defaultValue="Filter by old status"
+            style={{ width: 200 }}
+            className="m-5"
+            onChange={handleChangeOldStatus}
+            options={[
+              {
+                options: [
+                  { label: <span>new</span>, value: 'new' },
+                  { label: <span>waiting approve</span>, value: 'waiting_approve' },
+                  { label: <span>approve</span>, value: 'approve' },
+                  { label: <span>reject</span>, value: 'reject' },
+                  { label: <span>active</span>, value: 'active' },
+                  { label: <span>inactive</span>, value: 'inactive' },
+                ],
+              },
+            ]}
+          />
+          {/* Filter log by new status */}
+          <Select
+            defaultValue="Filter by new status"
+            style={{ width: 200 }}
+            className="m-5"
+            onChange={handleChangeNewStatus}
+            options={[
+              {
+                options: [
+                  { label: <span>new</span>, value: 'new' },
+                  { label: <span>waiting_approve</span>, value: 'waiting_approve' },
+                  { label: <span>approve</span>, value: 'approve' },
+                  { label: <span>reject</span>, value: 'reject' },
+                  { label: <span>active</span>, value: 'active' },
+                  { label: <span>inactive</span>, value: 'inactive' },
+                ],
+              },
+            ]}
+          />
+          <div>
+            {
+              logLoading === false ?
+                (
+                  logs && logs.length > 0
+                    ?
+                    (
+                      logs.map((log, index) => (
+                        <>
+                          <div><span className="text-red-500">time: </span> {index + 1}</div>
+                          <div><span className="text-yellow-500">Course name: </span> {log.course_name}</div>
+                          <div><span className="text-blue-500">Old status: </span> {log.old_status}</div>
+                          <div><span className="text-blue-500">New status: </span>{log.new_status}</div>
+                          <div><span className="text-blue-500">Comment: </span> {log.comment}</div>
+                          <div><span className="text-blue-500">Create At: </span>{new Date(log.created_at).toLocaleDateString()}</div>
+                          <div className="border-t-2 my-5"></div>
+                        </>
+                      ))
+                    )
+                    :
+                    (
+                      <div>
+                        <Empty />
+                      </div>
+                    )
+                )
+                :
+                (
+                  <div className="text-center">
+                    Loading ...
+                  </div>
+                )
+            }
+
+          </div>
 
         </div>
 
-      </div>
+      </Modal>
 
-    </Modal>
-
-    {/* modal change status */}
-    <Modal
-      title="Change Status"
-      open={openChangeStatus}
-      onOk={handleOkChangeStatus}
-      confirmLoading={confirmLoading}
-      onCancel={handleCancel}
-    >
-      <div>
-        <p className="my-5">Course name: <span className="text-blue-500">{course_name}</span></p>
-        <p className="my-5">Current Status: <Tag color={getColor(statusDefaultChange)}>{statusDefaultChange}</Tag></p>
-      </div>
-      <Form>
-        <div className="text-center">
-          <Form.Item
-            label="Select Status"
-            name="new_status"
-          >
-            <Select
-              defaultValue={"choose status to change"}
-              style={{ width: 200 }}
-              className="my-5"
-              onChange={handleChangeStatus}
-              options={[
-                {
-                  options: [
-                    { label: <span>new</span>, value: 'new' },
-                    { label: <span>waiting_approve</span>, value: 'waiting_approve' },
+      {/* modal change status */}
+      <Modal
+        title="Change Status"
+        open={openChangeStatus}
+        onOk={handleOkChangeStatus}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <div>
+          <p className="my-5">Course name: <span className="text-blue-500">{course_name}</span></p>
+          <p className="my-5">Current Status: <Tag color={getColor(statusDefaultChange)}>{statusDefaultChange}</Tag></p>
+        </div>
+        <Form>
+          <div className="text-center">
+            <Form.Item
+              label="Select Status"
+              name="new_status"
+              rules={[{ required: true, message: 'Please select status to change!' }]}
+            >
+              <Select
+                defaultValue={"choose status to change"}
+                style={{ width: 200 }}
+                className="my-5"
+                onChange={handleChangeStatus}
+                options={
+                  (statusDefaultChange === "inactive" && [{ label: <span>active</span>, value: 'active' }]) ||
+                  (statusDefaultChange === "active" && [{ label: <span>inactive</span>, value: 'inactive' }]) ||
+                  (statusDefaultChange === "new" && [
+                    { label: <span>waiting approve</span>, value: 'waiting_approve' },
+                  ]) ||
+                  (statusDefaultChange === "approve" && [
                     { label: <span>active</span>, value: 'active' },
                     { label: <span>inactive</span>, value: 'inactive' },
-                  ],
-                },
-              ]}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Comment"
-            name="comment"
-          >
-            <TextArea value={comment} onChange={handleSaveComment} />
-          </Form.Item>
+                  ]) ||
+                  []
+                }
+              />
 
+            </Form.Item>
+            <Form.Item
+              label="Comment"
+              name="comment"
+              rules={[{ required: true, message: 'Please enter comment!' }]}
+            >
+              <TextArea value={comment} onChange={handleSaveComment} />
+            </Form.Item>
+
+          </div>
+        </Form>
+      </Modal>
+
+
+      {/* modal delete course */}
+      <Modal
+        title="Delete Course"
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <p>{modalText}</p>
+      </Modal>
+      <Breadcrumb
+        className="py-2"
+        items={[
+          {
+            href: "/",
+            title: <HomeOutlined />,
+          },
+          {
+            title: "Manage Course",
+          },
+        ]}
+      />
+      <h1 className="text-center">Manage Course</h1>
+
+      <div className="grid grid-cols-2">
+        <div className="grid xl:grid-cols-3 grid-cols-1 gap-10">
+          {/* filter course by status */}
+          <Select
+            defaultValue="new"
+            style={{ width: 200 }}
+            className="m-5"
+            onChange={handleChange}
+            options={[
+              {
+                options: [
+                  { label: <span>new</span>, value: 'new' },
+                  { label: <span>waiting approve</span>, value: 'waiting_approve' },
+                  { label: <span>approve</span>, value: 'approve' },
+                  { label: <span>reject</span>, value: 'reject' },
+                  { label: <span>active</span>, value: 'active' },
+                  { label: <span>inactive</span>, value: 'inactive' },
+                ],
+              },
+            ]}
+          />
+          <Select
+            defaultValue="java"
+            style={{ width: 200 }}
+            className="m-5"
+            onChange={handleCateChange}
+            options={categories.map(cate => ({
+              value: cate._id,
+              label: cate.name
+            }))}
+          />
+          <Input.Search
+            placeholder="Search"
+            value={keyword}
+            onChange={handleSearch}
+            className="m-5"
+            style={{ width: 200 }}
+            enterButton={<SearchOutlined className="text-white" />}
+          />
         </div>
-      </Form>
-    </Modal>
-
-
-    {/* modal delete course */}
-    <Modal
-      title="Delete Course"
-      open={open}
-      onOk={handleOk}
-      confirmLoading={confirmLoading}
-      onCancel={handleCancel}
-    >
-      <p>{modalText}</p>
-    </Modal>
-    <Breadcrumb
-      className="py-2"
-      items={[
-        {
-          href: "/",
-          title: <HomeOutlined />,
-        },
-        {
-          title: "Manage Course",
-        },
-      ]}
-    />
-    <h1 className="text-center">Manage Course</h1>
-
-    <div className="grid grid-cols-2">
-      <div className="grid xl:grid-cols-3 grid-cols-1 gap-10">
-        {/* filter course by status */}
-        <Select
-          defaultValue="new"
-          style={{ width: 200 }}
-          className="m-5"
-          onChange={handleChange}
-          options={[
-            {
-              options: [
-                { label: <span>new</span>, value: 'new' },
-                { label: <span>waiting_approve</span>, value: 'waiting_approve' },
-                { label: <span>approve</span>, value: 'approve' },
-                { label: <span>reject</span>, value: 'reject' },
-                { label: <span>active</span>, value: 'active' },
-                { label: <span>inactive</span>, value: 'inactive' },
-              ],
-            },
-          ]}
-        />
-        <Select
-          defaultValue="java"
-          style={{ width: 200 }}
-          className="m-5"
-          onChange={handleCateChange}
-          options={categories.map(cate => ({
-            value: cate._id,
-            label: cate.name
-          }))}
-        />
-        <Input
-          placeholder="Search"
-          value={keyword}
-          onChange={handleSearch}
-          className="m-5"
-          style={{ width: 200 }}
-        />
+        <div>
+          <Link to={"/instructor/manage-courses/create-course"}><Button type="primary" className="float-right m-5">Add New</Button></Link>
+        </div>
       </div>
-      <div>
-        <Link to={"/instructor/manage-courses/create-course"}><Button type="primary" className="float-right m-5">Add New</Button></Link>
-      </div>
+      <Table columns={columnsCourses} dataSource={courses} />
     </div>
-    <Table columns={columnsCourses} dataSource={courses} />
-  </div>
-);
+  );
 };
 
 export default InstructorManageCourses;

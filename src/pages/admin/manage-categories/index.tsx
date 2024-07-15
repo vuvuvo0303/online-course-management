@@ -33,14 +33,16 @@ import {
   paths,
 } from "../../../consts";
 import { vi } from "date-fns/locale";
-
+import useDebounce from "../../../hooks/useDebounce";
 const AdminManageCategories: React.FC = () => {
+   
   const [data, setData] = useState<Category[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [validateOnOpen, setValidateOnOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
+  const debouncedSearchTerm = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -49,7 +51,6 @@ const AdminManageCategories: React.FC = () => {
 
   const fetchCategories = useCallback(
     async (refresh = false) => {
-      setLoading(true);
       try {
         let response;
         if (refresh) {
@@ -58,7 +59,7 @@ const AdminManageCategories: React.FC = () => {
               role: "all",
               status: true,
               is_deleted: false,
-              keyword: searchText,
+              keyword: debouncedSearchTerm,
             },
             pageInfo: {
               pageNum: pagination.current,
@@ -71,7 +72,7 @@ const AdminManageCategories: React.FC = () => {
               role: "all",
               status: true,
               is_deleted: false,
-              keyword: searchText,
+              keyword: debouncedSearchTerm,
             },
             pageInfo: {
               pageNum: pagination.current,
@@ -95,7 +96,7 @@ const AdminManageCategories: React.FC = () => {
         setLoading(false);
       }
     },
-    [pagination.current, pagination.pageSize, searchText]
+    [pagination.current, pagination.pageSize, searchText, debouncedSearchTerm]
   );
 
   useEffect(() => {
