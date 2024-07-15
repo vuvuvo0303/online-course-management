@@ -10,11 +10,11 @@ import {
   Pagination,
   Popconfirm,
   Spin,
+  Select,
 } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
-  EyeOutlined,
   HomeOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
@@ -24,7 +24,6 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
-import { Link } from "react-router-dom";
 import {
   API_CREATE_CATEGORY,
   API_DELETE_CATEGORY,
@@ -35,7 +34,6 @@ import {
 import { vi } from "date-fns/locale";
 import useDebounce from "../../../hooks/useDebounce";
 const AdminManageCategories: React.FC = () => {
-   
   const [data, setData] = useState<Category[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -106,8 +104,8 @@ const AdminManageCategories: React.FC = () => {
   const handleOpenModal = useCallback(() => {
     setIsModalVisible(true);
     setValidateOnOpen(true);
-    fetchCategories(true);
-  }, [fetchCategories]);
+    // fetchCategories(true);
+  }, []);
 
   const handleDelete = useCallback(
     async (_id: string, name: string) => {
@@ -195,8 +193,8 @@ const AdminManageCategories: React.FC = () => {
   );
 
   const handleEditCategory = useCallback(
-    (category: Category) => {
-      console.log("Editing category:", category);
+    async (category: Category) => {
+      await fetchCategories();
 
       Modal.confirm({
         title: `Edit Category - ${category.name}`,
@@ -236,7 +234,19 @@ const AdminManageCategories: React.FC = () => {
               name="parent_category_id"
               rules={[{ required: false }]}
             >
-              <Input placeholder="Input parent category" />
+              <Select
+                placeholder="Select parent category"
+                allowClear
+                disabled={category._id === category.parent_category_id}
+              >
+                {data
+                  .filter((cat) => cat._id !== category._id)
+                  .map((cat) => (
+                    <Select.Option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </Select.Option>
+                  ))}
+              </Select>
             </Form.Item>
             <Form.Item
               label="Description"
@@ -254,7 +264,7 @@ const AdminManageCategories: React.FC = () => {
         onCancel: () => form.resetFields(),
       });
     },
-    [form, updateCategory]
+    [form, updateCategory, fetchCategories, data]
   );
 
   const addNewCategory = useCallback(
@@ -288,6 +298,8 @@ const AdminManageCategories: React.FC = () => {
           form.resetFields();
           fetchCategories();
           toast.success(`Category ${values.name} created successfully.`);
+          form.resetFields();
+          setIsModalVisible(false);
         }
       } catch (error) {
         //handle error add new category
@@ -340,9 +352,9 @@ const AdminManageCategories: React.FC = () => {
       key: "action",
       render: (_: unknown, record: Category) => (
         <div>
-          <Link to={`/admin/manage-categories/${record._id}`}>
+          {/* <Link to={`/admin/manage-categories/${record._id}`}>
             <EyeOutlined className="text-purple-500 mr-2" />
-          </Link>
+          </Link> */}
           <EditOutlined
             className="text-blue-500"
             style={{ fontSize: "16px", marginLeft: "8px", cursor: "pointer" }}
