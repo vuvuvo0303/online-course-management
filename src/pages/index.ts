@@ -25,6 +25,7 @@ export { default as VerifyToken } from "./verify-token";
 export { default as StudentPaymentHistory } from "./payment/studentPaymentHistory";
 export { default as Checkout } from "./checkout";
 export { default as Profile } from "./profile";
+export { default as EditProfile } from "./profile/editProfile";
 export { default as Cart } from "./cart";
 
 /* Instructor Page */

@@ -116,14 +116,14 @@ const Navbar: React.FC = () => {
   return (
     <nav className="flex navbar justify-between w-full md:flex-row">
       <div className="flex gap-10 w-full">
-        <div className='mt-1'>
+        <div className='mt-3'>
           {!isLoginPage && !isRegisterPage && !isForgotPassword && <Drawer />}
         </div>
         <Link to="/">
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
-            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} h-[2rem] w-[5rem] mt-1 ml-[50px]`}
+            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} h-[2rem] w-[5rem] mt-3 ml-[50px]`}
           />
         </Link>
       </div>
@@ -187,7 +187,7 @@ const Navbar: React.FC = () => {
                   <Space>
                     <Avatar
                       src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
-                      className="hover:cursor-pointer"
+                      className="hover:cursor-pointer hidden md:block mt-3"
                       icon={<UserOutlined />}
                     />
                   </Space>

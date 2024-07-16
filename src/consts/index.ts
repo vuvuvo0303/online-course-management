@@ -64,9 +64,9 @@ export const API_DELETE_REVIEW = "/api/review";
 
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
-      return "red"
+    return "red"
   } else {
-      return "blue"
+    return "blue"
   }
 }
 
@@ -111,6 +111,7 @@ export const paths = {
 
   /* STUDENT PATHS */
   STUDENT_PROFILE: "/profile",
+  STUDENT_EDIT_PROFILE: "/edit-profile",
   STUDENT_PAYMENT_HISTORY: "/payment-history",
   STUDENT_ENROLLMENT: "/enrollment",
   STUDENT_CHECKOUT: "/checkout",
