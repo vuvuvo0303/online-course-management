@@ -46,7 +46,7 @@ const EditProfile: React.FC = () => {
             setIsModalVisible(false);
             setForceUpdateFlag(!forceUpdateFlag);
         } catch (error) {
-            console.error("Validation failed:", error);
+            //
         }
     };
 

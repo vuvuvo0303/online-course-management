@@ -46,7 +46,6 @@ const Checkout: React.FC = () => {
         toast.error("Failed to fetch payment details.");
       }
     } catch (error) {
-      console.error("Error fetching payment details:", error);
       toast.error("Error fetching payment details.");
     } finally {
       setLoading(false);

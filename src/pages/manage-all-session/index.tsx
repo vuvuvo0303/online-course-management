@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { User } from "../../models/User";
 import { toast } from "react-toastify";
 import axiosInstance from "../../services/axiosInstance.ts";
-import { API_GET_SESSIONS, colorIs_delete } from "../../consts";
+import { API_DELETE_SESSION, API_GET_SESSIONS, colorIs_delete } from "../../consts";
 import useDebounce from "../../hooks/useDebounce";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -51,11 +51,11 @@ const ManageAllSession = () => {
     const handleDelete = async (sessionId: string) => {
         try {
             // Xóa session trước
-            await axiosInstance.delete(`/api/session/${sessionId}`);
+            await axiosInstance.delete(`${API_DELETE_SESSION}/${sessionId}`);
             setSessions(sessions.filter(session => session._id !== sessionId));
             toast.success("Delete Session Successfully!");
         } catch (error) {
-            toast.error("Failed to delete session. Please try again.");
+            //
         }
     };
 

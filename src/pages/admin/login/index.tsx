@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { Button, Form, FormProps, Input } from "antd";
 import { useNavigate } from "react-router-dom";
-// import Vector from "../../../assets/Vector.png";
 import Login from "../../../assets/Login.png";
 import { toast } from "react-toastify";
-// import Lottie from "lottie-react";
 import { login } from "../../../services/auth.ts";
-import { paths } from "../../../consts";
-// import vutru from "../../../assets/vutru.json";
+import { API_CURRENT_LOGIN_USER, paths } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 
 type FieldType = {
@@ -20,7 +17,7 @@ const AdminLoginPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchUserData = async (token: string) => {
-    const response = await axiosInstance.get("/api/auth");
+    const response = await axiosInstance.get(API_CURRENT_LOGIN_USER);
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(response.data));
   };
@@ -53,10 +50,6 @@ const AdminLoginPage: React.FC = () => {
             <h1 className="text-3xl md:text-5xl font-bold mb-4">
               Welcome back, Admin!
             </h1>
-            {/* <Lottie
-              animationData={vutru}
-              style={{ width: "100px", height: "100px" }}
-            /> */}
           </div>
           <span className="flex justify-center mb-4">
             Log in to manage FLearn

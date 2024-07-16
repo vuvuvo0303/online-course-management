@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Drawer, Space, Avatar } from 'antd';
 import { MenuOutlined, CaretRightOutlined, CaretLeftOutlined } from '@ant-design/icons';
 import { categoryFilters, categoryCourse } from '../consts/index';
-import { checkTokenExpiration } from "../services/auth.ts";
 
 const SideBar: React.FC = () => {
     const [open, setOpen] = useState(false);
@@ -22,9 +21,6 @@ const SideBar: React.FC = () => {
     const user = localStorage.getItem("user");
 
     useEffect(() => {
-        if (checkTokenExpiration(navigate)) {
-            return;
-        }
         if (user) {
             try {
                 const userData = JSON.parse(user);

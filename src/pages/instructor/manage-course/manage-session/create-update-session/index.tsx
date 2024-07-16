@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Input, Breadcrumb, Select } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import { Editor } from '@tinymce/tinymce-react';
 import { HomeOutlined } from "@ant-design/icons";
 import { Course, Session } from "../../../../../models";
 import { toast } from "react-toastify";
 import { User } from "../../../../../models/User";
-import { host_main } from "../../../../../consts";
+import {API_CREATE_SESSION, API_UPDATE_SESSION} from "../../../../../consts";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
 
 const formItemLayout = {
@@ -48,9 +47,8 @@ const CreateUpdateSession = () => {
     if (sessionId) {
       const fetchData = async () => {
         try {
-          const res = await axiosInstance.get(`/api/session/${sessionId}`);
-          console.log("check data update res: ", res);
-          const data = res.data;
+          const response = await axiosInstance.get(`/api/session/${sessionId}`);
+          const data = response.data;
           form.setFieldsValue({
             name: data.name,
             description: data.description,
@@ -58,7 +56,7 @@ const CreateUpdateSession = () => {
           });
           setValue(data.description);
         } catch (error) {
-          console.error("Error fetching data:", error);
+          //
         } finally {
           setLoading(false);
         }
@@ -106,55 +104,32 @@ const CreateUpdateSession = () => {
     setLoading(true);
     // manage course -> manage session -> update session
     if (courseId2 && sessionId) {
-      console.log('values: ', values)
-      console.log('userId: ', userId)
-      console.log('sessionId: ', sessionId)
       try {
-        const updateres = await axios.put(`${host_main}/api/session/${sessionId}`, { ...values, user_id: userId, position_order: 3, _id: sessionId },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        )
+       await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`, { ...values, user_id: userId, position_order: 3, _id: sessionId })
         toast.success("Update Session Successfully!")
-        console.log("updateres: ", updateres)
       } catch (error) {
-        console.error("Error occurred:", error);
-        toast.error("Update Session Failed!")
+        //
       }
       navigate(`/instructor/manage-courses/${courseId}/manage-sessions`);
     } else {
       // manage course -> manage session -> create session
       if (courseId2) {
         try {
-          const create = await axios.post(`${host_main}/api/session`, values,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            }
-          );
-          console.log("check create: ", create);
+          await axiosInstance.post(API_CREATE_SESSION, values);
           toast.success("Create Session Successfully!")
           navigate(`/instructor/manage-courses/${courseId}/manage-sessions`);
         } catch (error) {
           setLoading(false)
-          console.error(error);
-          toast.error("Create Session Failed!")
         }
       }
       else {
         // manage all sessions - create session
         try {
-          console.log("check value create session: ", values)
           await axiosInstance.post(`/api/session`, values);
           toast.success("Create Session Successfully!")
           navigate(`/instructor/manage-all-sessions`);
         } catch (error) {
           setLoading(false)
-          console.error("Error occurred:", error);
-          toast.error("Create Session Failed!")
         }
       }
     }

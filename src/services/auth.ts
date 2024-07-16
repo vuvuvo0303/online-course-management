@@ -13,7 +13,6 @@ type JwtPayload = {
 
 export async function login(email: string, password: string){
 
-
   try {
     const response = await axiosInstance.post(API_LOGIN, { email, password });
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -34,7 +33,6 @@ export async function login(email: string, password: string){
             return null;
           }
         }
-        localStorage.setItem("exp-token", `${decodedToken.exp}`);
         return { token };
       } else {
         toast.error("Invalid user role");
@@ -46,28 +44,6 @@ export async function login(email: string, password: string){
   }
 }
 
-
-export const checkTokenExpiration = (navigate: ReturnType<typeof useNavigate>) => {
-  const expToken = localStorage.getItem("exp-token");
-  const userString = localStorage.getItem("user");
-  const user = userString ? JSON.parse(userString) : null;
-  if (expToken) {
-    const currentTime = Math.floor(Date.now() / 1000);
-    if (currentTime > Number(expToken)) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("exp-token");
-      if (user.role === roles.ADMIN) {
-        navigate(paths.ADMIN_LOGIN);
-      }
-      else {
-        navigate(paths.LOGIN);
-      }
-      return true;
-    }
-  }
-  return false;
-};
 
 export const handleNavigateRole = async (token: string, navigate: ReturnType<typeof useNavigate>) => {
   const response = await axiosInstance.get(API_LOGIN);

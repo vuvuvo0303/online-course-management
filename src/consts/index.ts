@@ -57,7 +57,7 @@ export const API_DELETE_LESSON = "/api/lesson";
 //Review
 export const API_CREATE_REVIEW = "/api/review";
 export const API_GET_REVIEWS = "/api/review/search";
-//export const API_GET_REVIEW: "/api/review";
+//export const API_GET_REVIEW = "/api/review";
 export const API_UPDATE_REVIEW = "/api/review";
 export const API_DELETE_REVIEW = "/api/review";
 //Course Logs
@@ -66,7 +66,7 @@ export const API_COURSE_LOGS = "/api/course/log/search"
 export const API_CREATE_CART = "/api/cart";
 export const API_GET_CARTS = "/api/cart/search";
 export const API_UPDATE_STATUS_CART = "/api/cart/update-status";
-//export const API_DELETE_CART: "/api/cart";
+//export const API_DELETE_CART = "/api/cart";
 //Purchase
 export const API_GET_ITEMS_BY_ADMIN = "/api/purchase/search";
 export const API_GET_ITEMS_BY_INSTRUCTOR = "api/purchase/search-for-instructor";
@@ -187,7 +187,7 @@ export const paths = {
   ADMIN_CREATE_COURSE: "create-course",
   ADMIN_MANAGE_LECTURES: "manage-lectures",
   ADMIN_MANAGE_USERS: "manage-users",
-  ADMIN_LOGIN: "admin/login",
+  ADMIN_LOGIN: "/admin/login",
 
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
