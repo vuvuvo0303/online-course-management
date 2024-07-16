@@ -32,7 +32,7 @@ const CreateUpdateSession = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [userId, setUserId] = useState<string>('');
   //value of tinymce (field: description)
-  const [value, setValue] = useState<string>('TinyMCE editor text');
+  const [value, setValue] = useState<string>('Enter something here');
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
@@ -164,13 +164,13 @@ const CreateUpdateSession = () => {
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
-  
+
   return (
     <div className="flex justify-center items-center h-full mt-10">
       {loading ? (
         <div>Loading ...</div>
       ) : (
-        <div className="w-full max-w-2xl bg-white p-8 rounded shadow">
+        <div className="w-full max-w-6xl bg-white p-8 rounded shadow">
           {
             courseId ? (<Breadcrumb className="py-2" >
               <Breadcrumb.Item href="/dashboard">
@@ -216,6 +216,7 @@ const CreateUpdateSession = () => {
                 onEditorChange={(newValue) => setValue(newValue)}
                 initialValue={value}
                 init={{
+                  directionality: 'ltr',
                   plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
                   toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
                   tinycomments_mode: 'embedded',
@@ -224,7 +225,8 @@ const CreateUpdateSession = () => {
                     { value: 'First.Name', title: 'First Name' },
                     { value: 'Email', title: 'Email' },
                   ],
-                  ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                  ai_request: (respondWith: { string: (callback: () => Promise<string>) => void }) =>
+                    respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
                 }}
               />
             </Form.Item>

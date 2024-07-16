@@ -1,7 +1,6 @@
 /* Fake API */
 const BASE_URL = "https://665fbf245425580055b0b23d.mockapi.io";
 export const API_COURSES_URL = `${BASE_URL}/courses`;
-export const API_COMMENT_URL = `${BASE_URL}/comments`;
 export const API_ENROLLMENT_URL = `${BASE_URL}/enrollments`;
 export const API_PAYMENT_URL = `${BASE_URL}/payments`;
 export const API_REVIEW_URL = `${BASE_URL}/reviews`;
@@ -36,7 +35,7 @@ export const API_GET_CATEGORY = "/api/category";
 export const API_UPDATE_CATEGORY = "/api/category";
 export const API_DELETE_CATEGORY = "/api/category";
 //Course
-//export const API_CREATE_COURSE: "/api/course";
+export const API_CREATE_COURSE = "/api/course";
 export const API_GET_COURSES = "/api/course/search";
 export const API_GET_COURSE = "/api/course";
 export const API_UPDATE_COURSE = "/api/course";
@@ -44,7 +43,7 @@ export const API_DELETE_COURSE = "/api/course";
 export const API_COURSE_STATUS = "/api/course/change-status";
 export const API_COURSE_DETAIL = "/api/course";
 //Session
-//export const API_CREATE_SESSION: "/api/session";
+export const API_CREATE_SESSION = "/api/session";
 export const API_GET_SESSIONS = "/api/session/search";
 export const API_GET_SESSION = "/api/session";
 export const API_UPDATE_SESSION = "/api/session";
@@ -61,31 +60,70 @@ export const API_GET_REVIEWS = "/api/review/search";
 //export const API_GET_REVIEW: "/api/review";
 export const API_UPDATE_REVIEW = "/api/review";
 export const API_DELETE_REVIEW = "/api/review";
+//Course Logs
+export const API_COURSE_LOGS = "/api/course/log/search"
+//Cart
+export const API_CREATE_CART = "/api/cart";
+export const API_GET_CARTS = "/api/cart/search";
+export const API_UPDATE_STATUS_CART = "/api/cart/update-status";
+//export const API_DELETE_CART: "/api/cart";
+//Purchase
+export const API_GET_ITEMS_BY_ADMIN = "/api/purchase/search";
+export const API_GET_ITEMS_BY_INSTRUCTOR = "api/purchase/search-for-instructor";
+export const API_GET_ITEMS_BY_STUDENT = "api/purchase/search-for-student";
+//Payout
+export const API_CREATE_PAYOUT = "/api/payout";
+export const API_GET_PAYOUTS = "/api/payout/search";
+export const API_UPDATE_STATUS_PAYOUT = "/api/payout/update-status";
+//Client
+export const API_CLIENT_GET_COURSES = "/api/client/course/search";
+export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course"
 
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
-    return "red"
+    return "red";
   } else {
-    return "blue"
+    return "blue";
   }
-}
+};
+
+export const optionStatus = () => [
+  { label: "new", value: "new" },
+  { label: "waiting_approve", value: "waiting_approve" },
+  { label: "approve", value: "approve" },
+  { label: "reject", value: "reject" },
+  { label: "active", value: "active" },
+  { label: "inactive", value: "inactive" },
+];
 
 export const getColor = (status: string) => {
   switch (status) {
     case "new":
-      return 'red';
-    case 'waiting_approve':
-      return 'blue'
-    case 'approve':
-      return 'yellow'
-    case 'reject':
-      return 'purple'
-    case 'active':
-      return 'pink'
-    case 'inactive':
-      return 'orange'
+      return "red";
+    case "waiting_approve":
+      return "blue";
+    case "approve":
+      return "yellow";
+    case "reject":
+      return "purple";
+    case "active":
+      return "pink";
+    case "inactive":
+      return "orange";
   }
 };
+
+export const getColorLessonType = (type: string) => {
+  switch (type) {
+    case "video":
+      return 'red';
+    case 'text':
+      return 'blue'
+    case 'image':
+      return 'yellow'
+  }
+};
+
 /* PATHS */
 export const paths = {
   /* GUEST PATHS */
@@ -124,13 +162,13 @@ export const paths = {
   INSTRUCTOR_UPDATE_COURSE: "manage-courses/update-course/:_id",
   INSTRUCTOR_UPDATE_COURSE_DETAIL: "manage-courses/course-detail/:id/update-course/:_id",
   INSTRUCTOR_PAYMENT_HISTORY: "payment-history",
-  INSTRUCTOR_MANAGE_FEEDBACKS: "manage-feedbacks",
+  INSTRUCTOR_MANAGE_REVIEWS: "manage-reviews",
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",
   INSTRUCTOR_CREATE_LECTURE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/create-lecture",
-  INSTRUCTOR_EDIT_LECTURE:
+  INSTRUCTOR_UPDATE_LECTURE:
     "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
   INSTRUCTOR_LECTURES_OF_COURSE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures",
@@ -141,8 +179,8 @@ export const paths = {
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
   INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/update-session/:sessionId",
-  INSTRUCTOR_MANAGE_ALL_LECTURES: "manage-all-lectures",
-  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/create-lecture",
+  INSTRUCTOR_MANAGE_ALL_LECTURES: "manage-all-lessons",
+  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lessons/create-lesson",
   INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
@@ -155,7 +193,7 @@ export const paths = {
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
   ADMIN_MANAGE_BLOGS: "manage-blogs",
   ADMIN_MANAGE_COURSES: "manage-courses",
-  ADMIN_MANAGE_FEEDBACKS: "manage-feedbacks",
+  ADMIN_MANAGE_REVIEWS: "manage-reviews",
   ADMIN_PAYMENT_HISTORY: "payment-history",
   ADMIN_MANAGE_SESSION_OF_COURSE: "manage-course/:courseId/manage-session",
   ADMIN_MANAGE_LECTURES_OF_COURSE: "manage-course/:courseId/manage-session/:sessionId/lecture",
@@ -171,8 +209,8 @@ export const paths = {
   ADMIN_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
 
   /* IMG */
-  AVATAR: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PyKYrBKAWWy6YCbQzWQcwIRqH8wYMPluIZiMpV1w0NYSbocTZz0ICWFkLcXhaMyvCwQ&usqp=CAU",
-
+  AVATAR:
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PyKYrBKAWWy6YCbQzWQcwIRqH8wYMPluIZiMpV1w0NYSbocTZz0ICWFkLcXhaMyvCwQ&usqp=CAU",
 };
 
 /* ROLE */
@@ -181,7 +219,6 @@ export const roles = {
   INSTRUCTOR: "instructor",
   ADMIN: "admin",
 };
-
 
 // Define the structure of the submenu
 interface categoryCourse {
@@ -204,7 +241,17 @@ export const categoryFilters = [
 ];
 
 export const categoryCourse: categoryCourse = {
-  "Web Development": ["JavaScript", "React JS", "Angular", "Next.js", "CSS", "HTML", "ASP.NET Core", "Node.Js", "Microservices",],
+  "Web Development": [
+    "JavaScript",
+    "React JS",
+    "Angular",
+    "Next.js",
+    "CSS",
+    "HTML",
+    "ASP.NET Core",
+    "Node.Js",
+    "Microservices",
+  ],
   "Mobile Development": ["iOS", "Android", "Flutter", "React Native"],
   "Game Development": ["Unity", "Unreal Engine", "Godot"],
   Entrepreneurship: ["Startup", "Business Planning", "Marketing"],

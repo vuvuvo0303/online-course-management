@@ -1,4 +1,4 @@
-type UserRole = "admin" | "instructor" | "student";
+export type UserRole = "admin" | "instructor" | "student";
 
 export class User {
   _id: string;
@@ -10,7 +10,7 @@ export class User {
   status: boolean; //default is true, set false if want disabled user status
   phone_number?: string;
   description?: string; //required if user role is instructor
-  avatar?: string; //url
+  avatar: { file?: { originFileObj?: File } } | string;
   video?: string; //url
   dob?: Date; //date of birth
   created_at?: Date;
@@ -27,7 +27,7 @@ export class User {
     password?: string,
     phone_number?: string,
     description?: string,
-    avatar?: string,
+    avatar?: { file?: { originFileObj?: File } } | string,
     video?: string,
     dob?: Date,
     created_at?: Date,
@@ -43,7 +43,7 @@ export class User {
     this.status = status;
     this.phone_number = phone_number;
     this.description = description;
-    this.avatar = avatar;
+    this.avatar = avatar || ""; 
     this.video = video;
     this.dob = dob;
     this.created_at = created_at;

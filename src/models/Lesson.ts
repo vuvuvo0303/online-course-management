@@ -1,4 +1,4 @@
-export class Lecture {
+export class Lessons {
     _id: string;
     name: string;
     course_id: string;

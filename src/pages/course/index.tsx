@@ -7,6 +7,7 @@ import ReviewPage from './reviews/review';
 import { Link } from 'react-router-dom';
 import './index.css';
 import Instructor from './instructor/info';
+import { paths } from 'consts/index';
 
 const { TabPane } = Tabs;
 
@@ -49,12 +50,12 @@ const Course: React.FC = () => {
                             <p>Last updated 1/2024</p>
                         </div>
                         <div className="course-buttons">
-                            <Link to="/cart">
+                            <Link to={paths.STUDENT_CART}>
                                 <button className="button add-to-cart">
                                     <ShoppingCartOutlined className='mr-[0.5rem]' /> Add to Cart
                                 </button>
                             </Link>
-                            <Link to="/checkout">
+                            <Link to={paths.STUDENT_CHECKOUT}>
                                 <button className="button buy-now">Buy Now</button>
                             </Link>
                             <Link to="/course/id">

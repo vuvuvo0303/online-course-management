@@ -6,7 +6,10 @@ import { Link } from "react-router-dom";
 import { User } from "../../models/User";
 import { toast } from "react-toastify";
 import axiosInstance from "../../services/axiosInstance.ts";
-import { colorIs_delete } from "../../consts";
+import { API_GET_SESSIONS, colorIs_delete } from "../../consts";
+import useDebounce from "../../hooks/useDebounce";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 const ManageAllSession = () => {
     const [keyword, setKeyword] = useState<string>('');
@@ -20,9 +23,9 @@ const ManageAllSession = () => {
     const [userId, setUserId] = useState<string>('');
     const [modalText, setModalText] = useState('');
     const [selectedSessionID, setSelectedSessionID] = useState<string>('');
-
-    const showModal = (sessionId: string) => {
-        setModalText(`Do you want to delete this session with id = ${sessionId} and the lessons of this session `)
+    const debouncedSearchTerm = useDebounce(keyword, 500);
+    const showModal = (sessionId: string, record: Session) => {
+        setModalText(`Do you want to delete this session with name is "${record.name}" and the lessons of this session `)
         setSelectedSessionID(sessionId)
         setOpen(true);
     };
@@ -64,43 +67,43 @@ const ManageAllSession = () => {
         setUserId(user?._id)
     }, []);
 
+
     const handleChange = (value: boolean) => {
         setIs_deleted(value);
     };
+
 
     //fetch session
     useEffect(() => {
         const fetchSession = async () => {
             try {
-                if (role === "instructor") {
-                    const res = await axiosInstance.post(`/api/session/search`, {
-                        "searchCondition": {
-                            "keyword": keyword,
-                            "course_id": "",
-                            "is_position_order": true,
-                            "is_deleted": is_deleted
-                        },
-                        "pageInfo": {
-                            "pageNum": 1,
-                            "pageSize": 100
-                        }
-                    });
-                    if (res) {
-                        console.log("check res:", res);
-                        setSessions(res.data.pageData);
+                const response = await axiosInstance.post(API_GET_SESSIONS, {
+                    "searchCondition": {
+                        "keyword": debouncedSearchTerm,
+                        "course_id": "",
+                        "is_position_order": true,
+                        "is_deleted": is_deleted
+                    },
+                    "pageInfo": {
+                        "pageNum": 1,
+                        "pageSize": 100
                     }
+                });
+                if (response) {
+                    setSessions(response.data.pageData);
                 }
             } catch (error) {
-                console.log("error: ", error);
-                toast.error("failed")
+                //
             } finally {
                 setLoading(false);
             }
         };
         fetchSession();
-    }, [userId, role, is_deleted, keyword]);
+    }, [userId, role, is_deleted, keyword, debouncedSearchTerm]);
 
-
+    if (loading === true) {
+        return <div className="text-center">Loading...</div>;
+    }
 
     const columns: TableProps["columns"] = [
         {
@@ -112,13 +115,13 @@ const ManageAllSession = () => {
             title: 'Created At',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (date: string) => new Date(date).toLocaleDateString(),
+            render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
         },
         {
             title: 'Updated At',
             dataIndex: 'updated_at',
             key: 'updated_at',
-            render: (date: string) => new Date(date).toLocaleDateString(),
+            render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
         },
         {
             title: 'User Name',
@@ -154,15 +157,12 @@ const ManageAllSession = () => {
                             )
                     }
                     <Link to={`/instructor/manage-all-sessions/update-session/${_id}`}><EditOutlined className="m-2 text-blue-500" /></Link>
-                    <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id)} />
+                    <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id, record)} />
                 </>
             )
         },
     ];
 
-    if (loading) {
-        return <div className="text-center">Loading...</div>;
-    }
 
     const handleCancel = () => {
         setOpen(false);

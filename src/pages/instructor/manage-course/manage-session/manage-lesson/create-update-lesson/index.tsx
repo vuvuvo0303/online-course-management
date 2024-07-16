@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Breadcrumb, Select } from "antd";
+import {
+  Button, Form, Input, Breadcrumb, Select,
+  // SelectProps, Tag 
+} from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import { Course, Lecture, Session } from "../../../../../../models";
+import { Course, Lessons, Session } from "../../../../../../models/index.ts";
 import { HomeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
-import { User } from "../../../../../../models/User";
+import { User } from "../../../../../../models/User.ts";
 import axiosInstance from "../../../../../../services/axiosInstance.ts";
-import { Editor } from '@tinymce/tinymce-react';
+import { API_CREATE_LESSON, API_GET_COURSE, API_GET_COURSES, API_GET_LESSON, API_GET_SESSION, API_GET_SESSIONS, API_UPDATE_LESSON, paths } from "consts/index.ts";
+// import { Editor } from '@tinymce/tinymce-react';
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -18,7 +22,7 @@ const formItemLayout = {
   },
 };
 
-const CreateLecture = () => {
+const CreateUpdateLesson = () => {
   const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string, sessionId: string }>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
@@ -29,7 +33,7 @@ const CreateLecture = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [userId, setUserId] = useState<string>('');
   const [course_id, setCourse_id] = useState<string>('');
-  const [value, setValue] = useState<string>('<p>TinyMCE editor text<p/>');
+  const [value, setValue] = useState<string>('Enter something here');
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
@@ -40,9 +44,8 @@ const CreateLecture = () => {
     if (lectureId) {
       const fetchData = async () => {
         try {
-          const res = await axiosInstance.get(`/api/lesson/${lectureId}`);
-          console.log("check res lesson: ", res)
-          const data = res.data;
+          const response = await axiosInstance.get(`${API_GET_LESSON}/${lectureId}`);
+          const data = response.data;
           form.setFieldsValue({
             name: data.name,
             course_id: data.course_id,
@@ -59,7 +62,7 @@ const CreateLecture = () => {
           setCourse_id(data.course_id);
           setValue(data.description);
         } catch (error) {
-          console.error("Error fetching data:", error);
+          //
         } finally {
           setLoading(false);
         }
@@ -80,12 +83,12 @@ const CreateLecture = () => {
 
       if (courseId && sessionId) {
         try {
-          const res = await axiosInstance.get(`/api/course/${courseId}`);
+          const res = await axiosInstance.get(`${API_GET_COURSE}/${courseId}`);
           if (res.data) {
             setCourse(res.data);
           }
         } catch (error) {
-          console.log("Error: ", error);
+          //
         } finally {
           setLoading(false)
         }
@@ -93,7 +96,7 @@ const CreateLecture = () => {
       // if there is no sessionId and courseId 
       else {
         try {
-          const res = await axiosInstance.post(`/api/course/search`,
+          const response = await axiosInstance.post(API_GET_COURSES,
             {
               "searchCondition": {
                 "keyword": "",
@@ -107,12 +110,11 @@ const CreateLecture = () => {
               }
             }
           );
-          if (res.data) {
-            setCourses(res.data.pageData);
-            console.log("check courses of manage all lectures: ", res.data);
+          if (response.data) {
+            setCourses(response.data.pageData);
           }
         } catch (error) {
-          console.log("Error: ", error);
+          //
         } finally {
           setLoading(false)
         }
@@ -126,19 +128,19 @@ const CreateLecture = () => {
     const fetchSessions = async () => {
       if (courseId && sessionId) {
         try {
-          const res = await axiosInstance.get(`/api/session/${sessionId}`);
-          if (res) {
-            setSession(res.data);
+          const response = await axiosInstance.get(`${API_GET_SESSION}/${sessionId}`);
+          if (response) {
+            setSession(response.data);
           }
         } catch (error) {
-          console.log("Error: ", error);
+          //
         } finally {
           setLoading(false)
         }
       } else {
         if (course_id) {
           try {
-            const res = await axiosInstance.post(`/api/session/search`, {
+            const response = await axiosInstance.post(API_GET_SESSIONS, {
               "searchCondition": {
                 "keyword": "",
                 "course_id": course_id,
@@ -150,11 +152,11 @@ const CreateLecture = () => {
                 "pageSize": 10
               }
             });
-            if (res) {
-              setSessions(res.data.pageData);
+            if (response) {
+              setSessions(response.data.pageData);
             }
           } catch (error) {
-            console.log("Error: ", error);
+            //
           } finally {
             setLoading(false)
           }
@@ -166,7 +168,7 @@ const CreateLecture = () => {
 
 
 
-  const onFinish = async (values: Lecture) => {
+  const onFinish = async (values: Lessons) => {
     if (typeof values.full_time === 'string') {
       values.full_time = parseFloat(values.full_time);
     }
@@ -178,15 +180,12 @@ const CreateLecture = () => {
     try {
       //Update lecture
       if (lectureId) {
-        console.log("check value update: ", values)
-        await axiosInstance.put(`/api/lesson/${lectureId}`, values, {
-        });
+        await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values, {});
         toast.success("Update Lecture Successfully!")
       }
       //create lecture
       else {
-        console.log("check value create: ", values)
-        await axiosInstance.post(`/api/lesson`, values);
+        await axiosInstance.post(API_CREATE_LESSON, values);
         toast.success("Create Lecture Successfully!")
       }
       if (sessionId && courseId) {
@@ -195,7 +194,7 @@ const CreateLecture = () => {
         navigate(`/instructor/manage-all-lectures`);
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      //
     } finally {
       setLoading(false);
     }
@@ -214,25 +213,25 @@ const CreateLecture = () => {
           {
             courseId && sessionId != undefined ? (
               <Breadcrumb className="py-2">
-                <Breadcrumb.Item href="/dashboard">
+                <Breadcrumb.Item href={paths.INSTRUCTOR_DASHBOARD}>
                   <HomeOutlined />
                 </Breadcrumb.Item>
                 <Breadcrumb.Item href="/instructor/manage-courses">Manage Courses</Breadcrumb.Item>
                 <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>Manage Sessions</Breadcrumb.Item>
                 <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}>Manage Lectures</Breadcrumb.Item>
-                <Breadcrumb.Item>{lectureId ? "Update Lecture" : "Create Lecture"}</Breadcrumb.Item>
+                <Breadcrumb.Item>{lectureId ? "Update Lesson" : "Create Lesson"}</Breadcrumb.Item>
               </Breadcrumb>
             ) : (
               <Breadcrumb className="py-2">
-                <Breadcrumb.Item href="/dashboard">
+                <Breadcrumb.Item href={paths.INSTRUCTOR_DASHBOARD}>
                   <HomeOutlined />
                 </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/instructor/manage-all-lectures`}>Manage All Lectures</Breadcrumb.Item>
-                <Breadcrumb.Item>{lectureId ? "Update Lecture" : "Create Lecture"}</Breadcrumb.Item>
+                <Breadcrumb.Item href={`/instructor/manage-all-lectures`}>Manage All Lessons</Breadcrumb.Item>
+                <Breadcrumb.Item>{lectureId ? "Update Lesson" : "Create Lesson"}</Breadcrumb.Item>
               </Breadcrumb>
             )
           }
-          <h1 className="text-center mb-8">{lectureId ? "Update Lecture" : "Create Lecture"}</h1>
+          <h1 className="text-center mb-8">{lectureId ? "Update Lesson" : "Create Lesson"}</h1>
           <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
             <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input name!" }]}>
               <Input />
@@ -244,6 +243,7 @@ const CreateLecture = () => {
                 name="course_id"
                 hidden
                 initialValue={courseId}
+
               >
                 <Input defaultValue={courseId} disabled />
               </Form.Item>
@@ -254,12 +254,12 @@ const CreateLecture = () => {
               <Form.Item
                 label="Course Name"
                 name="course_id"
-
+                rules={[{ required: true, message: "Please input name!" }]}
               >
                 <Select
                   // Save course_id to use to call the session api
                   onChange={handleChangeCourseId}
-                  defaultValue="Choose course fo this lecture"
+                  defaultValue="Choose course for this lecture"
                   options={courses.map(course => ({
                     label: course.name,
                     value: course._id
@@ -287,7 +287,7 @@ const CreateLecture = () => {
                 rules={[{ required: true, message: "Please session name!" }]}
               >
                 <Select
-                  defaultValue="Choose session fo this lecture"
+                  defaultValue="Choose session for this lecture"
                   options={sessions.map(session => ({
                     label: session.name,
                     value: session._id
@@ -304,21 +304,27 @@ const CreateLecture = () => {
               <Input.TextArea />
             </Form.Item>
             <Form.Item
-              label="Lecture Type"
+              label="Lesson Type"
               name="lesson_type"
-              initialValue={"video"}
-              rules={[{ required: true, message: "Please input lecture name!" }]}
+              rules={[{ required: true, message: "Please input lesson type!" }]}
             >
+              {/* <Select
+                mode="multiple"
+                tagRender={tagRender}
+                defaultValue="video"
+                style={{ width: '100%' }}
+                options={options}
+              /> */}
               <Select
                 defaultValue="video"
                 options={[
                   {
                     options: [
-                      { label: <span>video</span>, value: 'video' },
-                      { label: <span>text</span>, value: 'text' },
-                      { label: <span>image</span>, value: 'image' },
-                    ],
-                  },
+                      { label: "video", value: "video" },
+                      { label: "text", value: "text" },
+                      { label: "image", value: "image" },
+                    ]
+                  }
                 ]}
               />
             </Form.Item>
@@ -326,11 +332,13 @@ const CreateLecture = () => {
               label="Description"
               name="description"
             >
-              <Editor
+              <Input />
+              {/* <Editor
                 apiKey="lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u"
                 onEditorChange={(newValue) => setValue(newValue)}
                 initialValue={value}
                 init={{
+                  directionality: 'ltr',
                   plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
                   toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
                   tinycomments_mode: 'embedded',
@@ -339,9 +347,10 @@ const CreateLecture = () => {
                     { value: 'First.Name', title: 'First Name' },
                     { value: 'Email', title: 'Email' },
                   ],
-                  ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                  ai_request: (respondWith: { string: (callback: () => Promise<string>) => void }) =>
+                    respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
                 }}
-              />
+              /> */}
             </Form.Item>
 
             <Form.Item
@@ -383,6 +392,5 @@ const CreateLecture = () => {
       )}
     </div>
   );
-};
-
-export default CreateLecture;
+}
+export default CreateUpdateLesson;

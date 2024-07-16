@@ -1,13 +1,17 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, Modal, Select, Spin, Table, TableProps, } from "antd";
+import { Breadcrumb, Button, Input, Modal, Select, Spin, Table, TableProps, Tag, } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Course, Lecture, Session } from "../../../../../models";
+import { Course, Session } from "../../../../../models/index.ts";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
+import useDebounce from "../../../../../hooks/useDebounce.ts";
+import { API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS, getColorLessonType } from "../../../../../consts";
+import { format } from "date-fns";
+import {Lessons} from "models/Lesson.ts";
 
 const LectureOfCourse: React.FC = () => {
-    const [data, setData] = useState<Lecture[]>([]);
+    const [data, setData] = useState<Lessons[]>([]);
     const { courseId, sessionId } = useParams<{ courseId: string, sessionId: string }>();
     const [loading, setLoading] = useState<boolean>(true);
     const [open, setOpen] = useState(false);
@@ -20,6 +24,7 @@ const LectureOfCourse: React.FC = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [course_id, setCourse_id] = useState<string>('');
 
+    const debouncedSearchTerm = useDebounce(keyword, 300);
 
     const showModal = (lectureId: string, name: string) => {
         setModalText(`Do you want to delete this lecture with name is "${name}"`)
@@ -48,7 +53,7 @@ const LectureOfCourse: React.FC = () => {
     };
 
     const handleDelete = async (lectureId: string) => {
-        await axiosInstance.delete(`/api/lesson/${lectureId}`);
+        await axiosInstance.delete(`${API_DELETE_LESSON}/${lectureId}`);
         setData(data.filter(lecture => lecture._id !== lectureId));
         toast.success("Delete Lecture Successfully!")
     };
@@ -56,71 +61,66 @@ const LectureOfCourse: React.FC = () => {
     const handleCancel = () => {
         setOpen(false);
     };
-    useEffect(() => {
-        const fetchSession = async () => {
-            try {
-                const res = await axiosInstance.post("api/session/search", {
-                    "searchCondition": {
-                        "keyword": "",
-                        "course_id": "",
-                        "session_id": "",
-                        "lesson_type": "",
-                        "is_position_order": false,
-                        "is_deleted": false
-                    },
-                    "pageInfo": {
-                        "pageNum": 1,
-                        "pageSize": 100
-                    }
-                })
-                if (res) {
-                    setSessions(res.data.pageData);
-                    console.log("check res ss: ", res);
+
+    const fetchSession = async () => {
+        try {
+            const response = await axiosInstance.post(API_GET_SESSIONS, {
+                "searchCondition": {
+                    "keyword": "",
+                    "course_id": "",
+                    "session_id": "",
+                    "lesson_type": "",
+                    "is_position_order": false,
+                    "is_deleted": false
+                },
+                "pageInfo": {
+                    "pageNum": 1,
+                    "pageSize": 100
                 }
-            } catch (error) {
-                console.log("Error occurred: ", error);
+            })
+            if (response) {
+                setSessions(response.data.pageData);
             }
+        } catch (error) {
+            //
         }
-        fetchSession();
-    }, [])
-    //fetchCourses 
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const res = await axiosInstance.post("api/course/search", {
-                    "searchCondition": {
-                        "keyword": "",
-                        "category": "",
-                        "status": "new",
-                        "is_deleted": false
-                    },
-                    "pageInfo": {
-                        "pageNum": 1,
-                        "pageSize": 100
-                    }
-                })
-                if (res) {
-                    setCourses(res.data.pageData);
-                    console.log("check res courses: ", res);
+    }
+
+    const fetchCourses = async () => {
+        try {
+            const response = await axiosInstance.post(API_GET_COURSES, {
+                "searchCondition": {
+                    "keyword": "",
+                    "category": "",
+                    "status": "new",
+                    "is_deleted": false
+                },
+                "pageInfo": {
+                    "pageNum": 1,
+                    "pageSize": 100
                 }
-            } catch (error) {
-                console.log("Error occurred: ", error);
+            })
+            if (response) {
+                setCourses(response.data.pageData);
             }
+        } catch (error) {
+            //
         }
+    }
+    useEffect(() => {
         fetchCourses();
+        fetchSession();
     }, [])
 
     //fetch lecture
     useEffect(() => {
-        //sessionId and courseId from params
         if (courseId && sessionId) {
             const fetchLecture = async () => {
                 try {
-                    console.log("check cid: ", course_id)
-                    const res = await axiosInstance.post(`/api/lesson/search`,
+                    const response = await axiosInstance.post(API_GET_LESSONS,
                         {
                             "searchCondition": {
-                                "keyword": keyword,
+                                "keyword": debouncedSearchTerm,
                                 "course_id": courseId,
                                 "session_id": sessionId,
                                 "lesson_type": "",
@@ -133,12 +133,11 @@ const LectureOfCourse: React.FC = () => {
                             }
                         }
                     );
-                    if (res) {
-                        console.log("Check res: ", res);
-                        setData(res.data.pageData)
+                    if (response) {
+                        setData(response.data.pageData)
                     }
                 } catch (error) {
-                    console.error("Error fetching data:", error);
+                    //
                 } finally {
                     setLoading(false);
                 }
@@ -148,9 +147,9 @@ const LectureOfCourse: React.FC = () => {
             //Manage all lecture
             const fetchLecture = async () => {
                 try {
-                    const res = await axiosInstance.post(`/api/lesson/search`, {
+                    const response = await axiosInstance.post(API_GET_LESSONS, {
                         "searchCondition": {
-                            "keyword": keyword,
+                            "keyword": debouncedSearchTerm,
                             "course_id": "",
                             "session_id": session_id,
                             "lesson_type": "",
@@ -162,18 +161,18 @@ const LectureOfCourse: React.FC = () => {
                             "pageSize": 100
                         }
                     },);
-                    if (res) {
-                        setData(res.data.pageData);
+                    if (response) {
+                        setData(response.data.pageData);
                     }
                 } catch (error) {
-                    console.error("Error fetching data:", error);
+                    //
                 } finally {
                     setLoading(false);
                 }
             };
             fetchLecture();
         }
-    }, [courseId, sessionId, keyword, session_id, course_id]);
+    }, [courseId, sessionId, keyword, session_id, course_id, debouncedSearchTerm]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setKeyword(e.target.value);
@@ -193,6 +192,12 @@ const LectureOfCourse: React.FC = () => {
 
         },
         {
+            title: 'Session Name',
+            dataIndex: 'session_name',
+            key: 'session_name',
+
+        },
+        {
             title: 'Video Url',
             dataIndex: 'video_url',
             key: 'video_url',
@@ -209,24 +214,36 @@ const LectureOfCourse: React.FC = () => {
 
         },
         {
+            title: 'Lesson type',
+            dataIndex: 'lesson_type',
+            key: 'lesson_type',
+            render: (lesson_type) => (
+                <>
+                    <Tag color={getColorLessonType(lesson_type)}>
+                        {lesson_type}
+                    </Tag>
+                </>
+            )
+        },
+        {
             title: 'Created At ',
             dataIndex: 'created_at',
             key: 'created_at',
             defaultSortOrder: 'descend',
-            render: (date: string) => new Date(date).toLocaleDateString(),
+            render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
         },
         {
             title: 'Updated At ',
             dataIndex: 'updated_at',
             key: 'updatedDate',
             defaultSortOrder: 'descend',
-            render: (date: string) => new Date(date).toLocaleDateString(),
+            render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
         },
         {
             title: 'Action',
             dataIndex: '_id',
             key: '_id',
-            render: (_id: string, record: Lecture) => (
+            render: (_id: string, record: Lessons) => (
                 <>
                     {
                         courseId && sessionId ? (
@@ -255,13 +272,11 @@ const LectureOfCourse: React.FC = () => {
 
     const handleCourseChange = (value: string) => {
         setCourse_id(value);
-        console.log("check value: ", value)
     };
-    console.log();
 
     return (
-        <div className="">
-            
+        <div>
+
             <Modal
                 title="Confirm Delete"
                 visible={open}
@@ -291,9 +306,9 @@ const LectureOfCourse: React.FC = () => {
                                     <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>
                                         Manage Sessions
                                     </Breadcrumb.Item>
-                                    <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
+                                    <Breadcrumb.Item>Manage Lesson</Breadcrumb.Item>
                                 </Breadcrumb>
-                                <h1 className="text-center m-10">Manage Lectures</h1>
+                                <h1 className="text-center m-10">Manage Lessons</h1>
                             </>
                         ) : (
                             <>
@@ -303,7 +318,7 @@ const LectureOfCourse: React.FC = () => {
                                     </Breadcrumb.Item>
                                     <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
                                 </Breadcrumb>
-                                <h1 className="text-center m-10">Manage All Lectures</h1>
+                                <h1 className="text-center m-10">Manage All Lessons</h1>
                             </>
                         )
                     }
@@ -344,12 +359,12 @@ const LectureOfCourse: React.FC = () => {
                             {
                                 courseId && sessionId ? (
                                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/create-lecture`}>
-                                        <Button className="bg-yellow-500 my-10 float-right">Add New</Button>
+                                        <Button type="primary" className="my-10 float-right">Add New Lessons</Button>
                                     </Link>
                                 ) :
                                     (
                                         <Link to={`/instructor/manage-all-lectures/create-lecture`}>
-                                            <Button className="bg-yellow-500 my-10 float-right">Add New</Button>
+                                            <Button type="primary" className="my-10 float-right">Add New Lessons</Button>
                                         </Link>
                                     )
                             }

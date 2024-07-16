@@ -90,7 +90,7 @@ const ManagePaymentCourse = () => {
 
 
     if (loading) {
-        return <p className="loading">Loading...</p>;
+        return <p className="loading text-center">Loading...</p>;
     }
 
     if (error) {

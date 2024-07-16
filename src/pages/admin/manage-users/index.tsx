@@ -15,6 +15,7 @@ import {
   Radio,
   Select,
   Spin,
+  Avatar,
 } from "antd";
 import {
   DeleteOutlined,
@@ -30,7 +31,7 @@ import { toast } from "react-toastify";
 
 import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 
-import { User } from "../../../models/User.ts";
+import { User, UserRole } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
 import {
@@ -39,10 +40,9 @@ import {
   API_CREATE_USER,
   API_DELETE_USER,
   API_GET_USERS,
-  paths
+  paths,
 } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
-import { vi } from "date-fns/locale";
 
 interface ApiError {
   code: number;
@@ -67,7 +67,6 @@ type AxiosResponse<T> = {
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
 
-
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -80,7 +79,9 @@ const AdminManageUsers: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<Partial<User>>({});
+
+
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
   const [selectedRole, setSelectedRole] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("true");
@@ -109,13 +110,17 @@ const AdminManageUsers: React.FC = () => {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const response: AxiosResponse<{
-        pageData: User[];
-        pageInfo: { totalItems: number; pageNum: number; pageSize: number };
-      }> = await axiosInstance.post(API_GET_USERS, {
+      let statusValue: boolean | undefined = undefined;
+      if (selectedStatus === "true") {
+        statusValue = true;
+      } else if (selectedStatus === "false") {
+        statusValue = false;
+      }
+
+      const response = await axiosInstance.post(API_GET_USERS, {
         searchCondition: {
           role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
-          status: selectedStatus === "true" ? true : selectedStatus === "false" ? false : undefined,
+          status: statusValue,
           is_delete: false,
           keyword: searchText,
         },
@@ -127,20 +132,21 @@ const AdminManageUsers: React.FC = () => {
 
       if (response.data && response.data.pageData) {
         setData(response.data.pageData);
-        setPagination((prev) => ({
-          ...prev,
+        setPagination({
+          ...pagination,
           total: response.data.pageInfo.totalItems,
           current: response.data.pageInfo.pageNum,
           pageSize: response.data.pageInfo.pageSize,
-        }));
+        });
       } else {
-        // Xử lý khi không có dữ liệu
+        // Xử lý trường hợp không có dữ liệu
       }
     } catch (error) {
-      // Xử lý lỗi
+      // Xử lý trường hợp lỗi
     }
     setLoading(false);
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
+
 
   const handleDelete = useCallback(
     async (_id: string, email: string) => {
@@ -165,13 +171,10 @@ const AdminManageUsers: React.FC = () => {
 
         let avatarUrl = values.avatar;
 
-        if (
-          values.avatar &&
-          typeof values.avatar !== "string" &&
-          values.avatar?.file?.originFileObj
-        ) {
+        if (values.avatar && typeof values.avatar !== "string" && values.avatar?.file?.originFileObj) {
           avatarUrl = await uploadFile(values.avatar.file.originFileObj);
         }
+        console.log(avatarUrl);
 
         const userData = { ...values, avatar: avatarUrl };
 
@@ -187,14 +190,15 @@ const AdminManageUsers: React.FC = () => {
         form.resetFields();
         setLoading(false);
         fetchUsers();
+        setFileList([]);
         localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
         setLoading(false);
+        // toast.error(`Failed to create new user: ${error.message}`);
       }
     },
     [fetchUsers, form]
   );
-
 
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -238,9 +242,35 @@ const AdminManageUsers: React.FC = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
-
+  const handleRoleChange = useCallback(async (value: UserRole, recordId: string) => {
+    try {
+      await axiosInstance.put(API_CHANGE_ROLE, { user_id: recordId, role: value });
+      setData((prevData: User[]) =>
+        prevData.map((user) => (user._id === recordId ? { ...user, role: value } : user))
+      );
+      toast.success(`Role changed successfully`);
+      localStorage.setItem("users_updated", new Date().toISOString());
+    } catch (error) {
+      // Handle error silently
+    }
+  }, []);
   const columns: TableColumnsType<User> = useMemo(
     () => [
+      {
+        title: "Avatar",
+        dataIndex: "avatar",
+        key: "avatar",
+        render: (avatar: string) => (
+          <Avatar
+            size={50}
+            src={
+              avatar
+                ? avatar
+                : "https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-8/32/user--avatar--filled-256.png"
+            }
+          />
+        ),
+      },
       {
         title: "Name",
         dataIndex: "name",
@@ -258,43 +288,33 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "role",
         key: "role",
         width: "10%",
-
-        render: (role) => (
-          <div
-            className={`tag ${
-              role === "student"
-                ? "bg-blue-100 bg-opacity-30 text-blue-400 flex justify-center rounded-xl p-2 border border-blue-500 text-xs"
-                : role === "instructor"
-                ? "bg-lime-100 text-lime-400 flex justify-center rounded-xl p-2 border border-lime-500 text-xs"
-                : role === "admin"
-                ? "bg-yellow-100 text-yellow-800 flex justify-center rounded-xl p-2 border border-yellow-500 text-xs"
-                : "bg-gray-500 text-white"
-            }`}
+        render: (role: UserRole, record: User) => (
+          <Select
+            defaultValue={role}
+            onChange={(value) => handleRoleChange(value, record._id)}
+            style={{ width: "100%" }}
           >
-            {role ? role.toUpperCase() : "UNKNOWN"}
-          </div>
+            <Select.Option value="student"> Student</Select.Option>
+            <Select.Option value="instructor">Instructor</Select.Option>
+            <Select.Option value="admin">Admin</Select.Option>
+          </Select>
         ),
       },
       {
         title: "Created Date",
         dataIndex: "created_at",
         key: "created_at",
-        render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+        render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
         width: "10%",
       },
       {
         title: "Updated Date",
         dataIndex: "updated_at",
         key: "updated_at",
-        render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+        render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
         width: "10%",
       },
-      {
-        title: "Image",
-        dataIndex: "avatar",
-        key: "avatar",
-        render: (avatar: string) => <Image src={avatar} width={50} />,
-      },
+
       {
         title: "Status",
         key: "status",
@@ -333,16 +353,20 @@ const AdminManageUsers: React.FC = () => {
                 setIsModalVisible(true);
                 form.setFieldsValue(record);
                 setFormData(record);
+
+                const avatarUrl = typeof record.avatar === "string" ? record.avatar : "";
+
                 setFileList(
-                  record.avatar
+                  avatarUrl
                     ? [
-                        {
-                          uid: "-1",
-                          name: "avatar.png",
-                          status: "done",
-                          url: record.avatar,
-                        },
-                      ]
+                      {
+                        uid: "-1",
+                        name: "avatar.png",
+                        status: "done",
+                        url: avatarUrl,
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      } as UploadFile<any>,
+                    ]
                     : []
                 );
               }}
@@ -380,16 +404,18 @@ const AdminManageUsers: React.FC = () => {
     setPagination({ ...pagination, current: page, pageSize });
   };
   const handleAddClick = () => {
-    setFormData({});
     setModalMode("Add");
     setIsModalVisible(true);
+    form.resetFields();
+    setFileList([]);
   };
 
-  const editUser = async (values: any) => {
+  const handleEditUser = async (values: User) => {
     setLoading(true);
     try {
       let avatarUrl = values.avatar;
-      if (values.avatar && typeof values.avatar !== "string" && values.avatar.file.originFileObj) {
+
+      if (values.avatar && typeof values.avatar !== "string" && values.avatar.file?.originFileObj) {
         avatarUrl = await uploadFile(values.avatar.file.originFileObj);
       }
 
@@ -399,12 +425,12 @@ const AdminManageUsers: React.FC = () => {
         email: values.email,
       };
 
-      const response: AxiosResponse<any> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
+      const response: AxiosResponse<User> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
 
       if (response.success) {
         // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
-          const roleChangeResponse =
+          const roleChangeResponse: AxiosResponse<User> =
             await axiosInstance.put(API_CHANGE_ROLE, {
               user_id: formData._id,
               role: values.role,
@@ -424,18 +450,21 @@ const AdminManageUsers: React.FC = () => {
         form.resetFields();
         fetchUsers();
       } else {
-        //handle error for edit users
+        // Handle error for edit users
       }
     } catch (error) {
-      //
+      // Handle error
     }
     setLoading(false);
   };
 
-  const onFinish = (values: any) => {
+  if (loading) {
+    return <p className="text-center">Loading...</p>;
+  }
+  const onFinish = (values: User) => {
     if (modalMode === "Edit") {
       if (formData._id) {
-        editUser({ ...formData, ...values });
+        handleEditUser({ ...formData, ...values });
       } else {
         console.error("User ID is not set.");
       }
@@ -443,11 +472,13 @@ const AdminManageUsers: React.FC = () => {
       handleAddNewUser(values);
     }
   };
-  const handleRoleChange = (value: string) => {
+  const handleRolefilter = (value: string) => {
     setSelectedRole(value);
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
+    console.log(value);
+
     fetchUsers();
   };
 
@@ -460,27 +491,6 @@ const AdminManageUsers: React.FC = () => {
           </Breadcrumb.Item>
           <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
         </Breadcrumb>
-
-        <Space>
-          <Input.Search
-            placeholder="Search By Name"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            // onSearch={handleSearch}
-            style={{ width: 200 }}
-            enterButton={<SearchOutlined className="text-white" />}
-          />
-          <Select value={selectedRole} onChange={handleRoleChange} style={{ width: 120 }}>
-            <Select.Option value="All">All Roles</Select.Option>
-            <Select.Option value="Admin">Admin</Select.Option>
-            <Select.Option value="Student">Student</Select.Option>
-            <Select.Option value="Instructor">Instructor</Select.Option>
-          </Select>
-          <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
-            <Select.Option value="true">Active</Select.Option>
-            <Select.Option value="false">Inactive</Select.Option>
-          </Select>
-        </Space>
 
         <div className="mt-3">
           {" "}
@@ -497,6 +507,27 @@ const AdminManageUsers: React.FC = () => {
         </div>
       </div>
 
+      <Space className="mb-2">
+        <Input.Search
+          placeholder="Search By Name"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          // onSearch={handleSearch}
+          style={{ width: 200 }}
+          enterButton={<SearchOutlined className="text-white" />}
+        />
+
+        <Select value={selectedRole} onChange={handleRolefilter} style={{ width: 120 }}>
+          <Select.Option value="All">All Roles</Select.Option>
+          <Select.Option value="Admin">Admin</Select.Option>
+          <Select.Option value="Student">Student</Select.Option>
+          <Select.Option value="Instructor">Instructor</Select.Option>
+        </Select>
+        <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
+          <Select.Option value="true">Active</Select.Option>
+          <Select.Option value="false">Inactive</Select.Option>
+        </Select>
+      </Space>
       <Spin spinning={loading}>
         <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
       </Spin>
@@ -535,22 +566,24 @@ const AdminManageUsers: React.FC = () => {
               <Input.Password />
             </Form.Item>
           )}
-          <Form.Item
-            label="Role"
-            name="role"
-            rules={[
-              {
-                required: true,
-                message: "Please choose the role you want to add!",
-              },
-            ]}
-          >
-            <Radio.Group>
-              <Radio value="student">Student</Radio>
-              <Radio value="instructor">Instructor</Radio>
-              <Radio value="admin">Admin</Radio>
-            </Radio.Group>
-          </Form.Item>
+          {modalMode === "Add" && (
+            <Form.Item
+              label="Role"
+              name="role"
+              rules={[
+                {
+                  required: true,
+                  message: "Please choose the role you want to add!",
+                },
+              ]}
+            >
+              <Radio.Group>
+                <Radio value="student">Student</Radio>
+                <Radio value="instructor">Instructor</Radio>
+                <Radio value="admin">Admin</Radio>
+              </Radio.Group>
+            </Form.Item>
+          )}
           <Form.Item label="Avatar" name="avatar">
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
