@@ -30,12 +30,10 @@ export { default as Cart } from "./cart";
 
 /* Instructor Page */
 export { default as InstructorDashboard } from "./instructor/instructor-dashboard/index";
-export { default as InstructorManageLectures } from "./instructor/manage-lectures";
 export { default as InstructorManageFeedbacks } from "./instructor/manage-instructor-feedbacks";
 export { default as PaymentHistory } from "./payment/payment-history";
 export { default as InstructorCreateCourse } from "./instructor/manage-course/create-update-course";
 export { default as InstructorManageCourses } from "./instructor/manage-course/index";
-export { default as InstructorManageStudents } from "./instructor/manage-students";
 export { default as InstructorManageBlogs } from "./instructor/manage-blogs/index";
 export { default as InstructorResources } from "./instructor/resources";
 export { default as InstructorTools } from "./instructor/tools";

@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import TextArea from "antd/es/input/TextArea";
-import useDebounce from "../../../hooks/useDebounce";
+import { useDebounce } from "../../../hooks";
 import { format } from 'date-fns';
 const InstructorManageCourses: React.FC = () => {
 
@@ -302,13 +302,13 @@ const InstructorManageCourses: React.FC = () => {
       )
     },
     {
-      title: 'Created At ',
+      title: 'Created Date ',
       dataIndex: 'created_at',
       key: 'created_at',
       render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
     },
     {
-      title: 'Updated At ',
+      title: 'Updated Date ',
       dataIndex: 'updated_at',
       key: 'updated_at',
       render: (update_at: Date) => format(new Date(update_at), "dd/MM/yyyy"),
@@ -329,7 +329,7 @@ const InstructorManageCourses: React.FC = () => {
 
   const columnsLogs: TableProps["columns"] = [
     {
-      title: 'Created At ',
+      title: 'Created Date ',
       dataIndex: 'created_at',
       key: 'created_at',
       defaultSortOrder: 'descend',
@@ -452,7 +452,7 @@ const InstructorManageCourses: React.FC = () => {
                   logs && logs.length > 0
                     ?
                     (
-                      <Table columns={columnsLogs} dataSource={logs} />
+                      <Table rowKey={(record: Log) => record._id} columns={columnsLogs} dataSource={logs} />
                     )
                     :
                     (

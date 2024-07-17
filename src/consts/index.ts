@@ -198,7 +198,7 @@ export const paths = {
   ADMIN_CREATE_COURSE: "create-course",
   ADMIN_MANAGE_LECTURES: "manage-lectures",
   ADMIN_MANAGE_USERS: "manage-users",
-  ADMIN_LOGIN: "admin/login",
+  ADMIN_LOGIN: "/admin/login",
   ADMIN_INSTRUCTOR_REQUEST: "instructor-requests",
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",

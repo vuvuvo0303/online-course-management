@@ -7,9 +7,8 @@ import { User } from "../../models/User";
 import { toast } from "react-toastify";
 import axiosInstance from "../../services/axiosInstance.ts";
 import { API_DELETE_SESSION, API_GET_SESSIONS } from "../../consts";
-import useDebounce from "../../hooks/useDebounce";
+import { useDebounce } from "../../hooks";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 
 const ManageAllSession = () => {
     const [keyword, setKeyword] = useState<string>('');
@@ -117,16 +116,16 @@ const ManageAllSession = () => {
             key: 'name',
         },
         {
-            title: 'Created At',
+            title: 'Created Date',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+            render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
         },
         {
-            title: 'Updated At',
+            title: 'Updated Date',
             dataIndex: 'updated_at',
             key: 'updated_at',
-            render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+            render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
         },
         {
             title: 'Action',
