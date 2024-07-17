@@ -35,7 +35,7 @@ export const API_GET_CATEGORY = "/api/category";
 export const API_UPDATE_CATEGORY = "/api/category";
 export const API_DELETE_CATEGORY = "/api/category";
 //Course
-//export const API_CREATE_COURSE: "/api/course";
+export const API_CREATE_COURSE = "/api/course";
 export const API_GET_COURSES = "/api/course/search";
 export const API_GET_COURSE = "/api/course";
 export const API_UPDATE_COURSE = "/api/course";
@@ -43,7 +43,7 @@ export const API_DELETE_COURSE = "/api/course";
 export const API_COURSE_STATUS = "/api/course/change-status";
 export const API_COURSE_DETAIL = "/api/course";
 //Session
-//export const API_CREATE_SESSION: "/api/session";
+export const API_CREATE_SESSION = "/api/session";
 export const API_GET_SESSIONS = "/api/session/search";
 export const API_GET_SESSION = "/api/session";
 export const API_UPDATE_SESSION = "/api/session";
@@ -57,7 +57,7 @@ export const API_DELETE_LESSON = "/api/lesson";
 //Review
 export const API_CREATE_REVIEW = "/api/review";
 export const API_GET_REVIEWS = "/api/review/search";
-//export const API_GET_REVIEW: "/api/review";
+//export const API_GET_REVIEW = "/api/review";
 export const API_UPDATE_REVIEW = "/api/review";
 export const API_DELETE_REVIEW = "/api/review";
 //Course Logs
@@ -66,7 +66,7 @@ export const API_COURSE_LOGS = "/api/course/log/search";
 export const API_CREATE_CART = "/api/cart";
 export const API_GET_CARTS = "/api/cart/search";
 export const API_UPDATE_STATUS_CART = "/api/cart/update-status";
-//export const API_DELETE_CART: "/api/cart";
+//export const API_DELETE_CART = "/api/cart";
 //Purchase
 export const API_GET_ITEMS_BY_ADMIN = "/api/purchase/search";
 export const API_GET_ITEMS_BY_INSTRUCTOR = "api/purchase/search-for-instructor";
@@ -149,6 +149,7 @@ export const paths = {
 
   /* STUDENT PATHS */
   STUDENT_PROFILE: "/profile",
+  STUDENT_EDIT_PROFILE: "/edit-profile",
   STUDENT_PAYMENT_HISTORY: "/payment-history",
   STUDENT_ENROLLMENT: "/enrollment",
   STUDENT_CHECKOUT: "/checkout",
@@ -179,7 +180,7 @@ export const paths = {
   INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_ALL_LECTURES: "manage-all-lessons",
-  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/create-lecture",
+  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lessons/create-lesson",
   INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",

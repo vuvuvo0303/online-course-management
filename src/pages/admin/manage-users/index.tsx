@@ -43,7 +43,6 @@ import {
   paths,
 } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
-import { vi } from "date-fns/locale";
 
 interface ApiError {
   code: number;
@@ -289,7 +288,7 @@ const AdminManageUsers: React.FC = () => {
         dataIndex: "role",
         key: "role",
         width: "10%",
-        render: (role: UserRole , record: User) => (
+        render: (role: UserRole, record: User) => (
           <Select
             defaultValue={role}
             onChange={(value) => handleRoleChange(value, record._id)}
@@ -305,14 +304,14 @@ const AdminManageUsers: React.FC = () => {
         title: "Created Date",
         dataIndex: "created_at",
         key: "created_at",
-        render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+        render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
         width: "10%",
       },
       {
         title: "Updated Date",
         dataIndex: "updated_at",
         key: "updated_at",
-        render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+        render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
         width: "10%",
       },
 
@@ -360,14 +359,14 @@ const AdminManageUsers: React.FC = () => {
                 setFileList(
                   avatarUrl
                     ? [
-                        {
-                          uid: "-1",
-                          name: "avatar.png",
-                          status: "done",
-                          url: avatarUrl,
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        } as UploadFile<any>,
-                      ]
+                      {
+                        uid: "-1",
+                        name: "avatar.png",
+                        status: "done",
+                        url: avatarUrl,
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      } as UploadFile<any>,
+                    ]
                     : []
                 );
               }}
@@ -429,7 +428,22 @@ const AdminManageUsers: React.FC = () => {
       const response: AxiosResponse<User> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
 
       if (response.success) {
-        setData((prevData) => prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser } : user)));
+        // Handle role change if it is different from the current role
+        if (formData.role !== values.role) {
+          const roleChangeResponse: AxiosResponse<User> =
+            await axiosInstance.put(API_CHANGE_ROLE, {
+              user_id: formData._id,
+              role: values.role,
+            });
+
+          if (!roleChangeResponse.success) {
+            throw new Error("Failed to change user role");
+          }
+        }
+
+        setData((prevData) =>
+          prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
+        );
 
         toast.success("Updated user successfully");
         setIsModalVisible(false);
@@ -464,7 +478,7 @@ const AdminManageUsers: React.FC = () => {
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
     console.log(value);
-    
+
     fetchUsers();
   };
 

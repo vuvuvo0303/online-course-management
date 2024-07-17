@@ -1,316 +1,91 @@
-import { useEffect, useState } from "react";
-import { Student, Admin, Instructor } from "../../models";
-import { Modal, Button, Form, Input, Tabs } from "antd";
-import styles from "./profile.module.css";
+import { useState } from 'react';
+import { Tabs, Tag, Avatar } from 'antd';
+import {
+  FacebookOutlined,
+  LinkedinOutlined,
+  TwitterOutlined,
+  YoutubeOutlined,
+  UserOutlined,
+  SettingOutlined
+} from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import About from './about/about';
+import Cart from './cart/CartComponents';
+import Sub from './subscription/index';
 
 const { TabPane } = Tabs;
 
 const Profile: React.FC = () => {
-  const [user, setUser] = useState<any>(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [form] = Form.useForm();
-  const [forceUpdateFlag, setForceUpdateFlag] = useState(false);
+  const [activeTabKey, setActiveTabKey] = useState('1');
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-
-    if (!storedUser) {
-      console.error("User data not found in localStorage");
-      return;
-    }
-
-    const userObj = JSON.parse(storedUser);
-    setUser(userObj);
-  }, [forceUpdateFlag]);
-
-  const handleInputChange = (field: string, value: any) => {
-    setUser((prevState: any) => ({
-      ...prevState,
-      [field]: value,
-    }));
-    localStorage.setItem("user", JSON.stringify({ ...user, [field]: value }));
+  const onChange = (key: string) => {
+    setActiveTabKey(key);
   };
-
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleSave = async () => {
-    try {
-      const formValues = await form.validateFields();
-
-      const updatedUser = { ...user };
-
-      if (formValues.fullName) {
-        updatedUser.fullName = formValues.fullName;
-      }
-
-      if (formValues.avatarUrl) {
-        updatedUser.avatarUrl = formValues.avatarUrl;
-      }
-
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-
-      setIsModalVisible(false);
-      setForceUpdateFlag(!forceUpdateFlag);
-    } catch (error) {
-      console.error("Validation failed:", error);
-    }
-  };
-
-  if (!user) {
-    return <div>Loading...</div>;
-  }
-
-  const { role } = user;
-
-  let displayUser;
-  const storedCreatedDate = new Date(user.createdDate).toUTCString();
-  let storedLastLogin = user.lastLogin;
-
-  if (role === "admin" && storedLastLogin) {
-    storedLastLogin = new Date(storedLastLogin).toUTCString();
-  }
-
-  if (role === "student") {
-    displayUser = new Student(
-      user.userId,
-      user.fullName,
-      user.email,
-      "student",
-      user.avatarUrl,
-      storedCreatedDate,
-      user.status,
-      user.biography,
-      user.facebook,
-      user.github,
-      user.linkedin,
-      user.twitter
-    );
-  } else if (role === "admin") {
-    displayUser = new Admin(
-      user.userId,
-      user.fullName,
-      user.email,
-      "admin",
-      user.avatarUrl,
-      storedCreatedDate,
-      "",
-      storedLastLogin
-    );
-  } else if (role === "instructor") {
-    displayUser = new Instructor(
-      user.userId,
-      user.fullName,
-      user.email,
-      "instructor",
-      user.avatarUrl,
-      storedCreatedDate,
-      "",
-      user.description,
-      user.degree
-    );
-  }
-
-  if (!displayUser) {
-    return <div>Error: User role is not recognized.</div>;
-  }
-
-  // const handleSaveChanges = () => {
-  //   // Here you can implement your logic to save editedUser
-  //   // For example, you might send a request to your backend API
-
-  //   // Replace this with your actual saving logic
-  //   console.log("Saving changes:", displayUser);
-  //   alert("Changes saved successfully!"); // Example alert, replace with your actual saving code
-  // };
 
   return (
-    <div className="w-full">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-4">Profiles and Settings</h1>
-        <div>
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="F-learn Profile" key="1">
-              <div className="space-y-4">
-                {/* <Button type="primary" onClick={showEditModal} className="bg-blue-500 text-white py-2 px-4 rounded">
-                  Edit Profile
-                </Button> */}
-                {/* <button
-                  onClick={handleSaveChanges}
-                  className="bg-blue-500 text-white py-2 px-4 rounded"
-                >
-                  Save Changes
-                </button> */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <div className="mb-4 max-w-[30rem]">
-                      <strong className="block mb-2">Full Name:</strong>
-                      <input
-                        type="fullname"
-                        className="p-4 border border-gray-300 h-[3.5rem] text-base w-full"
-                        value={displayUser.name}
-                        onChange={(e) => handleInputChange('name', e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-4 max-w-[30rem]">
-                      <strong className="block mb-2">Email:</strong>
-                      <div className="p-4 border border-gray-300 h-[3.5rem] text-base">
-                        {displayUser.email}
-                      </div>
-                    </div>
-                    {displayUser instanceof Student && (
-                      <>
-                        <div className="mb-4 max-w-[30rem]">
-                          <strong className="block mb-2">Status:</strong>
-                          <div className="p-4 border border-gray-300 h-[3.5rem] text-base">
-                            {displayUser.status ? "Active" : "Inactive"}
-                          </div>
-                        </div>
-                        <div className="mb-4 max-w-[30rem]">
-                          <strong className="block mb-2">Biography:</strong>
-                          <input
-                            type="text"
-                            className="p-4 border border-gray-300 h-[3.5rem] text-base w-full"
-                            // value={displayUser.biography || ''}
-                            onChange={(e) => handleInputChange('biography', e.target.value)}
-                          />
-                        </div>
-                        <Button>
-                          Save
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                  {displayUser instanceof Student && (
-                    <div>
-                      <div className="mb-4 w-full">
-                        <strong className="block mb-2">Twitter:</strong>
-                        <div >
-                          <span className="p-4 bg-gray-200 border border-gray-300 h-[3.5rem] text-base">http://www.twitter.com/</span>
-                          <input
-                            type="text"
-                            className="p-4 border border-gray-300 h-[3.5rem] text-base"
-                            // value={displayUser.biography || ''}
-                            onChange={(e) => handleInputChange('biography', e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-4 w-full">
-                        <strong className="block mb-2">Facebook:</strong>
-                        <div>
-                          <span className="p-4 bg-gray-200 border border-gray-300 h-[3.5rem] text-base">http://www.facebook.com/</span>
-                          <input
-                            type="text"
-                            className="p-4 border border-gray-300 h-[3.5rem] text-base"
-                            // value={displayUser.biography || ''}
-                            onChange={(e) => handleInputChange('facebook', e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-4 w-full">
-                        <strong className="block mb-2">Linkedin:</strong>
-                        <div>
-                          <span className="p-4 bg-gray-200 border border-gray-300 h-[3.5rem] text-base">http://www.linkedin.com/</span>
-                          <input
-                            type="text"
-                            className="p-4 border border-gray-300 h-[3.5rem] text-base"
-                            // value={displayUser.biography || ''}
-                            onChange={(e) => handleInputChange('linkedin', e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-4 w-full">
-                        <strong className="block mb-2">Youtube:</strong>
-                        <div>
-                          <span className="p-4 bg-gray-200 border border-gray-300 h-[3.5rem] text-base">http://www.youtube.com/</span>
-                          <input
-                            type="text"
-                            className="p-4 border border-gray-300 h-[3.5rem] text-base"
-                            // value={displayUser.biography || ''}
-                            onChange={(e) => handleInputChange('youtube', e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {displayUser instanceof Admin && (
-                  <div>
-                    <p className={styles.profileDetailItem}>
-                      <strong>Last Login:</strong> {displayUser.lastLogin}
-                    </p>
-                  </div>
-                )}
-                {displayUser instanceof Instructor && (
-                  <div>
-                    <p className={styles.profileDetailItem}>
-                      <strong>Description:</strong> {displayUser.description}
-                    </p>
-                    <p className={styles.profileDetailItem}>
-                      <strong>Degree:</strong>
-                      <br />
-                      <img
-                        src={displayUser.degree}
-                        alt="Degree Certificate"
-                        className={styles.degreeImage}
-                      />
-                    </p>
-                  </div>
-                )}
+    <div className="bg-white-transparent p-8 text-black">
+      <div className="profile-container flex flex-col lg:flex-row items-center justify-between">
+        <div className="profile-info flex flex-col lg:flex-row items-center">
+          <div className="mb-4 lg:mb-0 lg:mr-8">
+            <Avatar
+              icon={<UserOutlined />}
+              alt="Profile"
+              size={120}
+              className="mr-0 lg:mr-8"
+            />
+          </div>
+          <div className='flex flex-col items-center lg:items-start'>
+            <div className="text-center lg:text-left">
+              <h2 className="text-2xl font-bold">John Doe</h2>
+              <p className="text-lg">Junior Graphic Developer</p>
+            </div>
+            <div className="flex flex-wrap space-x-0 lg:space-x-4 mt-4 border border-black w-full lg:w-auto">
+              <div className="p-4 bg-gray-800 rounded-lg text-center w-full lg:w-auto mb-2 lg:mb-0">
+                <p>Purchased</p>
+                <h3 className="text-xl font-bold">4</h3>
               </div>
-            </TabPane>
-            <TabPane tab="Profile Picture" key="2">
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <p>
-                    <span className="text-lg">Image preview</span> <br />
-                    <span className="text-[0.8rem]">Minimum 200x200 pixels, Maximum 6000x6000 pixels</span>
-                  </p>
-                  <div className="p-4 border border-gray-300 mb-4 h-[20rem] max-w-[40rem] text-base flex items-center justify-center">
-                    <img
-                      src="../public/x1.jpg"
-                      alt="Avatar"
-                      className="h-full object-contain"
-                    />
-                  </div>
-                </div>
-                <Button>
-                  Save
-                </Button>
+              <div className="p-4 bg-gray-800 border-b-0 border-r-0 border-t-0 border border-black text-center w-full lg:w-auto mb-2 lg:mb-0">
+                <p>My Reviews</p>
+                <h3 className="text-xl font-bold">4</h3>
               </div>
-            </TabPane>
-          </Tabs>
+              <div className="p-4 bg-gray-800 text-center border-b-0 border-t-0 border border-black w-full lg:w-auto mb-2 lg:mb-0">
+                <p>Subscriptions</p>
+                <h3 className="text-xl font-bold">15K</h3>
+              </div>
+              <div className="p-4 bg-gray-800 rounded-lg text-center w-full lg:w-auto">
+                <p>Certificates</p>
+                <h3 className="text-xl font-bold">2</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="profile-actions flex flex-col items-center lg:items-end mt-4 lg:mt-0">
+          <Link to="/edit-profile">
+            <button className="border-none mb-3 lg:mr-[0.8rem] "><SettingOutlined className='mr-2' />Setting</button>
+          </Link>
+          <div className="flex space-2 p-2">
+            <Tag icon={<FacebookOutlined />} color="#3b5999" />
+            <Tag icon={<TwitterOutlined />} color="#55acee" />
+            <Tag icon={<LinkedinOutlined />} color="#0077b5" />
+            <Tag icon={<YoutubeOutlined />} color="#cd201f" />
+          </div>
+          <Link to="/edit-profile">
+            <button className="bg-red-600 text-white border-none px-3 py-1 rounded mt-3 lg:mr-[0.8rem]">Edit</button>
+          </Link>
         </div>
       </div>
-
-      <Modal
-        title="Edit Profile"
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button key="save" type="primary" onClick={handleSave}>
-            Save
-          </Button>,
-        ]}
-      >
-        <Form form={form} name="editProfile">
-          <Form.Item label="Full Name" name="fullName">
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Avatar URL"
-            name="avatarUrl"
-            rules={[{ type: "url", message: "Please enter a valid URL!" }]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
+      <div className="profile-tabs mt-8">
+        <Tabs defaultActiveKey="1" centered onChange={onChange}>
+          <TabPane tab="About" key="1" />
+          <TabPane tab="Purchased" key="2" />
+          <TabPane tab="Subscriptions" key="3" />
+        </Tabs>
+        <div className="course-content">
+          {activeTabKey === '1' && <About />}
+          {activeTabKey === '2' && <Cart />}
+          {activeTabKey === '3' && <Sub />}
+        </div>
+      </div>
     </div>
   );
 };

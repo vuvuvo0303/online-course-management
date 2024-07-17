@@ -51,11 +51,18 @@ const Dashboard: React.FC = () => {
     }
   }, [navigate]);
 
+
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    localStorage.removeItem("exp-token");
-    navigate(paths.HOME);
+    localStorage.removeItem("exp-token")
+    if (user.role === roles.ADMIN) {
+      navigate(paths.ADMIN_LOGIN);
+    }
+    else {
+      navigate(paths.HOME);
+    }
   };
 
   function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
@@ -68,7 +75,7 @@ const Dashboard: React.FC = () => {
   }
   useEffect(() => {
     function loadItems() {
-      if (dataUser.role === "instructor") {
+      if (dataUser.role === roles.INSTRUCTOR) {
         setItems([
           getItem("Dashboard", "/instructor/dashboard", <FundOutlined />),
           getItem("Manage Reviews", "/instructor/manage-reviews", <CommentOutlined />),
@@ -82,7 +89,7 @@ const Dashboard: React.FC = () => {
           getItem("Tools", "/instructor/tools", <ToolOutlined />),
           getItem("Resources", "/instructor/resources", <QuestionCircleOutlined />),
         ]);
-      } else if (dataUser.role === "admin") {
+      } else if (dataUser.role === roles.ADMIN) {
         setItems([
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
           getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
@@ -112,7 +119,7 @@ const Dashboard: React.FC = () => {
           <Row>
             <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
-                src={typeof user.avatar === "string" ? user.avatar : undefined}
+                src={typeof user.avatar === 'string' ? user.avatar : undefined}
                 className="hover:cursor-pointer"
                 size={50}
                 icon={<UserOutlined />}

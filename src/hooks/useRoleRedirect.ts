@@ -36,7 +36,7 @@ const useRoleRedirect = () => {
         }
         break;
       default:
-        navigate("/");
+        navigate(paths.HOME);
         break;
     }
   };
