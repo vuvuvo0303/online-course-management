@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axiosInstance from '../../services/axiosInstance.ts';
 import styles from './forgot.module.css';
-import {API_FORGOT_PASSWORD, paths} from '../../consts';
+import { API_FORGOT_PASSWORD, paths } from '../../consts';
+import ResponseData from 'models/ResponseData.ts';
 
 const ForgotPassword: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -14,9 +15,7 @@ const ForgotPassword: React.FC = () => {
         setLoading(true);
 
         try {
-            const response = await axiosInstance.put(API_FORGOT_PASSWORD, { email });
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
+            const response: ResponseData = await axiosInstance.put(API_FORGOT_PASSWORD, { email });
             if (response.success) {
                 toast.success("New password sent to your email. Please check your inbox.");
             }

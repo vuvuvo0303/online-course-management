@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, Input } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance.ts";
 import { toast } from "react-toastify";
 import { API_RESEND_TOKEN, API_VERIFY_TOKEN, paths } from "../../consts";
+import ResponseData from 'models/ResponseData.ts';
 
 const VerifyToken: React.FC = () => {
     const params = useParams();
@@ -16,11 +17,9 @@ const VerifyToken: React.FC = () => {
     useEffect(() => {
         const handleVerifyEmail = async () => {
             try {
-                const response = await axiosInstance.post(API_VERIFY_TOKEN, {
+                const response: ResponseData = await axiosInstance.post(API_VERIFY_TOKEN, {
                     token: params.token,
                 });
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
                 if (response.success) {
                     toast.success("Verification Successfully");
                     navigate(paths.LOGIN);
