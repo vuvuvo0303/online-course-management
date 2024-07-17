@@ -58,6 +58,7 @@ const ManageAllSession = lazy(() => import("../pages/manage-all-session"));
 const AdminLoginPage = lazy(() => import("../pages/admin/login"));
 const AdminDashboard = lazy(() => import("../pages/admin/dashboard"));
 const AdminManageUsers = lazy(() => import("../pages/admin/manage-users"));
+const AdminInstructorRequest = lazy(() => import("../pages/admin/instructor-request"));
 const AdminManageBlogs = lazy(() => import("../pages/admin/manage-blogs"));
 const AdminManageCategories = lazy(() => import("../pages/admin/manage-categories"));
 const AdminCategoryDetail = lazy(() => import("../pages/admin/manage-categories/detail"));
@@ -220,6 +221,10 @@ const AppRouter: React.FC = () => {
           <Route
             path={paths.ADMIN_MANAGE_USERS}
             element={canAccess([roles.ADMIN]) ? <AdminManageUsers /> : <Navigate to={paths.ADMIN_LOGIN} />}
+          />
+            <Route
+            path={paths.ADMIN_INSTRUCTOR_REQUEST}
+            element={canAccess([roles.ADMIN]) ? <AdminInstructorRequest/> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
           <Route
             path={paths.ADMIN_MANAGE_BLOGS}

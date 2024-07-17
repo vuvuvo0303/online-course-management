@@ -61,7 +61,7 @@ export const API_GET_REVIEWS = "/api/review/search";
 export const API_UPDATE_REVIEW = "/api/review";
 export const API_DELETE_REVIEW = "/api/review";
 //Course Logs
-export const API_COURSE_LOGS = "/api/course/log/search"
+export const API_COURSE_LOGS = "/api/course/log/search";
 //Cart
 export const API_CREATE_CART = "/api/cart";
 export const API_GET_CARTS = "/api/cart/search";
@@ -77,7 +77,7 @@ export const API_GET_PAYOUTS = "/api/payout/search";
 export const API_UPDATE_STATUS_PAYOUT = "/api/payout/update-status";
 //Client
 export const API_CLIENT_GET_COURSES = "/api/client/course/search";
-export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course"
+export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course";
 
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
@@ -116,11 +116,11 @@ export const getColor = (status: string) => {
 export const getColorLessonType = (type: string) => {
   switch (type) {
     case "video":
-      return 'red';
-    case 'text':
-      return 'blue'
-    case 'image':
-      return 'yellow'
+      return "red";
+    case "text":
+      return "blue";
+    case "image":
+      return "yellow";
   }
 };
 
@@ -187,7 +187,7 @@ export const paths = {
   ADMIN_MANAGE_LECTURES: "manage-lectures",
   ADMIN_MANAGE_USERS: "manage-users",
   ADMIN_LOGIN: "admin/login",
-
+  ADMIN_INSTRUCTOR_REQUEST: "instructor-requests",
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
   ADMIN_MANAGE_BLOGS: "manage-blogs",

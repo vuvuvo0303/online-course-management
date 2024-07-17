@@ -295,9 +295,9 @@ const AdminManageUsers: React.FC = () => {
             onChange={(value) => handleRoleChange(value, record._id)}
             style={{ width: "100%" }}
           >
-            <Select.Option value="student"> Student</Select.Option>
-            <Select.Option value="instructor">Instructor</Select.Option>
-            <Select.Option value="admin">Admin</Select.Option>
+            <Select.Option classNAme="text-red-700" value="student"> <span className="text-blue-800">Student</span></Select.Option>
+            <Select.Option value="instructor"><span className="text-green-700">Instructor</span></Select.Option>
+            <Select.Option value="admin"><span className="text-violet-500">Admin</span></Select.Option>
           </Select>
         ),
       },
@@ -505,9 +505,9 @@ const AdminManageUsers: React.FC = () => {
 
         <Select value={selectedRole} onChange={handleRolefilter} style={{ width: 120 }}>
           <Select.Option value="All">All Roles</Select.Option>
-          <Select.Option value="Admin">Admin</Select.Option>
-          <Select.Option value="Student">Student</Select.Option>
-          <Select.Option value="Instructor">Instructor</Select.Option>
+          <Select.Option value="Admin"><span className="text-violet-500">Admin</span></Select.Option>
+          <Select.Option value="Student"><span className="text-blue-800">Student</span></Select.Option>
+          <Select.Option value="Instructor"><span className="text-green-700">Instructor</span></Select.Option>
         </Select>
         <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
           <Select.Option value="true">Active</Select.Option>
