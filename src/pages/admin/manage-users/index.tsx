@@ -484,8 +484,8 @@ const AdminManageUsers: React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <Breadcrumb>
+      <div className="flex justify-between items-center ">
+        <Breadcrumb className="p-2">
           <Breadcrumb.Item href={paths.ADMIN_HOME}>
             <HomeOutlined />
           </Breadcrumb.Item>
@@ -512,7 +512,7 @@ const AdminManageUsers: React.FC = () => {
           placeholder="Search By Name"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          // onSearch={handleSearch}
+          // onSearch={handleSearch} cl
           style={{ width: 200 }}
           enterButton={<SearchOutlined className="text-white" />}
         />

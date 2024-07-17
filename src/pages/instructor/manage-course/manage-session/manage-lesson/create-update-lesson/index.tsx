@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import {
-  Button, Form, Input, Breadcrumb, Select,
-  // SelectProps, Tag 
+  Button,
+  Form,
+  Input,
+  Breadcrumb,
+  Select,
+  // SelectProps, Tag
 } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Lessons, Session } from "../../../../../../models/index.ts";
@@ -9,7 +13,16 @@ import { HomeOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { User } from "../../../../../../models/User.ts";
 import axiosInstance from "../../../../../../services/axiosInstance.ts";
-import { API_CREATE_LESSON, API_GET_COURSE, API_GET_COURSES, API_GET_LESSON, API_GET_SESSION, API_GET_SESSIONS, API_UPDATE_LESSON, paths } from "consts/index.ts";
+import {
+  API_CREATE_LESSON,
+  API_GET_COURSE,
+  API_GET_COURSES,
+  API_GET_LESSON,
+  API_GET_SESSION,
+  API_GET_SESSIONS,
+  API_UPDATE_LESSON,
+  paths,
+} from "../../../../../../consts";
 // import { Editor } from '@tinymce/tinymce-react';
 const formItemLayout = {
   labelCol: {
@@ -23,7 +36,7 @@ const formItemLayout = {
 };
 
 const CreateUpdateLesson = () => {
-  const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string, sessionId: string }>();
+  const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
@@ -31,9 +44,9 @@ const CreateUpdateLesson = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [session, setSession] = useState<Session | null>();
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [userId, setUserId] = useState<string>('');
-  const [course_id, setCourse_id] = useState<string>('');
-  const [value, setValue] = useState<string>('Enter something here');
+  const [userId, setUserId] = useState<string>("");
+  const [course_id, setCourse_id] = useState<string>("");
+  const [value, setValue] = useState<string>("Enter something here");
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
@@ -71,16 +84,14 @@ const CreateUpdateLesson = () => {
     } else {
       form.setFieldsValue({
         course_id: course?._id,
-        session_id: session?._id
+        session_id: session?._id,
       });
       setLoading(false);
     }
   }, [lectureId, courseId, form, sessionId]);
 
-
   useEffect(() => {
     const fetchCourses = async () => {
-
       if (courseId && sessionId) {
         try {
           const res = await axiosInstance.get(`${API_GET_COURSE}/${courseId}`);
@@ -90,39 +101,36 @@ const CreateUpdateLesson = () => {
         } catch (error) {
           //
         } finally {
-          setLoading(false)
+          setLoading(false);
         }
       }
-      // if there is no sessionId and courseId 
+      // if there is no sessionId and courseId
       else {
         try {
-          const response = await axiosInstance.post(API_GET_COURSES,
-            {
-              "searchCondition": {
-                "keyword": "",
-                "category": "",
-                "status": "new",
-                "is_deleted": false
-              },
-              "pageInfo": {
-                "pageNum": 1,
-                "pageSize": 10
-              }
-            }
-          );
+          const response = await axiosInstance.post(API_GET_COURSES, {
+            searchCondition: {
+              keyword: "",
+              category: "",
+              status: "new",
+              is_deleted: false,
+            },
+            pageInfo: {
+              pageNum: 1,
+              pageSize: 10,
+            },
+          });
           if (response.data) {
             setCourses(response.data.pageData);
           }
         } catch (error) {
           //
         } finally {
-          setLoading(false)
+          setLoading(false);
         }
       }
-
     };
     fetchCourses();
-  }, [courseId, sessionId])
+  }, [courseId, sessionId]);
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -135,22 +143,22 @@ const CreateUpdateLesson = () => {
         } catch (error) {
           //
         } finally {
-          setLoading(false)
+          setLoading(false);
         }
       } else {
         if (course_id) {
           try {
             const response = await axiosInstance.post(API_GET_SESSIONS, {
-              "searchCondition": {
-                "keyword": "",
-                "course_id": course_id,
-                "is_position_order": false,
-                "is_deleted": false
+              searchCondition: {
+                keyword: "",
+                course_id: course_id,
+                is_position_order: false,
+                is_deleted: false,
               },
-              "pageInfo": {
-                "pageNum": 1,
-                "pageSize": 10
-              }
+              pageInfo: {
+                pageNum: 1,
+                pageSize: 10,
+              },
             });
             if (response) {
               setSessions(response.data.pageData);
@@ -158,21 +166,19 @@ const CreateUpdateLesson = () => {
           } catch (error) {
             //
           } finally {
-            setLoading(false)
+            setLoading(false);
           }
         }
       }
     };
     fetchSessions();
-  }, [sessionId, courseId, course_id])
-
-
+  }, [sessionId, courseId, course_id]);
 
   const onFinish = async (values: Lessons) => {
-    if (typeof values.full_time === 'string') {
+    if (typeof values.full_time === "string") {
       values.full_time = parseFloat(values.full_time);
     }
-    if (typeof values.position_order === 'string') {
+    if (typeof values.position_order === "string") {
       values.position_order = parseFloat(values.position_order);
     }
     values.description = value;
@@ -181,12 +187,12 @@ const CreateUpdateLesson = () => {
       //Update lecture
       if (lectureId) {
         await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values, {});
-        toast.success("Update Lecture Successfully!")
+        toast.success("Update Lecture Successfully!");
       }
       //create lecture
       else {
         await axiosInstance.post(API_CREATE_LESSON, values);
-        toast.success("Create Lecture Successfully!")
+        toast.success("Create Lecture Successfully!");
       }
       if (sessionId && courseId) {
         navigate(`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`);
@@ -200,9 +206,9 @@ const CreateUpdateLesson = () => {
     }
   };
   const handleChangeCourseId = (value: string) => {
-    console.log("onchange value: ", value)
+    console.log("onchange value: ", value);
     setCourse_id(value);
-  }
+  };
 
   return (
     <div className="flex justify-center items-center  h-full mt-10">
@@ -210,47 +216,44 @@ const CreateUpdateLesson = () => {
         <div>Loading ...</div>
       ) : (
         <div className="w-full max-w-7xl bg-white  p-8 rounded shadow">
-          {
-            courseId && sessionId != undefined ? (
-              <Breadcrumb className="py-2">
-                <Breadcrumb.Item href={paths.INSTRUCTOR_DASHBOARD}>
-                  <HomeOutlined />
-                </Breadcrumb.Item>
-                <Breadcrumb.Item href="/instructor/manage-courses">Manage Courses</Breadcrumb.Item>
-                <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>Manage Sessions</Breadcrumb.Item>
-                <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}>Manage Lectures</Breadcrumb.Item>
-                <Breadcrumb.Item>{lectureId ? "Update Lesson" : "Create Lesson"}</Breadcrumb.Item>
-              </Breadcrumb>
-            ) : (
-              <Breadcrumb className="py-2">
-                <Breadcrumb.Item href={paths.INSTRUCTOR_DASHBOARD}>
-                  <HomeOutlined />
-                </Breadcrumb.Item>
-                <Breadcrumb.Item href={`/instructor/manage-all-lectures`}>Manage All Lessons</Breadcrumb.Item>
-                <Breadcrumb.Item>{lectureId ? "Update Lesson" : "Create Lesson"}</Breadcrumb.Item>
-              </Breadcrumb>
-            )
-          }
+          {courseId && sessionId != undefined ? (
+            <Breadcrumb className="py-2">
+              <Breadcrumb.Item href={paths.INSTRUCTOR_DASHBOARD}>
+                <HomeOutlined />
+              </Breadcrumb.Item>
+              <Breadcrumb.Item href="/instructor/manage-courses">Manage Courses</Breadcrumb.Item>
+              <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>
+                Manage Sessions
+              </Breadcrumb.Item>
+              <Breadcrumb.Item
+                href={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}
+              >
+                Manage Lectures
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>{lectureId ? "Update Lesson" : "Create Lesson"}</Breadcrumb.Item>
+            </Breadcrumb>
+          ) : (
+            <Breadcrumb className="py-2">
+              <Breadcrumb.Item href={paths.INSTRUCTOR_DASHBOARD}>
+                <HomeOutlined />
+              </Breadcrumb.Item>
+              <Breadcrumb.Item href={`/instructor/manage-all-lectures`}>Manage All Lessons</Breadcrumb.Item>
+              <Breadcrumb.Item>{lectureId ? "Update Lesson" : "Create Lesson"}</Breadcrumb.Item>
+            </Breadcrumb>
+          )}
           <h1 className="text-center mb-8">{lectureId ? "Update Lesson" : "Create Lesson"}</h1>
           <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
             <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input name!" }]}>
               <Input />
             </Form.Item>
 
-            {sessionId && courseId &&
-              <Form.Item
-                label="Course Name"
-                name="course_id"
-                hidden
-                initialValue={courseId}
-
-              >
+            {sessionId && courseId && (
+              <Form.Item label="Course Name" name="course_id" hidden initialValue={courseId}>
                 <Input defaultValue={courseId} disabled />
               </Form.Item>
-            }
+            )}
             {/* if there is no sessionId and courseId */}
-            {
-              !sessionId && !courseId &&
+            {!sessionId && !courseId && (
               <Form.Item
                 label="Course Name"
                 name="course_id"
@@ -260,27 +263,21 @@ const CreateUpdateLesson = () => {
                   // Save course_id to use to call the session api
                   onChange={handleChangeCourseId}
                   defaultValue="Choose course for this lecture"
-                  options={courses.map(course => ({
+                  options={courses.map((course) => ({
                     label: course.name,
-                    value: course._id
+                    value: course._id,
                   }))}
                 />
               </Form.Item>
-            }
-            {sessionId && courseId &&
-              <Form.Item
-                initialValue={sessionId}
-                label="Session Name"
-                name="session_id"
-                hidden
-              >
+            )}
+            {sessionId && courseId && (
+              <Form.Item initialValue={sessionId} label="Session Name" name="session_id" hidden>
                 <Input defaultValue={session?._id} disabled />
               </Form.Item>
-            }
+            )}
 
             {/* if there is no sessionId and courseId */}
-            {
-              !sessionId && !courseId &&
+            {!sessionId && !courseId && (
               <Form.Item
                 label="Session Name"
                 name="session_id"
@@ -288,19 +285,14 @@ const CreateUpdateLesson = () => {
               >
                 <Select
                   defaultValue="Choose session for this lecture"
-                  options={sessions.map(session => ({
+                  options={sessions.map((session) => ({
                     label: session.name,
-                    value: session._id
+                    value: session._id,
                   }))}
                 />
               </Form.Item>
-            }
-            <Form.Item
-              hidden
-              label="User Id"
-              name="user_id"
-              initialValue={userId}
-            >
+            )}
+            <Form.Item hidden label="User Id" name="user_id" initialValue={userId}>
               <Input.TextArea />
             </Form.Item>
             <Form.Item
@@ -323,15 +315,12 @@ const CreateUpdateLesson = () => {
                       { label: "video", value: "video" },
                       { label: "text", value: "text" },
                       { label: "image", value: "image" },
-                    ]
-                  }
+                    ],
+                  },
                 ]}
               />
             </Form.Item>
-            <Form.Item
-              label="Description"
-              name="description"
-            >
+            <Form.Item label="Description" name="description">
               <Input />
               {/* <Editor
                 apiKey="lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u"
@@ -360,23 +349,20 @@ const CreateUpdateLesson = () => {
             >
               <Input />
             </Form.Item>
-            <Form.Item
-              label="Image URL"
-              name="image_url"
-            >
+            <Form.Item label="Image URL" name="image_url">
               <Input />
             </Form.Item>
             <Form.Item
               label="full_time"
               name="full_time"
-              rules={[{ required: true, message: 'Please input a number!' }]}
+              rules={[{ required: true, message: "Please input a number!" }]}
             >
               <Input type="number" />
             </Form.Item>
             <Form.Item
               label="position_order"
               name="position_order"
-              rules={[{ required: true, message: 'Please input a number!' }]}
+              rules={[{ required: true, message: "Please input a number!" }]}
             >
               <Input type="number" />
             </Form.Item>
@@ -385,12 +371,10 @@ const CreateUpdateLesson = () => {
                 Submit
               </Button>
             </Form.Item>
-
           </Form>
-
         </div>
       )}
     </div>
   );
-}
+};
 export default CreateUpdateLesson;
