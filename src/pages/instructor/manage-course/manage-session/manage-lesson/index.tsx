@@ -20,6 +20,7 @@ const LectureOfCourse: React.FC = () => {
     const [selectedLectureId, setSelectedLectureId] = useState<string>('');
     const [keyword, setKeyword] = useState<string>('');
     const [session_id, setSession_id] = useState<string>('');
+    const [lessonType, setLessonTpe] = useState<string>('');
     const [sessions, setSessions] = useState<Session[]>([]);
     const [courses, setCourses] = useState<Course[]>([]);
     const [course_id, setCourse_id] = useState<string>('');
@@ -67,7 +68,7 @@ const LectureOfCourse: React.FC = () => {
             const response = await axiosInstance.post(API_GET_SESSIONS, {
                 "searchCondition": {
                     "keyword": "",
-                    "course_id": "",
+                    "course_id": course_id,
                     "session_id": "",
                     "lesson_type": "",
                     "is_position_order": false,
@@ -92,7 +93,7 @@ const LectureOfCourse: React.FC = () => {
                 "searchCondition": {
                     "keyword": "",
                     "category": "",
-                    "status": "new",
+                    "status": "",
                     "is_deleted": false
                 },
                 "pageInfo": {
@@ -110,7 +111,7 @@ const LectureOfCourse: React.FC = () => {
     useEffect(() => {
         fetchCourses();
         fetchSession();
-    }, [])
+    }, [course_id])
 
     //fetch lecture
     useEffect(() => {
@@ -123,7 +124,7 @@ const LectureOfCourse: React.FC = () => {
                                 "keyword": debouncedSearchTerm,
                                 "course_id": courseId,
                                 "session_id": sessionId,
-                                "lesson_type": "",
+                                "lesson_type": lessonType,
                                 "is_position_order": false,
                                 "is_deleted": false
                             },
@@ -150,9 +151,9 @@ const LectureOfCourse: React.FC = () => {
                     const response = await axiosInstance.post(API_GET_LESSONS, {
                         "searchCondition": {
                             "keyword": debouncedSearchTerm,
-                            "course_id": "",
+                            "course_id": course_id,
                             "session_id": session_id,
-                            "lesson_type": "",
+                            "lesson_type": lessonType,
                             "is_position_order": false,
                             "is_deleted": false
                         },
@@ -172,7 +173,7 @@ const LectureOfCourse: React.FC = () => {
             };
             fetchLecture();
         }
-    }, [courseId, sessionId, keyword, session_id, course_id, debouncedSearchTerm]);
+    }, [courseId, sessionId, keyword, session_id, course_id, debouncedSearchTerm, lessonType]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setKeyword(e.target.value);
@@ -270,6 +271,10 @@ const LectureOfCourse: React.FC = () => {
         setSession_id(value);
     };
 
+    const handleChangeLessonType = (value: string) => {
+        setLessonTpe(value);
+    };
+
     const handleCourseChange = (value: string) => {
         setCourse_id(value);
     };
@@ -324,7 +329,8 @@ const LectureOfCourse: React.FC = () => {
                     }
                     <div className="grid grid-cols-2">
 
-                        <div className="grid xl:grid-cols-3 grid-cols-1 gap-20">
+                        <div className="grid xl:grid-cols-4 lg:grid-cols-2 grid-cols-1 gap-20">
+                            {/* filter lesson by course */}
                             <Select
                                 defaultValue="Choose course to filter"
                                 style={{ width: 200 }}
@@ -336,6 +342,7 @@ const LectureOfCourse: React.FC = () => {
                                     value: course._id
                                 }))}
                             />
+                            {/* filter lesson by session */}
                             <Select
                                 defaultValue="Choose session to filter"
                                 style={{ width: 200 }}
@@ -346,7 +353,23 @@ const LectureOfCourse: React.FC = () => {
                                     value: session._id
                                 }))}
                             />
-
+                            {/* filter lesson by lesson type */}
+                            <Select
+                                defaultValue="All Lesson Type"
+                                style={{ width: 200 }}
+                                className="mt-10"
+                                onChange={handleChangeLessonType}
+                                options={[
+                                    {
+                                        options: [
+                                            { label: <span>All</span>, value: '' },
+                                            { label: <span>video</span>, value: 'video' },
+                                            { label: <span>text</span>, value: 'text' },
+                                            { label: <span>image</span>, value: 'image' },
+                                        ],
+                                    },
+                                ]}
+                            />
                             <Input
                                 placeholder="Search"
                                 value={keyword}

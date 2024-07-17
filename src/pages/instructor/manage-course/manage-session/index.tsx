@@ -1,14 +1,15 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps } from "antd";
 import { useEffect, useState } from "react";
-import { Session } from "../../../../models";
+import { Course, Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { API_GET_COURSE, API_GET_SESSIONS } from "../../../../consts";
+import { API_GET_COURSE, API_GET_COURSES, API_GET_SESSIONS } from "../../../../consts";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../hooks/useDebounce";
 import { format } from "date-fns";
 const ManageSession: React.FC = () => {
+    const [course_id, setCourse_id] = useState<string>('');
     const { courseId } = useParams<{ courseId: string }>();
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -16,6 +17,7 @@ const ManageSession: React.FC = () => {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('');
     const [open, setOpen] = useState(false);
+    const [courses, setCourses] = useState<Course[]>([]);
     const [keyword, setKeyword] = useState<string>('');
     const [selectedSessionID, setSelectedSessionID] = useState<string>('');
     const debouncedSearchTerm = useDebounce(keyword, 500);
@@ -61,6 +63,37 @@ const ManageSession: React.FC = () => {
         setOpen(false);
     };
 
+       //fetch courses
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        console.log("check cate");
+
+        const response = await axiosInstance.post(API_GET_COURSES, {
+          "searchCondition": {
+            "keyword": "",
+            "category_id": "",
+            "status": "",
+            "is_deleted": false
+          },
+          "pageInfo": {
+            "pageNum": 1,
+            "pageSize": 100
+          }
+        });
+        if (response.data.pageData) {
+          setCourses(response.data.pageData);
+        }
+      } catch (error) {
+       console.log("Error occurred: ", error);
+       
+      } finally {
+        setLoading(false)
+      }
+    };
+    fetchCourses();
+  }, [])
+
     useEffect(() => {
         const fetchSession = async () => {
             try {
@@ -68,7 +101,7 @@ const ManageSession: React.FC = () => {
                     {
                         "searchCondition": {
                             "keyword": debouncedSearchTerm,
-                            "course_id": courseId,
+                            "course_id": course_id,
                             "is_position_order": false,
                             "is_deleted": is_deleted
                         },
@@ -90,7 +123,7 @@ const ManageSession: React.FC = () => {
         if (courseId) {
             fetchSession();
         }
-    }, [courseId, keyword, is_deleted, debouncedSearchTerm]);
+    }, [courseId, keyword, is_deleted, debouncedSearchTerm, course_id]);
 
     const columns: TableProps<Session>["columns"] = [
         {
@@ -150,6 +183,12 @@ const ManageSession: React.FC = () => {
     const handleChange = (value: boolean) => {
         setIs_deleted(value);
     };
+
+    // set course_id
+    const handleCourseChange = (value: string) => {
+        setCourse_id(value);
+    };
+
     return (
         <div>
             <Modal
@@ -173,13 +212,14 @@ const ManageSession: React.FC = () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
             <h1 className="text-center m-5">Manage Session</h1>
+            {/* filter session by true false */}
             <div className="grid grid-cols-2">
-                <div className="grid grid-cols-2">
+                <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-10">
                     <Select
                         defaultValue={is_deleted}
+                        onChange={handleChange}
                         style={{ width: 200 }}
                         className="mt-10"
-                        onChange={handleChange}
                         options={[
                             {
                                 options: [
@@ -189,11 +229,25 @@ const ManageSession: React.FC = () => {
                             },
                         ]}
                     />
+                    {/* filter session by course */}
+                    <Select
+                        defaultValue="All Courses"
+                        style={{ width: 200 }}
+                        className="mt-10"
+                        onChange={handleCourseChange}
+                        options={[
+                            { value: "", label: "All Courses" },
+                            ...courses.map(course => ({
+                                value: course._id,
+                                label: course.name
+                            }))
+                        ]}
+                    />
                     <Input
                         placeholder="Search"
                         value={keyword}
                         onChange={handleSearch}
-                        className="m-10"
+                        className="my-10"
                         style={{ width: 200 }}
                     />
                 </div>
@@ -201,6 +255,7 @@ const ManageSession: React.FC = () => {
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New Session</Button></Link>
                 </div>
             </div>
+
             <Table dataSource={sessions} columns={columns} rowKey={(record: Session) => record._id} />
         </div>
     );

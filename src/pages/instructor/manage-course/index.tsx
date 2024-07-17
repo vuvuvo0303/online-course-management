@@ -32,9 +32,10 @@ const InstructorManageCourses: React.FC = () => {
   const [comment, setComment] = useState<string>('');
   //status for filter course by status
   const [status, setStatus] = useState<string>('');
+  const [isDelete, setIsDelete] = useState<boolean>(false);
   //status for change status
   const [changeStatus, setChangeStatus] = useState<string>('new');
-  const [cateId, setCateId] = useState<string>('java');
+  const [cateId, setCateId] = useState<string>('');
   const [keyword, setKeyword] = useState<string>('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [logLoading, setLogLoading] = useState<boolean>(true);
@@ -179,12 +180,14 @@ const InstructorManageCourses: React.FC = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
+        console.log("check cate");
+
         const response = await axiosInstance.post(API_GET_COURSES, {
           "searchCondition": {
             "keyword": debouncedSearchTerm,
-            "category": cateId,
+            "category_id": cateId,
             "status": status,
-            "is_deleted": false
+            "is_deleted": isDelete
           },
           "pageInfo": {
             "pageNum": 1,
@@ -201,7 +204,7 @@ const InstructorManageCourses: React.FC = () => {
       }
     };
     fetchCourses();
-  }, [status, cateId, debouncedSearchTerm])
+  }, [status, cateId, debouncedSearchTerm, isDelete])
 
 
   if (loading) {
@@ -227,6 +230,11 @@ const InstructorManageCourses: React.FC = () => {
     setStatus(value);
 
   };
+  //setStatus for filter course by status
+  const handleChangeIsDelete = (value: boolean) => {
+    setIsDelete(value);
+
+  };
   // set status for chang status
   const handleChangeStatus = async (value: string) => {
     setChangeStatus(value);
@@ -234,7 +242,7 @@ const InstructorManageCourses: React.FC = () => {
 
   // setCateId
   const handleCateChange = (value: string) => {
-    setCateId(value + "");
+    setCateId(value);
   };
   //search course by course name
   const handleSearchLogStatus = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -294,11 +302,11 @@ const InstructorManageCourses: React.FC = () => {
       render: (status: string, record: Course) => (
         <>
           {/* {(status !== "waiting_approve" && status !== "reject") && */}
-            <Tag color={getColor(status)} onClick={() => { showModalChangeStatus(status, record._id, record.name); }}
-              className="text-blue-500 cursor-pointer">
-              {status}
-            </Tag>
-            {/* } */}
+          <Tag color={getColor(status)} onClick={() => { showModalChangeStatus(status, record._id, record.name); }}
+            className="text-blue-500 cursor-pointer">
+            {status}
+          </Tag>
+          {/* } */}
         </>
       )
     },
@@ -573,15 +581,34 @@ const InstructorManageCourses: React.FC = () => {
               },
             ]}
           />
+          {/* filter course by isDelete */}
           <Select
-            defaultValue="java"
+            defaultValue={false}
+            style={{ width: 200 }}
+            className="m-5"
+            onChange={handleChangeIsDelete}
+            options={[
+              {
+                options: [
+                  { label: <span>true</span>, value: true },
+                  { label: <span>false</span>, value: false },
+                ],
+              },
+            ]}
+          />
+          {/* filter course by categories */}
+          <Select
+            defaultValue="All Categories"
             style={{ width: 200 }}
             className="m-5"
             onChange={handleCateChange}
-            options={categories.map(cate => ({
-              value: cate._id,
-              label: cate.name
-            }))}
+            options={[
+              { value: "", label: "All Categories" },
+              ...categories.map(cate => ({
+                value: cate._id,
+                label: cate.name
+              }))
+            ]}
           />
           <Input.Search
             placeholder="Search"

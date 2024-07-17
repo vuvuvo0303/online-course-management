@@ -1,12 +1,12 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps } from "antd";
 import { useEffect, useState } from "react";
-import { Session } from "../../models";
+import { Course, Session } from "../../models";
 import { Link } from "react-router-dom";
 import { User } from "../../models/User";
 import { toast } from "react-toastify";
 import axiosInstance from "../../services/axiosInstance.ts";
-import { API_DELETE_SESSION, API_GET_SESSIONS } from "../../consts";
+import { API_DELETE_SESSION, API_GET_COURSES, API_GET_SESSIONS } from "../../consts";
 import { useDebounce } from "../../hooks";
 import { format } from "date-fns";
 
@@ -15,7 +15,8 @@ const ManageAllSession = () => {
     const [open, setOpen] = useState(false);
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [course_id, setCourse_id] = useState<string>('');
     const [is_deleted, setIs_deleted] = useState<boolean>(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [role, setRole] = useState<string>('');
@@ -71,6 +72,36 @@ const ManageAllSession = () => {
         setIs_deleted(value);
     };
 
+    //fetch courses
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        console.log("check cate");
+
+        const response = await axiosInstance.post(API_GET_COURSES, {
+          "searchCondition": {
+            "keyword": "",
+            "category_id": "",
+            "status": "",
+            "is_deleted": false
+          },
+          "pageInfo": {
+            "pageNum": 1,
+            "pageSize": 100
+          }
+        });
+        if (response.data.pageData) {
+          setCourses(response.data.pageData);
+        }
+      } catch (error) {
+       console.log("Error occurred: ", error);
+       
+      } finally {
+        setLoading(false)
+      }
+    };
+    fetchCourses();
+  }, [])
 
     //fetch session
     useEffect(() => {
@@ -79,7 +110,7 @@ const ManageAllSession = () => {
                 const response = await axiosInstance.post(API_GET_SESSIONS, {
                     "searchCondition": {
                         "keyword": debouncedSearchTerm,
-                        "course_id": "",
+                        "course_id": course_id,
                         "is_position_order": true,
                         "is_deleted": is_deleted
                     },
@@ -98,7 +129,7 @@ const ManageAllSession = () => {
             }
         };
         fetchSession();
-    }, [userId, role, is_deleted, keyword, debouncedSearchTerm]);
+    }, [userId, role, is_deleted, keyword, debouncedSearchTerm, course_id]);
 
     if (loading === true) {
         return <div className="text-center">Loading...</div>;
@@ -121,16 +152,16 @@ const ManageAllSession = () => {
             key: 'name',
             render: (name: string, record: Session) => (
                 <>
-               {
-                 role === "instructor" ?
-                 (
-                     <Link className="text-blue-500" to={`/instructor/manage-courses/${record.course_id}/manage-sessions/${record._id}/manage-lectures`}>Lesson of {name}</Link>
-                 )
-                 :
-                 (
-                     <Link className="text-blue-500" to={`/admin/manage-all-sessions/${record._id}/manage-lecture`}>Lesson of {name}</Link>
-                 )
-               }
+                    {
+                        role === "instructor" ?
+                            (
+                                <Link className="text-blue-500" to={`/instructor/manage-courses/${record.course_id}/manage-sessions/${record._id}/manage-lectures`}>Lesson of {name}</Link>
+                            )
+                            :
+                            (
+                                <Link className="text-blue-500" to={`/admin/manage-all-sessions/${record._id}/manage-lecture`}>Lesson of {name}</Link>
+                            )
+                    }
                 </>
             )
         },
@@ -151,7 +182,7 @@ const ManageAllSession = () => {
             dataIndex: '_id',
             key: '_id',
             render: (_id: string, record: Session) => (
-                <>                 
+                <>
                     <Link to={`/instructor/manage-all-sessions/update-session/${_id}`}><EditOutlined className="m-2 text-blue-500" /></Link>
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id, record)} />
                 </>
@@ -168,6 +199,10 @@ const ManageAllSession = () => {
         setKeyword(e.target.value);
     };
 
+    // set course_id
+  const handleCourseChange = (value: string) => {
+    setCourse_id(value);
+  };
     return (
         <div>
             <Modal
@@ -201,7 +236,7 @@ const ManageAllSession = () => {
             <h1 className="text-center my-5">Manage All Session</h1>
             {/* filter session by true false */}
             <div className="grid grid-cols-2">
-                <div className="grid grid-cols-2">
+                <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-10">
                     <Select
                         defaultValue={is_deleted}
                         onChange={handleChange}
@@ -216,11 +251,25 @@ const ManageAllSession = () => {
                             },
                         ]}
                     />
+                    {/* filter session by course */}
+                    <Select
+                        defaultValue="All Courses"
+                        style={{ width: 200 }}
+                        className="mt-10"
+                        onChange={handleCourseChange}
+                        options={[
+                            { value: "", label: "All Courses" },
+                            ...courses.map(course => ({
+                                value: course._id,
+                                label: course.name
+                            }))
+                        ]}
+                    />
                     <Input
                         placeholder="Search"
                         value={keyword}
                         onChange={handleSearch}
-                        className="m-10"
+                        className="my-10"
                         style={{ width: 200 }}
                     />
                 </div>
