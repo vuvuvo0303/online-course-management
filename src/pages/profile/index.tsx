@@ -13,11 +13,16 @@ import About from './about/about';
 import Cart from './cart/CartComponents';
 import Sub from './subscription/index';
 import ChangePassword from './change-password';
+import { User } from 'models/User';
 
 const { TabPane } = Tabs;
 
 const Profile: React.FC = () => {
   const [activeTabKey, setActiveTabKey] = useState('1');
+
+  const userString = localStorage.getItem("user");
+  const user: User = userString ? JSON.parse(userString) : null;
+  const googleID = user.google_id;
 
   const onChange = (key: string) => {
     setActiveTabKey(key);
@@ -78,15 +83,17 @@ const Profile: React.FC = () => {
       <div className="profile-tabs mt-8">
         <Tabs defaultActiveKey="1" centered onChange={onChange}>
           <TabPane tab="About" key="1" />
-          <TabPane tab="Change Password" key="2" />
-          <TabPane tab="Purchased" key="3" />
-          <TabPane tab="Subscriptions" key="4" />
+          <TabPane tab="Purchased" key="2" />
+          <TabPane tab="Subscriptions" key="3" />
+          {!googleID && <TabPane tab="Change Password" key="4" />}
+
         </Tabs>
         <div className="course-content">
           {activeTabKey === '1' && <About />}
-          {activeTabKey === '2' && <ChangePassword />}
-          {activeTabKey === '3' && <Cart />}
-          {activeTabKey === '4' && <Sub />}
+          {activeTabKey === '2' && <Cart />}
+          {activeTabKey === '3' && <Sub />}
+          {!googleID && activeTabKey === '4' && <ChangePassword />}
+
         </div>
       </div>
     </div>
