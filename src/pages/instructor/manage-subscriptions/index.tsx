@@ -1,5 +1,5 @@
-import { Breadcrumb, Input, Table, TableProps } from "antd";
-import { API_INSTRUCTOR_GET_SUBSCRIPTIONS } from "../../../consts/index";
+import { Breadcrumb, Button, Input, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
+import { API_INSTRUCTOR_GET_SUBSCRIBER, API_INSTRUCTOR_GET_SUBSCRIPTIONS, getColor, getColorStatusSubscribe } from "../../../consts/index";
 import { format } from "date-fns";
 import { Subscription } from "models/Subscription";
 import { useEffect, useState } from "react";
@@ -11,10 +11,11 @@ const InstructorManageSubscriptions = () => {
     const [keyword, setKeyword] = useState<string>("");
     const debouncedSearchTerm = useDebounce(keyword, 500);
     const [loading, setLoading] = useState<boolean>(true);
+    const [apiLink, setApiLink] = useState<string>(API_INSTRUCTOR_GET_SUBSCRIPTIONS);
     useEffect(() => {
         const fetchSubscriptions = async () => {
             try {
-                const res = await axiosInstance.post(API_INSTRUCTOR_GET_SUBSCRIPTIONS, {
+                const res = await axiosInstance.post(apiLink, {
                     "searchCondition": {
                         "keyword": debouncedSearchTerm,
                         "is_delete": false
@@ -34,7 +35,7 @@ const InstructorManageSubscriptions = () => {
             }
         }
         fetchSubscriptions();
-    }, [debouncedSearchTerm])
+    }, [debouncedSearchTerm, apiLink])
 
     //search student by student name
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,11 +46,45 @@ const InstructorManageSubscriptions = () => {
         return <p className="text-center">Loading ...</p>
     }
 
+    const onChange = (key: string) => {
+        console.log("check key: ", key)
+        if (key === "subscription") {
+            setApiLink(API_INSTRUCTOR_GET_SUBSCRIPTIONS)
+        } else {
+            setApiLink(API_INSTRUCTOR_GET_SUBSCRIBER)
+
+        }
+
+    };
+    const items: TabsProps['items'] = [
+        {
+            key: 'subscription',
+            label: 'Subscription',
+        },
+        {
+            key: 'subscriber',
+            label: 'Subscriber',
+        },
+    ];
     const columns: TableProps<Subscription>['columns'] = [
         {
             title: 'Subscriber Name',
             dataIndex: 'subscriber_name',
             key: 'subscriber_name',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'is_subscribed',
+            key: 'is_subscribed',
+            render: (is_subscribed: boolean) => (
+                <>           
+                        <div >
+                            <Tag color={getColorStatusSubscribe(is_subscribed)}>
+                                {is_subscribed === true ? "Subscribed" : "Un subscribed"}
+                            </Tag>
+                        </div>
+                </>
+            )
         },
         {
             title: 'Created At ',
@@ -79,6 +114,7 @@ const InstructorManageSubscriptions = () => {
                 ]}
             />
             <h1 className="text-center my-10">Manage Subscriptions</h1>
+            <Tabs defaultActiveKey="subscription" items={items} onChange={onChange} />
             <Input.Search
                 placeholder="Search"
                 value={keyword}

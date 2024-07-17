@@ -80,6 +80,7 @@ export const API_CLIENT_GET_COURSES = "/api/client/course/search";
 export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course";
 //Subscription
 export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-instructor";
+export const API_INSTRUCTOR_GET_SUBSCRIBER = "/api/subscription/search-for-subscriber";
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";
@@ -114,6 +115,14 @@ export const getColor = (status: string) => {
   }
 };
 
+export const getColorStatusSubscribe = (status: boolean) => {
+  switch (status) {
+    case true:
+      return "red";
+    case false:
+      return "blue";
+  }
+};
 export const getColorLessonType = (type: string) => {
   switch (type) {
     case "video":
