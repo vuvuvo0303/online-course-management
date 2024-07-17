@@ -31,7 +31,7 @@ const InstructorManageCourses: React.FC = () => {
   const [keywordLogStatus, setKeywordLogStatus] = useState<string>('');
   const [comment, setComment] = useState<string>('');
   //status for filter course by status
-  const [status, setStatus] = useState<string>('new');
+  const [status, setStatus] = useState<string>('');
   //status for change status
   const [changeStatus, setChangeStatus] = useState<string>('new');
   const [cateId, setCateId] = useState<string>('java');
@@ -293,11 +293,12 @@ const InstructorManageCourses: React.FC = () => {
       key: 'status',
       render: (status: string, record: Course) => (
         <>
-          {(status !== "waiting_approve" && status !== "reject") &&
-            <Tag onClick={() => { showModalChangeStatus(status, record._id, record.name); }}
+          {/* {(status !== "waiting_approve" && status !== "reject") && */}
+            <Tag color={getColor(status)} onClick={() => { showModalChangeStatus(status, record._id, record.name); }}
               className="text-blue-500 cursor-pointer">
               {status}
-            </Tag>}
+            </Tag>
+            {/* } */}
         </>
       )
     },
@@ -554,13 +555,14 @@ const InstructorManageCourses: React.FC = () => {
         <div className="grid xl:grid-cols-3 grid-cols-1 gap-10">
           {/* filter course by status */}
           <Select
-            defaultValue="new"
+            defaultValue="all"
             style={{ width: 200 }}
             className="m-5"
             onChange={handleChange}
             options={[
               {
                 options: [
+                  { label: <span>all</span>, value: '' },
                   { label: <span>new</span>, value: 'new' },
                   { label: <span>waiting approve</span>, value: 'waiting_approve' },
                   { label: <span>approve</span>, value: 'approve' },

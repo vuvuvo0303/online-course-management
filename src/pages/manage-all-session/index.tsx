@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps } from "antd";
 import { useEffect, useState } from "react";
 import { Session } from "../../models";
@@ -116,6 +116,25 @@ const ManageAllSession = () => {
             key: 'name',
         },
         {
+            title: 'Lesson',
+            dataIndex: 'name',
+            key: 'name',
+            render: (name: string, record: Session) => (
+                <>
+               {
+                 role === "instructor" ?
+                 (
+                     <Link className="text-blue-500" to={`/instructor/manage-courses/${record.course_id}/manage-sessions/${record._id}/manage-lectures`}>Lesson of {name}</Link>
+                 )
+                 :
+                 (
+                     <Link className="text-blue-500" to={`/admin/manage-all-sessions/${record._id}/manage-lecture`}>Lesson of {name}</Link>
+                 )
+               }
+                </>
+            )
+        },
+        {
             title: 'Created Date',
             dataIndex: 'created_at',
             key: 'created_at',
@@ -132,17 +151,7 @@ const ManageAllSession = () => {
             dataIndex: '_id',
             key: '_id',
             render: (_id: string, record: Session) => (
-                <>
-                    {
-                        role === "instructor" ?
-                            (
-                                <Link to={`/instructor/manage-courses/${record.course_id}/manage-sessions/${_id}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-                            )
-                            :
-                            (
-                                <Link to={`/admin/manage-all-sessions/${_id}/manage-lecture`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-                            )
-                    }
+                <>                 
                     <Link to={`/instructor/manage-all-sessions/update-session/${_id}`}><EditOutlined className="m-2 text-blue-500" /></Link>
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id, record)} />
                 </>
@@ -190,6 +199,7 @@ const ManageAllSession = () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
             <h1 className="text-center my-5">Manage All Session</h1>
+            {/* filter session by true false */}
             <div className="grid grid-cols-2">
                 <div className="grid grid-cols-2">
                     <Select
