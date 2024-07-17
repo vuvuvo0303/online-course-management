@@ -28,7 +28,7 @@ const InstructorCreateCourse: React.FC = () => {
     const token = localStorage.getItem("token");
     const [value, setValue] = useState<string>('Enter something here');
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchCourse = async () => {
             try {
                 const response = await
                     axiosInstance.get(`${API_GET_COURSE}/${_id}`)
@@ -52,7 +52,7 @@ const InstructorCreateCourse: React.FC = () => {
             }
         }
         if (_id) {
-            fetchData();
+            fetchCourse();
         }
     }, [_id, form, token])
 
@@ -176,7 +176,6 @@ const InstructorCreateCourse: React.FC = () => {
                                 href: '/instructor/manage-courses',
                                 title: (
                                     <>
-                                        <UserOutlined />
                                         <span>Manage Courses</span>
                                     </>
                                 ),

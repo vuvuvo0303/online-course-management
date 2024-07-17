@@ -6,7 +6,7 @@ import { HomeOutlined } from "@ant-design/icons";
 import { Course, Session } from "../../../../../models";
 import { toast } from "react-toastify";
 import { User } from "../../../../../models/User";
-import {API_CREATE_SESSION, API_UPDATE_SESSION} from "../../../../../consts";
+import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
 
 const formItemLayout = {
@@ -45,9 +45,9 @@ const CreateUpdateSession = () => {
     }
     // update session
     if (sessionId) {
-      const fetchData = async () => {
+      const fetchSession = async () => {
         try {
-          const response = await axiosInstance.get(`/api/session/${sessionId}`);
+          const response = await axiosInstance.get(`${API_GET_SESSION}/${sessionId}`);
           const data = response.data;
           form.setFieldsValue({
             name: data.name,
@@ -61,7 +61,7 @@ const CreateUpdateSession = () => {
           setLoading(false);
         }
       };
-      fetchData();
+      fetchSession();
     } else {
       setLoading(false);
     }
@@ -72,7 +72,7 @@ const CreateUpdateSession = () => {
     if (!courseId) {
       const fetchCourses = async () => {
         try {
-          const res = await axiosInstance.post(`/api/course/search`,
+          const res = await axiosInstance.post(API_GET_COURSES,
             {
               "searchCondition": {
                 "keyword": "",
@@ -105,7 +105,7 @@ const CreateUpdateSession = () => {
     // manage course -> manage session -> update session
     if (courseId2 && sessionId) {
       try {
-       await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`, { ...values, user_id: userId, position_order: 3, _id: sessionId })
+        await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`, { ...values, user_id: userId, position_order: 3, _id: sessionId })
         toast.success("Update Session Successfully!")
       } catch (error) {
         //

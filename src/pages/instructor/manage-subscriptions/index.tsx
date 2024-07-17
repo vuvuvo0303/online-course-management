@@ -52,13 +52,13 @@ const InstructorManageSubscriptions = () => {
             key: 'subscriber_name',
         },
         {
-            title: 'Created At ',
+            title: 'Created Date ',
             dataIndex: 'created_at',
             key: 'created_at',
             render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
         },
         {
-            title: 'Updated At ',
+            title: 'Updated Date ',
             dataIndex: 'updated_at',
             key: 'updated_at',
             render: (update_at: Date) => format(new Date(update_at), "dd/MM/yyyy"),

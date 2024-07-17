@@ -425,12 +425,18 @@ const AdminManageCategories: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center ">
-        <Breadcrumb className="p-2">
-          <Breadcrumb.Item href={paths.ADMIN_HOME}>
-            <HomeOutlined />
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>Manage Categories</Breadcrumb.Item>
-        </Breadcrumb>
+        <Breadcrumb
+          className="py-2"
+          items={[
+            {
+              title: <HomeOutlined />,
+              href: paths.ADMIN_HOME
+            },
+            {
+              title: "Manage Categories",
+            },
+          ]}
+        />
 
         <Button type="primary" onClick={handleOpenModal}>
           Add New Category
@@ -450,7 +456,7 @@ const AdminManageCategories: React.FC = () => {
         <Table
           columns={columns}
           dataSource={data}
-          rowKey={(record) => record._id}
+          rowKey={(record: Category) => record._id}
           pagination={false}
           onChange={handleTableChange}
         />

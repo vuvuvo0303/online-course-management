@@ -430,8 +430,6 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
-    console.log(value);
-
     fetchUsers();
   };
 
@@ -487,7 +485,7 @@ const AdminManageUsers: React.FC = () => {
         </Select>
       </Space>
       <Spin spinning={loading}>
-        <Table columns={columns} dataSource={data} rowKey={(record) => record._id} pagination={false} onChange={handleTableChange} />
+        <Table columns={columns} dataSource={data} rowKey={(record: User) => record._id} pagination={false} onChange={handleTableChange} />
       </Spin>
       <div className="flex justify-end py-8">
         <Pagination

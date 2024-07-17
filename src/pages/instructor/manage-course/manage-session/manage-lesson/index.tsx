@@ -5,10 +5,10 @@ import { Link, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models/index.ts";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
-import useDebounce from "../../../../../hooks/useDebounce.ts";
+import { useDebounce } from "../../../../../hooks";
 import { API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS, getColorLessonType } from "../../../../../consts";
 import { format } from "date-fns";
-import {Lessons} from "models/Lesson.ts";
+import { Lessons } from "models/Lesson.ts";
 
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lessons[]>([]);
@@ -226,14 +226,14 @@ const LectureOfCourse: React.FC = () => {
             )
         },
         {
-            title: 'Created At ',
+            title: 'Created Date ',
             dataIndex: 'created_at',
             key: 'created_at',
             defaultSortOrder: 'descend',
             render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
         },
         {
-            title: 'Updated At ',
+            title: 'Updated Date ',
             dataIndex: 'updated_at',
             key: 'updatedDate',
             defaultSortOrder: 'descend',
@@ -371,7 +371,7 @@ const LectureOfCourse: React.FC = () => {
                         </div>
                     </div>
 
-                    <Table dataSource={data} columns={columns} rowKey="_id" />
+                    <Table dataSource={data} columns={columns} rowKey={(record: Lessons) => record._id} />
                 </div>
             )}
         </div>

@@ -6,7 +6,7 @@ import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
-import useDebounce from "../../../hooks/useDebounce";
+import { useDebounce } from "../../../hooks";
 
 const { TextArea } = Input;
 
@@ -14,7 +14,7 @@ const AdminInstructorRequest = () => {
   const [dataSource, setDataSource] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
-  
+
   const debouncedSearch = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -142,7 +142,7 @@ const AdminInstructorRequest = () => {
 
   useEffect(() => {
     fetchInstructorRequest();
-  }, [pagination.current, pagination.pageSize,debouncedSearch]);
+  }, [pagination.current, pagination.pageSize, debouncedSearch]);
 
   const handleApprove = async (record: Instructor) => {
     try {
@@ -201,14 +201,14 @@ const AdminInstructorRequest = () => {
         </Breadcrumb.Item>
         <Breadcrumb.Item>Manage Instructor's Request</Breadcrumb.Item>
       </Breadcrumb>
-      <Input.Search 
-          placeholder="Search By Name"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          className="p-2"
-          style={{ width: 200 }}
-          enterButton={<SearchOutlined className="text-white" />}
-        />
+      <Input.Search
+        placeholder="Search By Name"
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        className="p-2"
+        style={{ width: 200 }}
+        enterButton={<SearchOutlined className="text-white" />}
+      />
       <Table
         columns={columns}
         dataSource={dataSource}

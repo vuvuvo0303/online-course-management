@@ -13,7 +13,7 @@ const AdminManageFeedbacks: React.FC = () => {
   const [data, setData] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [pagination, ] = useState({
+  const [pagination,] = useState({
     pageNum: 1,
     pageSize: 10,
     totalItems: 0
@@ -139,7 +139,7 @@ const AdminManageFeedbacks: React.FC = () => {
           },
         ]}
       />
-      <Table rowKey={(record) => record._id} columns={columns} dataSource={data} />
+      <Table rowKey={(record: Review) => record._id} columns={columns} dataSource={data} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.totalItems}
