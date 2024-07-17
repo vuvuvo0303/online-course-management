@@ -90,7 +90,7 @@ const AdminManageCategories: React.FC = () => {
           }));
         }
       } catch (error) {
-        console.error(error);
+        //
       } finally {
         setLoading(false);
       }
@@ -424,8 +424,8 @@ const AdminManageCategories: React.FC = () => {
   }
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <Breadcrumb>
+      <div className="flex justify-between items-center ">
+        <Breadcrumb className="p-2">
           <Breadcrumb.Item href={paths.ADMIN_HOME}>
             <HomeOutlined />
           </Breadcrumb.Item>
@@ -436,7 +436,7 @@ const AdminManageCategories: React.FC = () => {
           Add New Category
         </Button>
       </div>
-      <Space style={{ marginTop: 32, marginBottom: 16 }}>
+      <Space >
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
@@ -450,7 +450,7 @@ const AdminManageCategories: React.FC = () => {
         <Table
           columns={columns}
           dataSource={data}
-          rowKey="_id"
+          rowKey={(record) => record._id}
           pagination={false}
           onChange={handleTableChange}
         />
@@ -468,7 +468,7 @@ const AdminManageCategories: React.FC = () => {
       </div>
       <Modal
         title="Add New Category"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => {
           form.resetFields();
           setIsModalVisible(false);

@@ -5,13 +5,17 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { HomeOutlined } from "@ant-design/icons";
+import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import useDebounce from "../../../hooks/useDebounce";
 
 const { TextArea } = Input;
 
 const AdminInstructorRequest = () => {
   const [dataSource, setDataSource] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  
+  const debouncedSearch = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -105,6 +109,8 @@ const AdminInstructorRequest = () => {
       const response = await axiosInstance.post(API_GET_USERS, {
         searchCondition: {
           role: "instructor",
+          keyword: debouncedSearch,
+
         },
         pageInfo: {
           pageNum: pagination.current,
@@ -136,7 +142,7 @@ const AdminInstructorRequest = () => {
 
   useEffect(() => {
     fetchInstructorRequest();
-  }, [pagination.current, pagination.pageSize]);
+  }, [pagination.current, pagination.pageSize,debouncedSearch]);
 
   const handleApprove = async (record: Instructor) => {
     try {
@@ -189,12 +195,20 @@ const AdminInstructorRequest = () => {
 
   return (
     <div>
-      <Breadcrumb className="p-3">
+      <Breadcrumb className="p-2">
         <Breadcrumb.Item>
           <HomeOutlined />
         </Breadcrumb.Item>
         <Breadcrumb.Item>Manage Instructor's Request</Breadcrumb.Item>
       </Breadcrumb>
+      <Input.Search 
+          placeholder="Search By Name"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          className="p-2"
+          style={{ width: 200 }}
+          enterButton={<SearchOutlined className="text-white" />}
+        />
       <Table
         columns={columns}
         dataSource={dataSource}

@@ -1,5 +1,5 @@
 import { Category, Course } from "../../../../models";
-import {API_CREATE_COURSE, API_GET_CATEGORIES, API_GET_COURSE, API_UPDATE_COURSE} from "../../../../consts";
+import { API_CREATE_COURSE, API_GET_CATEGORIES, API_GET_COURSE, API_UPDATE_COURSE } from "../../../../consts";
 import { useNavigate, useParams } from "react-router-dom";
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Form, Input, Select } from 'antd';
@@ -19,7 +19,7 @@ const formItemLayout = {
     },
 };
 
-const InstructorCreateCourse = () => {
+const InstructorCreateCourse: React.FC = () => {
     const navigate = useNavigate();
     const [cates, setCates] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);

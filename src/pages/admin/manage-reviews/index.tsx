@@ -139,7 +139,7 @@ const AdminManageFeedbacks: React.FC = () => {
           },
         ]}
       />
-      <Table rowKey="_id" columns={columns} dataSource={data} />
+      <Table rowKey={(record) => record._id} columns={columns} dataSource={data} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.totalItems}
