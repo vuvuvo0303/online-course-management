@@ -90,7 +90,7 @@ const AdminManageCategories: React.FC = () => {
           }));
         }
       } catch (error) {
-        console.error(error);
+        //
       } finally {
         setLoading(false);
       }
@@ -450,7 +450,7 @@ const AdminManageCategories: React.FC = () => {
         <Table
           columns={columns}
           dataSource={data}
-          rowKey="_id"
+          rowKey={(record) => record._id}
           pagination={false}
           onChange={handleTableChange}
         />
@@ -468,7 +468,7 @@ const AdminManageCategories: React.FC = () => {
       </div>
       <Modal
         title="Add New Category"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => {
           form.resetFields();
           setIsModalVisible(false);

@@ -54,9 +54,7 @@ const Dashboard: React.FC = () => {
 
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("exp-token")
+    localStorage.clear();
     if (user.role === roles.ADMIN) {
       navigate(paths.ADMIN_LOGIN);
     }

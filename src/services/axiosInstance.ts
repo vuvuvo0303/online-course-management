@@ -43,17 +43,17 @@ axiosInstance.interceptors.response.use(
             console.log(error.response)
             if (data && data.message) {
                 if(error.response.status === 403){
+                    toast.error(data.message)
                      const userString = localStorage.getItem("user");
                      const user = userString ? JSON.parse(userString) : null;
-                     toast.error(data.message)
-                     localStorage.removeItem("token");
-                     localStorage.removeItem("user");
+                     
                      if(user.role === roles.ADMIN){
                         window.location.href = paths.ADMIN_LOGIN;
                      }
                      else{
                         window.location.href = paths.LOGIN;
                      }
+                     localStorage.clear();
                 }
                  else if(error.response.status === 404){
                     toast.error(data.message);

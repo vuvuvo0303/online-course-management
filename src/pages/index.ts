@@ -43,7 +43,6 @@ export { default as LectureOfCourse } from "./instructor/manage-course/manage-se
 export { default as CreateLecture } from "./instructor/manage-course/manage-session/manage-lesson/create-update-lesson";
 export { default as ManageSession } from "./instructor/manage-course/manage-session/";
 export { default as CreateUpdateSession } from "./instructor/manage-course/manage-session/create-update-session";
-export { default as InstructorManageCoursesDetail } from "./instructor/manage-course/course-detail";
 export { default as ManageAllSession } from "./manage-all-session";
 
 /* Admin Page */

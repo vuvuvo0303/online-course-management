@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import {API_GET_COURSE, API_GET_SESSIONS} from "../../../../consts";
+import { API_GET_COURSE, API_GET_SESSIONS } from "../../../../consts";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../hooks/useDebounce";
 import { format } from "date-fns";
-const ManageSession = () => {
+const ManageSession: React.FC = () => {
     const { courseId } = useParams<{ courseId: string }>();
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState<boolean>(true);

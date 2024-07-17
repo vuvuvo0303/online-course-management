@@ -50,7 +50,6 @@ const ManageSession = lazy(() => import("../pages/instructor/manage-course/manag
 const InstructorCreateCourse = lazy(() => import("../pages/instructor/manage-course/create-update-course"));
 const CreateUpdateSession = lazy(() => import("../pages/instructor/manage-course/manage-session/create-update-session"));
 const ManageAllLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
-// const InstructorManageCoursesDetail = lazy(() => import("../pages/instructor/manage-course/course-detail"));
 const ManageAllSession = lazy(() => import("../pages/manage-all-session"));
 
 // Admin Page

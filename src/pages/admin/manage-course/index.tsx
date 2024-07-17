@@ -36,7 +36,7 @@ const AdminManageCourses: React.FC = () => {
   const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
   const [searchText, setSearchText] = useState<string>("");
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>("All Categories");
-  const [selectedStatus, setSelectedStatus] = useState<string>("All Statuses");
+  const [selectedStatus, setSelectedStatus] = useState<string>("All Status");
   const [comment, setComment] = useState<string>("");
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -66,7 +66,6 @@ const AdminManageCourses: React.FC = () => {
           pageSize: pagination.pageSize,
         },
       };
-      console.log("Fetching courses with params:", params);
       const res = await axiosInstance.post(`/api/course/search`, params);
       if (res.data) {
         setCourses(res.data.pageData || res.data);
@@ -230,8 +229,6 @@ const AdminManageCourses: React.FC = () => {
   const handleCategoryChange = (categoryName: string) => {
     const category = uniqueCategories.find((c) => c.category_name === categoryName);
     const newCategoryId = category && category.category_name !== "All Categories" ? category.category_id : undefined;
-    console.log("Selected categoryName:", categoryName);
-    console.log("Selected categoryId:", newCategoryId);
     setCategoryId(newCategoryId);
     setSelectedCategoryName(categoryName);
     setPagination((prev) => ({
@@ -285,7 +282,7 @@ const AdminManageCourses: React.FC = () => {
             {selectedCourse ? selectedCourse.name : ""}
           </span>
         }
-        visible={isModalVisible}
+        open={isModalVisible}
         footer={null}
         onCancel={() => setIsModalVisible(false)}
       >
@@ -380,7 +377,7 @@ const AdminManageCourses: React.FC = () => {
           value={selectedStatus}
           style={{ width: 200 }}
         >
-          <Select.Option value="">All Statuses</Select.Option>
+          <Select.Option value="">All Status</Select.Option>
           <Select.Option value="new">New</Select.Option>
           <Select.Option value="waiting_approve">Waiting for Approve</Select.Option>
           <Select.Option value="approve">Approved</Select.Option>
@@ -389,7 +386,7 @@ const AdminManageCourses: React.FC = () => {
           <Select.Option value="inactive">Inactive</Select.Option>
         </Select>
       </Space>
-      <Table columns={columnsCourses} dataSource={courses} pagination={false} onChange={handleTableChange} />
+      <Table columns={columnsCourses} rowKey={(record) => record._id} dataSource={courses} pagination={false} onChange={handleTableChange} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
