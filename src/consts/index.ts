@@ -57,16 +57,16 @@ export const API_DELETE_LESSON = "/api/lesson";
 //Review
 export const API_CREATE_REVIEW = "/api/review";
 export const API_GET_REVIEWS = "/api/review/search";
-//export const API_GET_REVIEW: "/api/review";
+//export const API_GET_REVIEW = "/api/review";
 export const API_UPDATE_REVIEW = "/api/review";
 export const API_DELETE_REVIEW = "/api/review";
 //Course Logs
-export const API_COURSE_LOGS = "/api/course/log/search"
+export const API_COURSE_LOGS = "/api/course/log/search";
 //Cart
 export const API_CREATE_CART = "/api/cart";
 export const API_GET_CARTS = "/api/cart/search";
 export const API_UPDATE_STATUS_CART = "/api/cart/update-status";
-//export const API_DELETE_CART: "/api/cart";
+//export const API_DELETE_CART = "/api/cart";
 //Purchase
 export const API_GET_ITEMS_BY_ADMIN = "/api/purchase/search";
 export const API_GET_ITEMS_BY_INSTRUCTOR = "api/purchase/search-for-instructor";
@@ -77,8 +77,10 @@ export const API_GET_PAYOUTS = "/api/payout/search";
 export const API_UPDATE_STATUS_PAYOUT = "/api/payout/update-status";
 //Client
 export const API_CLIENT_GET_COURSES = "/api/client/course/search";
-export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course"
-
+export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course";
+//Subscription
+export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-instructor";
+export const API_INSTRUCTOR_GET_SUBSCRIBER = "/api/subscription/search-for-subscriber";
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";
@@ -113,14 +115,22 @@ export const getColor = (status: string) => {
   }
 };
 
+export const getColorStatusSubscribe = (status: boolean) => {
+  switch (status) {
+    case true:
+      return "red";
+    case false:
+      return "blue";
+  }
+};
 export const getColorLessonType = (type: string) => {
   switch (type) {
     case "video":
-      return 'red';
-    case 'text':
-      return 'blue'
-    case 'image':
-      return 'yellow'
+      return "red";
+    case "text":
+      return "blue";
+    case "image":
+      return "yellow";
   }
 };
 
@@ -183,13 +193,14 @@ export const paths = {
   INSTRUCTOR_MANAGE_ALL_LECTURES: "manage-all-lessons",
   INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lessons/create-lesson",
   INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
+  INSTRUCTOR_MANAGE_SUBSCRIPTIONS: "manage-subscriptions",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",
   ADMIN_MANAGE_LECTURES: "manage-lectures",
   ADMIN_MANAGE_USERS: "manage-users",
-  ADMIN_LOGIN: "admin/login",
-
+  ADMIN_LOGIN: "/admin/login",
+  ADMIN_INSTRUCTOR_REQUEST: "instructor-requests",
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
   ADMIN_MANAGE_BLOGS: "manage-blogs",

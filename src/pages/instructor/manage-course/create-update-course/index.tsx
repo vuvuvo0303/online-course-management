@@ -1,5 +1,5 @@
 import { Category, Course } from "../../../../models";
-import {API_CREATE_COURSE, API_GET_CATEGORIES, API_GET_COURSE, API_UPDATE_COURSE} from "../../../../consts";
+import { API_CREATE_COURSE, API_GET_CATEGORIES, API_GET_COURSE, API_UPDATE_COURSE } from "../../../../consts";
 import { useNavigate, useParams } from "react-router-dom";
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Form, Input, Select } from 'antd';
@@ -19,7 +19,7 @@ const formItemLayout = {
     },
 };
 
-const InstructorCreateCourse = () => {
+const InstructorCreateCourse: React.FC = () => {
     const navigate = useNavigate();
     const [cates, setCates] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -28,7 +28,7 @@ const InstructorCreateCourse = () => {
     const token = localStorage.getItem("token");
     const [value, setValue] = useState<string>('Enter something here');
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchCourse = async () => {
             try {
                 const response = await
                     axiosInstance.get(`${API_GET_COURSE}/${_id}`)
@@ -52,7 +52,7 @@ const InstructorCreateCourse = () => {
             }
         }
         if (_id) {
-            fetchData();
+            fetchCourse();
         }
     }, [_id, form, token])
 
@@ -176,7 +176,6 @@ const InstructorCreateCourse = () => {
                                 href: '/instructor/manage-courses',
                                 title: (
                                     <>
-                                        <UserOutlined />
                                         <span>Manage Courses</span>
                                     </>
                                 ),

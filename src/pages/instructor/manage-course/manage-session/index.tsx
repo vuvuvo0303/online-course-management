@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import {API_GET_COURSE, API_GET_SESSIONS} from "../../../../consts";
+import { API_GET_COURSE, API_GET_SESSIONS } from "../../../../consts";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../hooks/useDebounce";
 import { format } from "date-fns";
-const ManageSession = () => {
+const ManageSession: React.FC = () => {
     const { courseId } = useParams<{ courseId: string }>();
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -115,13 +115,13 @@ const ManageSession = () => {
             )
         },
         {
-            title: 'Created At',
+            title: 'Created Date',
             dataIndex: 'created_at',
             key: 'created_at',
             render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
         },
         {
-            title: 'Updated At',
+            title: 'Updated Date',
             dataIndex: 'updated_at',
             key: 'updated_at',
             render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
@@ -201,7 +201,7 @@ const ManageSession = () => {
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New Session</Button></Link>
                 </div>
             </div>
-            <Table dataSource={sessions} columns={columns} rowKey="sessionId" />
+            <Table dataSource={sessions} columns={columns} rowKey={(record: Session) => record._id} />
         </div>
     );
 };

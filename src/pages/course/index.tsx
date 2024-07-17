@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Rate, Tabs } from 'antd';
 import { HeartOutlined, FlagOutlined, EyeOutlined, LikeOutlined, DislikeOutlined, ShareAltOutlined, CopyrightOutlined, MessageOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import About from './about/about'; // Import the About component
+import About from './about/about';
 import Content from './content/content';
 import ReviewPage from './reviews/review';
 import { Link } from 'react-router-dom';
 import './index.css';
 import Instructor from './instructor/info';
-import { paths } from '../../consts/index';
+import { paths } from '../../consts';
 
 const { TabPane } = Tabs;
 

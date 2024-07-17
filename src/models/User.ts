@@ -4,18 +4,19 @@ export class User {
   _id: string;
   google_id?: string;
   name: string;
-  email: string; //unique
-  password?: string; //required if google_id is null or empty
+  email: string; // unique
+  password?: string; // required if google_id is null or empty
   role: UserRole;
-  status: boolean; //default is true, set false if want disabled user status
+  status: boolean; // default is true, set false if want disabled user status
   phone_number?: string;
-  description?: string; //required if user role is instructor
+  description?: string; // required if user role is instructor
   avatar: { file?: { originFileObj?: File } } | string;
-  video?: string; //url
-  dob?: Date; //date of birth
+  video?: string; // url
+  dob?: Date; // date of birth
   created_at?: Date;
   updated_at?: Date;
-  is_deleted?: boolean; //flag remove logic when user is deleted
+  is_deleted?: boolean; // flag remove logic when user is deleted
+  is_verified?: boolean; // add this property
 
   constructor(
     _id: string = "",
@@ -32,7 +33,8 @@ export class User {
     dob?: Date,
     created_at?: Date,
     updated_at?: Date,
-    is_deleted?: boolean
+    is_deleted?: boolean,
+    is_verified?: boolean // add this parameter
   ) {
     this._id = _id;
     this.google_id = google_id;
@@ -43,12 +45,13 @@ export class User {
     this.status = status;
     this.phone_number = phone_number;
     this.description = description;
-    this.avatar = avatar || ""; 
+    this.avatar = avatar || "";
     this.video = video;
     this.dob = dob;
     this.created_at = created_at;
     this.updated_at = updated_at;
     this.is_deleted = is_deleted;
+    this.is_verified = is_verified; // add this initialization
   }
 }
 
@@ -73,6 +76,7 @@ export class Student extends User {
     created_at?: Date,
     updated_at?: Date,
     is_deleted?: boolean,
+    is_verified?: boolean, // add this parameter
     file?: {
       originFileObj: File;
     }
@@ -92,7 +96,8 @@ export class Student extends User {
       dob,
       created_at,
       updated_at,
-      is_deleted
+      is_deleted,
+      is_verified // add this parameter to super
     );
     this.file = file;
   }
@@ -117,7 +122,8 @@ export class Admin extends User {
     dob?: Date,
     created_at?: Date,
     updated_at?: Date,
-    is_deleted?: boolean
+    is_deleted?: boolean,
+    is_verified?: boolean // add this parameter
   ) {
     super(
       _id,
@@ -134,7 +140,8 @@ export class Admin extends User {
       dob,
       created_at,
       updated_at,
-      is_deleted
+      is_deleted,
+      is_verified // add this parameter to super
     );
     this.lastLogin = lastLogin;
   }
@@ -160,7 +167,8 @@ export class Instructor extends User {
     dob?: Date,
     created_at?: Date,
     updated_at?: Date,
-    is_deleted?: boolean
+    is_deleted?: boolean,
+    is_verified?: boolean // add this parameter
   ) {
     super(
       _id,
@@ -177,7 +185,8 @@ export class Instructor extends User {
       dob,
       created_at,
       updated_at,
-      is_deleted
+      is_deleted,
+      is_verified // add this parameter to super
     );
     this.description = description;
     this.degree = degree;

@@ -44,25 +44,8 @@ import {
 } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 
-interface ApiError {
-  code: number;
-  message: string;
-}
-
-interface CreateUserResponse {
-  success: boolean;
-  data: User;
-  message?: string;
-  error?: ApiError[];
-}
-
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-type AxiosResponse<T> = {
-  success: boolean;
-  data: T;
-  message?: string;
-  error?: [];
-};
+
 
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
@@ -86,22 +69,6 @@ const AdminManageUsers: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("true");
 
-  useEffect(() => {
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "users_updated") {
-        fetchUsers();
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      if (!window.location.pathname.includes("user")) {
-        localStorage.removeItem("users_updated");
-      }
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
 
   useEffect(() => {
     fetchUsers();
@@ -156,7 +123,6 @@ const AdminManageUsers: React.FC = () => {
         toast.success(`Deleted user ${email} successfully`);
         fetchUsers();
 
-        localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
         //
       }
@@ -174,14 +140,10 @@ const AdminManageUsers: React.FC = () => {
         if (values.avatar && typeof values.avatar !== "string" && values.avatar?.file?.originFileObj) {
           avatarUrl = await uploadFile(values.avatar.file.originFileObj);
         }
-        console.log(avatarUrl);
 
         const userData = { ...values, avatar: avatarUrl };
 
-        const response: AxiosResponse<CreateUserResponse> = await axiosInstance.post<
-          User,
-          AxiosResponse<CreateUserResponse>
-        >(API_CREATE_USER, userData);
+        const response = await axiosInstance.post(API_CREATE_USER, userData);
 
         const newUser = response.data.data;
         setData((prevData) => [...prevData, newUser]);
@@ -191,10 +153,8 @@ const AdminManageUsers: React.FC = () => {
         setLoading(false);
         fetchUsers();
         setFileList([]);
-        localStorage.setItem("users_updated", new Date().toISOString());
       } catch (error) {
         setLoading(false);
-        // toast.error(`Failed to create new user: ${error.message}`);
       }
     },
     [fetchUsers, form]
@@ -226,11 +186,9 @@ const AdminManageUsers: React.FC = () => {
         status: checked,
       });
       fetchUsers();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
-      setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
+      setData((prevData: User[]) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
       toast.success(`User status updated successfully`);
-      localStorage.setItem("users_updated", new Date().toISOString());
     } catch (error) {
       // Handle error silently
     }
@@ -242,18 +200,18 @@ const AdminManageUsers: React.FC = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
-  const handleRoleChange = useCallback(async (value: UserRole, recordId: string) => {
+  const handleRoleChange = async (value: UserRole, recordId: string) => {
     try {
       await axiosInstance.put(API_CHANGE_ROLE, { user_id: recordId, role: value });
       setData((prevData: User[]) =>
         prevData.map((user) => (user._id === recordId ? { ...user, role: value } : user))
       );
       toast.success(`Role changed successfully`);
-      localStorage.setItem("users_updated", new Date().toISOString());
     } catch (error) {
       // Handle error silently
     }
-  }, []);
+  }
+
   const columns: TableColumnsType<User> = useMemo(
     () => [
       {
@@ -294,9 +252,9 @@ const AdminManageUsers: React.FC = () => {
             onChange={(value) => handleRoleChange(value, record._id)}
             style={{ width: "100%" }}
           >
-            <Select.Option value="student"> Student</Select.Option>
-            <Select.Option value="instructor">Instructor</Select.Option>
-            <Select.Option value="admin">Admin</Select.Option>
+            <Select.Option classNAme="text-red-700" value="student"> <span className="text-blue-800">Student</span></Select.Option>
+            <Select.Option value="instructor"><span className="text-green-700">Instructor</span></Select.Option>
+            <Select.Option value="admin"><span className="text-violet-500">Admin</span></Select.Option>
           </Select>
         ),
       },
@@ -425,20 +383,15 @@ const AdminManageUsers: React.FC = () => {
         email: values.email,
       };
 
-      const response: AxiosResponse<User> = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
-
+      const response = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       if (response.success) {
-        // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
-          const roleChangeResponse: AxiosResponse<User> =
-            await axiosInstance.put(API_CHANGE_ROLE, {
-              user_id: formData._id,
-              role: values.role,
-            });
-
-          if (!roleChangeResponse.success) {
-            throw new Error("Failed to change user role");
-          }
+          await axiosInstance.put(API_CHANGE_ROLE, {
+            user_id: formData._id,
+            role: values.role,
+          });
         }
 
         setData((prevData) =>
@@ -466,7 +419,7 @@ const AdminManageUsers: React.FC = () => {
       if (formData._id) {
         handleEditUser({ ...formData, ...values });
       } else {
-        console.error("User ID is not set.");
+        //
       }
     } else {
       handleAddNewUser(values);
@@ -477,20 +430,24 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
-    console.log(value);
-
     fetchUsers();
   };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <Breadcrumb>
-          <Breadcrumb.Item href={paths.ADMIN_HOME}>
-            <HomeOutlined />
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>Manage Users</Breadcrumb.Item>
-        </Breadcrumb>
+        <Breadcrumb
+          className="py-2"
+          items={[
+            {
+              title: <HomeOutlined />,
+              href: paths.ADMIN_HOME
+            },
+            {
+              title: "Manage Users",
+            },
+          ]}
+        />
 
         <div className="mt-3">
           {" "}
@@ -512,16 +469,15 @@ const AdminManageUsers: React.FC = () => {
           placeholder="Search By Name"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          // onSearch={handleSearch}
           style={{ width: 200 }}
           enterButton={<SearchOutlined className="text-white" />}
         />
 
         <Select value={selectedRole} onChange={handleRolefilter} style={{ width: 120 }}>
           <Select.Option value="All">All Roles</Select.Option>
-          <Select.Option value="Admin">Admin</Select.Option>
-          <Select.Option value="Student">Student</Select.Option>
-          <Select.Option value="Instructor">Instructor</Select.Option>
+          <Select.Option value="Admin"><span className="text-violet-500">Admin</span></Select.Option>
+          <Select.Option value="Student"><span className="text-blue-800">Student</span></Select.Option>
+          <Select.Option value="Instructor"><span className="text-green-700">Instructor</span></Select.Option>
         </Select>
         <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
           <Select.Option value="true">Active</Select.Option>
@@ -529,7 +485,7 @@ const AdminManageUsers: React.FC = () => {
         </Select>
       </Space>
       <Spin spinning={loading}>
-        <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
+        <Table columns={columns} dataSource={data} rowKey={(record: User) => record._id} pagination={false} onChange={handleTableChange} />
       </Spin>
       <div className="flex justify-end py-8">
         <Pagination
@@ -544,7 +500,7 @@ const AdminManageUsers: React.FC = () => {
 
       <Modal
         title={modalMode === "Edit" ? "Edit User" : "Add User"}
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
       >

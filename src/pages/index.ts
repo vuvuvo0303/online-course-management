@@ -31,22 +31,19 @@ export { default as Cart } from "./cart";
 
 /* Instructor Page */
 export { default as InstructorDashboard } from "./instructor/instructor-dashboard/index";
-export { default as InstructorManageLectures } from "./instructor/manage-lectures";
-export { default as InstructorManageFeedbacks } from "./instructor/manage-feedback";
+export { default as InstructorManageFeedbacks } from "./instructor/manage-instructor-feedbacks";
 export { default as PaymentHistory } from "./payment/payment-history";
 export { default as InstructorCreateCourse } from "./instructor/manage-course/create-update-course";
 export { default as InstructorManageCourses } from "./instructor/manage-course/index";
-export { default as InstructorManageStudents } from "./instructor/manage-students";
 export { default as InstructorManageBlogs } from "./instructor/manage-blogs/index";
 export { default as InstructorResources } from "./instructor/resources";
 export { default as InstructorTools } from "./instructor/tools";
-export { default as LectureOfCourse } from "./instructor/manage-course/manage-session/lectures-of-course";
-export { default as CreateLecture } from "./instructor/manage-course/manage-session/lectures-of-course/create-update-page";
+export { default as LectureOfCourse } from "./instructor/manage-course/manage-session/manage-lesson";
+export { default as CreateLecture } from "./instructor/manage-course/manage-session/manage-lesson/create-update-lesson";
 export { default as ManageSession } from "./instructor/manage-course/manage-session/";
 export { default as CreateUpdateSession } from "./instructor/manage-course/manage-session/create-update-session";
-export { default as InstructorManageCoursesDetail } from "./instructor/manage-course/course-detail";
 export { default as ManageAllSession } from "./manage-all-session";
-
+export { default as InstructorManageSubscriptions } from "./instructor/manage-subscriptions";
 /* Admin Page */
 export { default as AdminLoginPage } from "./admin/login";
 export { default as AdminDashboard } from "./admin/dashboard";
@@ -55,6 +52,6 @@ export { default as AdminManageBlogs } from "./admin/manage-blogs";
 export { default as AdminManageCategories } from "./admin/manage-categories";
 export { default as AdminCategoryDetail } from "./admin/manage-categories/detail";
 export { default as AdminManageCourses } from "./admin/manage-course";
-export { default as AdminManageFeedbacks } from "./admin/manage-feedbacks";
+export { default as AdminManageFeedbacks } from "./admin/manage-reviews";
 export { default as Dashboard } from "../components/dashboard/index";
 

@@ -7,7 +7,6 @@ import SearchTool from '../SearchTool';
 import Drawer from '../Drawer';
 import PopoverContent from '../PopoverContent';
 import Popup from '../Popup';
-import { checkTokenExpiration } from "../../services/auth.ts";
 
 
 const Navbar: React.FC = () => {
@@ -28,9 +27,6 @@ const Navbar: React.FC = () => {
   const user = localStorage.getItem("user");
 
   useEffect(() => {
-    if (checkTokenExpiration(navigate)) {
-      return;
-    }
     if (user) {
       try {
         const userData = JSON.parse(user);
@@ -42,8 +38,7 @@ const Navbar: React.FC = () => {
   }, [navigate, user]);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    localStorage.clear();
     navigate(paths.HOME);
   };
 
