@@ -52,7 +52,7 @@ const CreateUpdateSession = lazy(() => import("../pages/instructor/manage-course
 const ManageAllLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
 // const InstructorManageCoursesDetail = lazy(() => import("../pages/instructor/manage-course/course-detail"));
 const ManageAllSession = lazy(() => import("../pages/manage-all-session"));
-
+const InstructorManageSubscriptions = lazy(() => import("../pages/instructor/manage-subscriptions"));
 // Admin Page
 const AdminLoginPage = lazy(() => import("../pages/admin/login"));
 const AdminDashboard = lazy(() => import("../pages/admin/dashboard"));
@@ -207,6 +207,10 @@ const AppRouter: React.FC = () => {
           <Route
             path={paths.INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS}
             element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
+          />
+           <Route
+            path={paths.INSTRUCTOR_MANAGE_SUBSCRIPTIONS}
+            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageSubscriptions /> : <Navigate to={paths.HOME} />}
           />
         </Route>
 

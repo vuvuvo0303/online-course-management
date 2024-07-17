@@ -310,7 +310,7 @@ const InstructorManageCourses: React.FC = () => {
     {
       title: 'Updated At ',
       dataIndex: 'updated_at',
-      key: 'updatedDate',
+      key: 'updated_at',
       render: (update_at: Date) => format(new Date(update_at), "dd/MM/yyyy"),
     },
     {

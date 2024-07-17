@@ -78,7 +78,8 @@ export const API_UPDATE_STATUS_PAYOUT = "/api/payout/update-status";
 //Client
 export const API_CLIENT_GET_COURSES = "/api/client/course/search";
 export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course";
-
+//Subscription
+export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-instructor";
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";
@@ -182,6 +183,7 @@ export const paths = {
   INSTRUCTOR_MANAGE_ALL_LECTURES: "manage-all-lessons",
   INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lessons/create-lesson",
   INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
+  INSTRUCTOR_MANAGE_SUBSCRIPTIONS: "manage-subscriptions",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",

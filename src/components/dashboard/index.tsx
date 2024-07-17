@@ -82,6 +82,7 @@ const Dashboard: React.FC = () => {
           getItem("Manage Courses", "/instructor/manage-courses", <FundProjectionScreenOutlined />),
           getItem("Manage All Sessions", "/instructor/manage-all-sessions", <DesktopOutlined />),
           getItem("Manage All Lessons", "/instructor/manage-all-lessons", <DesktopOutlined />),
+          getItem("Manage Subscriptions", "/instructor/manage-subscriptions", <DesktopOutlined />),
           getItem("Manage Students", "/instructor/manage-students", <TeamOutlined />),
           getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
