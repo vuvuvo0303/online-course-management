@@ -43,6 +43,7 @@ import {
   paths,
 } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
+import ResponseData from "models/ResponseData.ts";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -96,7 +97,7 @@ const AdminManageUsers: React.FC = () => {
           pageSize: pagination.pageSize,
         },
       });
-
+      console.log(response);
       if (response.data && response.data.pageData) {
         setData(response.data.pageData);
         setPagination({
@@ -383,9 +384,7 @@ const AdminManageUsers: React.FC = () => {
         email: values.email,
       };
 
-      const response = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+      const response: ResponseData = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
       if (response.success) {
         if (formData.role !== values.role) {
           await axiosInstance.put(API_CHANGE_ROLE, {

@@ -31,8 +31,7 @@ import {
   API_UPDATE_CATEGORY,
   paths,
 } from "../../../consts";
-import { vi } from "date-fns/locale";
-import useDebounce from "../../../hooks/useDebounce";
+import { useDebounce } from "../../../hooks";
 const AdminManageCategories: React.FC = () => {
   const [data, setData] = useState<Category[]>([]);
   const [searchText, setSearchText] = useState<string>("");
@@ -149,13 +148,10 @@ const AdminManageCategories: React.FC = () => {
 
       try {
         await axiosInstance.delete(`${API_DELETE_CATEGORY}/${_id}`);
-        // setData((prevData) =>
-        //   prevData.filter((category) => category._id !== _id)
-        // );
         fetchCategories();
         toast.success(`Category ${name} deleted successfully.`);
       } catch (error) {
-        console.log(error);
+        //
       }
     },
     [data, fetchCategories]
@@ -204,7 +200,7 @@ const AdminManageCategories: React.FC = () => {
           toast.success(`Category ${values.name} updated successfully.`);
         }
       } catch (error) {
-        console.log(error);
+        //
       } finally {
         setLoading(false);
       }
@@ -365,14 +361,14 @@ const AdminManageCategories: React.FC = () => {
       dataIndex: "created_at",
       key: "created_at",
       render: (created_at: Date) =>
-        format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+        format(new Date(created_at), "dd/MM/yyyy"),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
       render: (updated_at: Date) =>
-        format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+        format(new Date(updated_at), "dd/MM/yyyy"),
     },
     {
       title: "Action",
