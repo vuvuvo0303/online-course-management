@@ -1,28 +1,14 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, Popover, Button, Rate } from 'antd';
 import Carousel from "react-multi-carousel";
 import { Link } from 'react-router-dom';
-import { categoryFilters, categoryCourse, paths } from "../../../consts/index";
+import { paths } from "../../../consts/index";
 import { CheckOutlined, HeartOutlined } from '@ant-design/icons';
-import './Categories.css';
 
 const { Meta } = Card;
 
-const Categories: React.FC = () => {
-    const [selectedCategory, setSelectedCategory] = useState<string>('Web Development');
-    const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 464);
-    const [ratings, setRatings] = useState<number[]>(Array.from({ length: categoryCourse[selectedCategory].length }, () => 3));
-
-    const handleResize = useCallback(() => {
-        setIsDesktop(window.innerWidth > 464);
-    }, []);
-
-    useEffect(() => {
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [handleResize]);
+const AllCourses: React.FC = () => {
+    const [ratings, setRatings] = useState<number[]>([3, 4, 5]);
 
     const price = "$99.99"; // Example price, you can modify it as needed
 
@@ -33,7 +19,7 @@ const Categories: React.FC = () => {
         },
         desktop: {
             breakpoint: { max: 3000, min: 1024 },
-            items: 3
+            items: 4
         },
         tablet: {
             breakpoint: { max: 1024, min: 464 },
@@ -43,11 +29,6 @@ const Categories: React.FC = () => {
             breakpoint: { max: 464, min: 0 },
             items: 1
         }
-    };
-
-    const handleFilterClick = (filter: string) => {
-        setSelectedCategory(filter);
-        setRatings(Array.from({ length: categoryCourse[filter].length }, () => 3));
     };
 
     const renderPopoverContent = (course: string) => {
@@ -108,28 +89,10 @@ const Categories: React.FC = () => {
     };
 
     return (
-        <div className="categories-container">
-            <div className="categories-content">
-                <div className="category-filters-container">
-                    {categoryFilters.map((filter) => (
-                        <Button
-                            key={filter}
-                            className="category-filter-button"
-                            onClick={() => handleFilterClick(filter)}
-                        >
-                            {filter}
-                        </Button>
-                    ))}
-                </div>
-                <h1 className="categories-header">{selectedCategory}</h1>
-                <Link to={`/courses/${selectedCategory}`}>
-                    <Button
-                        type="default"
-                        className="categories-button"
-                        disabled={!selectedCategory}
-                    >
-                        Explore Course
-                    </Button>
+        <div className="w-full">
+            <div className="w-full text-left">
+                <Link to={`/course/all-courses`}>
+                    <h2 className="text-2xl font-bold mb-2 p-2">All Courses</h2>
                 </Link>
 
                 <Carousel
@@ -143,8 +106,8 @@ const Categories: React.FC = () => {
                     infinite={true}
                     className="categories-carousel"
                 >
-                    {categoryCourse[selectedCategory].map((course, index) => (
-                        <div key={course} className="category-card">
+                    {['Course 1', 'Course 2', 'Course 3', 'Course 4', 'Course 5'].map((course, index) => (
+                        <div key={course} className="category-card w-full">
                             <Popover
                                 content={renderPopoverContent(course)}
                                 title="Category Info"
@@ -153,14 +116,14 @@ const Categories: React.FC = () => {
                                 overlayStyle={{ textAlign: 'center' }}
                             >
                                 <Card
-                                    style={{ margin: '10px' }}
+                                    className="max-w-[300px] mx-auto"
                                     cover={
                                         <div className="avatar-container">
                                             <Link to={`${paths.COURSE}`}>
                                                 <img
                                                     alt="example"
                                                     src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                                                    style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+                                                    className="w-full"
                                                 />
                                             </Link>
                                             <div className="best-seller-label text-yellow-200 text-base">Best Seller</div>
@@ -176,7 +139,7 @@ const Categories: React.FC = () => {
                                         <span className="rating-number">{ratings[index]}</span>
                                         <Rate value={ratings[index]} onChange={(value) => handleRatingChange(index, value)} />
                                     </div>
-                                    <div className="card-meta price" style={{ marginTop: '10px' }}>
+                                    <div className="card-meta price mt-2">
                                         {price}
                                     </div>
                                 </Card>
@@ -185,24 +148,8 @@ const Categories: React.FC = () => {
                     ))}
                 </Carousel>
             </div>
-            {isDesktop && (
-                <div className="content-frame">
-                    <h2>Become an Instructor</h2>
-                    <img
-                        src="https://png.pngtree.com/png-vector/20190115/ourlarge/pngtree-teachers-day-cartoon-female-teacher-teacher-png-image_370554.jpg"
-                        alt="Instructor"
-                        className="instructor-image"
-                    />
-                    <p>Top instructors from around the world teach millions of students on FLearn. We provide the tools and skills to teach what you love.</p>
-                    <Link to={paths.TEACHING}>
-                        <Button type="primary" style={{ backgroundColor: 'gray', marginTop: '50px' }}>
-                            Start Teaching
-                        </Button>
-                    </Link>
-                </div>
-            )}
         </div>
     );
 };
 
-export default Categories;
+export default AllCourses;

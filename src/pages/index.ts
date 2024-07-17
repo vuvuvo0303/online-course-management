@@ -9,6 +9,7 @@ export { default as Terms } from "./terms";
 export { default as Guidelines } from "./guideline";
 export { default as About } from "./about";
 export { default as Course } from "./course";
+export { default as AllCourse } from "./course/all-courses";
 export { default as BlogDetail } from "./blog/blog-detail";
 export { default as BlogList } from "./blog";
 export { default as Enrollment } from "./enrollment/index";

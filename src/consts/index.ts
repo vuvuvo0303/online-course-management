@@ -140,6 +140,7 @@ export const paths = {
   CONTACT: "/contact",
   TEACHING: "/teaching",
   COURSE: "/course",
+  ALL_COURSES: "/course/all-courses",
   SITEMAP: "/sitemap",
   NOTFOUND: "/notfound",
   COURSE_DETAIL: "/course/:id",

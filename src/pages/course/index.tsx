@@ -7,7 +7,7 @@ import ReviewPage from './reviews/review';
 import { Link } from 'react-router-dom';
 import './index.css';
 import Instructor from './instructor/info';
-import { paths } from 'consts/index';
+import { paths } from '../../consts/index';
 
 const { TabPane } = Tabs;
 

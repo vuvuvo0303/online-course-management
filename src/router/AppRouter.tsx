@@ -15,6 +15,7 @@ const Terms = lazy(() => import("../pages/terms"));
 const Guidelines = lazy(() => import("../pages/guideline"));
 const About = lazy(() => import("../pages/about"));
 const Course = lazy(() => import("../pages/course"));
+const AllCourses = lazy(() => import("../pages/course/all-courses"));
 const BlogDetail = lazy(() => import("../pages/blog/blog-detail"));
 const BlogList = lazy(() => import("../pages/blog"));
 const Enrollment = lazy(() => import("../pages/enrollment"));
@@ -82,6 +83,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.SUPPORT} element={<Support />} />
         <Route path={paths.BLOGS} element={<BlogList />} />
         <Route path={paths.COURSE} element={<Course />} />
+        <Route path={paths.ALL_COURSES} element={<AllCourses />} />
         <Route path={paths.BLOG_DETAIL} element={<BlogDetail />} />
         <Route path={paths.CONTACT} element={<Contact />} />
         <Route path={paths.SITEMAP} element={<SiteMap />} />
