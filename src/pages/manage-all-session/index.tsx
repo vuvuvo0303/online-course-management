@@ -1,12 +1,12 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps, Tag } from "antd";
+import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps } from "antd";
 import { useEffect, useState } from "react";
 import { Session } from "../../models";
 import { Link } from "react-router-dom";
 import { User } from "../../models/User";
 import { toast } from "react-toastify";
 import axiosInstance from "../../services/axiosInstance.ts";
-import { API_DELETE_SESSION, API_GET_SESSIONS, colorIs_delete } from "../../consts";
+import { API_DELETE_SESSION, API_GET_SESSIONS } from "../../consts";
 import useDebounce from "../../hooks/useDebounce";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -107,7 +107,12 @@ const ManageAllSession = () => {
 
     const columns: TableProps["columns"] = [
         {
-            title: 'Name',
+            title: 'Course Name',
+            dataIndex: 'course_name',
+            key: 'course_name',
+        },
+        {
+            title: 'Session Name',
             dataIndex: 'name',
             key: 'name',
         },
@@ -122,23 +127,6 @@ const ManageAllSession = () => {
             dataIndex: 'updated_at',
             key: 'updated_at',
             render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
-        },
-        {
-            title: 'User Name',
-            dataIndex: 'user_name',
-            key: 'user_name',
-        },
-        {
-            title: 'Is Deleted',
-            dataIndex: 'is_deleted',
-            key: 'is_deleted',
-            render: (is_deleted: boolean) => (
-                <>
-                    <Tag color={colorIs_delete(is_deleted)}>
-                        {is_deleted ? "true" : "false"}
-                    </Tag>
-                </>
-            )
         },
         {
             title: 'Action',
