@@ -15,7 +15,6 @@ import { User } from "../../../../../../models/User.ts";
 import axiosInstance from "../../../../../../services/axiosInstance.ts";
 import {
   API_CREATE_LESSON,
-  API_GET_COURSE,
   API_GET_COURSES,
   API_GET_LESSON,
   API_GET_SESSION,
@@ -41,7 +40,6 @@ const CreateUpdateLesson = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-  const [course, setCourse] = useState<Course | null>();
   const [courses, setCourses] = useState<Course[]>([]);
   const [session, setSession] = useState<Session | null>();
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -86,22 +84,9 @@ const CreateUpdateLesson = () => {
     }
   }, [lectureId, courseId, form, sessionId]);
 
+  // fetch course to create or update session
   useEffect(() => {
     const fetchCourses = async () => {
-      if (courseId && sessionId) {
-        try {
-          const res = await axiosInstance.get(`${API_GET_COURSE}/${courseId}`);
-          if (res.data) {
-            setCourse(res.data);
-          }
-        } catch (error) {
-          //
-        } finally {
-          setLoading(false);
-        }
-      }
-      // if there is no sessionId and courseId
-      else {
         try {
           const response = await axiosInstance.post(API_GET_COURSES, {
             searchCondition: {
@@ -121,8 +106,7 @@ const CreateUpdateLesson = () => {
         } catch (error) {
           //
         } finally {
-          setLoading(false);
-        }
+          setLoading(false);     
       }
     };
     fetchCourses();

@@ -111,7 +111,7 @@ const ManageSession: React.FC = () => {
             key: '_id',
             render: (_id: number, record: Session) => (
                 <>
-                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${_id}/manage-lectures`}>
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${_id}/manage-lessons`}>
                         <p className="text-blue-700">Lesson of "{record.name}"</p></Link>
                 </>
             )

@@ -118,21 +118,22 @@ const ManageAllSession = () => {
                     }
                 });
                 if (response) {
-                    const sortedSessions = response.data.pageData.sort((a:Session, b:Session) => {
-                        const dateA = new Date(a.created_at);
-                        const dateB = new Date(b.created_at);
+                    const sortedSessions = response.data.pageData.sort((a: Session, b: Session) => {
+                        const dateA = new Date(a.created_at).getTime();
+                        const dateB = new Date(b.created_at).getTime();
                         return dateB - dateA;
                     });
                     setSessions(sortedSessions);
                 }
             } catch (error) {
-                //
+                // handle error
             } finally {
                 setLoading(false);
             }
         };
         fetchSession();
     }, [userId, role, is_deleted, keyword, debouncedSearchTerm, course_id]);
+    
 
     if (loading === true) {
         return <div className="text-center">Loading...</div>;

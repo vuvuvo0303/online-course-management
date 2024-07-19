@@ -329,28 +329,36 @@ const LectureOfCourse: React.FC = () => {
 
                         <div className="grid xl:grid-cols-4 lg:grid-cols-2 grid-cols-1 gap-20">
                             {/* filter lesson by course */}
-                            <Select
-                                defaultValue="Choose course to filter"
-                                style={{ width: 200 }}
-                                className="mt-10"
-                                onChange={handleCourseChange}
+                            {
+                                !courseId && (
+                                    <Select
+                                        defaultValue="Choose course to filter"
+                                        style={{ width: 200 }}
+                                        className="mt-10"
+                                        onChange={handleCourseChange}
 
-                                options={courses.map(course => ({
-                                    label: course.name,
-                                    value: course._id
-                                }))}
-                            />
+                                        options={courses.map(course => ({
+                                            label: course.name,
+                                            value: course._id
+                                        }))}
+                                    />
+                                )
+                            }
                             {/* filter lesson by session */}
-                            <Select
-                                defaultValue="Choose session to filter"
-                                style={{ width: 200 }}
-                                className="mt-10"
-                                onChange={handleChange}
-                                options={sessions.map(session => ({
-                                    label: session.name,
-                                    value: session._id
-                                }))}
-                            />
+                            {
+                                !sessionId && (
+                                    <Select
+                                        defaultValue="Choose session to filter"
+                                        style={{ width: 200 }}
+                                        className="mt-10"
+                                        onChange={handleChange}
+                                        options={sessions.map(session => ({
+                                            label: session.name,
+                                            value: session._id
+                                        }))}
+                                    />
+                                )
+                            }
                             {/* filter lesson by lesson type */}
                             <Select
                                 defaultValue="All Lesson Type"
