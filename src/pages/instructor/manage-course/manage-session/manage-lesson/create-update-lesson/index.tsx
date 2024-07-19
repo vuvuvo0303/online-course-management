@@ -48,6 +48,7 @@ const CreateUpdateLesson = () => {
   const [userId, setUserId] = useState<string>("");
   const [course_id, setCourse_id] = useState<string>("");
   const [value, setValue] = useState<string>("Enter something here");
+  const [des, setDes] = useState<string>("");
   useEffect(() => {
     const userString = localStorage.getItem("user");
     const user: User = userString ? JSON.parse(userString) : null;
@@ -82,12 +83,6 @@ const CreateUpdateLesson = () => {
         }
       };
       fetchData();
-    } else {
-      form.setFieldsValue({
-        course_id: course?._id,
-        session_id: session?._id,
-      });
-      setLoading(false);
     }
   }, [lectureId, courseId, form, sessionId]);
 
@@ -174,7 +169,9 @@ const CreateUpdateLesson = () => {
     };
     fetchSessions();
   }, [sessionId, courseId, course_id]);
-
+  const handleEditorChange = (value: string) => {
+    setDes(value);
+  };
   const onFinish = async (values: Lessons) => {
     if (typeof values.full_time === "string") {
       values.full_time = parseFloat(values.full_time);
@@ -182,23 +179,29 @@ const CreateUpdateLesson = () => {
     if (typeof values.position_order === "string") {
       values.position_order = parseFloat(values.position_order);
     }
-    values.description = value;
+    if (!des) {
+      //if instructor don't change description
+      values.description = value;
+    } else {
+      values.description = des;
+    }
+    console.log("check values: ", values);
     setLoading(true);
     try {
-      //Update lecture
+      //Update lesson
       if (lectureId) {
-        await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values, {});
-        toast.success("Update Lecture Successfully!");
+        await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values);
+        toast.success("Update Lesson Successfully!");
       }
-      //create lecture
+      //create lesson
       else {
         await axiosInstance.post(API_CREATE_LESSON, values);
-        toast.success("Create Lecture Successfully!");
+        toast.success("Create Lesson Successfully!");
       }
       if (sessionId && courseId) {
-        navigate(`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`);
+        navigate(`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lessons`);
       } else {
-        navigate(`/instructor/manage-all-lectures`);
+        navigate(`/instructor/manage-all-lessons`);
       }
     } catch (error) {
       //
@@ -271,6 +274,8 @@ const CreateUpdateLesson = () => {
                 />
               </Form.Item>
             )}
+
+            {/* manage course -> manage sessions -> manage lessons */}
             {sessionId && courseId && (
               <Form.Item initialValue={sessionId} label="Session Name" name="session_id" hidden>
                 <Input defaultValue={session?._id} disabled />
@@ -285,6 +290,7 @@ const CreateUpdateLesson = () => {
                 rules={[{ required: true, message: "Please session name!" }]}
               >
                 <Select
+
                   defaultValue="Choose session for this lecture"
                   options={sessions.map((session) => ({
                     label: session.name,
@@ -299,15 +305,7 @@ const CreateUpdateLesson = () => {
             <Form.Item
               label="Lesson Type"
               name="lesson_type"
-              rules={[{ required: true, message: "Please input lesson type!" }]}
             >
-              {/* <Select
-                mode="multiple"
-                tagRender={tagRender}
-                defaultValue="video"
-                style={{ width: '100%' }}
-                options={options}
-              /> */}
               <Select
                 defaultValue="video"
                 options={[
@@ -321,16 +319,31 @@ const CreateUpdateLesson = () => {
                 ]}
               />
             </Form.Item>
-            <Form.Item label="Description" name="description">
+            <Form.Item
+              label="Description"
+              name="description"
+            >
               <Editor
-                apiKey='lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u'
+                apiKey="oppz09dr2j6na1m8aw9ihopacggkqdg19jphtdksvl25ol4k"
                 init={{
-                  plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount linkchecker',
-                  toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                  placeholder: "Description",
+
+                  height: 200,
+                  menubar: true,
+                  plugins: [
+                    "advlist autolink lists link image charmap print preview anchor",
+                    "searchreplace visualblocks code fullscreen textcolor ",
+                    "insertdatetime media table paste code help wordcount",
+                  ],
+                  textcolor_rows: "4",
+
+                  toolbar:
+                    "undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent ",
                 }}
-                initialValue="Welcome to TinyMCE!"
-              />
+                onEditorChange={handleEditorChange}
+              ></Editor>
             </Form.Item>
+
 
             <Form.Item
               label="Video URL"
