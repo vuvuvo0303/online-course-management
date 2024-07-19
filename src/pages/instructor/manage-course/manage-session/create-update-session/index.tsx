@@ -27,7 +27,6 @@ const CreateUpdateSession = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const [role, setRole] = useState<string>('');
-  const [courseId2, setCourseId2] = useState<string>("");
   const [des, setDes] = useState<string>("");
   const [courseIdUpdate, setCourseIdUpdate] = useState<string>("");
   const [courses, setCourses] = useState<Course[]>([]);
@@ -42,9 +41,6 @@ const CreateUpdateSession = () => {
   }, []);
 
   useEffect(() => {
-    if (courseId) {
-      setCourseId2(courseId);
-    }
     // update session
     if (sessionId) {
       const fetchSession = async () => {
