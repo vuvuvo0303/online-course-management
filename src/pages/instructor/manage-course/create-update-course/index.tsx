@@ -54,7 +54,7 @@ const InstructorCreateCourse: React.FC = () => {
         if (_id) {
             fetchCourse();
         }
-    }, [_id, form, token])
+    }, [_id, form])
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -219,7 +219,7 @@ const InstructorCreateCourse: React.FC = () => {
 
                     >
                         <Editor
-                            apiKey="lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u"
+                             apiKey='lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u'
                             onEditorChange={(newValue) => setValue(newValue)}
                             initialValue={value}
                             init={{

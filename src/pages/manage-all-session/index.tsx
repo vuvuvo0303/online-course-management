@@ -76,8 +76,6 @@ const ManageAllSession = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        console.log("check cate");
-
         const response = await axiosInstance.post(API_GET_COURSES, {
           "searchCondition": {
             "keyword": "",
@@ -120,7 +118,12 @@ const ManageAllSession = () => {
                     }
                 });
                 if (response) {
-                    setSessions(response.data.pageData);
+                    const sortedSessions = response.data.pageData.sort((a:Session, b:Session) => {
+                        const dateA = new Date(a.created_at);
+                        const dateB = new Date(b.created_at);
+                        return dateB - dateA;
+                    });
+                    setSessions(sortedSessions);
                 }
             } catch (error) {
                 //

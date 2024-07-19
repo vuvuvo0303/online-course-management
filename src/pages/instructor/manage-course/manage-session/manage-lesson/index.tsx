@@ -230,14 +230,12 @@ const LectureOfCourse: React.FC = () => {
             title: 'Created Date ',
             dataIndex: 'created_at',
             key: 'created_at',
-            defaultSortOrder: 'descend',
             render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
         },
         {
             title: 'Updated Date ',
             dataIndex: 'updated_at',
             key: 'updatedDate',
-            defaultSortOrder: 'descend',
             render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
         },
         {
@@ -386,7 +384,7 @@ const LectureOfCourse: React.FC = () => {
                                     </Link>
                                 ) :
                                     (
-                                        <Link to={`/instructor/manage-all-lectures/create-lecture`}>
+                                        <Link to={`/instructor/manage-all-lessons/create-lesson`}>
                                             <Button type="primary" className="my-10 float-right">Add New Lessons</Button>
                                         </Link>
                                     )
