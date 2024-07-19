@@ -72,40 +72,9 @@ const ManageAllSession = () => {
     };
 
     //fetch courses
-<<<<<<< Updated upstream
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axiosInstance.post(API_GET_COURSES, {
-          "searchCondition": {
-            "keyword": "",
-            "category_id": "",
-            "status": "",
-            "is_deleted": false
-          },
-          "pageInfo": {
-            "pageNum": 1,
-            "pageSize": 100
-          }
-        });
-        if (response.data.pageData) {
-          setCourses(response.data.pageData);
-        }
-      } catch (error) {
-       console.log("Error occurred: ", error);
-       
-      } finally {
-        setLoading(false)
-      }
-    };
-    fetchCourses();
-  }, [])
-=======
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                console.log("check cate");
-
                 const response = await axiosInstance.post(API_GET_COURSES, {
                     "searchCondition": {
                         "keyword": "",
@@ -130,7 +99,6 @@ const ManageAllSession = () => {
         };
         fetchCourses();
     }, [])
->>>>>>> Stashed changes
 
     //fetch session
     useEffect(() => {
@@ -164,7 +132,7 @@ const ManageAllSession = () => {
         };
         fetchSession();
     }, [userId, role, is_deleted, keyword, debouncedSearchTerm, course_id]);
-    
+
 
     if (loading === true) {
         return <div className="text-center">Loading...</div>;
