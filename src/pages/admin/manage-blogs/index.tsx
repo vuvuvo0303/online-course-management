@@ -1,210 +1,85 @@
-import { useEffect, useRef, useState } from "react";
-import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
-import type { InputRef, TableColumnsType, TableColumnType } from "antd";
-import { Breadcrumb, Button, Image, Input, Space, Table } from "antd";
-import type { FilterDropdownProps } from "antd/es/table/interface";
-import Highlighter from "react-highlight-words";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { message, Popconfirm, TableColumnsType } from "antd";
+import { Breadcrumb, Button, Image, Table } from "antd";
 import { Blog } from "../../../models";
-import { toast } from "react-toastify";
+import axiosInstance from "../../../services/axiosInstance.ts";
+import { API_DELETE_BLOG, API_GET_BLOGS, paths } from "../../../consts/index.ts";
+import { format } from "date-fns";
 
-type DataIndex = keyof Blog;
 
 const AdminManageBlogs: React.FC = () => {
-  const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState("");
-  const searchInput = useRef<InputRef>(null);
   const [data, setData] = useState<Blog[]>([]);
-  const [sortOrder, setSortOrder] = useState<"ascend" | "descend">("ascend");
   const [loading, setLoading] = useState<boolean>(true);
 
   const handleDelete = async (id: string, title: string) => {
     try {
-      await axios.delete(`https://665fbf245425580055b0b23d.mockapi.io/blogs/${id}`);
-      const updatedData = data.filter(blog => blog.id !== id);
-      setData(updatedData);
-      toast.success(`Delete blog ${title} successfully`);
+      await axiosInstance.delete(`${API_DELETE_BLOG}/${id}`);
+      message.success(`Delete blog ${title} successfully`);
+      await fetchBlogs();
     } catch (error) {
-      toast.error(`Delete blog ${title} failed`);
+      //
     }
   };
 
+  const fetchBlogs = async () => {
+    const response = await axiosInstance.post(API_GET_BLOGS,
+      {
+        "searchCondition": {
+          "category_id": "",
+          "is_deleted": false
+        },
+        "pageInfo": {
+          "pageNum": 1,
+          "pageSize": 100
+        }
+      });
+    setData(response.data.pageData);
+  };
   useEffect(() => {
-    const fetchBlogs = async () => {
-      const response = await axios.get(
-        "https://665fbf245425580055b0b23d.mockapi.io/blogs"
-      );
-      console.log(response);
-      setData(response.data);
-    };
+
     fetchBlogs();
     setLoading(false)
   }, []);
 
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: FilterDropdownProps["confirm"],
-    dataIndex: DataIndex
-  ) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-
-  const handleReset = (clearFilters: () => void) => {
-    clearFilters();
-    setSearchText("");
-  };
-
-  const sortColumn = () => {
-    const newOrder = sortOrder === "ascend" ? "descend" : "ascend";
-    const sortedData = [...data].sort((a, b) => {
-      const timeA = new Date(a.time).getTime();
-      const timeB = new Date(b.time).getTime();
-      return newOrder === "ascend" ? timeA - timeB : timeB - timeA;
-    });
-    setData(sortedData);
-    setSortOrder(newOrder);
-  };
-
-  
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): TableColumnType<Blog> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
-          style={{ marginBottom: 8, display: "block" }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()),
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
-      }
-    },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
-      ),
-  });
 
   const columns: TableColumnsType<Blog> = [
     {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
-      width: "15%",
-      ...getColumnSearchProps("category"),
-    },
-    {
-      title: "Time",
-      dataIndex: "time",
-      key: "time",
-      width: "15%",
-      sorter: true,
-      sortOrder: sortOrder,
-      sortDirections: ["descend", "ascend"],
-      onHeaderCell: () => ({
-        onClick: () => sortColumn(),
-      }),
-    },
-    {
       title: "Title",
-      dataIndex: "title",
-      key: "title",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      render: (description) => (
-        <span>
-          {description.title}: {description.content}
-        </span>
-      ),
+      title: "Category",
+      dataIndex: "category_name",
+      key: "category_name",
+      width: "15%",
     },
     {
-      width: "20%",
-      title: "View",
-      dataIndex: "view",
-      key: "view",
+      title: "Content",
+      dataIndex: "content",
+      key: "content",
     },
     {
       title: "Blog Image",
-      dataIndex: "blog_image",
-      key: "blog_image",
-      render: (blog_image: string) => <Image src={blog_image} />,
+      dataIndex: "image_url",
+      key: "image_url",
+      width: "15%",
+      render: (image_url: string) => <Image width={100} height={100} src={image_url} />,
+    },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      width: "10%",
+    },
+    {
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      width: "10%",
     },
     {
       title: "Action",
@@ -216,20 +91,27 @@ const AdminManageBlogs: React.FC = () => {
             className="hover:cursor-pointer text-blue-400 hover:opacity-60"
             style={{ fontSize: "20px" }}
           />
-          <DeleteOutlined
-            onClick={() => handleDelete(record.id, record.title)}
-            className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
-            style={{ fontSize: "20px" }}
-          />
+          <Popconfirm
+            title="Delete the User"
+            description="Are you sure to delete this Blog?"
+            onConfirm={() => handleDelete(record._id, record.title)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <DeleteOutlined
+              className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
+              style={{ fontSize: "20px" }}
+            />
+          </Popconfirm>
         </div>
       ),
     },
   ];
 
-  if(loading){
+  if (loading) {
     return <p className="text-center">Loading...</p>
   }
-  
+
   return (
     <div>
       <div className="flex justify-between">
@@ -240,7 +122,7 @@ const AdminManageBlogs: React.FC = () => {
               title: <HomeOutlined />,
             },
             {
-              href: "/dashboard/admin",
+              href: paths.ADMIN_HOME,
               title: (
                 <>
                   <UserOutlined />
@@ -257,7 +139,7 @@ const AdminManageBlogs: React.FC = () => {
           <Button type="primary">Add New Blogs</Button>
         </div>
       </div>
-      <Table columns={columns} dataSource={data} />;
+      <Table columns={columns} dataSource={data} rowKey={(record: Blog) => record._id} />;
     </div>
   );
 };

@@ -7,6 +7,7 @@ import {
   Form,
   Image,
   Input,
+  message,
   Modal,
   Pagination,
   Select,
@@ -19,9 +20,7 @@ import {
 import { API_COURSE_STATUS, API_GET_COURSES, getColor } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { Course } from "../../../models";
-import { toast } from "react-toastify";
 import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
 const AdminManageCourses: React.FC = () => {
@@ -117,7 +116,7 @@ const AdminManageCourses: React.FC = () => {
 
   const handleOkChangeStatus = async () => {
     if (!comment) {
-      return toast.error("Please enter comment");
+      return message.error("Please enter comment");
     }
     try {
       await axiosInstance.put(API_COURSE_STATUS, {
@@ -175,13 +174,13 @@ const AdminManageCourses: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
     },
     {
       title: "Action",

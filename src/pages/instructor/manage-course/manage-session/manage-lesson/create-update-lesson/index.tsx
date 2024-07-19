@@ -5,12 +5,12 @@ import {
   Input,
   Breadcrumb,
   Select,
+  message,
   // SelectProps, Tag
 } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Lessons, Session } from "../../../../../../models/index.ts";
 import { HomeOutlined } from "@ant-design/icons";
-import { toast } from "react-toastify";
 import { User } from "../../../../../../models/User.ts";
 import axiosInstance from "../../../../../../services/axiosInstance.ts";
 import {
@@ -35,7 +35,7 @@ const formItemLayout = {
   },
 };
 
-const CreateUpdateLesson = () => {
+const CreateUpdateLesson: React.FC = () => {
   const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
@@ -87,26 +87,26 @@ const CreateUpdateLesson = () => {
   // fetch course to create or update session
   useEffect(() => {
     const fetchCourses = async () => {
-        try {
-          const response = await axiosInstance.post(API_GET_COURSES, {
-            searchCondition: {
-              keyword: "",
-              category: "",
-              status: "new",
-              is_deleted: false,
-            },
-            pageInfo: {
-              pageNum: 1,
-              pageSize: 10,
-            },
-          });
-          if (response.data) {
-            setCourses(response.data.pageData);
-          }
-        } catch (error) {
-          //
-        } finally {
-          setLoading(false);     
+      try {
+        const response = await axiosInstance.post(API_GET_COURSES, {
+          searchCondition: {
+            keyword: "",
+            category: "",
+            status: "new",
+            is_deleted: false,
+          },
+          pageInfo: {
+            pageNum: 1,
+            pageSize: 10,
+          },
+        });
+        if (response.data) {
+          setCourses(response.data.pageData);
+        }
+      } catch (error) {
+        //
+      } finally {
+        setLoading(false);
       }
     };
     fetchCourses();
@@ -175,12 +175,12 @@ const CreateUpdateLesson = () => {
       //Update lesson
       if (lectureId) {
         await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values);
-        toast.success("Update Lesson Successfully!");
+        message.success("Update Lesson Successfully!");
       }
       //create lesson
       else {
         await axiosInstance.post(API_CREATE_LESSON, values);
-        toast.success("Create Lesson Successfully!");
+        message.success("Create Lecture Successfully!");
       }
       if (sessionId && courseId) {
         navigate(`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lessons`);

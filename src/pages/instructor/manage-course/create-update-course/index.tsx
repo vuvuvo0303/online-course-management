@@ -2,8 +2,7 @@ import { Category, Course } from "../../../../models";
 import { API_CREATE_COURSE, API_GET_CATEGORIES, API_GET_COURSE, API_UPDATE_COURSE } from "../../../../consts";
 import { useNavigate, useParams } from "react-router-dom";
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Form, Input, Select } from 'antd';
-import { toast } from "react-toastify";
+import { Breadcrumb, Button, Form, Input, message, Select } from 'antd';
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { Editor } from '@tinymce/tinymce-react';
@@ -116,7 +115,7 @@ const InstructorCreateCourse: React.FC = () => {
             //Update Course
             if (_id) {
                 await axiosInstance.put<Course>(`${API_UPDATE_COURSE}/${_id}`, values,);
-                toast.success("Update New Course Successfully");
+                message.success("Update New Course Successfully");
                 if (id) {
                     navigate(`/instructor/manage-courses/${_id}`);
                 } else {
@@ -128,7 +127,7 @@ const InstructorCreateCourse: React.FC = () => {
                 await axiosInstance.post(API_CREATE_COURSE, values, {
 
                 });
-                toast.success("Create New Course Successfully");
+                message.success("Create New Course Successfully");
                 navigate(`/instructor/manage-courses`);
             }
         } catch (error) {

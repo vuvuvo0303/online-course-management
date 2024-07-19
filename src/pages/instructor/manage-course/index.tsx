@@ -1,9 +1,8 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Button, Empty, Form, Input, Modal, Select, Table, TableProps, Tag } from "antd";
+import { Breadcrumb, Button, Empty, Form, Input, message, Modal, Select, Table, TableProps, Tag } from "antd";
 import { Category, Course, Log } from "../../../models";
 import { API_COURSE_LOGS, API_COURSE_STATUS, API_DELETE_COURSE, API_GET_CATEGORIES, API_GET_COURSES, getColor } from "../../../consts";
-import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import TextArea from "antd/es/input/TextArea";
@@ -106,7 +105,7 @@ const InstructorManageCourses: React.FC = () => {
   //click ok on modal to change status of course
   const handleOkChangeStatus = async () => {
     if (!comment) {
-      return toast.error("Please enter comment")
+      return message.error("Please enter comment")
     }
     try {
       await axiosInstance.put(API_COURSE_STATUS,
@@ -117,7 +116,7 @@ const InstructorManageCourses: React.FC = () => {
         }
       )
       setComment("");
-      toast.success("Change Status Successfully!");
+      message.success("Change Status Successfully!");
       setCourses(courses.filter(course => course._id != courseId))
     } catch (error) {
       //
@@ -133,7 +132,7 @@ const InstructorManageCourses: React.FC = () => {
   const handleOk = async () => {
     try {
       await axiosInstance.delete(`${API_DELETE_COURSE}/${courseId}`)
-      toast.success("Delete Successfully!")
+      message.success("Delete Successfully!")
       setCourses(courses.filter(course => course._id != courseId))
     } catch (error) {
       //

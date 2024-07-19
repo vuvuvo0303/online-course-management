@@ -39,7 +39,6 @@ const InstructorDashboard = lazy(() => import("../pages/instructor/instructor-da
 const InstructorManagerReviews = lazy(() => import("../pages/instructor/manage-reviews"));
 const PaymentHistory = lazy(() => import("../pages/payment/payment-history"));
 const InstructorManageCourses = lazy(() => import("../pages/instructor/manage-course/index"));
-const InstructorManageBlogs = lazy(() => import("../pages/instructor/manage-blogs/index"));
 const InstructorResources = lazy(() => import("../pages/instructor/resources"));
 const InstructorTools = lazy(() => import("../pages/instructor/tools"));
 const LectureOfCourse = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
@@ -61,6 +60,7 @@ const AdminManageCategories = lazy(() => import("../pages/admin/manage-categorie
 const AdminCategoryDetail = lazy(() => import("../pages/admin/manage-categories/detail"));
 const AdminManageCourses = lazy(() => import("../pages/admin/manage-course"));
 const AdminManageReviews = lazy(() => import("../pages/admin/manage-reviews"));
+const AdminPurchases = lazy(() => import("../pages/admin/purchase"))
 const Dashboard = lazy(() => import("../components/dashboard/index"));
 
 
@@ -109,10 +109,6 @@ const AppRouter: React.FC = () => {
           <Route
             path={paths.INSTRUCTOR_MANAGE_COURSES}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageCourses /> : <Navigate to={paths.HOME} />}
-          />
-          <Route
-            path="manage-blogs"
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageBlogs /> : <Navigate to={paths.HOME} />}
           />
           <Route
             path={paths.INSTRUCTOR_DASHBOARD}
@@ -207,6 +203,10 @@ const AppRouter: React.FC = () => {
           <Route
             path={paths.ADMIN_MANAGE_USERS}
             element={canAccess([roles.ADMIN]) ? <AdminManageUsers /> : <Navigate to={paths.ADMIN_LOGIN} />}
+          />
+          <Route
+            path="purchase"
+            element={canAccess([roles.ADMIN]) ? <AdminPurchases /> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
           <Route
             path={paths.ADMIN_INSTRUCTOR_REQUEST}
