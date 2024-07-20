@@ -2,12 +2,12 @@ import { API_CLIENT_GET_COURSES } from "../consts"
 import axiosInstance from "./axiosInstance"
 
 // fetch course by client
-export const fetchCoursesByClient = async () => {
+export const fetchCoursesByClient = async (keyword: string, category_id: string) => {
     try {
         const response = await axiosInstance.post(API_CLIENT_GET_COURSES, {
             "searchCondition": {
-                "keyword": "",
-                "category_id": "",
+                "keyword": keyword,
+                "category_id": category_id,
                 "is_deleted": false
             },
             "pageInfo": {

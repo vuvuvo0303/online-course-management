@@ -119,6 +119,19 @@ export const getColor = (status: string) => {
   }
 };
 
+export const getColorCart = (status: string) => {
+  switch (status) {
+    case "new":
+      return "red";
+    case "waiting_paid ":
+      return "blue";
+    case "cancel ":
+      return "yellow";
+    case "completed":
+      return "purple";
+  }
+};
+
 export const getColorStatusSubscribe = (status: boolean) => {
   switch (status) {
     case true:

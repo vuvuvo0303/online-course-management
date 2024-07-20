@@ -10,3 +10,4 @@ export { Category } from './Category';
 export { SubCategory } from './SubCategory';
 export { Log } from './Log';
 export { Subscription } from './Subscription';
+export { Cart } from './Cart';

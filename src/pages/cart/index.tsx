@@ -8,11 +8,9 @@ const Cart: React.FC = () => {
       <h1 className="mt-10 main_h1">Course Cart</h1>
       <div className="mt-8">
         <h3 className={styles.h3_cart_title}>3 Courses in Cart</h3>
-        <div className="flex-1 lg:flex mt-0">
+        <div className=" mt-0">
           <div>
             <ul className="min-w-full m-0 p-0">
-              <CartComponents />
-              <CartComponents />
               <CartComponents />
             </ul>
           </div>
