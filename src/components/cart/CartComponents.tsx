@@ -1,11 +1,11 @@
 import styles from './cartComponents.module.css'
 import { Col, Row, Tag } from "antd";
 import { getColorCart } from "../../consts/index.ts";
-import { displayCart } from '../../services/cart.ts';
+import { deleteCart, displayCart } from '../../services/cart.ts';
 import { useEffect, useState } from 'react';
 import { Cart } from '../../models';
 import { CloseOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const CartComponents = () => {
 
@@ -15,7 +15,9 @@ const CartComponents = () => {
     const [totalCourse, setTotalCourse] = useState<number>(0);
     // const [course, setCourse] = useState<Course>();
     const [loading, setLoading] = useState<boolean>(true);
+
     const getCart = async () => {
+
         const res = await displayCart("new");
         if (res) {
             setCarts(res);
@@ -49,6 +51,10 @@ const CartComponents = () => {
     //     setCourse(res)
     // }
 
+    const handleDeleteCart = async (cart_id: string) => {
+        await deleteCart(cart_id);
+        getCart();
+    }
 
     return (
         <div className={styles.shopping_wrapper}>
@@ -76,8 +82,15 @@ const CartComponents = () => {
                                         </Col>
 
                                         <Col span={6}>
-                                            <p className='pt-12'>Total:</p>
-                                            <p >{cart.price_paid}</p>
+                                            <Row>
+                                                <Col span={12}>
+                                                    <p className='pt-12'>Total:</p>
+                                                    <p >{cart.price_paid}</p>
+                                                </Col>
+                                                <Col span={12}>
+                                                    <p onClick={() => handleDeleteCart(cart._id)} className='pt-12 text-red-500'>Delete</p>
+                                                </Col>
+                                            </Row>
                                         </Col>
                                     </Row>
                                 </div>
@@ -85,7 +98,7 @@ const CartComponents = () => {
                         )
                     })
                 }
-            
+
             </div>
             <div className={styles.cart_checkout}>
                 <div className={styles.total_price}>

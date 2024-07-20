@@ -64,6 +64,7 @@ export const API_COURSE_LOGS = "/api/course/log/search";
 export const API_CREATE_CART = "/api/cart";
 export const API_GET_CARTS = "/api/cart/search";
 export const API_UPDATE_STATUS_CART = "/api/cart/update-status";
+export const API_DELETE_CART = "/api/cart";
 //export const API_DELETE_CART = "/api/cart";
 //Purchase
 export const API_GET_ITEMS_BY_ADMIN = "/api/purchase/search";
