@@ -99,11 +99,19 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
+        <Link className="text-lg" to={"/subscription"}>
+          Subscription
+        </Link>
+      ),
+      key: "5",
+    },
+    {
+      label: (
         <p onClick={handleLogout} className="text-lg hover:cursor-pointer hover:text-red-600">
           Logout
         </p>
       ),
-      key: "5",
+      key: "6",
     },
   ];
 
