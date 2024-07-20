@@ -1,33 +1,15 @@
 import { Form, Input, Button } from 'antd';
-import { API_CHANGE_PASSWORD } from '../../../consts/index';
-import ResponseData from '../../../models/ResponseData';
-import { toast } from 'react-toastify';
-import axiosInstance from '../../../services/axiosInstance';
+import {changePassword} from "../../../services/users.ts";
 
 interface ValuesChangePassword {
     oldPassword: string,
     newPassword: string
 }
-
-const userString = localStorage.getItem("user");
-const user = userString ? JSON.parse(userString) : null;
-
 const ChangePassword = () => {
-    const onFinish = async (values: ValuesChangePassword) => {
-        try {
-            const response: ResponseData = await axiosInstance.put(API_CHANGE_PASSWORD, {
-                user_id: user._id,
-                old_password: values.oldPassword,
-                new_password: values.newPassword
-            })
-            if (response.success) {
-                toast.success("Change password successfully");
-            }
-        } catch (error) {
-            //
-        }
-    };
 
+    const onFinish = (values: ValuesChangePassword) => {
+        changePassword(values);
+    }
     return (
         <Form
             name="change_password"

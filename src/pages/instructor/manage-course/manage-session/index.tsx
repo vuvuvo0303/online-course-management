@@ -1,9 +1,8 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps } from "antd";
+import { Breadcrumb, Button, Input, message, Modal, Select, Table, TableProps } from "antd";
 import { useEffect, useState } from "react";
 import { Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import { API_GET_COURSE, API_GET_SESSIONS } from "../../../../consts";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../hooks/useDebounce";
@@ -53,7 +52,7 @@ const ManageSession: React.FC = () => {
         try {
             await axiosInstance.delete(`${API_GET_COURSE}/${sessionId}`);
             setSessions(sessions.filter(session => session._id !== sessionId));
-            toast.success(`Delete Session Successfully!`);
+            message.success(`Delete Session Successfully!`);
         } catch (error) {
             //
         }

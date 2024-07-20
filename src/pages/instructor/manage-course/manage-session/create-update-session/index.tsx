@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Breadcrumb, Select } from "antd";
+import { Button, Form, Input, Breadcrumb, Select, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Editor } from '@tinymce/tinymce-react';
 import { HomeOutlined } from "@ant-design/icons";
 import { Course, Session } from "../../../../../models";
-import { toast } from "react-toastify";
 import { User } from "../../../../../models/User";
 import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
@@ -118,7 +117,7 @@ const CreateUpdateSession = () => {
           }
         )
         console.log("check update: ", updatess);
-        toast.success("Update Session Successfully!")
+        message.success("Update Session Successfully!")
       } catch (error) {
         //
       }
@@ -138,7 +137,7 @@ const CreateUpdateSession = () => {
           "description": des,
           "position_order": 1
         });
-        toast.success("Create Session Successfully!")
+        message.success("Create Session Successfully!")
         if (courseId) {
           // redirect to manage session 
           navigate(`/instructor/manage-courses/${courseId}/manage-sessions`);

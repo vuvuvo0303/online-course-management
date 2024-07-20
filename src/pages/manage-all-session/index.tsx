@@ -1,10 +1,9 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps } from "antd";
+import { Breadcrumb, Button, Input, message, Modal, Select, Table, TableProps } from "antd";
 import { useEffect, useState } from "react";
 import { Course, Session } from "../../models";
 import { Link } from "react-router-dom";
 import { User } from "../../models/User";
-import { toast } from "react-toastify";
 import axiosInstance from "../../services/axiosInstance.ts";
 import { API_DELETE_SESSION, API_GET_COURSES, API_GET_SESSIONS } from "../../consts";
 import { useDebounce } from "../../hooks";
@@ -53,7 +52,7 @@ const ManageAllSession = () => {
             // Xóa session trước
             await axiosInstance.delete(`${API_DELETE_SESSION}/${sessionId}`);
             setSessions(sessions.filter(session => session._id !== sessionId));
-            toast.success("Delete Session Successfully!");
+            message.success("Delete Session Successfully!");
         } catch (error) {
             //
         }
@@ -73,33 +72,33 @@ const ManageAllSession = () => {
     };
 
     //fetch courses
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axiosInstance.post(API_GET_COURSES, {
-          "searchCondition": {
-            "keyword": "",
-            "category_id": "",
-            "status": "",
-            "is_deleted": false
-          },
-          "pageInfo": {
-            "pageNum": 1,
-            "pageSize": 100
-          }
-        });
-        if (response.data.pageData) {
-          setCourses(response.data.pageData);
-        }
-      } catch (error) {
-       console.log("Error occurred: ", error);
-       
-      } finally {
-        setLoading(false)
-      }
-    };
-    fetchCourses();
-  }, [])
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await axiosInstance.post(API_GET_COURSES, {
+                    "searchCondition": {
+                        "keyword": "",
+                        "category_id": "",
+                        "status": "",
+                        "is_deleted": false
+                    },
+                    "pageInfo": {
+                        "pageNum": 1,
+                        "pageSize": 100
+                    }
+                });
+                if (response.data.pageData) {
+                    setCourses(response.data.pageData);
+                }
+            } catch (error) {
+                console.log("Error occurred: ", error);
+
+            } finally {
+                setLoading(false)
+            }
+        };
+        fetchCourses();
+    }, [])
 
     //fetch session
     useEffect(() => {
@@ -133,7 +132,7 @@ const ManageAllSession = () => {
         };
         fetchSession();
     }, [userId, role, is_deleted, keyword, debouncedSearchTerm, course_id]);
-    
+
 
     if (loading === true) {
         return <div className="text-center">Loading...</div>;
@@ -204,9 +203,9 @@ const ManageAllSession = () => {
     };
 
     // set course_id
-  const handleCourseChange = (value: string) => {
-    setCourse_id(value);
-  };
+    const handleCourseChange = (value: string) => {
+        setCourse_id(value);
+    };
     return (
         <div>
             <Modal

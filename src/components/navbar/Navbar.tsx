@@ -7,6 +7,7 @@ import SearchTool from '../SearchTool';
 import Drawer from '../Drawer';
 import PopoverContent from '../PopoverContent';
 import Popup from '../Popup';
+import {logout} from "../../services/auth.ts";
 
 
 const Navbar: React.FC = () => {
@@ -37,10 +38,6 @@ const Navbar: React.FC = () => {
     }
   }, [navigate, user]);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate(paths.HOME);
-  };
 
   const dropdownItems: MenuProps["items"] = [
     {

@@ -1,9 +1,8 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, Modal, Select, Spin, Table, TableProps, Tag, } from "antd";
+import { Breadcrumb, Button, Input, message, Modal, Select, Spin, Table, TableProps, Tag, } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models/index.ts";
-import { toast } from "react-toastify";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
 import { useDebounce } from "../../../../../hooks";
 import { API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS, getColorLessonType } from "../../../../../consts";
@@ -41,7 +40,7 @@ const LectureOfCourse: React.FC = () => {
                 await handleDelete(selectedLectureId);
             } catch (error) {
                 setModalText("Error occurred: " + error);
-                toast.success("Delete Lecture Failed!");
+                message.success("Delete Lecture Failed!");
             } finally {
                 setTimeout(() => {
                     setOpen(false);
@@ -56,7 +55,7 @@ const LectureOfCourse: React.FC = () => {
     const handleDelete = async (lectureId: string) => {
         await axiosInstance.delete(`${API_DELETE_LESSON}/${lectureId}`);
         setData(data.filter(lecture => lecture._id !== lectureId));
-        toast.success("Delete Lecture Successfully!")
+        message.success("Delete Lecture Successfully!")
     };
 
     const handleCancel = () => {

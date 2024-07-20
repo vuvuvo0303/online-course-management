@@ -10,7 +10,7 @@ import {
   Pagination,
   Popconfirm,
   Spin,
-  Select,
+  Select, message,
 } from "antd";
 import {
   DeleteOutlined,
@@ -20,7 +20,6 @@ import {
 } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Category } from "../../../models";
-import { toast } from "react-toastify";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
@@ -47,53 +46,35 @@ const AdminManageCategories: React.FC = () => {
     total: 0,
   });
 
-  const fetchCategories = useCallback(
-    async (refresh = false) => {
-      try {
-        let response;
-        if (refresh) {
-          response = await axiosInstance.post(API_GET_CATEGORIES, {
-            searchCondition: {
-              role: "all",
-              status: true,
-              is_deleted: false,
-              keyword: debouncedSearchTerm,
-            },
-            pageInfo: {
-              pageNum: pagination.current,
-              pageSize: pagination.pageSize,
-            },
-          });
-        } else {
-          response = await axiosInstance.post(API_GET_CATEGORIES, {
-            searchCondition: {
-              role: "all",
-              status: true,
-              is_deleted: false,
-              keyword: debouncedSearchTerm,
-            },
-            pageInfo: {
-              pageNum: pagination.current,
-              pageSize: pagination.pageSize,
-            },
-          });
-        }
-
-        if (response.data) {
-          setData(response.data.pageData || response.data);
-          setPagination((prev) => ({
-            ...prev,
-            total: response.data.pageInfo?.totalItems || response.data.length,
-            current: response.data.pageInfo?.pageNum || 1,
-            pageSize: response.data.pageInfo?.pageSize || prev.pageSize,
-          }));
-        }
-      } catch (error) {
-        //
-      } finally {
-        setLoading(false);
+  const fetchCategories = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.post(API_GET_CATEGORIES, {
+        searchCondition: {
+          role: "all",
+          status: true,
+          is_deleted: false,
+          keyword: debouncedSearchTerm,
+        },
+        pageInfo: {
+          pageNum: pagination.current,
+          pageSize: pagination.pageSize,
+        },
       }
-    },
+      )
+      setData(response.data.pageData || response.data);
+      setPagination((prev) => ({
+        ...prev,
+        total: response.data.pageInfo?.totalItems || response.data.length,
+        current: response.data.pageInfo?.pageNum || 1,
+        pageSize: response.data.pageInfo?.pageSize || prev.pageSize,
+      }));
+    } catch (error) {
+      //
+    } finally {
+      setLoading(false);
+    }
+  },
     [pagination.current, pagination.pageSize, searchText, debouncedSearchTerm]
   );
 
@@ -114,10 +95,7 @@ const AdminManageCategories: React.FC = () => {
           pageSize: 100,
         },
       });
-
-      if (response.data) {
-        setParentCategories(response.data.pageData || response.data);
-      }
+      setParentCategories(response.data.pageData || response.data);
     } catch (error) {
       console.error(error);
     }
@@ -133,29 +111,26 @@ const AdminManageCategories: React.FC = () => {
     setValidateOnOpen(true);
   }, [form]);
 
-  const handleDelete = useCallback(
-    async (_id: string, name: string) => {
-      const isParentCategory = data.some(
-        (category) => category.parent_category_id === _id
+  const handleDelete = async (_id: string, name: string) => {
+    const isParentCategory = data.some(
+      (category) => category.parent_category_id === _id
+    );
+
+    if (isParentCategory) {
+      message.error(
+        `Cannot delete category ${name} as it is a parent category of another category.`
       );
+      return;
+    }
 
-      if (isParentCategory) {
-        toast.error(
-          `Cannot delete category ${name} as it is a parent category of another category.`
-        );
-        return;
-      }
-
-      try {
-        await axiosInstance.delete(`${API_DELETE_CATEGORY}/${_id}`);
-        fetchCategories();
-        toast.success(`Category ${name} deleted successfully.`);
-      } catch (error) {
-        //
-      }
-    },
-    [data, fetchCategories]
-  );
+    try {
+      await axiosInstance.delete(`${API_DELETE_CATEGORY}/${_id}`);
+      message.success(`Category ${name} deleted successfully.`);
+      await fetchCategories();
+    } catch (error) {
+      //
+    }
+  }
 
   const updateCategory = useCallback(
     async (
@@ -197,7 +172,7 @@ const AdminManageCategories: React.FC = () => {
           );
           setIsModalVisible(false);
           form.resetFields();
-          toast.success(`Category ${values.name} updated successfully.`);
+          message.success(`Category ${values.name} updated successfully.`);
         }
       } catch (error) {
         //
@@ -321,7 +296,7 @@ const AdminManageCategories: React.FC = () => {
           setData((prevData) => [...prevData, newCategory]);
           form.resetFields();
           fetchCategories();
-          toast.success(`Category ${values.name} created successfully.`);
+          message.success(`Category ${values.name} created successfully.`);
           setIsModalVisible(false);
         }
       } catch (error) {

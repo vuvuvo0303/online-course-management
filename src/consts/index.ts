@@ -1,10 +1,7 @@
 /* Fake API */
 const BASE_URL = "https://665fbf245425580055b0b23d.mockapi.io";
 export const API_COURSES_URL = `${BASE_URL}/courses`;
-export const API_ENROLLMENT_URL = `${BASE_URL}/enrollments`;
 export const API_PAYMENT_URL = `${BASE_URL}/payments`;
-export const API_REVIEW_URL = `${BASE_URL}/reviews`;
-export const API_BLOGS_URL = `${BASE_URL}/blogs`;
 
 /* API */
 
@@ -78,6 +75,12 @@ export const API_UPDATE_STATUS_PAYOUT = "/api/payout/update-status";
 //Client
 export const API_CLIENT_GET_COURSES = "/api/client/course/search";
 export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course";
+//Blog
+export const API_CREATE_BLOG = "/api/blog";
+export const API_GET_BLOGS = "/api/blog/search";
+export const API_GET_BLOG = "/api/blog";
+export const API_UPDATE_BLOG = "/api/blog";
+export const API_DELETE_BLOG = "/api/blog";
 //Subscription
 export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-instructor";
 export const API_INSTRUCTOR_GET_SUBSCRIBER = "/api/subscription/search-for-subscriber";
