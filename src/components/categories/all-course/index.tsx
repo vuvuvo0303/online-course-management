@@ -1,17 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, Popover, Button, Rate } from 'antd';
 import Carousel from "react-multi-carousel";
 import { Link } from 'react-router-dom';
 import { paths } from "../../../consts/index";
 import { CheckOutlined, HeartOutlined } from '@ant-design/icons';
+import { fetchCoursesByClient } from '../../../services/client';
+import { Course } from '../../../models';
 
 const { Meta } = Card;
 
 const AllCourses: React.FC = () => {
     const [ratings, setRatings] = useState<number[]>([3, 4, 5]);
-
+    const [courses, setCourses] = useState<Course[]>([]);
     const price = "$99.99"; // Example price, you can modify it as needed
 
+    const [loading, setLoading] = useState<boolean>(false);
     const responsive = {
         superLargeDesktop: {
             breakpoint: { max: 4000, min: 3000 },
@@ -30,6 +33,22 @@ const AllCourses: React.FC = () => {
             items: 1
         }
     };
+
+    // fetch course to display for student or client
+    const fetchCourse = async () => {
+        setLoading(true)
+        const res = await fetchCoursesByClient();
+        setCourses(res)
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        fetchCourse();
+    }, [])
+
+    if (loading) {
+        return <p className='text-center'>Loading ...</p>
+    }
 
     const renderPopoverContent = (course: string) => {
         const handleGoToCourse = () => {
@@ -106,10 +125,10 @@ const AllCourses: React.FC = () => {
                     infinite={true}
                     className="categories-carousel"
                 >
-                    {['Course 1', 'Course 2', 'Course 3', 'Course 4', 'Course 5'].map((course, index) => (
-                        <div key={course} className="category-card w-full">
+                    {courses.map((course, index) => (
+                        <div key={course._id} className="category-card w-full">
                             <Popover
-                                content={renderPopoverContent(course)}
+                                content={renderPopoverContent(course.name)}
                                 title="Category Info"
                                 trigger="hover"
                                 placement="right"
@@ -122,8 +141,9 @@ const AllCourses: React.FC = () => {
                                             <Link to={`${paths.COURSE}`}>
                                                 <img
                                                     alt="example"
-                                                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                                                    className="w-full"
+                                                    src={course.image_url}
+                                                    className="w-full max-h-32"
+                                                    
                                                 />
                                             </Link>
                                             <div className="best-seller-label text-yellow-200 text-base">Best Seller</div>
@@ -131,16 +151,16 @@ const AllCourses: React.FC = () => {
                                     }
                                 >
                                     <Meta
-                                        className="card-meta"
-                                        title={<Link to={`${paths.COURSE}`}>{course}</Link>}
-                                        description="This is the description"
+                                        className="card-meta truncate"
+                                        title={<Link to={`${paths.COURSE}`}>{course.name}</Link>}
+                                        description={course.description}
                                     />
                                     <div className="rating-container card-meta">
-                                        <span className="rating-number">{ratings[index]}</span>
-                                        <Rate value={ratings[index]} onChange={(value) => handleRatingChange(index, value)} />
+                                        <span className="rating-number">{ratings[course.average_rating]}</span>
+                                        <Rate value={ratings[course.average_rating]} onChange={(value) => handleRatingChange(index, value)} />
                                     </div>
                                     <div className="card-meta price mt-2">
-                                        {price}
+                                        {course.price}
                                     </div>
                                 </Card>
                             </Popover>

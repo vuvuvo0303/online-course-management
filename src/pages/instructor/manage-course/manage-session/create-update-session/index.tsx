@@ -131,9 +131,15 @@ const CreateUpdateSession = () => {
     } else {
       // create session component for manga sessions and manage all sessions
       try {
+        // manage course -> manage session
+        if (courseId) {
+          setCourseIdUpdate(courseId);
+        } else {
+          setCourseIdUpdate(values.course_id)
+        }
         await axiosInstance.post(`${API_CREATE_SESSION}`, {
           "name": values.name,
-          "course_id": values.course_id,
+          "course_id": courseIdUpdate,
           "description": des,
           "position_order": 1
         });
@@ -227,19 +233,39 @@ const CreateUpdateSession = () => {
               ></Editor>
             </Form.Item>
 
-            {/* manage all session -> create / update session */}
-            <Form.Item label="Course Id" name="course_id" rules={[{ required: true, message: 'Please input course!' }]}>
-              <Select
-                defaultValue={"Choose course name"}
-                onChange={handleChange}
-                options={courses.map(course => (
-                  {
-                    value: course._id, label: course.name
+            {
+              //  create and update session in manage all session
+              !courseId &&
+              <Form.Item label="Course name" name="course_id" rules={[{ required: true, message: 'Please input course!' }]}>
+                <Select
+                  defaultValue={"Choose course name"}
+                  onChange={handleChange}
+                  options={courses.map(course => (
+                    {
+                      value: course._id, label: course.name
+                    }
+                  ))
                   }
-                ))
-                }
-              />
-            </Form.Item>
+                />
+              </Form.Item>
+            }
+
+            {
+              // update session in manage session 
+              courseId && sessionId &&
+              <Form.Item label="Course name" name="course_id" rules={[{ required: true, message: 'Please input course!' }]}>
+                <Select
+                  defaultValue={"Choose course name"}
+                  onChange={handleChange}
+                  options={courses.map(course => (
+                    {
+                      value: course._id, label: course.name
+                    }
+                  ))
+                  }
+                />
+              </Form.Item>
+            }
 
             <Form.Item wrapperCol={{ span: 24, offset: 6 }}>
               <Button type="primary" htmlType="submit" loading={loading}>

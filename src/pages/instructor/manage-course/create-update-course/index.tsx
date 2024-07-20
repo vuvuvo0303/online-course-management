@@ -231,21 +231,21 @@ const InstructorCreateCourse: React.FC = () => {
                             apiKey="oppz09dr2j6na1m8aw9ihopacggkqdg19jphtdksvl25ol4k"
                             init={{
                                 placeholder: "Description",
-
                                 height: 200,
                                 menubar: true,
                                 plugins: [
                                     "advlist autolink lists link image charmap print preview anchor",
-                                    "searchreplace visualblocks code fullscreen textcolor ",
+                                    "searchreplace visualblocks code fullscreen textcolor",
                                     "insertdatetime media table paste code help wordcount",
                                 ],
+                                forced_root_block: '', // Thiết lập này vô hiệu hóa thẻ <p>
                                 textcolor_rows: "4",
-
                                 toolbar:
-                                    "undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent ",
+                                    "undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent",
+                                // Bạn có thể thêm các cấu hình khác nếu cần
                             }}
                             onEditorChange={handleEditorChange}
-                        ></Editor>
+                        />
                     </Form.Item>
                     {
                         !_id && <Form.Item
@@ -268,17 +268,17 @@ const InstructorCreateCourse: React.FC = () => {
                     >
                         <Input />
                     </Form.Item>
-                    {!_id &&
+                    {
                         <Form.Item label="Image_url"
                             name="image_url"
-                            rules={[
-                                {
-                                    validator: (_, value) =>
-                                        !value || isValidHttpUrl(value)
-                                            ? Promise.resolve() : Promise.reject(new Error('This is not a valid image URL')),
+                        // rules={[
+                        //     {
+                        //         validator: (_, value) =>
+                        //             !value || isValidHttpUrl(value)
+                        //                 ? Promise.resolve() : Promise.reject(new Error('This is not a valid image URL')),
 
-                                }
-                            ]}
+                        //     }
+                        // ]}
                         >
                             <Input />
                         </Form.Item>
