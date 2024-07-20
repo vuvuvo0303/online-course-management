@@ -104,7 +104,7 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
-        <p onClick={handleLogout} className="text-lg hover:cursor-pointer hover:text-red-600">
+        <p onClick={() => logout(navigate)} className="text-lg hover:cursor-pointer hover:text-red-600">
           Logout
         </p>
       ),

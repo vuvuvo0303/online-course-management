@@ -104,7 +104,7 @@ const InstructorManageCourses: React.FC = () => {
   };
   //click ok on modal to change status of course
   const handleOkChangeStatus = async () => {
-    if (!comment) {
+    if (!comment && changeStatus === "inactive" || changeStatus === "reject") {
       return message.error("Please enter comment")
     }
     try {
@@ -303,7 +303,7 @@ const InstructorManageCourses: React.FC = () => {
           {/* {(status !== "waiting_approve" && status !== "reject") && */}
           <Tag color={getColor(status)} onClick={() => { showModalChangeStatus(status, record._id, record.name); }}
             className="text-blue-500 cursor-pointer">
-            {status}
+            {status === "waiting_approve" ? "waiting approve" : status}
           </Tag>
           {/* } */}
         </>
@@ -508,6 +508,7 @@ const InstructorManageCourses: React.FC = () => {
                 onChange={handleChangeStatus}
                 options={
                   (statusDefaultChange === "inactive" && [{ label: <span>active</span>, value: 'active' }]) ||
+                  (statusDefaultChange === "reject" && [{ label: <span>waiting approve</span>, value: 'waiting_approve' }]) ||
                   (statusDefaultChange === "active" && [{ label: <span>inactive</span>, value: 'inactive' }]) ||
                   (statusDefaultChange === "new" && [
                     { label: <span>waiting approve</span>, value: 'waiting_approve' },
@@ -516,7 +517,7 @@ const InstructorManageCourses: React.FC = () => {
                     { label: <span>active</span>, value: 'active' },
                     { label: <span>inactive</span>, value: 'inactive' },
                   ]) ||
-                  []
+                  [{ label: <span>Only admin can change status from waiting approve to approve or reject</span>, value: 'active' },]
                 }
               />
 
@@ -524,7 +525,6 @@ const InstructorManageCourses: React.FC = () => {
             <Form.Item
               label="Comment"
               name="comment"
-              rules={[{ required: true, message: 'Please enter comment!' }]}
             >
               <TextArea value={comment} onChange={handleSaveComment} />
             </Form.Item>
