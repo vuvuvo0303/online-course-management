@@ -124,9 +124,9 @@ export const getColorCart = (status: string) => {
   switch (status) {
     case "new":
       return "red";
-    case "waiting_paid ":
+    case "waiting_paid":
       return "blue";
-    case "cancel ":
+    case "cancel":
       return "yellow";
     case "completed":
       return "purple";
