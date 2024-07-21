@@ -33,6 +33,7 @@ import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 
 import { User, UserRole } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
+import useDebounce from "../../../hooks/useDebounce";
 import { PaginationProps } from "antd";
 import {
   API_CHANGE_ROLE,
@@ -66,7 +67,6 @@ type AxiosResponse<T> = {
 
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
-
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -74,13 +74,13 @@ const AdminManageUsers: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const debouncedSearch = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
   const [formData, setFormData] = useState<Partial<User>>({});
-
 
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
   const [selectedRole, setSelectedRole] = useState<string>("All");
@@ -122,7 +122,7 @@ const AdminManageUsers: React.FC = () => {
           role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
           status: statusValue,
           is_delete: false,
-          keyword: searchText,
+          keyword: debouncedSearch,
         },
         pageInfo: {
           pageNum: pagination.current,
@@ -131,7 +131,13 @@ const AdminManageUsers: React.FC = () => {
       });
 
       if (response.data && response.data.pageData) {
-        setData(response.data.pageData);
+        let filteredData = response.data.pageData;
+
+        if (selectedRole.toLowerCase() === "instructor") {
+          filteredData = filteredData.filter((user: User) => user.is_verified === true);
+        }
+
+        setData(filteredData);
         setPagination({
           ...pagination,
           total: response.data.pageInfo.totalItems,
@@ -146,7 +152,6 @@ const AdminManageUsers: React.FC = () => {
     }
     setLoading(false);
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
-
 
   const handleDelete = useCallback(
     async (_id: string, email: string) => {
@@ -229,6 +234,7 @@ const AdminManageUsers: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
       setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
+
       toast.success(`User status updated successfully`);
       localStorage.setItem("users_updated", new Date().toISOString());
     } catch (error) {
@@ -245,9 +251,7 @@ const AdminManageUsers: React.FC = () => {
   const handleRoleChange = useCallback(async (value: UserRole, recordId: string) => {
     try {
       await axiosInstance.put(API_CHANGE_ROLE, { user_id: recordId, role: value });
-      setData((prevData: User[]) =>
-        prevData.map((user) => (user._id === recordId ? { ...user, role: value } : user))
-      );
+      setData((prevData: User[]) => prevData.map((user) => (user._id === recordId ? { ...user, role: value } : user)));
       toast.success(`Role changed successfully`);
       localStorage.setItem("users_updated", new Date().toISOString());
     } catch (error) {
@@ -294,9 +298,16 @@ const AdminManageUsers: React.FC = () => {
             onChange={(value) => handleRoleChange(value, record._id)}
             style={{ width: "100%" }}
           >
-            <Select.Option classNAme="text-red-700" value="student"> <span className="text-blue-800">Student</span></Select.Option>
-            <Select.Option value="instructor"><span className="text-green-700">Instructor</span></Select.Option>
-            <Select.Option value="admin"><span className="text-violet-500">Admin</span></Select.Option>
+            <Select.Option classNAme="text-red-700" value="student">
+              {" "}
+              <span className="text-blue-800">Student</span>
+            </Select.Option>
+            <Select.Option value="instructor">
+              <span className="text-green-700">Instructor</span>
+            </Select.Option>
+            <Select.Option value="admin">
+              <span className="text-violet-500">Admin</span>
+            </Select.Option>
           </Select>
         ),
       },
@@ -359,14 +370,14 @@ const AdminManageUsers: React.FC = () => {
                 setFileList(
                   avatarUrl
                     ? [
-                      {
-                        uid: "-1",
-                        name: "avatar.png",
-                        status: "done",
-                        url: avatarUrl,
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      } as UploadFile<any>,
-                    ]
+                        {
+                          uid: "-1",
+                          name: "avatar.png",
+                          status: "done",
+                          url: avatarUrl,
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        } as UploadFile<any>,
+                      ]
                     : []
                 );
               }}
@@ -430,11 +441,10 @@ const AdminManageUsers: React.FC = () => {
       if (response.success) {
         // Handle role change if it is different from the current role
         if (formData.role !== values.role) {
-          const roleChangeResponse: AxiosResponse<User> =
-            await axiosInstance.put(API_CHANGE_ROLE, {
-              user_id: formData._id,
-              role: values.role,
-            });
+          const roleChangeResponse: AxiosResponse<User> = await axiosInstance.put(API_CHANGE_ROLE, {
+            user_id: formData._id,
+            role: values.role,
+          });
 
           if (!roleChangeResponse.success) {
             throw new Error("Failed to change user role");
@@ -485,7 +495,7 @@ const AdminManageUsers: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center ">
-        <Breadcrumb className="p-2">
+        <Breadcrumb className="p-3">
           <Breadcrumb.Item href={paths.ADMIN_HOME}>
             <HomeOutlined />
           </Breadcrumb.Item>
@@ -507,21 +517,27 @@ const AdminManageUsers: React.FC = () => {
         </div>
       </div>
 
-      <Space className="mb-2">
+      <Space className="mb-2 flex items-center">
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          // onSearch={handleSearch} cl
+          
           style={{ width: 200 }}
           enterButton={<SearchOutlined className="text-white" />}
         />
 
         <Select value={selectedRole} onChange={handleRolefilter} style={{ width: 120 }}>
           <Select.Option value="All">All Roles</Select.Option>
-          <Select.Option value="Admin"><span className="text-violet-500">Admin</span></Select.Option>
-          <Select.Option value="Student"><span className="text-blue-800">Student</span></Select.Option>
-          <Select.Option value="Instructor"><span className="text-green-700">Instructor</span></Select.Option>
+          <Select.Option value="Admin">
+            <span className="text-violet-500">Admin</span>
+          </Select.Option>
+          <Select.Option value="Student">
+            <span className="text-blue-800">Student</span>
+          </Select.Option>
+          <Select.Option value="Instructor">
+            <span className="text-green-700">Instructor</span>
+          </Select.Option>
         </Select>
         <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
           <Select.Option value="true">Active</Select.Option>
@@ -529,7 +545,7 @@ const AdminManageUsers: React.FC = () => {
         </Select>
       </Space>
       <Spin spinning={loading}>
-        <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} />
+        <Table columns={columns} dataSource={data} rowKey="_id" pagination={false} onChange={handleTableChange} className="overflow-auto"  />
       </Spin>
       <div className="flex justify-end py-8">
         <Pagination

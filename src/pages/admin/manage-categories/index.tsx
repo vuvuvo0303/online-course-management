@@ -41,6 +41,7 @@ const AdminManageCategories: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [parentCategories, setParentCategories] = useState<Category[]>([]);
+  
   const debouncedSearchTerm = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -425,7 +426,7 @@ const AdminManageCategories: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center ">
-        <Breadcrumb className="p-2">
+        <Breadcrumb className="p-3">
           <Breadcrumb.Item href={paths.ADMIN_HOME}>
             <HomeOutlined />
           </Breadcrumb.Item>
@@ -453,6 +454,7 @@ const AdminManageCategories: React.FC = () => {
           rowKey="_id"
           pagination={false}
           onChange={handleTableChange}
+          className="overflow-auto"
         />
       </Spin>
 

@@ -3,7 +3,6 @@ import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
 import { Suspense, lazy } from "react";
 
-
 // Guest Page
 const Home = lazy(() => import("../pages/home"));
 const Contact = lazy(() => import("../pages/contact"));
@@ -44,11 +43,17 @@ const InstructorManageBlogs = lazy(() => import("../pages/instructor/manage-blog
 const InstructorResources = lazy(() => import("../pages/instructor/resources"));
 const InstructorTools = lazy(() => import("../pages/instructor/tools"));
 const LectureOfCourse = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
-const CreateUpdateLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson"));
-const UpdateLecture = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson"));
+const CreateUpdateLesson = lazy(
+  () => import("../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson")
+);
+const UpdateLecture = lazy(
+  () => import("../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson")
+);
 const ManageSession = lazy(() => import("../pages/instructor/manage-course/manage-session/"));
 const InstructorCreateCourse = lazy(() => import("../pages/instructor/manage-course/create-update-course"));
-const CreateUpdateSession = lazy(() => import("../pages/instructor/manage-course/manage-session/create-update-session"));
+const CreateUpdateSession = lazy(
+  () => import("../pages/instructor/manage-course/manage-session/create-update-session")
+);
 const ManageAllLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
 // const InstructorManageCoursesDetail = lazy(() => import("../pages/instructor/manage-course/course-detail"));
 const ManageAllSession = lazy(() => import("../pages/manage-all-session"));
@@ -58,13 +63,13 @@ const AdminLoginPage = lazy(() => import("../pages/admin/login"));
 const AdminDashboard = lazy(() => import("../pages/admin/dashboard"));
 const AdminManageUsers = lazy(() => import("../pages/admin/manage-users"));
 const AdminInstructorRequest = lazy(() => import("../pages/admin/instructor-request"));
+const ManageAllPurchase = lazy(() => import("../pages/admin/manage-all-purchase/index"));
 const AdminManageBlogs = lazy(() => import("../pages/admin/manage-blogs"));
 const AdminManageCategories = lazy(() => import("../pages/admin/manage-categories"));
 const AdminCategoryDetail = lazy(() => import("../pages/admin/manage-categories/detail"));
 const AdminManageCourses = lazy(() => import("../pages/admin/manage-course"));
 const AdminManageReviews = lazy(() => import("../pages/admin/manage-reviews"));
 const Dashboard = lazy(() => import("../components/dashboard/index"));
-
 
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
@@ -102,7 +107,10 @@ const AppRouter: React.FC = () => {
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
 
         {/* Route for Instructor */}
-        <Route path="/instructor/*" element={canAccess([roles.INSTRUCTOR]) ? <Dashboard /> : <Navigate to={paths.HOME} />}>
+        <Route
+          path="/instructor/*"
+          element={canAccess([roles.INSTRUCTOR]) ? <Dashboard /> : <Navigate to={paths.HOME} />}
+        >
           <Route
             path={paths.INSTRUCTOR_MANAGE_REVIEWS}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManagerReviews /> : <Navigate to={paths.HOME} />}
@@ -221,9 +229,13 @@ const AppRouter: React.FC = () => {
             path={paths.ADMIN_MANAGE_USERS}
             element={canAccess([roles.ADMIN]) ? <AdminManageUsers /> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
-            <Route
+          <Route
             path={paths.ADMIN_INSTRUCTOR_REQUEST}
-            element={canAccess([roles.ADMIN]) ? <AdminInstructorRequest/> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={canAccess([roles.ADMIN]) ? <AdminInstructorRequest /> : <Navigate to={paths.ADMIN_LOGIN} />}
+          />
+          <Route
+            path={paths.ADMIN_MANAGE_PURCHASE}
+            element={canAccess([roles.ADMIN]) ? <ManageAllPurchase /> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
           <Route
             path={paths.ADMIN_MANAGE_BLOGS}
@@ -252,4 +264,3 @@ const AppRouter: React.FC = () => {
 };
 
 export default AppRouter;
-

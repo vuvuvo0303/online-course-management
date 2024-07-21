@@ -94,6 +94,8 @@ const Dashboard: React.FC = () => {
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
           getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
           getItem("Instructor's Request", "/admin/instructor-requests", <TeamOutlined />),
+          getItem("Manage Purchase", "/admin/manage-all-purchase", <TeamOutlined />),
+          
 
           getItem("Manage Categories", "/admin/manage-categories", <UnorderedListOutlined />),
           getItem("Manage Courses", "/admin/manage-courses", <FundProjectionScreenOutlined />),

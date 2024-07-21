@@ -2,6 +2,7 @@ export type UserRole = "admin" | "instructor" | "student";
 
 export class User {
   _id: string;
+  
   google_id?: string;
   name: string;
   email: string; // unique
@@ -150,6 +151,7 @@ export class Admin extends User {
 export class Instructor extends User {
   description: string;
   degree: string;
+  isApproved?: boolean;
 
   constructor(
     _id: string = "",
@@ -164,6 +166,7 @@ export class Instructor extends User {
     phone_number?: string,
     avatar?: string,
     video?: string,
+    
     dob?: Date,
     created_at?: Date,
     updated_at?: Date,

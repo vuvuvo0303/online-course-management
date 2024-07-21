@@ -189,6 +189,7 @@ export const paths = {
   ADMIN_MANAGE_USERS: "manage-users",
   ADMIN_LOGIN: "admin/login",
   ADMIN_INSTRUCTOR_REQUEST: "instructor-requests",
+  ADMIN_MANAGE_PURCHASE:"manage-all-purchase",
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
   ADMIN_MANAGE_BLOGS: "manage-blogs",

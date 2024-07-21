@@ -248,8 +248,8 @@ const AdminManageCourses: React.FC = () => {
     }));
   };
   return (
-    <div>
-      {/* modal change status */}
+    <div className="container mx-auto p-4">
+      {/* Modal Change Status */}
       <Modal
         title="Change Status"
         open={openChangeStatus}
@@ -279,6 +279,7 @@ const AdminManageCourses: React.FC = () => {
         </Form.Item>
       </Modal>
 
+      {/* Modal Course Details */}
       <Modal
         title={
           <span className="text-2xl font-bold flex justify-center text-amber-700">
@@ -335,8 +336,9 @@ const AdminManageCourses: React.FC = () => {
         </div>
       </Modal>
 
+      {/* Breadcrumb */}
       <Breadcrumb
-        className="py-2"
+        className="py-3"
         items={[
           {
             href: "/",
@@ -348,13 +350,14 @@ const AdminManageCourses: React.FC = () => {
         ]}
       />
 
-      <Space style={{ marginBottom: 16 }}>
+      {/* Filters and Search */}
+      <Space className="flex flex-wrap justify-between mb-4">
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           onSearch={handleSearch}
-          style={{ width: 200 }}
+          className="w-48 md:w-64"
           enterButton={<SearchOutlined className="text-white" />}
         />
         <Select
@@ -363,7 +366,7 @@ const AdminManageCourses: React.FC = () => {
           optionFilterProp="children"
           onChange={handleCategoryChange}
           value={selectedCategoryName}
-          style={{ width: 200 }}
+          className="w-48 md:w-64"
         >
           {uniqueCategories.map((category) => (
             <Select.Option key={category.category_id} value={category.category_name}>
@@ -378,7 +381,7 @@ const AdminManageCourses: React.FC = () => {
           optionFilterProp="children"
           onChange={handleStatusChange}
           value={selectedStatus}
-          style={{ width: 200 }}
+          className="w-48 md:w-64"
         >
           <Select.Option value="">All Statuses</Select.Option>
           <Select.Option value="new">New</Select.Option>
@@ -389,7 +392,17 @@ const AdminManageCourses: React.FC = () => {
           <Select.Option value="inactive">Inactive</Select.Option>
         </Select>
       </Space>
-      <Table columns={columnsCourses} dataSource={courses} pagination={false} onChange={handleTableChange} />
+
+      {/* Table */}
+      <Table
+        columns={columnsCourses}
+        dataSource={courses}
+        pagination={false}
+        onChange={handleTableChange}
+        className="overflow-x-auto"
+      />
+
+      {/* Pagination */}
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
