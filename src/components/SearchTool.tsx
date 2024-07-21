@@ -83,8 +83,10 @@ const SearchTool = () => {
                 />
             </div>
             <Drawer
+                
                 placement="right"
                 closable={true}
+                
                 onClose={toggleDrawer}
                 open={drawerVisible}
                 width={Math.min(window.innerWidth - 100, 320)} // Adjust the width to be responsive

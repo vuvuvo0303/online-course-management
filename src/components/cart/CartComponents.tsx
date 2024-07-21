@@ -5,7 +5,7 @@ import { deleteCart, displayCart } from '../../services/cart.ts';
 import { useEffect, useState } from 'react';
 import { Cart } from '../../models';
 import { CloseOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const CartComponents = () => {
 
@@ -17,8 +17,7 @@ const CartComponents = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const getCart = async () => {
-
-        const res = await displayCart("new");
+        const res = await displayCart("");
         if (res) {
             setCarts(res);
             setLoading(false)
@@ -34,10 +33,12 @@ const CartComponents = () => {
             console.log("check res: ", res);
         }
     }
-
+    const token  = localStorage.getItem("token")
     useEffect(() => {
-        getCart();
-    }, [])
+        if(token){
+            getCart();
+        }
+    }, [token])
 
     if (loading) {
         return (

@@ -56,13 +56,11 @@ const AllCourses: React.FC = () => {
         const handleGoToCourse = async () => {
             await addCourseToCart(course._id);
         }
-        
         const lastUpdated = format(new Date(course.updated_at), "dd/MM/yyyy");
         return (
             <div className="popover-content w-full">
                 <Meta
                     title={course.name}
-
                     description={
                         <div className="max-w-[350px] max-h-[410px] flex flex-col justify-between p-4 text-left">
                             <div>
@@ -74,13 +72,6 @@ const AllCourses: React.FC = () => {
                             <div>
                                 <p className="text-black text-[1rem] mb-2 truncate">Price: {course.price} vnđ</p>
                             </div>
-                            {/* <div>
-                                <ul className="list-none">
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 1</li>
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 2</li>
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 3</li>
-                                </ul>
-                            </div> */}
                         </div>
                     }
                 />
@@ -132,7 +123,7 @@ const AllCourses: React.FC = () => {
                     className="categories-carousel"
                 >
                     {courses.map((course, index) => (
-                        <div key={course._id} className="category-card w-full">
+                        <div key={course._id} className=" w-full">
                             <Popover
                                 content={renderPopoverContent(course)}
                                 title="Course Info"

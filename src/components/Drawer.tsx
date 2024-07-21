@@ -61,10 +61,10 @@ const SideBar: React.FC = () => {
                 placement={placement}
                 closable={true}
                 onClose={onClose}
-                visible={open}
+                open={open}
                 key={placement}
                 width={300}
-                bodyStyle={{ padding: 0 }}
+                style={{ padding: 0 }}
             >
                 <div className="p-4">
                     <div className="flex items-center">
