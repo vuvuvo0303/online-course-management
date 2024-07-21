@@ -27,3 +27,4 @@ export const deleteUser = async (_id: string, email: string, fetchUsers: () => P
     message.success(`Deleted user ${email} successfully`);
     await fetchUsers();
 };
+

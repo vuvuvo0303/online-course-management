@@ -67,9 +67,9 @@ export const API_UPDATE_STATUS_CART = "/api/cart/update-status";
 export const API_DELETE_CART = "/api/cart";
 //export const API_DELETE_CART = "/api/cart";
 //Purchase
-export const API_GET_ITEMS_BY_ADMIN = "/api/purchase/search";
-export const API_GET_ITEMS_BY_INSTRUCTOR = "api/purchase/search-for-instructor";
-export const API_GET_ITEMS_BY_STUDENT = "api/purchase/search-for-student";
+export const API_GET_PURCHASE_BY_ADMIN = "/api/purchase/search";
+export const API_GET_PURCHASE_BY_INSTRUCTOR = "api/purchase/search-for-instructor";
+export const API_GET_PURCHASE_BY_STUDENT = "api/purchase/search-for-student";
 //Payout
 export const API_CREATE_PAYOUT = "/api/payout";
 export const API_GET_PAYOUTS = "/api/payout/search";
