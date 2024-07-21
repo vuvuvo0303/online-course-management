@@ -32,7 +32,6 @@ import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 
 import { User, UserRole } from "../../../models/User.ts";
 import uploadFile from "../../../utils/upload.ts";
-import useDebounce from "../../../hooks/useDebounce";
 import { PaginationProps } from "antd";
 import {
   API_CHANGE_ROLE,
@@ -51,6 +50,7 @@ type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AdminManageUsers: React.FC = () => {
   const [data, setData] = useState<User[]>([]);
+
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -58,13 +58,13 @@ const AdminManageUsers: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const debouncedSearch = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
   const [formData, setFormData] = useState<Partial<User>>({});
+
 
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
   const [selectedRole, setSelectedRole] = useState<string>("All");
@@ -92,52 +92,25 @@ const AdminManageUsers: React.FC = () => {
           status: statusValue,
           is_delete: false,
           keyword: debouncedSearch,
-          keyword: debouncedSearch,
         },
         pageInfo: {
           pageNum: pagination.current,
           pageSize: pagination.pageSize,
         },
       });
-
-      if (response.data && response.data.pageData) {
-        let filteredData = response.data.pageData;
-
-        if (selectedRole.toLowerCase() === "instructor") {
-          filteredData = filteredData.filter((user: User) => user.is_verified === true);
-        }
-
-        setData(filteredData);
-        setPagination({
-          ...pagination,
-          total: response.data.pageInfo.totalItems,
-          current: response.data.pageInfo.pageNum,
-          pageSize: response.data.pageInfo.pageSize,
-        });
-      } else {
-        // Xử lý trường hợp không có dữ liệu
-      }
+      setData(response.data.pageData);
+      setPagination({
+        ...pagination,
+        total: response.data.pageInfo.totalItems,
+        current: response.data.pageInfo.pageNum,
+        pageSize: response.data.pageInfo.pageSize,
+      });
     } catch (error) {
       // Xử lý trường hợp lỗi
     }
     setLoading(false);
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
 
-  const handleDelete = useCallback(
-    async (_id: string, email: string) => {
-      try {
-        await axiosInstance.delete(`${API_DELETE_USER}/${_id}`);
-        setData((prevData) => prevData.filter((user) => user._id !== _id));
-        toast.success(`Deleted user ${email} successfully`);
-        fetchUsers();
-
-        localStorage.setItem("users_updated", new Date().toISOString());
-      } catch (error) {
-        //
-      }
-    },
-    [fetchUsers]
-  );
 
   const handleAddNewUser = useCallback(
     async (values: User) => {
@@ -197,13 +170,6 @@ const AdminManageUsers: React.FC = () => {
       const updateData = data.map((user) => (user._id === userId ? { ...user, status: checked } : user))
       setData(updateData);
       message.success(`User status updated successfully`);
-      fetchUsers();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-
-      setData((prevData) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
-
-      toast.success(`User status updated successfully`);
-      localStorage.setItem("users_updated", new Date().toISOString());
     } catch (error) {
       // Handle error silently
     }
@@ -286,74 +252,6 @@ const AdminManageUsers: React.FC = () => {
       render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
       width: "10%",
     },
-  }, []);
-  const columns: TableColumnsType<User> = useMemo(
-    () => [
-      {
-        title: "Avatar",
-        dataIndex: "avatar",
-        key: "avatar",
-        render: (avatar: string) => (
-          <Avatar
-            size={50}
-            src={
-              avatar
-                ? avatar
-                : "https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-8/32/user--avatar--filled-256.png"
-            }
-          />
-        ),
-      },
-      {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
-        width: "20%",
-      },
-      {
-        title: "Email",
-        dataIndex: "email",
-        key: "email",
-        width: "20%",
-      },
-      {
-        title: "Role",
-        dataIndex: "role",
-        key: "role",
-        width: "10%",
-        render: (role: UserRole, record: User) => (
-          <Select
-            defaultValue={role}
-            onChange={(value) => handleRoleChange(value, record._id)}
-            style={{ width: "100%" }}
-          >
-            <Select.Option classNAme="text-red-700" value="student">
-              {" "}
-              <span className="text-blue-800">Student</span>
-            </Select.Option>
-            <Select.Option value="instructor">
-              <span className="text-green-700">Instructor</span>
-            </Select.Option>
-            <Select.Option value="admin">
-              <span className="text-violet-500">Admin</span>
-            </Select.Option>
-          </Select>
-        ),
-      },
-      {
-        title: "Created Date",
-        dataIndex: "created_at",
-        key: "created_at",
-        render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
-        width: "10%",
-      },
-      {
-        title: "Updated Date",
-        dataIndex: "updated_at",
-        key: "updated_at",
-        render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
-        width: "10%",
-      },
 
     {
       title: "Status",
@@ -466,14 +364,10 @@ const AdminManageUsers: React.FC = () => {
       const response: ResponseData = await axiosInstance.put(`${API_UPDATE_USER}/${formData._id}`, updatedUser);
       if (response.success) {
         if (formData.role !== values.role) {
-          const roleChangeResponse: AxiosResponse<User> = await axiosInstance.put(API_CHANGE_ROLE, {
+          await axiosInstance.put(API_CHANGE_ROLE, {
             user_id: formData._id,
             role: values.role,
           });
-
-          if (!roleChangeResponse.success) {
-            throw new Error("Failed to change user role");
-          }
         }
 
         setData((prevData) =>
@@ -546,27 +440,20 @@ const AdminManageUsers: React.FC = () => {
         </div>
       </div>
 
-      <Space className="mb-2 flex items-center">
+      <Space className="mb-2">
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          
           style={{ width: 200 }}
           enterButton={<SearchOutlined className="text-white" />}
         />
 
         <Select value={selectedRole} onChange={handleRolefilter} style={{ width: 120 }}>
           <Select.Option value="All">All Roles</Select.Option>
-          <Select.Option value="Admin">
-            <span className="text-violet-500">Admin</span>
-          </Select.Option>
-          <Select.Option value="Student">
-            <span className="text-blue-800">Student</span>
-          </Select.Option>
-          <Select.Option value="Instructor">
-            <span className="text-green-700">Instructor</span>
-          </Select.Option>
+          <Select.Option value="Admin"><span className="text-violet-500">Admin</span></Select.Option>
+          <Select.Option value="Student"><span className="text-blue-800">Student</span></Select.Option>
+          <Select.Option value="Instructor"><span className="text-green-700">Instructor</span></Select.Option>
         </Select>
         <Select value={selectedStatus} onChange={handleStatus} style={{ width: 120 }}>
           <Select.Option value="true">Active</Select.Option>

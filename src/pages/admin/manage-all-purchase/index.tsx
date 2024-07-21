@@ -1,5 +1,5 @@
 import { Avatar, Breadcrumb, Table, TableProps, Tag } from "antd";
-import { API_GET_ITEMS_BY_ADMIN } from "../../../consts/index";
+import {API_GET_PURCHASE_BY_ADMIN } from "../../../consts/index";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { useCallback, useEffect, useState } from "react";
@@ -88,7 +88,7 @@ const ManageAllPurchase = () => {
 
   const fetchPurchase = useCallback(async () => {
     try {
-      const response = await axiosInstance.post(API_GET_ITEMS_BY_ADMIN, {
+      const response = await axiosInstance.post(API_GET_PURCHASE_BY_ADMIN, {
         searchCondition: {
           purchase_no: "",
           cart_no: "",

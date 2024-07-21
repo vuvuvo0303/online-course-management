@@ -165,7 +165,7 @@ const AdminInstructorRequest = () => {
   useEffect(() => {
     fetchInstructorRequest();
   }, [pagination.current, pagination.pageSize, debouncedSearch]);
-  }, [pagination.current, pagination.pageSize, debouncedSearch]);
+
 
   const handleApprove = async (record: Instructor) => {
     try {
