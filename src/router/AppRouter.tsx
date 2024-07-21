@@ -205,10 +205,6 @@ const AppRouter: React.FC = () => {
             element={canAccess([roles.ADMIN]) ? <AdminManageUsers /> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
           <Route
-            path="purchase"
-            element={canAccess([roles.ADMIN]) ? <AdminPurchases /> : <Navigate to={paths.ADMIN_LOGIN} />}
-          />
-          <Route
             path={paths.ADMIN_INSTRUCTOR_REQUEST}
             element={canAccess([roles.ADMIN]) ? <AdminInstructorRequest /> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
@@ -231,6 +227,10 @@ const AppRouter: React.FC = () => {
           <Route
             path={paths.ADMIN_MANAGE_REVIEWS}
             element={canAccess([roles.ADMIN]) ? <AdminManageReviews /> : <Navigate to={paths.ADMIN_LOGIN} />}
+          />
+          <Route
+            path={paths.ADMIN_PAYMENT_HISTORY}
+            element={canAccess([roles.ADMIN]) ? <AdminPurchases/> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
         </Route>
       </Routes>

@@ -47,13 +47,15 @@ axiosInstance.interceptors.response.use(
                      const userString = localStorage.getItem("user");
                      const user = userString ? JSON.parse(userString) : null;
                      
-                     if(user.role === roles.ADMIN){
-                        window.location.href = paths.ADMIN_LOGIN;
-                     }
-                     else{
-                        window.location.href = paths.LOGIN;
-                     }
-                     localStorage.clear();
+                     setTimeout(() => {
+                         if(user.role === roles.ADMIN){
+                             window.location.href = paths.ADMIN_LOGIN;
+                         }
+                         else{
+                             window.location.href = paths.LOGIN;
+                         }
+                         localStorage.clear();
+                     }, 1300);
                 }
                  else if(error.response.status === 404){
                     message.error(data.message);
