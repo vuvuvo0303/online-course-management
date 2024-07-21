@@ -5,7 +5,7 @@ import { deleteCart, displayCart, updateStatusCart } from '../../services/cart.t
 import { useEffect, useState } from 'react';
 import { Cart } from '../../models';
 import { CloseOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CartComponents = () => {
 
@@ -19,7 +19,7 @@ const CartComponents = () => {
     const [cartsChecked, setCartsChecked] = useState<Cart[]>([])
     const [indexCartChecked, setindexCartChecked] = useState<number>(0)
     const getCart = async () => {
-        const res = await displayCart("");
+        const res = await displayCart("new" && "cancel");
         if (res) {
             setCarts(res);
             setLoading(false)

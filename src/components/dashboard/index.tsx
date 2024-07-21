@@ -70,6 +70,7 @@ const Dashboard: React.FC = () => {
           getItem("Manage All Sessions", "/instructor/manage-all-sessions", <DesktopOutlined />),
           getItem("Manage All Lessons", "/instructor/manage-all-lessons", <DesktopOutlined />),
           getItem("Manage Subscriptions", "/instructor/manage-subscriptions", <DesktopOutlined />),
+          getItem("Manage Purchases", "/instructor/manage-purchases", <DesktopOutlined />),
           getItem("Manage Students", "/instructor/manage-students", <TeamOutlined />),
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
           getItem("Payment History", "/instructor/payment-history", <WalletOutlined />),

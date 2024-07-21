@@ -34,6 +34,9 @@ const Checkout = lazy(() => import("../pages/checkout"));
 const Profile = lazy(() => import("../pages/profile"));
 const Cart = lazy(() => import("../pages/cart"));
 
+// Student and Instructor Page
+const StudentInstructorPurchase = lazy(() => import("../pages/purchase/student-instructor-purchase"));
+
 // Instructor Page
 const InstructorDashboard = lazy(() => import("../pages/instructor/instructor-dashboard/index"));
 const InstructorManagerReviews = lazy(() => import("../pages/instructor/manage-reviews"));
@@ -99,7 +102,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
         <Route path={paths.COURSE_DETAIL} element={<CourseDetail />} />
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
-
+        <Route path={paths.STUDENT_PURCHASE} element={<StudentInstructorPurchase />} />
         {/* Route for Instructor */}
         <Route path="/instructor/*" element={canAccess([roles.INSTRUCTOR]) ? <Dashboard /> : <Navigate to={paths.HOME} />}>
           <Route
@@ -190,6 +193,10 @@ const AppRouter: React.FC = () => {
           <Route
             path={paths.INSTRUCTOR_MANAGE_SUBSCRIPTIONS}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageSubscriptions /> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_MANAGE_PURCHASES}
+            element={canAccess([roles.INSTRUCTOR]) ? <StudentInstructorPurchase /> : <Navigate to={paths.HOME} />}
           />
         </Route>
 

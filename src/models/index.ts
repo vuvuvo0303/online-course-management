@@ -11,3 +11,4 @@ export { SubCategory } from './SubCategory';
 export { Log } from './Log';
 export { Subscription } from './Subscription';
 export { Cart } from './Cart';
+export { Purchase } from './Purchase';

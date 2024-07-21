@@ -8,9 +8,9 @@ import { Cart } from "../../models";
 import { displayCart, updateStatusCart } from '../../services';
 import { useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
-import { format } from "date-fns";
+
 const Checkout: React.FC = () => {
-  const [payment, setPayment] = useState<any>(null);
+  // const [payment, setPayment] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [form] = Form.useForm();
@@ -63,7 +63,7 @@ const Checkout: React.FC = () => {
             paymentData.createdDate
           ).toUTCString();
           paymentData.createdDate = createdDateUTC;
-          setPayment(paymentData);
+          // setPayment(paymentData);
         } else {
           message.error("No payment found.");
         }
@@ -173,14 +173,17 @@ const Checkout: React.FC = () => {
                   </p>
                   <p className={styles.detailValue}>{user && user.email}</p>
                 </div>
-                {payment && (
+                {
+                // payment && 
+                (
                   <>
                     <div className={styles.detailItem}>
                       <p className={styles.detailLabel}>
                         <strong>Date:</strong>
                       </p>
                       <p className={styles.detailValue}>
-                        { format(new Date(payment.createdDate), "dd/MM/yyyy")}
+                        22/07/2024
+                        {/* { format(new Date(payment.createdDate), "dd/MM/yyyy")} */}
                       </p>
                     </div>
                     <div className={styles.detailItem}>

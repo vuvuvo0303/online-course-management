@@ -133,6 +133,19 @@ export const getColorCart = (status: string) => {
   }
 };
 
+export const getColorPurchase = (status: string) => {
+  switch (status) {
+    case "new":
+      return "red";
+    case "request_payout":
+      return "blue";
+    case "completed":
+      return "yellow";
+    case "rejected":
+      return "purple";
+  }
+};
+
 export const getColorStatusSubscribe = (status: boolean) => {
   switch (status) {
     case true:
@@ -183,7 +196,7 @@ export const paths = {
   STUDENT_ENROLLMENT: "/enrollment",
   STUDENT_CHECKOUT: "/checkout",
   STUDENT_CART: "/cart",
-
+  STUDENT_PURCHASE: "/purchase",
   /* INSTRUCTORS PATHS */
   INSTRUCTOR_DASHBOARD: "dashboard",
   INSTRUCTOR_PROFILE: "profile",
@@ -212,6 +225,7 @@ export const paths = {
   INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lessons/create-lesson",
   INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
   INSTRUCTOR_MANAGE_SUBSCRIPTIONS: "manage-subscriptions",
+  INSTRUCTOR_MANAGE_PURCHASES: "manage-purchases",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",
