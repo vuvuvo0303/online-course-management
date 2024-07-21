@@ -1,7 +1,7 @@
 import axios from "axios";
-import { toast } from "react-toastify";
 import config from "../secret/config.ts";
 import {paths, roles} from "../consts";
+import { message } from "antd";
 
 const axiosInstance = axios.create({
     baseURL: config.BASE_URL,
@@ -43,37 +43,39 @@ axiosInstance.interceptors.response.use(
             console.log(error.response)
             if (data && data.message) {
                 if(error.response.status === 403){
+                    message.error(data.message)
                      const userString = localStorage.getItem("user");
                      const user = userString ? JSON.parse(userString) : null;
-                     toast.error(data.message)
-                     localStorage.removeItem("token");
-                     localStorage.removeItem("user");
-                     if(user.role === roles.ADMIN){
-                        window.location.href = paths.ADMIN_LOGIN;
-                     }
-                     else{
-                        window.location.href = paths.LOGIN;
-                     }
+                     
+                     setTimeout(() => {
+                         if(user.role === roles.ADMIN){
+                             window.location.href = paths.ADMIN_LOGIN;
+                         }
+                         else{
+                             window.location.href = paths.LOGIN;
+                         }
+                         localStorage.clear();
+                     }, 1300);
                 }
                  else if(error.response.status === 404){
-                    toast.error(data.message);
+                    message.error(data.message);
                     window.location.href = paths.NOTFOUND;
                 }
                 else if(error.response.status === 500){
-                    toast.error(data.message);
+                    message.error(data.message);
                     window.location.href = paths.INTERNAL_SERVER_ERROR;
                 }
                 else {
-                    toast.error(data.message);
+                    message.error(data.message);
                 }
             } else {
                 data.errors.forEach((error: {field: string, message: string}) => {
-                    toast.error(error.field + ": " + error.message);
+                    message.error(error.field + ": " + error.message);
                 })
             }
             return Promise.reject(error.response.data);
         } else {
-            toast.error('Network error');
+            message.error('Network error');
             return Promise.reject(error);
         }
     }

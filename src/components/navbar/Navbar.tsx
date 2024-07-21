@@ -7,11 +7,14 @@ import SearchTool from '../SearchTool';
 import Drawer from '../Drawer';
 import PopoverContent from '../PopoverContent';
 import Popup from '../Popup';
+import { logout } from "../../services/auth.ts";
+import { displayCart } from '../../services';
 
 
 const Navbar: React.FC = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
+  const [totalCarts, setTotalCarts] =  useState<number>(0)
   const [dataUser, setDataUser] = useState<{ role: string | null; fullName: string | null; email: string | null; avatarUrl: string | null }>({
     role: null,
     fullName: null,
@@ -26,6 +29,22 @@ const Navbar: React.FC = () => {
   // Create a submenu for each categoryFilter
   const user = localStorage.getItem("user");
 
+  const token = localStorage.getItem("token")
+
+  useEffect(() => {
+ 
+   if(token){
+    CountCart();
+   }
+  }, [token])
+  
+  const CountCart = async () => {
+    const res = await displayCart("new");
+    if (res) {
+      setTotalCarts(res.length);
+    }
+  }
+
   useEffect(() => {
     if (user) {
       try {
@@ -37,11 +56,6 @@ const Navbar: React.FC = () => {
     }
   }, [navigate, user]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    navigate(paths.HOME);
-  };
 
   const dropdownItems: MenuProps["items"] = [
     {
@@ -100,11 +114,27 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
-        <p onClick={handleLogout} className="text-lg hover:cursor-pointer hover:text-red-600">
+        <Link className="text-lg" to={"/subscription"}>
+          Subscription
+        </Link>
+      ),
+      key: "5",
+    },
+    {
+      label: (
+        <Link className="text-lg" to={"/purchase"}>
+          Purchase
+        </Link>
+      ),
+      key: "6",
+    },
+    {
+      label: (
+        <p onClick={() => logout(navigate)} className="text-lg hover:cursor-pointer hover:text-red-600">
           Logout
         </p>
       ),
-      key: "5",
+      key: "7",
     },
   ];
 
@@ -171,7 +201,7 @@ const Navbar: React.FC = () => {
               placement="bottom"
             >
               <Link to={paths.STUDENT_CART}>
-                <Badge count={2} className='mt-[4px'>
+                <Badge count={totalCarts} className='mt-[4px'>
                   <ShoppingCartOutlined className="text-gray-400 text-3xl mt-[3px]" />
                 </Badge>
               </Link>

@@ -1,11 +1,10 @@
-import { Breadcrumb, Pagination, Popconfirm, Rate, Table } from "antd";
+import { Breadcrumb, message, Pagination, Popconfirm, Rate, Table } from "antd";
 import type { TableProps } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined, HomeOutlined } from "@ant-design/icons";
 import { Review } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { API_DELETE_REVIEW, API_GET_REVIEWS, paths } from "../../../consts";
-import { toast } from "react-toastify";
 import { format } from "date-fns";
 
 
@@ -13,7 +12,7 @@ const AdminManageFeedbacks: React.FC = () => {
   const [data, setData] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [pagination, ] = useState({
+  const [pagination,] = useState({
     pageNum: 1,
     pageSize: 10,
     totalItems: 0
@@ -55,7 +54,7 @@ const AdminManageFeedbacks: React.FC = () => {
       try {
         await axiosInstance.delete(`${API_DELETE_REVIEW}/${_id}`);
         setData(prevReview => prevReview.filter(review => review._id === _id));
-        toast.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
+        message.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
         fetchReviews();
       } catch {
         //
@@ -139,7 +138,7 @@ const AdminManageFeedbacks: React.FC = () => {
           },
         ]}
       />
-      <Table rowKey="_id" columns={columns} dataSource={data} />
+      <Table rowKey={(record: Review) => record._id} columns={columns} dataSource={data} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.totalItems}

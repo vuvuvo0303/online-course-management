@@ -1,32 +1,48 @@
 export class Payment{
-    paymentId: string = "";
-    amount: number = 0;
-    createdDate: string = "";
-    paymentMethod: string = "";
+    _id: string = "";
+    purchase_no: string = "";
     status: string = "";
-    userId: string = "";
-    enrollmentId: string = "";
-    courseId: string = "";
-    courseName: string = "";
+    price_paid: number = 0;
+    price: number = 0;
+    discount: number = 0;
+    cart_id: string = "";
+    course_id: string = "";
+    student_id: string = "";
+    instructor_id: string = "";
+    created_at: Date = new Date();
+    is_deleted: boolean = false;
+    course_name: string = "";
+    student_name: string = "";
+    instructor_name: string = "";
     constructor(
-        paymentId: string = "",
-        amount: number = 0,
-        createdDate: string = "",
-        paymentMethod: string = "",
-        status: string = "",
-        userId: string = "",
-        enrollmentId: string = "",
-        courseId: string = "",
-        courseName: string = "",
+        _id: string,
+        status: string,
+        price: number,
+        purchase_no: string,
+        discount: number,
+        course_id: string,
+        student_id: string,
+        instructor_id: string,
+        created_at: Date,
+        price_paid: number,
+        cart_id : string,
+        is_deleted: boolean,
+        student_name : string,
+        instructor_name : string,
     ){
-        this.paymentId = paymentId;
-        this.amount = amount;
-        this.createdDate = createdDate;
-        this.paymentMethod = paymentMethod;
+        this._id = _id;
+        this.purchase_no  = purchase_no;
         this.status = status;
-        this.userId = userId;
-        this.enrollmentId = enrollmentId;
-        this.courseId = courseId;
-        this.courseName = courseName;
+        this.price_paid = price_paid;
+        this.price = price;
+        this.discount = discount;
+        this.cart_id = cart_id;
+        this.course_id = course_id;
+        this.student_id = student_id;
+        this.instructor_id = instructor_id;
+        this.created_at = created_at;
+        this.student_name = student_name;
+        this.instructor_name = instructor_name;
+        this.is_deleted = is_deleted;
     }
 }

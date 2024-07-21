@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Rate, Input, Button, Modal, Form, Select } from 'antd';
+import { Rate, Input, Button, Modal, Form, Select, message } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import axiosInstance from '../../../services/axiosInstance.ts';
-import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
+import { API_GET_COURSES } from 'consts/index.ts';
 
 interface Review {
     name: string;
@@ -45,7 +45,7 @@ const ReviewPage: React.FC = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axiosInstance.post('/api/course/search', {
+                const response = await axiosInstance.post(API_GET_COURSES, {
                     searchCondition: {
                         keyword: '',
                         category: '',
@@ -92,7 +92,7 @@ const ReviewPage: React.FC = () => {
                 setReviews((prevReviews) => [newReview, ...prevReviews]);
                 setIsModalVisible(false);
                 form.resetFields();
-                toast.success('Review added successfully.');
+                message.success('Review added successfully.');
             }
         } catch (error) {
             // console.error(error);

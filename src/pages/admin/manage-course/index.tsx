@@ -7,6 +7,7 @@ import {
   Form,
   Image,
   Input,
+  message,
   Modal,
   Pagination,
   Select,
@@ -16,14 +17,12 @@ import {
   TablePaginationConfig,
   Tag,
 } from "antd";
-import { API_COURSE_STATUS, getColor } from "../../../consts";
+import { API_COURSE_STATUS, API_GET_COURSES, getColor } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { Course } from "../../../models";
-import { toast } from "react-toastify";
 import TextArea from "antd/es/input/TextArea";
-import useDebounce from "../../../hooks/useDebounce";
+import { useDebounce } from "../../../hooks";
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [changeStatus, setChangeStatus] = useState<string>("");
@@ -36,7 +35,7 @@ const AdminManageCourses: React.FC = () => {
   const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
   const [searchText, setSearchText] = useState<string>("");
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>("All Categories");
-  const [selectedStatus, setSelectedStatus] = useState<string>("All Statuses");
+  const [selectedStatus, setSelectedStatus] = useState<string>("All Status");
   const [comment, setComment] = useState<string>("");
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -66,15 +65,14 @@ const AdminManageCourses: React.FC = () => {
           pageSize: pagination.pageSize,
         },
       };
-      console.log("Fetching courses with params:", params);
-      const res = await axiosInstance.post(`/api/course/search`, params);
-      if (res.data) {
-        setCourses(res.data.pageData || res.data);
+      const response = await axiosInstance.post(API_GET_COURSES, params);
+      if (response.data) {
+        setCourses(response.data.pageData || response.data);
         setPagination((prev) => ({
           ...prev,
-          total: res.data.pageInfo?.totalItems || res.data.length,
-          current: res.data.pageInfo?.pageNum || 1,
-          pageSize: res.data.pageInfo?.pageSize || res.data.length,
+          total: response.data.pageInfo?.totalItems || response.data.length,
+          current: response.data.pageInfo?.pageNum || 1,
+          pageSize: response.data.pageInfo?.pageSize || response.data.length,
         }));
       }
     } catch (error) {
@@ -118,7 +116,7 @@ const AdminManageCourses: React.FC = () => {
 
   const handleOkChangeStatus = async () => {
     if (!comment) {
-      return toast.error("Please enter comment");
+      return message.error("Please enter comment");
     }
     try {
       await axiosInstance.put(API_COURSE_STATUS, {
@@ -128,7 +126,7 @@ const AdminManageCourses: React.FC = () => {
       });
       setCourses(courses.filter((course) => course._id !== courseId));
     } catch (error) {
-      console.log("Error occurred: ", error);
+      //
     }
     setConfirmLoading(true);
     setTimeout(() => {
@@ -176,13 +174,13 @@ const AdminManageCourses: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
     },
     {
       title: "Action",
@@ -230,8 +228,6 @@ const AdminManageCourses: React.FC = () => {
   const handleCategoryChange = (categoryName: string) => {
     const category = uniqueCategories.find((c) => c.category_name === categoryName);
     const newCategoryId = category && category.category_name !== "All Categories" ? category.category_id : undefined;
-    console.log("Selected categoryName:", categoryName);
-    console.log("Selected categoryId:", newCategoryId);
     setCategoryId(newCategoryId);
     setSelectedCategoryName(categoryName);
     setPagination((prev) => ({
@@ -286,7 +282,7 @@ const AdminManageCourses: React.FC = () => {
             {selectedCourse ? selectedCourse.name : ""}
           </span>
         }
-        visible={isModalVisible}
+        open={isModalVisible}
         footer={null}
         onCancel={() => setIsModalVisible(false)}
       >
@@ -383,7 +379,7 @@ const AdminManageCourses: React.FC = () => {
           value={selectedStatus}
           className="w-48 md:w-64"
         >
-          <Select.Option value="">All Statuses</Select.Option>
+          <Select.Option value="">All Status</Select.Option>
           <Select.Option value="new">New</Select.Option>
           <Select.Option value="waiting_approve">Waiting for Approve</Select.Option>
           <Select.Option value="approve">Approved</Select.Option>
@@ -392,17 +388,7 @@ const AdminManageCourses: React.FC = () => {
           <Select.Option value="inactive">Inactive</Select.Option>
         </Select>
       </Space>
-
-      {/* Table */}
-      <Table
-        columns={columnsCourses}
-        dataSource={courses}
-        pagination={false}
-        onChange={handleTableChange}
-        className="overflow-x-auto"
-      />
-
-      {/* Pagination */}
+      <Table columns={columnsCourses} rowKey={(record: Course) => record._id} dataSource={courses} pagination={false} onChange={handleTableChange} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

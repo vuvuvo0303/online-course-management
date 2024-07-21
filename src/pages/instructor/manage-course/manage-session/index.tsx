@@ -1,14 +1,14 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps } from "antd";
+import { Breadcrumb, Button, Input, message, Modal, Select, Table, TableProps } from "antd";
 import { useEffect, useState } from "react";
 import { Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import {API_GET_COURSE, API_GET_SESSIONS} from "../../../../consts";
+import { API_GET_COURSE, API_GET_SESSIONS } from "../../../../consts";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../hooks/useDebounce";
 import { format } from "date-fns";
-const ManageSession = () => {
+const ManageSession: React.FC = () => {
+
     const { courseId } = useParams<{ courseId: string }>();
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -16,6 +16,7 @@ const ManageSession = () => {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('');
     const [open, setOpen] = useState(false);
+
     const [keyword, setKeyword] = useState<string>('');
     const [selectedSessionID, setSelectedSessionID] = useState<string>('');
     const debouncedSearchTerm = useDebounce(keyword, 500);
@@ -51,7 +52,7 @@ const ManageSession = () => {
         try {
             await axiosInstance.delete(`${API_GET_COURSE}/${sessionId}`);
             setSessions(sessions.filter(session => session._id !== sessionId));
-            toast.success(`Delete Session Successfully!`);
+            message.success(`Delete Session Successfully!`);
         } catch (error) {
             //
         }
@@ -109,19 +110,19 @@ const ManageSession = () => {
             key: '_id',
             render: (_id: number, record: Session) => (
                 <>
-                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${_id}/manage-lectures`}>
+                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${_id}/manage-lessons`}>
                         <p className="text-blue-700">Lesson of "{record.name}"</p></Link>
                 </>
             )
         },
         {
-            title: 'Created At',
+            title: 'Created Date',
             dataIndex: 'created_at',
             key: 'created_at',
             render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
         },
         {
-            title: 'Updated At',
+            title: 'Updated Date',
             dataIndex: 'updated_at',
             key: 'updated_at',
             render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
@@ -150,6 +151,8 @@ const ManageSession = () => {
     const handleChange = (value: boolean) => {
         setIs_deleted(value);
     };
+
+
     return (
         <div>
             <Modal
@@ -173,13 +176,14 @@ const ManageSession = () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
             <h1 className="text-center m-5">Manage Session</h1>
+            {/* filter session by true false */}
             <div className="grid grid-cols-2">
-                <div className="grid grid-cols-2">
+                <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-10">
                     <Select
                         defaultValue={is_deleted}
+                        onChange={handleChange}
                         style={{ width: 200 }}
                         className="mt-10"
-                        onChange={handleChange}
                         options={[
                             {
                                 options: [
@@ -193,7 +197,7 @@ const ManageSession = () => {
                         placeholder="Search"
                         value={keyword}
                         onChange={handleSearch}
-                        className="m-10"
+                        className="my-10"
                         style={{ width: 200 }}
                     />
                 </div>
@@ -201,7 +205,8 @@ const ManageSession = () => {
                     <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New Session</Button></Link>
                 </div>
             </div>
-            <Table dataSource={sessions} columns={columns} rowKey="sessionId" />
+
+            <Table dataSource={sessions} columns={columns} rowKey={(record: Session) => record._id} />
         </div>
     );
 };

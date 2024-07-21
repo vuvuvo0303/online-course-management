@@ -4,6 +4,7 @@ import Banner from "../../components/categories/banner";
 import LogoCategories from "../../components/categories/logo";
 import NewSection from "../../components/categories/news/NewSection";
 import List from "../../components/categories/list";
+import AllCourses from "../../components/categories/all-course/index";
 
 const Home: React.FC = () => {
     return (
@@ -18,6 +19,9 @@ const Home: React.FC = () => {
             </h3>
             <section className='flex-start md:p-5'>
                 <Categories />
+            </section>
+            <section className='flex-start md:p-5'>
+                <AllCourses />
             </section>
             <section className='flex-start md:p-5'>
                 <TeacherCategories />

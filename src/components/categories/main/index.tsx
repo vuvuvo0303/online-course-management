@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Card, Popover, Button, Rate } from 'antd';
 import Carousel from "react-multi-carousel";
 import { Link } from 'react-router-dom';
@@ -124,8 +124,8 @@ const Categories: React.FC = () => {
                 <h1 className="categories-header">{selectedCategory}</h1>
                 <Link to={`/courses/${selectedCategory}`}>
                     <Button
-                        type="primary"
-                        className="categories-button ml-0"
+                        type="default"
+                        className="categories-button"
                         disabled={!selectedCategory}
                     >
                         Explore Course

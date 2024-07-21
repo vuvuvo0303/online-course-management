@@ -16,9 +16,8 @@ import { Instructor } from "models/User";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
-import useDebounce from "../../../hooks/useDebounce";
+import { useDebounce } from "../../../hooks";
 
 const { TextArea } = Input;
 
@@ -26,6 +25,7 @@ const AdminInstructorRequest = () => {
   const [dataSource, setDataSource] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
+
 
   const debouncedSearch = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -66,17 +66,17 @@ const AdminInstructorRequest = () => {
       width: "20%",
     },
     {
-      title: "Created Date",
+      title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
       width: "10%",
     },
     {
-      title: "Updated Date",
+      title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
       width: "10%",
     },
     {
@@ -165,6 +165,7 @@ const AdminInstructorRequest = () => {
   useEffect(() => {
     fetchInstructorRequest();
   }, [pagination.current, pagination.pageSize, debouncedSearch]);
+  }, [pagination.current, pagination.pageSize, debouncedSearch]);
 
   const handleApprove = async (record: Instructor) => {
     try {
@@ -211,8 +212,7 @@ const AdminInstructorRequest = () => {
         fetchInstructorRequest();
       }
     } catch (error) {
-      message.error("Error rejecting instructor");
-      console.error("Error rejecting instructor:", error);
+      //
     } finally {
       setIsModalVisible(false);
     }

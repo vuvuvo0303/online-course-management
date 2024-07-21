@@ -14,6 +14,7 @@ const Terms = lazy(() => import("../pages/terms"));
 const Guidelines = lazy(() => import("../pages/guideline"));
 const About = lazy(() => import("../pages/about"));
 const Course = lazy(() => import("../pages/course"));
+const AllCourses = lazy(() => import("../pages/course/all-courses"));
 const BlogDetail = lazy(() => import("../pages/blog/blog-detail"));
 const BlogList = lazy(() => import("../pages/blog"));
 const Enrollment = lazy(() => import("../pages/enrollment"));
@@ -32,14 +33,14 @@ const Checkout = lazy(() => import("../pages/checkout"));
 const Profile = lazy(() => import("../pages/profile"));
 const Cart = lazy(() => import("../pages/cart"));
 
+// Student and Instructor Page
+const StudentInstructorPurchase = lazy(() => import("../pages/purchase/student-instructor-purchase"));
+
 // Instructor Page
 const InstructorDashboard = lazy(() => import("../pages/instructor/instructor-dashboard/index"));
-const InstructorManageLectures = lazy(() => import("../pages/instructor/manage-lectures"));
 const InstructorManagerReviews = lazy(() => import("../pages/instructor/manage-reviews"));
 const PaymentHistory = lazy(() => import("../pages/payment/payment-history"));
 const InstructorManageCourses = lazy(() => import("../pages/instructor/manage-course/index"));
-const InstructorManageStudents = lazy(() => import("../pages/instructor/manage-students"));
-const InstructorManageBlogs = lazy(() => import("../pages/instructor/manage-blogs/index"));
 const InstructorResources = lazy(() => import("../pages/instructor/resources"));
 const InstructorTools = lazy(() => import("../pages/instructor/tools"));
 const LectureOfCourse = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
@@ -55,9 +56,8 @@ const CreateUpdateSession = lazy(
   () => import("../pages/instructor/manage-course/manage-session/create-update-session")
 );
 const ManageAllLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
-// const InstructorManageCoursesDetail = lazy(() => import("../pages/instructor/manage-course/course-detail"));
 const ManageAllSession = lazy(() => import("../pages/manage-all-session"));
-
+const InstructorManageSubscriptions = lazy(() => import("../pages/instructor/manage-subscriptions"));
 // Admin Page
 const AdminLoginPage = lazy(() => import("../pages/admin/login"));
 const AdminDashboard = lazy(() => import("../pages/admin/dashboard"));
@@ -69,6 +69,7 @@ const AdminManageCategories = lazy(() => import("../pages/admin/manage-categorie
 const AdminCategoryDetail = lazy(() => import("../pages/admin/manage-categories/detail"));
 const AdminManageCourses = lazy(() => import("../pages/admin/manage-course"));
 const AdminManageReviews = lazy(() => import("../pages/admin/manage-reviews"));
+const AdminPurchases = lazy(() => import("../pages/admin/purchase"))
 const Dashboard = lazy(() => import("../components/dashboard/index"));
 
 const AppRouter: React.FC = () => {
@@ -88,6 +89,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.SUPPORT} element={<Support />} />
         <Route path={paths.BLOGS} element={<BlogList />} />
         <Route path={paths.COURSE} element={<Course />} />
+        <Route path={paths.ALL_COURSES} element={<AllCourses />} />
         <Route path={paths.BLOG_DETAIL} element={<BlogDetail />} />
         <Route path={paths.CONTACT} element={<Contact />} />
         <Route path={paths.SITEMAP} element={<SiteMap />} />
@@ -105,7 +107,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
         <Route path={paths.COURSE_DETAIL} element={<CourseDetail />} />
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
-
+        <Route path={paths.STUDENT_PURCHASE} element={<StudentInstructorPurchase />} />
         {/* Route for Instructor */}
         <Route
           path="/instructor/*"
@@ -118,14 +120,6 @@ const AppRouter: React.FC = () => {
           <Route
             path={paths.INSTRUCTOR_MANAGE_COURSES}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageCourses /> : <Navigate to={paths.HOME} />}
-          />
-          <Route
-            path="manage-students"
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageStudents /> : <Navigate to={paths.HOME} />}
-          />
-          <Route
-            path="manage-blogs"
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageBlogs /> : <Navigate to={paths.HOME} />}
           />
           <Route
             path={paths.INSTRUCTOR_DASHBOARD}
@@ -176,18 +170,6 @@ const AppRouter: React.FC = () => {
             path={paths.INSTRUCTOR_UPDATE_COURSE}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to={paths.HOME} />}
           />
-          {/* <Route
-            path={paths.INSTRUCTOR_UPDATE_COURSE_DETAIL}
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to={paths.HOME} />}
-          /> */}
-          <Route
-            path={paths.INSTRUCTOR_MANAGE_LECTURE}
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageLectures /> : <Navigate to={paths.HOME} />}
-          />
-          {/* <Route
-            path={paths.INSTRUCTOR_MANAGE_COURSES_DETAIL}
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageCoursesDetail /> : <Navigate to={paths.HOME} />}
-          /> */}
           <Route
             path={paths.INSTRUCTOR_LECTURES_OF_COURSE}
             element={canAccess([roles.INSTRUCTOR]) ? <LectureOfCourse /> : <Navigate to={paths.HOME} />}
@@ -215,6 +197,14 @@ const AppRouter: React.FC = () => {
           <Route
             path={paths.INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS}
             element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_MANAGE_SUBSCRIPTIONS}
+            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageSubscriptions /> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_MANAGE_PURCHASES}
+            element={canAccess([roles.INSTRUCTOR]) ? <StudentInstructorPurchase /> : <Navigate to={paths.HOME} />}
           />
         </Route>
 
@@ -256,6 +246,10 @@ const AppRouter: React.FC = () => {
           <Route
             path={paths.ADMIN_MANAGE_REVIEWS}
             element={canAccess([roles.ADMIN]) ? <AdminManageReviews /> : <Navigate to={paths.ADMIN_LOGIN} />}
+          />
+          <Route
+            path={paths.ADMIN_PAYMENT_HISTORY}
+            element={canAccess([roles.ADMIN]) ? <AdminPurchases/> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
         </Route>
       </Routes>
