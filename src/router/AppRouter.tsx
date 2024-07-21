@@ -69,7 +69,7 @@ const AdminManageCategories = lazy(() => import("../pages/admin/manage-categorie
 const AdminCategoryDetail = lazy(() => import("../pages/admin/manage-categories/detail"));
 const AdminManageCourses = lazy(() => import("../pages/admin/manage-course"));
 const AdminManageReviews = lazy(() => import("../pages/admin/manage-reviews"));
-const AdminPurchases = lazy(() => import("../pages/admin/purchase"))
+const AdminPayment = lazy(() => import("../pages/admin/purchase"))
 const Dashboard = lazy(() => import("../components/dashboard/index"));
 
 const AppRouter: React.FC = () => {
@@ -249,7 +249,7 @@ const AppRouter: React.FC = () => {
           />
           <Route
             path={paths.ADMIN_PAYMENT_HISTORY}
-            element={canAccess([roles.ADMIN]) ? <AdminPurchases/> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={canAccess([roles.ADMIN]) ? <AdminPayment/> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
         </Route>
       </Routes>

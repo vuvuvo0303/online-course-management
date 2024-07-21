@@ -1,7 +1,7 @@
 import axiosInstance from "./axiosInstance.ts";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { API_LOGIN, paths, roles } from "../consts";
+import {API_CURRENT_LOGIN_USER, API_LOGIN, paths, roles} from "../consts";
 import {User} from "models/User.ts";
 import { message } from "antd";
 
@@ -31,7 +31,11 @@ export async function login(email: string, password: string){
         }
         else{
           if (decodedToken.role === roles.ADMIN) {
-            message.error("Account doesn't exist");
+            const response = await axiosInstance.get(API_CURRENT_LOGIN_USER);
+            console.log(response)
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            message.error(`Your email: ${response.name} is not exists}`);
             return null;
           }
         }
@@ -79,5 +83,4 @@ export const logout = ( navigate: ReturnType<typeof useNavigate>) => {
     navigate(paths.HOME);
   }
   localStorage.clear();
-
 };

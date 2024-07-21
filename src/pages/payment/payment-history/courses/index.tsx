@@ -1,32 +1,34 @@
-import { Table, Tag } from "antd";
-import { useEffect, useState } from "react";
+import {Table, TableColumnsType, Tag} from "antd";
+import {useCallback, useEffect, useState} from "react";
 import { Payment } from "../../../../models";
-import { User } from "../../../../models/User";
-import axios from "axios";
+import axiosInstance from "../../../../services/axiosInstance.ts";
+import {API_GET_PURCHASE_BY_STUDENT} from "../../../../consts/index.ts";
+import {format} from "date-fns";
 
 const ManagePaymentCourse = () => {
-    const columns = [
+    const columns: TableColumnsType<Payment> = [
         {
-            title: 'User ID',
-            dataIndex: 'userId',
-            key: 'userId',
+            title: 'Purchase No',
+            dataIndex: 'purchase_no',
+            key: 'purchase_no',
         },
         {
-            title: 'Amount',
-            dataIndex: 'amount',
-            key: 'amount',
+            title: 'Course Name',
+            dataIndex: 'course_name',
+            key: 'course_name',
+        },
+        {
+            title: 'Instructor Name',
+            dataIndex: 'instructor_name',
+            key: 'instructor_name',
         },
         {
             title: 'Created Date',
-            dataIndex: 'createdDate',
-            key: 'createdDate',
-            render: (date: string) => new Date(date).toLocaleDateString(),
+            dataIndex: 'created_at',
+            key: 'created_at',
+            render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
         },
-        {
-            title: 'Payment Method',
-            dataIndex: 'paymentMethod',
-            key: 'paymentMethod',
-        },
+
         {
             title: 'Status',
             dataIndex: 'status',
@@ -46,63 +48,46 @@ const ManagePaymentCourse = () => {
             ),
 
         },
-        {
-            title: 'Enrollment ID',
-            dataIndex: 'enrollmentId',
-            key: 'enrollmentId',
-        }
     ];
 
-    const [payments, setPayments] = useState<Payment[]>([]);
+    const [data, setData] = useState<Payment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [userId, setUserId] = useState<string>('');
 
-    useEffect(() => {
-        const userString = localStorage.getItem("user");
-        const user: User = userString ? JSON.parse(userString) : null;
-        setUserId(user?._id);
-        console.log("check userId: ", userId);
 
-    }, []);
-
-    useEffect(() => {
-        const fetchPayments = async () => {
-            try {
-                const response = await axios.get<Payment[]>('https://665fbf245425580055b0b23d.mockapi.io/payments');
-                if (response) {
-                    setPayments(response.data.filter(payment => payment.userId === userId));
-                    console.log("check p: ", response)
+    const fetchPayments = useCallback(async () => {
+        const response = await axiosInstance.post(API_GET_PURCHASE_BY_STUDENT,
+            {
+                "searchCondition": {
+                    "purchase_no": "",
+                    "cart_no": "",
+                    "course_id": "",
+                    "status": "",
+                    "is_delete": false
+                },
+                "pageInfo": {
+                    "pageNum": 1,
+                    "pageSize": 10
                 }
-            } catch (error: unknown) {
-                if (error instanceof Error) {
-                    setError(error.message);
-                } else {
-                    setError("An unknown error occurred");
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
+            })
+        setData(response.data.pageData)
+    }, [])
+    useEffect(() => {
+
 
         fetchPayments();
-    }, [userId]);
+    }, []);
 
 
     if (loading) {
         return <p className="loading text-center">Loading...</p>;
     }
 
-    if (error) {
-        return <p>Error: {error}</p>;
-    }
-
-
 
     return (
         <div>
-            <Table columns={columns} dataSource={payments} rowKey="paymentId" />
+            <Table columns={columns} dataSource={data} rowKey={(record:Payment) => record._id} />
         </div>
     )
 }
 export default ManagePaymentCourse;
+

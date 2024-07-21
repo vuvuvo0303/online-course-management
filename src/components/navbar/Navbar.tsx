@@ -34,11 +34,11 @@ const Navbar: React.FC = () => {
   useEffect(() => {
  
    if(token){
-    CountCart();
+    countCart();
    }
   }, [token])
   
-  const CountCart = async () => {
+  const countCart = async () => {
     const res = await displayCart("new");
     if (res) {
       setTotalCarts(res.length);

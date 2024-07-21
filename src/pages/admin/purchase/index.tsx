@@ -4,16 +4,15 @@ import {API_GET_PURCHASE_BY_ADMIN, paths} from "../../../consts";
 import {Payment} from "../../../models";
 import {
     Breadcrumb,
-    Button,
     Table,
     TableColumnsType
 } from "antd";
 import {format} from "date-fns";
-import {EditOutlined, HomeOutlined, UserOutlined} from "@ant-design/icons";
+import { HomeOutlined, UserOutlined} from "@ant-design/icons";
 
-const AdminPurchases: React.FC = () => {
+const AdminPayment: React.FC = () => {
     const [data, setData] = useState<Payment[]>([]);
-    const fetchPayment = useCallback(async () => {
+    const fetchPayments = useCallback(async () => {
         const response = await axiosInstance.post(API_GET_PURCHASE_BY_ADMIN,
             {
                 "searchCondition": {
@@ -32,7 +31,7 @@ const AdminPurchases: React.FC = () => {
     }, [])
 
     useEffect(() => {
-        fetchPayment();
+        fetchPayments();
     }, []);
 
     const columns: TableColumnsType<Payment> = [
@@ -73,19 +72,6 @@ const AdminPurchases: React.FC = () => {
             width: "10%",
             render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
         },
-        {
-            title: "Action",
-            key: "action",
-            width: "5%",
-            render: (record: Payment) => (
-                <div>
-                    <EditOutlined
-                        className="hover:cursor-pointer text-blue-400 hover:opacity-60"
-                        style={{ fontSize: "20px" }}
-                    />
-                </div>
-            ),
-        },
     ]
 
     return (
@@ -111,13 +97,10 @@ const AdminPurchases: React.FC = () => {
                         },
                     ]}
                 />
-                <div className="py-2">
-                    <Button type="primary">Add New Blogs</Button>
-                </div>
             </div>
             <Table columns={columns} dataSource={data} rowKey={(record: Payment) => record._id}/>;
         </div>
     )
 }
 
-export default AdminPurchases
+export default AdminPayment
