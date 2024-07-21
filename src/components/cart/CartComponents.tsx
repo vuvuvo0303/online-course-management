@@ -79,12 +79,12 @@ const CartComponents = () => {
         console.log("check index: ", index);
         let foungCart_id = cartsChecked.find(cartId => cartId === cart)
         console.log("foungCart_id: ", foungCart_id);
-        let newArray:Cart[] = []
+        let newArray: Cart[] = []
         // check cartId is exsist in cartsChecked
         if (foungCart_id) {
             // if cartId exsisted -> delete 
             newArray = cartsChecked.filter(item => item !== foungCart_id);
-            console.log("newArray: ",newArray);
+            console.log("newArray: ", newArray);
             index--;
             setindexCartChecked(index);
         } else {
@@ -101,11 +101,11 @@ const CartComponents = () => {
             }
         }
         //
-        if(foungCart_id){
+        if (foungCart_id) {
             setCartsChecked(newArray);
             handlePlus(newArray)
             foungCart_id = undefined
-        }else{
+        } else {
             setCartsChecked(cartsChecked);
             handlePlus(cartsChecked)
         }
@@ -119,12 +119,12 @@ const CartComponents = () => {
             const res = await updateStatusCart("waiting_paid", element._id, element.cart_no);
             console.log("handleCheckoutNow: ", res);
         }
-      navigate("/checkout")  
+        navigate("/checkout")
     };
-    
+
 
     return (
-        <div className={styles.shopping_wrapper}>
+        <div className={`${styles.shopping_wrapper}`} style={{minWidth: "768px"}}>
             <h3 className={styles.h3_cart_title}>{totalCourse} Courses in Cart</h3>
             <Form {...formItemLayout} initialValues={{}}>
                 <div >
@@ -154,8 +154,8 @@ const CartComponents = () => {
                                             <Checkbox onChange={() => onChange(cart)}>Checkbox</Checkbox>
                                         </Col>
                                         <Col span={6}>
-                                            <p className='pt-12'>{cart.price}</p>
-                                            <p>Discount: {cart.discount}%</p>
+                                            <p className='pt-12'>Discount: {cart.discount}%</p>
+                                            <p>{cart.price}</p>
                                         </Col>
 
                                         <Col span={6}>
@@ -197,7 +197,7 @@ const CartComponents = () => {
                             </div> */}
                             </div>
                         </div>
-                        <button onClick={handleCheckoutNow}  className={styles.checkout_button}>Checkout now</button>
+                        <button onClick={handleCheckoutNow} className={styles.checkout_button}>Checkout now</button>
                     </div>
                     <div className={styles.redeem_coupon}>
                         <div>

@@ -21,6 +21,7 @@
     "chart.js": "^4.4.3",
     "date-fns": "^3.6.0",
     "debounce": "^2.1.0",
+    "dotenv": "^16.4.5",
     "faker": "^6.6.6",
     "firebase": "^10.12.2",
     "jwt-decode": "^4.0.0",

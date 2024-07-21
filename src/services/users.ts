@@ -1,6 +1,6 @@
 import ResponseData from "../models/ResponseData.ts";
 import axiosInstance from "../services/axiosInstance.ts";
-import {API_CHANGE_PASSWORD, API_DELETE_USER} from "../consts/index.ts";
+import {API_CHANGE_PASSWORD, API_DELETE_USER, API_GET_USER_DETAIL} from "../consts/index.ts";
 import {message} from "antd";
 
 interface ValuesChangePassword {
@@ -28,3 +28,17 @@ export const deleteUser = async (_id: string, email: string, fetchUsers: () => P
     await fetchUsers();
 };
 
+//USER-06 Get Instructor Detail
+export const getInstructoDetailPublic = async (instructor_id: string) => {
+    try {
+        const response = await axiosInstance.get(`${API_GET_USER_DETAIL}/${instructor_id}`
+        )
+        if (response) {         
+            console.log("response: ", response)
+            return response.data;
+        }
+    } catch (error) {
+        console.log("getInstructoDetailPublic - Error occurred: ", error)
+        return [];
+    }
+}

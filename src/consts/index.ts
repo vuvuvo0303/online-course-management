@@ -84,6 +84,7 @@ export const API_GET_BLOG = "/api/blog";
 export const API_UPDATE_BLOG = "/api/blog";
 export const API_DELETE_BLOG = "/api/blog";
 //Subscription
+export const API_INSTRUCTOR_OR_STUDENT_SUBSCRIPTIONS = "/api/subscription";
 export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-instructor";
 export const API_INSTRUCTOR_GET_SUBSCRIBER = "/api/subscription/search-for-subscriber";
 export const colorIs_delete = (is_delete: boolean) => {

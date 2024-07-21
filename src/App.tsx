@@ -12,6 +12,7 @@ function App() {
     location.pathname.includes("/instructor");
 
   const clientId = config.GOOGLE_CLIENT_ID;
+  console.log("clientId: ", clientId)
   if (!clientId) {
     throw new Error("Google OAuth Client ID is not defined");
   }
