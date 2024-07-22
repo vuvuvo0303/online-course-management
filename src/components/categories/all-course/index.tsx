@@ -132,32 +132,39 @@ const AllCourses: React.FC = () => {
                                 overlayStyle={{ textAlign: 'center' }}
                             >
                                 <Card
-                                    className="max-w-[300px] mx-auto"
+                                    className="max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden"
                                     cover={
-                                        <div className="avatar-container">
+                                        <div className="relative">
                                             <Link to={`/course/all-courses/course/${course._id}`}>
                                                 <img
-                                                    alt="example"
+                                                    alt="course"
                                                     src={course.image_url}
-                                                    className="w-full max-h-[10rem]"
-
+                                                    className="w-full max-h-40 object-cover"
                                                 />
                                             </Link>
-                                            <div className="best-seller-label text-yellow-200 text-base">Best Seller</div>
+                                            <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">Best Seller</div>
                                         </div>
                                     }
                                 >
                                     <Meta
-                                        className="card-meta truncate"
-                                        title={<Link to={`/course/all-courses/course/${course._id}`}>{course.name}</Link>}
-                                        description={course.description}
+                                        className="truncate"
+                                        title={<Link to={`/course/all-courses/course/${course._id}`} className="hover:underline">{course.name}</Link>}
+                                        description={course.instructor_name}
                                     />
-                                    <div className="rating-container card-meta">
-                                        <span className="rating-number">{ratings[course.average_rating]}</span>
-                                        <Rate value={ratings[course.average_rating]} onChange={(value) => handleRatingChange(index, value)} />
-                                    </div>
-                                    <div className="card-meta price mt-2">
-                                        {course.price} vnđ
+                                    <div className="mt-2">
+                                        <div className="flex items-center text-sm">
+                                            <span className="mr-2">{course.average_rating}</span>
+                                            <Rate
+                                                value={course.average_rating}
+                                                onChange={(value) => handleRatingChange(index, value)}
+                                                disabled
+                                            />
+                                            <span className="ml-2 text-gray-500">({course.rating_count})</span>
+                                        </div>
+                                        <div className="flex items-baseline mt-2">
+                                            <div className="text-2xl text-gray-500 font-bold">₫{course.price_paid}</div>
+                                            <div className="text-xl text-gray-500 ml-2 line-through">₫{course.price}</div>
+                                        </div>
                                     </div>
                                 </Card>
                             </Popover>
