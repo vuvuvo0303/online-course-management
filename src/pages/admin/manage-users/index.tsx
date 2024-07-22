@@ -49,7 +49,7 @@ type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 
 const AdminManageUsers: React.FC = () => {
-  const [data, setData] = useState<User[]>([]);
+  const [dataUsers, setDataUsers] = useState<User[]>([]);
 
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -73,10 +73,10 @@ const AdminManageUsers: React.FC = () => {
   const debouncedSearch = useDebounce(searchText, 500);
 
   useEffect(() => {
-    fetchUsers();
+    getUsers();
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch]);
 
-  const fetchUsers = useCallback(async () => {
+  const getUsers = useCallback(async () => {
     setLoading(true);
     try {
       let statusValue: boolean | undefined = undefined;
@@ -98,7 +98,7 @@ const AdminManageUsers: React.FC = () => {
           pageSize: pagination.pageSize,
         },
       });
-      setData(response.data.pageData);
+      setDataUsers(response.data.pageData);
       setPagination({
         ...pagination,
         total: response.data.pageInfo.totalItems,
@@ -128,18 +128,18 @@ const AdminManageUsers: React.FC = () => {
         const response = await axiosInstance.post(API_CREATE_USER, userData);
 
         const newUser = response.data.data;
-        setData((prevData) => [...prevData, newUser]);
+        setDataUsers((prevData) => [...prevData, newUser]);
         message.success("Created new user successfully");
         setIsModalVisible(false);
         form.resetFields();
         setLoading(false);
-        fetchUsers();
+        getUsers();
         setFileList([]);
       } catch (error) {
         setLoading(false);
       }
     },
-    [fetchUsers, form]
+    [getUsers, form]
   );
 
   const getBase64 = (file: FileType): Promise<string> =>
@@ -167,8 +167,8 @@ const AdminManageUsers: React.FC = () => {
         user_id: userId,
         status: checked,
       });
-      const updateData = data.map((user) => (user._id === userId ? { ...user, status: checked } : user))
-      setData(updateData);
+      const updateData = dataUsers.map((user) => (user._id === userId ? { ...user, status: checked } : user))
+      setDataUsers(updateData);
       message.success(`User status updated successfully`);
     } catch (error) {
       // Handle error silently
@@ -184,7 +184,7 @@ const AdminManageUsers: React.FC = () => {
   const handleRoleChange = async (value: UserRole, recordId: string) => {
     try {
       await axiosInstance.put(API_CHANGE_ROLE, { user_id: recordId, role: value });
-      setData((prevData: User[]) =>
+      setDataUsers((prevData: User[]) =>
         prevData.map((user) => (user._id === recordId ? { ...user, role: value } : user))
       );
       message.success(`Role changed successfully`);
@@ -312,7 +312,7 @@ const AdminManageUsers: React.FC = () => {
           <Popconfirm
             title="Delete the User"
             description="Are you sure to delete this User?"
-            onConfirm={() => deleteUser(record._id, record.email, fetchUsers)}
+            onConfirm={() => deleteUser(record._id, record.email, getUsers)}
             okText="Yes"
             cancelText="No"
           >
@@ -370,14 +370,14 @@ const AdminManageUsers: React.FC = () => {
           });
         }
 
-        setData((prevData) =>
+        setDataUsers((prevData) =>
           prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
         );
 
         message.success("Updated user successfully");
         setIsModalVisible(false);
         form.resetFields();
-        fetchUsers();
+        getUsers();
       } else {
         // Handle error for edit users
       }
@@ -406,7 +406,7 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
-    fetchUsers();
+    getUsers();
   };
 
   return (
@@ -461,7 +461,7 @@ const AdminManageUsers: React.FC = () => {
         </Select>
       </Space>
       <Spin spinning={loading}>
-        <Table columns={columns} dataSource={data} rowKey={(record: User) => record._id} pagination={false} onChange={handleTableChange} />
+        <Table columns={columns} dataSource={dataUsers} rowKey={(record: User) => record._id} pagination={false} onChange={handleTableChange} />
       </Spin>
       <div className="flex justify-end py-8">
         <Pagination

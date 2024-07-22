@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { Input, Spin, Pagination } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import axiosInstance from "../../../services/axiosInstance";
-import { API_CLIENT_GET_COURSES } from "../../../consts";
-import CourseCard from "./course-card/CourseCard";
-import { Course } from "../../../models/Course"; // Import Course model here
+import axiosInstance from "../../services/axiosInstance";
+import { API_CLIENT_GET_CATEGORIES } from "../../consts";
+import { Category as CategoryType } from "../../models/Category";
+import CategoryCard from "./category-card/index"; // Adjust the path accordingly
 
-const AllCourses: React.FC = () => {
-    const [courses, setCourses] = useState<Course[]>([]);
+
+const NameCategory: React.FC = () => {
+    const [categories, setCategories] = useState<CategoryType[]>([]); // Use CategoryType for type safety
     const [searchText, setSearchText] = useState<string>("");
     const [loading, setLoading] = useState(false);
     const [pagination, setPagination] = useState({
@@ -16,12 +17,11 @@ const AllCourses: React.FC = () => {
         total: 0,
     });
 
-    const fetchCourses = useCallback(async () => {
+    const fetchCategories = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await axiosInstance.post(API_CLIENT_GET_COURSES, {
+            const response = await axiosInstance.post(API_CLIENT_GET_CATEGORIES, {
                 searchCondition: {
-                    role: "all",
                     status: true,
                     is_deleted: false,
                     keyword: searchText,
@@ -33,7 +33,7 @@ const AllCourses: React.FC = () => {
             });
 
             if (response.data) {
-                setCourses(response.data.pageData || []);
+                setCategories(response.data.pageData || []);
                 setPagination((prev) => ({
                     ...prev,
                     total: response.data.pageInfo?.totalItems || response.data.length,
@@ -42,31 +42,31 @@ const AllCourses: React.FC = () => {
                 }));
             }
         } catch (error) {
-            console.error("Error fetching courses:", error);
+            console.error("Error fetching categories:", error);
         } finally {
             setLoading(false);
         }
     }, [searchText, pagination.current, pagination.pageSize]);
 
     useEffect(() => {
-        fetchCourses();
-    }, [fetchCourses]);
+        fetchCategories();
+    }, [fetchCategories]);
 
     const handleSearch = () => {
         setPagination((prev) => ({
             ...prev,
             current: 1,
         }));
-        fetchCourses();
+        fetchCategories();
     };
 
     const handlePaginationChange = (page: number, pageSize?: number) => {
         setPagination((prev) => ({
             ...prev,
             current: page,
-            pageSize: pageSize || prev.pageSize, // Use previous pageSize if pageSize is undefined
+            pageSize: pageSize || prev.pageSize,
         }));
-        fetchCourses();
+        fetchCategories();
     };
 
     return (
@@ -87,8 +87,8 @@ const AllCourses: React.FC = () => {
                 <>
                     <Spin spinning={loading}>
                         <div className="flex flex-wrap -m-2">
-                            {courses.map((course) => (
-                                <CourseCard key={course._id} course={course} />
+                            {categories.map((category) => (
+                                <CategoryCard key={category._id} category={category} />
                             ))}
                         </div>
                     </Spin>
@@ -108,4 +108,4 @@ const AllCourses: React.FC = () => {
     );
 };
 
-export default AllCourses;
+export default NameCategory;

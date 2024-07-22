@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
-import {Form, message, Modal, Popconfirm, TableColumnsType} from "antd";
+import { Form, message, Modal, Popconfirm, TableColumnsType } from "antd";
 import { Breadcrumb, Button, Image, Table } from "antd";
 import { Blog } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
@@ -9,7 +9,7 @@ import { format } from "date-fns";
 
 
 const AdminManageBlogs: React.FC = () => {
-  const [data, setData] = useState<Blog[]>([]);
+  const [dataBlogs, setDataBlogs] = useState<Blog[]>([]);
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -18,13 +18,13 @@ const AdminManageBlogs: React.FC = () => {
     try {
       await axiosInstance.delete(`${API_DELETE_BLOG}/${id}`);
       message.success(`Delete blog ${title} successfully`);
-      await fetchBlogs();
+      await getBlogs();
     } catch (error) {
       //
     }
   };
 
-  const fetchBlogs = async () => {
+  const getBlogs = async () => {
     const response = await axiosInstance.post(API_GET_BLOGS,
       {
         "searchCondition": {
@@ -36,11 +36,11 @@ const AdminManageBlogs: React.FC = () => {
           "pageSize": 100
         }
       });
-    setData(response.data.pageData);
+    setDataBlogs(response.data.pageData);
   };
   useEffect(() => {
 
-    fetchBlogs();
+    getBlogs();
     setLoading(false)
   }, []);
 
@@ -139,10 +139,10 @@ const AdminManageBlogs: React.FC = () => {
         />
         <div className="py-2">
           <Button type="primary"
-          onClick={() => {
-            setIsModalVisible(true);
-            form.resetFields();
-          }}
+            onClick={() => {
+              setIsModalVisible(true);
+              form.resetFields();
+            }}
           >Add New Blog</Button>
         </div>
 
@@ -152,7 +152,7 @@ const AdminManageBlogs: React.FC = () => {
           </Form>
         </Modal>
       </div>
-      <Table columns={columns} dataSource={data} rowKey={(record: Blog) => record._id} />;
+      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id} />;
     </div>
   );
 };

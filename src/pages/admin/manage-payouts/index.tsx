@@ -12,8 +12,8 @@ import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { Payout } from "models/Payout.ts";
 
 const AdminManagePayouts: React.FC = () => {
-    const [data, setData] = useState<Payout[]>([]);
-    const fetchPayouts = useCallback(async () => {
+    const [dataPayouts, setDataPayouts] = useState<Payout[]>([]);
+    const getPayouts = useCallback(async () => {
         const response = await axiosInstance.post(API_GET_PAYOUTS,
             {
                 "searchCondition": {
@@ -27,11 +27,11 @@ const AdminManagePayouts: React.FC = () => {
                     "pageSize": 10
                 }
             })
-        setData(response.data.pageData)
+        setDataPayouts(response.data.pageData)
     }, [])
 
     useEffect(() => {
-        fetchPayouts();
+        getPayouts();
     }, []);
 
     const columns: TableColumnsType<Payout> = [
@@ -126,7 +126,7 @@ const AdminManagePayouts: React.FC = () => {
                     ]}
                 />
             </div>
-            <Table columns={columns} dataSource={data} rowKey={(record: Payout) => record._id} />;
+            <Table columns={columns} dataSource={dataPayouts} rowKey={(record: Payout) => record._id} />;
         </div>
     )
 }

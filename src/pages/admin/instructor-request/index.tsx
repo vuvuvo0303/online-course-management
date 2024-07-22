@@ -22,7 +22,7 @@ import { useDebounce } from "../../../hooks";
 const { TextArea } = Input;
 
 const AdminInstructorRequest = () => {
-  const [dataSource, setDataSource] = useState<Instructor[]>([]);
+  const [dataInstructorRequest, setDataInstructorRequest] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
 
@@ -145,7 +145,7 @@ const AdminInstructorRequest = () => {
           isApproved: instructor.is_verified, // Hoặc thêm logic để xác định trạng thái phê duyệt
         }));
 
-        setDataSource(dataWithApprovalStatus);
+        setDataInstructorRequest(dataWithApprovalStatus);
         setPagination((prev) => ({
           ...prev,
           total: response.data.pageInfo?.totalItems || response.data.length,
@@ -177,10 +177,10 @@ const AdminInstructorRequest = () => {
 
       if (response && response.data && response.data.success) {
         message.success("Email is send for instructor");
-        const updatedDataSource = dataSource.map((item) =>
+        const updatedDataSource = dataInstructorRequest.map((item) =>
           item._id === record._id ? { ...item, isApproved: true } : item
         );
-        setDataSource(updatedDataSource);
+        setDataInstructorRequest(updatedDataSource);
       } else {
         message.error("Failed to approve instructor");
       }
@@ -251,7 +251,7 @@ const AdminInstructorRequest = () => {
       />
       <Table
         columns={columns}
-        dataSource={dataSource}
+        dataSource={dataInstructorRequest}
         loading={loading}
         pagination={false}
         onChange={handleTableChange}

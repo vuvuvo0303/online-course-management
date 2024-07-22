@@ -1,7 +1,6 @@
 import { Breadcrumb, Table, TableProps, Tag } from "antd";
 import { API_GET_PURCHASE_BY_ADMIN } from "../../../consts/index";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance";
 import { HomeOutlined } from "@ant-design/icons";
@@ -9,7 +8,7 @@ import { Purchase } from "../../../models/Purchase";
 
 
 const ManageAllPurchase = () => {
-  const [dataSource, setDataSource] = useState<Purchase[]>([]);
+  const [dataPurchases, setDataPurchases] = useState<Purchase[]>([]);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
   const columns: TableProps<Purchase>["columns"] = [
@@ -47,7 +46,7 @@ const ManageAllPurchase = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
       width: "10%",
     },
     {
@@ -87,16 +86,14 @@ const ManageAllPurchase = () => {
 
       if (response.data && response.data.pageData) {
         const { pageData, pageInfo } = response.data;
-        setDataSource(pageData);
+        setDataPurchases(pageData);
         setPagination({
           current: pageInfo.pageNum,
           pageSize: pageInfo.pageSize,
           total: pageInfo.totalItems,
         });
       } else {
-
-
-        setDataSource([]);
+        setDataPurchases([]);
       }
     } catch (error) {
       //
@@ -126,14 +123,14 @@ const ManageAllPurchase = () => {
       </Breadcrumb>
       <Table
         columns={columns}
-        dataSource={dataSource}
+        dataSource={dataPurchases}
         pagination={{
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: pagination.total,
         }}
         onChange={handleTableChange}
-        rowKey="_id"
+        rowKey={(record: Purchase) => record._id}
         className="overflow-auto"
       />
     </div>

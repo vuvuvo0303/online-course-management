@@ -79,6 +79,7 @@ export const API_GET_BLOGS = "/api/blog/search";
 export const API_GET_BLOG = "/api/blog";
 export const API_UPDATE_BLOG = "/api/blog";
 export const API_DELETE_BLOG = "/api/blog";
+export const API_CLIENT_GET_CATEGORIES = "/api/client/category/search";
 //Subscription
 export const API_INSTRUCTOR_OR_STUDENT_SUBSCRIPTIONS = "/api/subscription";
 export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-instructor";
@@ -175,10 +176,13 @@ export const paths = {
   BLOG_DETAIL: "/blog/:id",
   CONTACT: "/contact",
   TEACHING: "/teaching",
+  NAME_CATEGORY: "/category",
   COURSE: "/course",
   ALL_COURSES: "/course/all-courses",
+  LESSON: "/course/lesson",
   SITEMAP: "/sitemap",
   NOTFOUND: "/notfound",
+  COURSE_DETAILS: "/course/all-courses/course/:_id",
   COURSE_DETAIL: "/course/:id",
   FORGOT_PASSWORD: "/forgot-password",
   VERIFY_TOKEN: "/verify-email/:token",

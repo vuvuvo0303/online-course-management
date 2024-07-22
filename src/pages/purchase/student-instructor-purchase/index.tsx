@@ -1,12 +1,12 @@
-
 import { Purchase } from "../../../models";
 import { useEffect, useState } from "react";
 import { getItemsByStudent, handleSubscriptionByInstructorOrStudent } from "../../../services";
-import { Avatar, message, Modal, Table, Tag } from "antd";
+import { Avatar, Button, message, Modal, Table, TableProps } from "antd";
 import { getColorPurchase } from "../../../consts";
 import { getInstructoDetailPublic } from "../../../services";
 import { Instructor } from "../../../models/User";
 import { AntDesignOutlined, YoutubeOutlined } from "@ant-design/icons";
+import { format } from "date-fns";
 
 const StudentInstructorPurchase = () => {
     const [purchases, setPurchases] = useState<Purchase[]>([]);
@@ -33,29 +33,14 @@ const StudentInstructorPurchase = () => {
         )
     }
 
-    const columns = [
+    const columns: TableProps<Purchase>["columns"] = [
         {
-            title: 'purchase_no',
+            title: 'Purchase No',
             dataIndex: 'purchase_no',
             key: 'purchase_no',
+            width: '20%'
         },
-        {
-            title: 'status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: string) => (
-                <>
-                    <Tag color={getColorPurchase(status)}>
-                        {status === "request_paid" ? "request paid" : status}
-                    </Tag>
-                </>
-            )
-        },
-        {
-            title: 'Price',
-            dataIndex: 'price',
-            key: 'price',
-        },
+
         {
             title: 'Course Name',
             dataIndex: 'course_name',
@@ -65,17 +50,28 @@ const StudentInstructorPurchase = () => {
             title: 'Instructor Name',
             dataIndex: 'instructor_name',
             key: 'instructor_name',
+            width: '18%',
             render: (instructor_name: string, record: Purchase) => (
                 <div onClick={() => showModal(record.instructor_id)} className="text-blue-500 cursor-pointer">
                     {instructor_name}
                 </div>
             )
         },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+        },
+        {
+            title: 'Created Date',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+        },
     ];
 
     const showModal = async (instructor_id: string) => {
         const getInfomationInstructor = await getInstructoDetailPublic(instructor_id);
-        console.log("getInfomationInstructor: ", getInfomationInstructor)
         setInstructor(getInfomationInstructor);
         setOpen(true);
     };
@@ -89,7 +85,6 @@ const StudentInstructorPurchase = () => {
     // };
 
     const handleCancel = () => {
-        console.log('Clicked cancel button');
         setOpen(false);
     };
     const handleSubscribe = async (instructor_id: string) => {
@@ -111,6 +106,11 @@ const StudentInstructorPurchase = () => {
                 // onOk={handleOk}
                 // confirmLoading={confirmLoading}
                 onCancel={handleCancel}
+                footer={[
+                    <Button key="cancel" onClick={handleCancel}>
+                        Cancel
+                    </Button>
+                ]}
             >
                 <Avatar
                     className="float-right"
@@ -124,15 +124,17 @@ const StudentInstructorPurchase = () => {
                 <p ><span>
                 </span>{instructor?.is_subscribed === true ?
                     (<div onClick={() => handleSubscribe(instructor?._id + "")} className="text-red-500 cursor-pointer">
-                        <YoutubeOutlined />  subscribed
+                        <YoutubeOutlined />  Subscribed
                     </div>)
                     : (<div onClick={() => handleSubscribe(instructor?._id + "")} className="text-red-500 cursor-pointer">
-                        <YoutubeOutlined />  not subscribe
+                        <YoutubeOutlined />  Unsubscribed
                     </div>)}</p>
+                <p ><span>Description</span>: {instructor?.description}</p>
+
             </Modal>
             <div className="container mx-auto px-10">
-                <h1 className="text-center my-10">Manage Purchase</h1>
-                <Table dataSource={purchases} columns={columns} />
+                <h1 className="text-center my-10">Manage Purchased</h1>
+                <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} />
             </div>
         </>
     )
