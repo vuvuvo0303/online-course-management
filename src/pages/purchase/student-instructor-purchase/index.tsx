@@ -1,8 +1,10 @@
 import { Purchase } from "../../../models";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getItemsByStudent } from "../../../services";
-import { Table, TableProps } from "antd";
+import { getItemsByStudent, handleSubscriptionByInstructorOrStudent } from "../../../services";
+import { Avatar, Button, message, Modal, Table, TableProps } from "antd";
+import { getInstructoDetailPublic } from "../../../services";
+import { Instructor } from "../../../models/User";
+import { AntDesignOutlined, YoutubeOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 
 const StudentInstructorPurchase = () => {
@@ -53,9 +55,21 @@ const StudentInstructorPurchase = () => {
             key: 'price',
         },
         {
+            title: 'Discount',
+            dataIndex: 'discount',
+            key: 'discount',
+            render: (discount: number) => `${discount}%`
+        },
+        {
+            title: 'Price paid',
+            dataIndex: 'price_paid',
+            key: 'price_paid',
+        },
+        {
             title: 'Created Date',
             dataIndex: 'created_at',
             key: 'created_at',
+            width: '10%',
             render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
         },
     ];

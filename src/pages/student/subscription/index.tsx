@@ -1,10 +1,10 @@
-import { Input, Table, TableProps, Tag } from "antd";
+import { Input, message, Table, TableProps, Tag } from "antd";
 import { getColorStatusSubscribe } from "../../../consts";
 import { format } from "date-fns";
 import { Subscription } from "../../../models";
 import { useEffect, useState } from "react";
 import useDebounce from "../../../hooks/useDebounce";
-import { getItemsBySubscriber } from "../../../services/subscription";
+import { getItemsBySubscriber, handleSubscriptionByInstructorOrStudent } from "../../../services/subscription";
 import { SearchOutlined } from "@ant-design/icons";
 
 const StudentSubscription = () => {
@@ -26,6 +26,17 @@ const StudentSubscription = () => {
         getSubscriber();
     }, [])
 
+    const handleSubscribe =async(instructor_id: string, instructor_name:string)=>{
+        const res = await handleSubscriptionByInstructorOrStudent(instructor_id);
+        if(res){
+            message.success(`Subscribe ${instructor_name} successfully`);
+            getSubscriber();
+        }else{
+            message.success(`Un Subscribe ${instructor_name}  successfully`)
+            getSubscriber();
+        }
+    }
+
     const columns: TableProps<Subscription>['columns'] = [
         {
             title: 'Instructor Name',
@@ -36,11 +47,11 @@ const StudentSubscription = () => {
             title: 'Status',
             dataIndex: 'is_subscribed',
             key: 'is_subscribed',
-            render: (is_subscribed: boolean) => (
+            render: (is_subscribed: boolean, record: Subscription) => (
                 <>
                     <div >
-                        <Tag color={getColorStatusSubscribe(is_subscribed)}>
-                            {is_subscribed === true ? "Subscribed" : "Un subscribed"}
+                        <Tag onClick={()=>handleSubscribe(record.instructor_id, record.instructor_name)} className="cursor-pointer" color={getColorStatusSubscribe(is_subscribed)}>
+                            {is_subscribed === true ? "Subscribed" : "Un Subscribed"}
                         </Tag>
                     </div>
                 </>
@@ -60,7 +71,7 @@ const StudentSubscription = () => {
         },
     ];
     return (
-        <>
+        <div className="px-10">
             <h1 className="text-center my-10">Manage Subscriptions</h1>
             <Input.Search
                 placeholder="Search"
@@ -71,7 +82,7 @@ const StudentSubscription = () => {
                 enterButton={<SearchOutlined className="text-white" />}
             />
             <Table columns={columns} dataSource={subscriber} />
-        </>
+        </div>
     )
 }
 export default StudentSubscription;
