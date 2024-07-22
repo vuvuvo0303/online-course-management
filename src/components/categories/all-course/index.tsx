@@ -159,7 +159,7 @@ const AllCourses: React.FC = () => {
                                                 onChange={(value) => handleRatingChange(index, value)}
                                                 disabled
                                             />
-                                            <span className="ml-2 text-gray-500">({course.rating_count})</span>
+                                            <span className="ml-2 text-gray-500">({course.review_count})</span>
                                         </div>
                                         <div className="flex items-baseline mt-2">
                                             <div className="text-2xl text-gray-500 font-bold">₫{course.price_paid}</div>
