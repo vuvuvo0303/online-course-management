@@ -23,7 +23,6 @@ export { default as InternalServerError } from "./internal-server-error"
 export { default as VerifyToken } from "./verify-token";
 
 /* Student Page */
-export { default as StudentPaymentHistory } from "./payment/studentPaymentHistory";
 export { default as Checkout } from "./checkout";
 export { default as Profile } from "./profile";
 export { default as EditProfile } from "./profile/editProfile";
@@ -32,10 +31,8 @@ export { default as Cart } from "./cart";
 /* Instructor Page */
 export { default as InstructorDashboard } from "./instructor/instructor-dashboard/index";
 export { default as InstructorManageFeedbacks } from "./instructor/manage-instructor-feedbacks";
-export { default as PaymentHistory } from "./payment/payment-history";
 export { default as InstructorCreateCourse } from "./instructor/manage-course/create-update-course";
 export { default as InstructorManageCourses } from "./instructor/manage-course/index";
-export { default as InstructorManageBlogs } from "./instructor/manage-blogs/index";
 export { default as InstructorResources } from "./instructor/resources";
 export { default as InstructorTools } from "./instructor/tools";
 export { default as LectureOfCourse } from "./instructor/manage-course/manage-session/manage-lesson";

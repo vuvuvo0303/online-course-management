@@ -245,6 +245,7 @@ const AppRouter: React.FC = () => {
             element={canAccess([roles.ADMIN]) ? <AdminManagePayouts /> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   );
