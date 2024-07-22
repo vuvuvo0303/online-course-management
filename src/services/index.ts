@@ -2,4 +2,4 @@ export { addCourseToCart, displayCart, deleteCart, updateStatusCart } from './ca
 export { fetchCoursesByClient } from './client';
 export { getItemsByStudent } from './purchase';
 export { getInstructoDetailPublic } from './users';
-export { handleSubscriptionByInstructorOrStudent } from './subscription';
+export { handleSubscriptionByInstructorOrStudent, getItemsBySubscriber } from './subscription';

@@ -156,27 +156,39 @@ const CartComponents = () => {
                                 <div style={{ minWidth: "768px" }}>
                                     <Row className='border my-5' gutter={10}>
                                         <Col span={6}>
-                                            <img src={imgCourse} />
+                                            <Row>
+                                                <Col span={4} className="flex items-center justify-center">
+                                                    <Checkbox onChange={() => onChange(cart)}></Checkbox>
+                                                </Col>
+                                                <Col span={20}>
+                                                    <img src={imgCourse} />
+                                                </Col>
+                                            </Row>
+
                                         </Col>
                                         <Col className='' span={6}>
                                             <Tag className='mt-8 text-center' color={getColorCart(cart.status)}> {cart.status}</Tag>
                                             <p className='mt-2 font-bold '>{cart.course_name}</p>
-                                            <p className='mt-2'><span className='font-bold'>Cart no:</span>{cart.cart_no}</p>
-                                            <Checkbox onChange={() => onChange(cart)}>Checkbox</Checkbox>
+                                            <div className='mt-2'>
+                                                {/* <span className='font-bold '>Cart no: </span> */}
+                                                <p>{cart.cart_no}</p>
+                                            </div>
                                         </Col>
                                         <Col span={6}>
-                                            <p className='pt-12'>Discount: {cart.discount}%</p>
-                                            <p>{cart.price}</p>
+                                           <div className='mt-12'>
+                                           <p >Discount: {cart.discount}%</p>
+                                           <p>Cost: {cart.price}</p>
+                                           </div>
                                         </Col>
 
                                         <Col span={6}>
-                                            <Row>
+                                            <Row className='mt-12'>
                                                 <Col span={12}>
-                                                    <p className='pt-12'>Total:</p>
+                                                    <p >Price:</p>
                                                     <p >{cart.price_paid}</p>
                                                 </Col>
                                                 <Col span={12}>
-                                                    <p onClick={() => handleDeleteCart(cart._id)} className='pt-12 text-red-500'>Delete</p>
+                                                    <p onClick={() => handleDeleteCart(cart._id)} className=' text-red-500'>Delete</p>
                                                 </Col>
                                             </Row>
                                         </Col>

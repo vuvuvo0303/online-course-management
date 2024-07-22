@@ -2,7 +2,7 @@
 import { Purchase } from "../../../models";
 import { useEffect, useState } from "react";
 import { getItemsByStudent, handleSubscriptionByInstructorOrStudent } from "../../../services";
-import { Avatar, Modal, Table, Tag } from "antd";
+import { Avatar, message, Modal, Table, Tag } from "antd";
 import { getColorPurchase } from "../../../consts";
 import { getInstructoDetailPublic } from "../../../services";
 import { Instructor } from "../../../models/User";
@@ -14,7 +14,7 @@ const StudentInstructorPurchase = () => {
     const [instructor, setInstructor] = useState<Instructor>();
     // modal antd
     const [open, setOpen] = useState(false);
-    const [confirmLoading, setConfirmLoading] = useState(false);
+    // const [confirmLoading, setConfirmLoading] = useState(false);
 
     const getPurchase = async () => {
         const res = await getItemsByStudent("", "", "", "");
@@ -22,7 +22,7 @@ const StudentInstructorPurchase = () => {
         setPurchases(res);
         setLoading(false);
     }
-    
+
     useEffect(() => {
         getPurchase();
     }, [])
@@ -80,30 +80,36 @@ const StudentInstructorPurchase = () => {
         setOpen(true);
     };
 
-    const handleOk = () => {
-        setConfirmLoading(true);
-        setTimeout(() => {
-            setOpen(false);
-            setConfirmLoading(false);
-        }, 2000);
-    };
+    // const handleOk = () => {
+    //     setConfirmLoading(true);
+    //     setTimeout(() => {
+    //         setOpen(false);
+    //         setConfirmLoading(false);
+    //     }, 2000);
+    // };
 
     const handleCancel = () => {
         console.log('Clicked cancel button');
         setOpen(false);
     };
     const handleSubscribe = async (instructor_id: string) => {
-        await handleSubscriptionByInstructorOrStudent(instructor_id);
+        const res = await handleSubscriptionByInstructorOrStudent(instructor_id);
+        //show new data after handle subsribe
         const getInfomationInstructor = await getInstructoDetailPublic(instructor_id);
         setInstructor(getInfomationInstructor);
+        if (res) {
+            message.success("Subscribe This Instructor Successfully!")
+        } else {
+            message.success("Un Subscribe This Instructor Successfully!")
+        }
     }
     return (
         <>
             <Modal
                 title="Instructor Info"
                 open={open}
-                onOk={handleOk}
-                confirmLoading={confirmLoading}
+                // onOk={handleOk}
+                // confirmLoading={confirmLoading}
                 onCancel={handleCancel}
             >
                 <Avatar
@@ -112,10 +118,10 @@ const StudentInstructorPurchase = () => {
                     size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
                     icon={<AntDesignOutlined />}
                 />
-                <p ><span className="text-red-500">Name</span>: {instructor?.name}</p>
-                <p ><span className="text-blue-500">Email</span>: {instructor?.email}</p>
-                <p ><span className="text-blue-500">Phone number</span>: {instructor?.phone_number}</p>
-                <p ><span className="text-blue-500">Subscriptions:
+                <p >Name: <span className="font-bold">{instructor?.name}</span> </p>
+                <p ><span >Email</span>: {instructor?.email}</p>
+                <p ><span>Phone number</span>: {instructor?.phone_number}</p>
+                <p ><span>
                 </span>{instructor?.is_subscribed === true ?
                     (<div onClick={() => handleSubscribe(instructor?._id + "")} className="text-red-500 cursor-pointer">
                         <YoutubeOutlined />  subscribed

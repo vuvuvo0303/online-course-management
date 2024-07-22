@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
 import { Suspense, lazy } from "react";
+// import StudentSubscription from "pages/student/subscription";
 
 // Guest Page
 const Home = lazy(() => import("../pages/home"));
@@ -31,7 +32,7 @@ const VerifyToken = lazy(() => import("../pages/verify-token"));
 const Checkout = lazy(() => import("../pages/checkout"));
 const Profile = lazy(() => import("../pages/profile"));
 const Cart = lazy(() => import("../pages/cart"));
-
+const StudentSubscription = lazy(() => import("../pages/student/subscription"));
 // Student and Instructor Page
 const StudentInstructorPurchase = lazy(() => import("../pages/purchase/student-instructor-purchase"));
 
@@ -48,6 +49,7 @@ const CreateUpdateLesson = lazy(
 const UpdateLecture = lazy(
   () => import("../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson")
 );
+// const ManageStudent = lazy(() => import("../pages/instructor/m"))
 const ManageSession = lazy(() => import("../pages/instructor/manage-course/manage-session/"));
 const InstructorCreateCourse = lazy(() => import("../pages/instructor/manage-course/create-update-course"));
 const CreateUpdateSession = lazy(
@@ -105,6 +107,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.COURSE_DETAIL} element={<CourseDetail />} />
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
         <Route path={paths.STUDENT_PURCHASE} element={<StudentInstructorPurchase />} />
+        <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
         {/* Route for Instructor */}
         <Route
           path="/instructor/*"

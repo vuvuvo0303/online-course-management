@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Radio, Input, Form, Row, Col, Tag, message } from "antd";
 import { ToastContainer } from "react-toastify";
 
-import {  getColorCart } from "../../consts";
+import { getColorCart } from "../../consts";
 import styles from "./checkout.module.css";
 import { Cart } from "../../models";
 import { displayCart, updateStatusCart } from '../../services';
@@ -27,8 +27,8 @@ const Checkout: React.FC = () => {
   ];
 
   const navigate = useNavigate();
-  useEffect(() => { 
-     getCart();
+  useEffect(() => {
+    getCart();
     //fetchPaymentDetails();
     // fetchCourseDetails();
     loadUserFromLocalStorage();
@@ -145,7 +145,7 @@ const Checkout: React.FC = () => {
 
   if (loading) {
     return (
-     <p>Loading ...</p>
+      <p>Loading ...</p>
     );
   }
 
@@ -174,27 +174,27 @@ const Checkout: React.FC = () => {
                   <p className={styles.detailValue}>{user && user.email}</p>
                 </div>
                 {
-                // payment && 
-                (
-                  <>
-                    <div className={styles.detailItem}>
-                      <p className={styles.detailLabel}>
-                        <strong>Date:</strong>
-                      </p>
-                      <p className={styles.detailValue}>
-                        22/07/2024
-                        {/* { format(new Date(payment.createdDate), "dd/MM/yyyy")} */}
-                      </p>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <p className={styles.detailLabel}>
-                        <strong>Total Price:</strong>
-                      </p>
-                      <p className={styles.detailValue}>{totalPrice}</p>
-                    </div>
-                  </>
+                  // payment && 
+                  (
+                    <>
+                      <div className={styles.detailItem}>
+                        <p className={styles.detailLabel}>
+                          <strong>Date:</strong>
+                        </p>
+                        <p className={styles.detailValue}>
+                          22/07/2024
+                          {/* { format(new Date(payment.createdDate), "dd/MM/yyyy")} */}
+                        </p>
+                      </div>
+                      <div className={styles.detailItem}>
+                        <p className={styles.detailLabel}>
+                          <strong>Total Price:</strong>
+                        </p>
+                        <p className={styles.detailValue}>{totalPrice}</p>
+                      </div>
+                    </>
 
-                )}
+                  )}
               </div>
             </div>
             <div >
@@ -412,9 +412,10 @@ const Checkout: React.FC = () => {
             .
           </p>
 
-          <Button
+         <div className="grid grid-cols-2">
+         <Button
             type="primary"
-            className={`${styles.payButton} mt-5`}
+            className={`${styles.payButton} mt-5 w-3/6`}
             onClick={handlePayment}
             loading={loading}
             disabled={loading}
@@ -423,9 +424,10 @@ const Checkout: React.FC = () => {
           </Button>
           <Button
             onClick={handleCancelPayment}
-            className={`${styles.payButton} bg-red-500`}>
+            className={`text-white mt-5 ${styles.payButton} bg-red-500`}>
             Cancel
           </Button>
+         </div>
         </div>{" "}
       </div>
     </div>
