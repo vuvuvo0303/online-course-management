@@ -19,7 +19,7 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
 import logo2 from "../../assets/logo2.jpg";
 import { roles } from "../../consts";
-import {logout} from "../../services/auth.ts";
+import { logout } from "../../services/auth.ts";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
         email: user.email,
       });
     }
-  }, [navigate, userRole, user]);
+  }, [navigate, userRole]);
 
 
   function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
@@ -82,14 +82,14 @@ const Dashboard: React.FC = () => {
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
           getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
           getItem("Instructor's Request", "/admin/instructor-requests", <TeamOutlined />),
-          getItem("Manage Purchase", "/admin/manage-all-purchase", <TeamOutlined />),
-          
+          getItem("Manage Purchases", "/admin/manage-all-purchase", <TeamOutlined />),
+
 
           getItem("Manage Categories", "/admin/manage-categories", <UnorderedListOutlined />),
           getItem("Manage Courses", "/admin/manage-courses", <FundProjectionScreenOutlined />),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
           getItem("Manage Reviews", "/admin/manage-reviews", <CommentOutlined />),
-          getItem("Payment History", "/admin/payment-history", <DesktopOutlined />),
+          getItem("Manage Payouts", "/admin/manage-payouts", <DesktopOutlined />),
         ]);
       }
     }

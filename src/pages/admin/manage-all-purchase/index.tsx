@@ -1,35 +1,18 @@
-import { Avatar, Breadcrumb, Table, TableProps, Tag } from "antd";
-import {API_GET_PURCHASE_BY_ADMIN } from "../../../consts/index";
+import { Breadcrumb, Table, TableProps, Tag } from "antd";
+import { API_GET_PURCHASE_BY_ADMIN } from "../../../consts/index";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance";
 import { HomeOutlined } from "@ant-design/icons";
+import { Purchase } from "../../../models/Purchase";
 
-interface PurchaseData {
-  _id: string;
-  purchase_no: string;
-  status: string;
-  price_paid: number;
-  price: number;
-  discount: number;
-  cart_id: string;
-  course_id: string;
-  student_id: string;
-  instructor_id: string;
-  created_at: string;
-  is_deleted: boolean;
-  cart_no: string;
-  course_name: string;
-  student_name: string;
-  instructor_name: string;
-}
 
 const ManageAllPurchase = () => {
-  const [dataSource, setDataSource] = useState<PurchaseData[]>([]);
+  const [dataSource, setDataSource] = useState<Purchase[]>([]);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
-  const columns: TableProps<PurchaseData>["columns"] = [
+  const columns: TableProps<Purchase>["columns"] = [
     {
       title: "Course Name",
       dataIndex: "course_name",
@@ -40,26 +23,26 @@ const ManageAllPurchase = () => {
       title: "Instructor's Name",
       dataIndex: "instructor_name",
       key: "instructor_name",
-    },{
-        title: "Student's Name",
-        dataIndex: "student_name",
-        key: "student__name",
-      },
+    }, {
+      title: "Student's Name",
+      dataIndex: "student_name",
+      key: "student__name",
+    },
     {
-        title: "Status",
-        dataIndex: "status",
-        key: "status",
-        render: (status: string) => (
-          <Tag color={
-            status === "new" ? "blue" :
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => (
+        <Tag color={
+          status === "new" ? "blue" :
             status === "request_paid" ? "orange" :
-            status === "completed" ? "green" :
-            "default"
-          }>
-            {status}
-          </Tag>
-        ),
-      },
+              status === "completed" ? "green" :
+                "default"
+        }>
+          {status}
+        </Tag>
+      ),
+    },
     {
       title: "Created Date",
       dataIndex: "created_at",
@@ -102,8 +85,6 @@ const ManageAllPurchase = () => {
         },
       });
 
-      console.log("API Response:", response.data);
-
       if (response.data && response.data.pageData) {
         const { pageData, pageInfo } = response.data;
         setDataSource(pageData);
@@ -113,19 +94,19 @@ const ManageAllPurchase = () => {
           total: pageInfo.totalItems,
         });
       } else {
-    
-    
+
+
         setDataSource([]);
       }
     } catch (error) {
       //
-     
+
     }
   }, [pagination.current, pagination.pageSize]);
 
   useEffect(() => {
     fetchPurchase();
-  }, [fetchPurchase]);
+  }, []);
 
   const handleTableChange = (pagination: any) => {
     setPagination({
@@ -137,7 +118,7 @@ const ManageAllPurchase = () => {
 
   return (
     <div>
-          <Breadcrumb className="p-3">
+      <Breadcrumb className="p-3">
         <Breadcrumb.Item>
           <HomeOutlined />
         </Breadcrumb.Item>
