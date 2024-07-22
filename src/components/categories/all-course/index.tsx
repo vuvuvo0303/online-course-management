@@ -1,17 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, Popover, Button, Rate } from 'antd';
 import Carousel from "react-multi-carousel";
 import { Link } from 'react-router-dom';
 import { paths } from "../../../consts/index";
-import { CheckOutlined, HeartOutlined } from '@ant-design/icons';
+import { HeartOutlined } from '@ant-design/icons';
+import { fetchCoursesByClient, addCourseToCart } from '../../../services';
+import { Course } from '../../../models';
+import { format } from 'date-fns';
+
 
 const { Meta } = Card;
 
 const AllCourses: React.FC = () => {
     const [ratings, setRatings] = useState<number[]>([3, 4, 5]);
+    const [courses, setCourses] = useState<Course[]>([]);
 
-    const price = "$99.99"; // Example price, you can modify it as needed
-
+    const [loading, setLoading] = useState<boolean>(false);
     const responsive = {
         superLargeDesktop: {
             breakpoint: { max: 4000, min: 3000 },
@@ -31,30 +35,42 @@ const AllCourses: React.FC = () => {
         }
     };
 
-    const renderPopoverContent = (course: string) => {
-        const handleGoToCourse = () => {
-            window.location.href = paths.STUDENT_CART;
-        };
+    // fetch course to display for student or client
+    const fetchCourse = async () => {
+        setLoading(true)
+        const res = await fetchCoursesByClient("", "");
+        setCourses(res)
+        setLoading(false)
+    }
 
+    useEffect(() => {
+        fetchCourse();
+    }, [])
+
+    if (loading) {
+        return <p className='text-center'>Loading ...</p>
+    }
+
+    const renderPopoverContent = (course: Course) => {
+        // add course and go to cart
+        const handleGoToCourse = async () => {
+            await addCourseToCart(course._id);
+        }
+        const lastUpdated = format(new Date(course.updated_at), "dd/MM/yyyy");
         return (
             <div className="popover-content w-full">
                 <Meta
-                    title={course}
+                    title={course.name}
                     description={
                         <div className="max-w-[350px] max-h-[410px] flex flex-col justify-between p-4 text-left">
                             <div>
-                                <h3 className="text-green-600 text-[1rem] mb-2">Course Title</h3>
-                                <p className="text-black text-[0.8rem] mb-2">Updated at 7/2023</p>
+                                <p className="text-black text-[1rem] mb-2">Last Updated: {lastUpdated}</p>
                             </div>
                             <div>
-                                <p className="text-black text-[1rem] mb-2">Course description goes here.</p>
+                                <p className="text-black text-[1rem] mb-2 truncate">Description: {course.description}</p>
                             </div>
                             <div>
-                                <ul className="list-none">
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 1</li>
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 2</li>
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 3</li>
-                                </ul>
+                                <p className="text-black text-[1rem] mb-2 truncate">Price: {course.price} vnđ</p>
                             </div>
                         </div>
                     }
@@ -72,7 +88,7 @@ const AllCourses: React.FC = () => {
                             lineHeight: 'normal', // Reset line height if necessary
                         }}
                     >
-                        Go to cart
+                        Add to cart
                     </Button>
                     <Link to={paths.STUDENT_ENROLLMENT} className="ml-4 mt-[0.4rem]">
                         <HeartOutlined className="text-black text-2xl" />
@@ -106,11 +122,11 @@ const AllCourses: React.FC = () => {
                     infinite={true}
                     className="categories-carousel"
                 >
-                    {['Course 1', 'Course 2', 'Course 3', 'Course 4', 'Course 5'].map((course, index) => (
-                        <div key={course} className="category-card w-full">
+                    {courses.map((course, index) => (
+                        <div key={course._id} className=" w-full">
                             <Popover
                                 content={renderPopoverContent(course)}
-                                title="Category Info"
+                                title="Course Info"
                                 trigger="hover"
                                 placement="right"
                                 overlayStyle={{ textAlign: 'center' }}
@@ -122,8 +138,9 @@ const AllCourses: React.FC = () => {
                                             <Link to={`${paths.COURSE}`}>
                                                 <img
                                                     alt="example"
-                                                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                                                    className="w-full"
+                                                    src={course.image_url}
+                                                    className="w-full max-h-32"
+
                                                 />
                                             </Link>
                                             <div className="best-seller-label text-yellow-200 text-base">Best Seller</div>
@@ -131,16 +148,16 @@ const AllCourses: React.FC = () => {
                                     }
                                 >
                                     <Meta
-                                        className="card-meta"
-                                        title={<Link to={`${paths.COURSE}`}>{course}</Link>}
-                                        description="This is the description"
+                                        className="card-meta truncate"
+                                        title={<Link to={`${paths.COURSE}`}>{course.name}</Link>}
+                                        description={course.description}
                                     />
                                     <div className="rating-container card-meta">
-                                        <span className="rating-number">{ratings[index]}</span>
-                                        <Rate value={ratings[index]} onChange={(value) => handleRatingChange(index, value)} />
+                                        <span className="rating-number">{ratings[course.average_rating]}</span>
+                                        <Rate value={ratings[course.average_rating]} onChange={(value) => handleRatingChange(index, value)} />
                                     </div>
                                     <div className="card-meta price mt-2">
-                                        {price}
+                                        {course.price} vnđ
                                     </div>
                                 </Card>
                             </Popover>

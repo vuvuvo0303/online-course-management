@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Button, Form, FormProps, Input } from "antd";
+import { Button, Form, FormProps, Input, message } from 'antd';
 import { useNavigate } from "react-router-dom";
 import Login from "../../../assets/Login.png";
-import { toast } from "react-toastify";
 import { login } from "../../../services/auth.ts";
 import { API_CURRENT_LOGIN_USER, paths } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
@@ -31,7 +30,7 @@ const AdminLoginPage: React.FC = () => {
       localStorage.setItem("token", token);
       await fetchUserData(token);
       navigate(paths.ADMIN_HOME);
-      toast.success("Login successfully");
+      message.success("Login successfully");
     }
     setLoading(false);
   };

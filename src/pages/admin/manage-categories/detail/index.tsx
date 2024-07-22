@@ -7,7 +7,7 @@ import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { Breadcrumb, Table } from "antd";
 import styles from "../managecategory.module.css";
 
-const CategoryDetail = () => {
+const CategoryDetail: React.FC = () => {
     const [cate, setCate] = useState<Category | null>(null);
     const { _id } = useParams<{ _id: string }>();
 

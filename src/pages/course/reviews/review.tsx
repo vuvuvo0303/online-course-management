@@ -1,11 +1,10 @@
 import { useState, useCallback } from 'react';
-import { Rate, Progress, Input, Button, Modal, Form } from 'antd';
+import { Rate, Progress, Input, Button, Modal, Form, message } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import 'tailwindcss/tailwind.css'; // Make sure Tailwind CSS is configured
 import axiosInstance from "../../../services/axiosInstance.ts";
-import { toast } from 'react-toastify';
-import {API_CREATE_REVIEW, API_GET_REVIEWS} from "../../../consts";
-import {Review} from "../../../models"; // Assuming you're using react-toastify for notifications
+import { API_CREATE_REVIEW, API_GET_REVIEWS } from "../../../consts";
+import { Review } from "../../../models";
 
 
 
@@ -91,7 +90,7 @@ const ReviewPage: React.FC = () => {
                     setIsModalVisible(false);
                     form.resetFields();
                     fetchReviews();
-                    toast.success('Review added successfully.');
+                    message.success('Review added successfully.');
                 }
             } catch (error) {
                 console.log(error);

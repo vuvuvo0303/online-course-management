@@ -3,10 +3,10 @@ import styles from './guideline.module.css'
 import ScrollToTopButton from '../../components/ScrollToTopButton'
 import TermsLayout from '../../layout/terms/TermsLayout'
 import { DislikeOutlined, LikeOutlined } from '@ant-design/icons'
-import { toast } from 'react-toastify'
+import { message } from 'antd'
 const Guidelines: React.FC = () => {
     const handleLike = () => {
-        toast.success("Thanks for let us know!")
+        message.success("Thanks for let us know!")
     }
 
     return (

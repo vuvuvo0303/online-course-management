@@ -1,9 +1,8 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Button, Empty, Form, Input, Modal, Select, Table, TableProps, Tag } from "antd";
+import { Breadcrumb, Button, Empty, Form, Input, message, Modal, Select, Table, TableProps, Tag } from "antd";
 import { Category, Course, Log } from "../../../models";
 import { API_COURSE_LOGS, API_COURSE_STATUS, API_DELETE_COURSE, API_GET_CATEGORIES, API_GET_COURSES, getColor } from "../../../consts";
-import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import TextArea from "antd/es/input/TextArea";
@@ -31,10 +30,11 @@ const InstructorManageCourses: React.FC = () => {
   const [keywordLogStatus, setKeywordLogStatus] = useState<string>('');
   const [comment, setComment] = useState<string>('');
   //status for filter course by status
-  const [status, setStatus] = useState<string>('new');
+  const [status, setStatus] = useState<string>('');
+  const [isDelete, setIsDelete] = useState<boolean>(false);
   //status for change status
   const [changeStatus, setChangeStatus] = useState<string>('new');
-  const [cateId, setCateId] = useState<string>('java');
+  const [cateId, setCateId] = useState<string>('');
   const [keyword, setKeyword] = useState<string>('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [logLoading, setLogLoading] = useState<boolean>(true);
@@ -104,8 +104,8 @@ const InstructorManageCourses: React.FC = () => {
   };
   //click ok on modal to change status of course
   const handleOkChangeStatus = async () => {
-    if (!comment) {
-      return toast.error("Please enter comment")
+    if (!comment && changeStatus === "inactive" || changeStatus === "reject") {
+      return message.error("Please enter comment")
     }
     try {
       await axiosInstance.put(API_COURSE_STATUS,
@@ -116,7 +116,7 @@ const InstructorManageCourses: React.FC = () => {
         }
       )
       setComment("");
-      toast.success("Change Status Successfully!");
+      message.success("Change Status Successfully!");
       setCourses(courses.filter(course => course._id != courseId))
     } catch (error) {
       //
@@ -132,7 +132,7 @@ const InstructorManageCourses: React.FC = () => {
   const handleOk = async () => {
     try {
       await axiosInstance.delete(`${API_DELETE_COURSE}/${courseId}`)
-      toast.success("Delete Successfully!")
+      message.success("Delete Successfully!")
       setCourses(courses.filter(course => course._id != courseId))
     } catch (error) {
       //
@@ -179,12 +179,14 @@ const InstructorManageCourses: React.FC = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
+        console.log("check cate");
+
         const response = await axiosInstance.post(API_GET_COURSES, {
           "searchCondition": {
             "keyword": debouncedSearchTerm,
-            "category": cateId,
+            "category_id": cateId,
             "status": status,
-            "is_deleted": false
+            "is_deleted": isDelete
           },
           "pageInfo": {
             "pageNum": 1,
@@ -201,7 +203,7 @@ const InstructorManageCourses: React.FC = () => {
       }
     };
     fetchCourses();
-  }, [status, cateId, debouncedSearchTerm])
+  }, [status, cateId, debouncedSearchTerm, isDelete])
 
 
   if (loading) {
@@ -227,6 +229,11 @@ const InstructorManageCourses: React.FC = () => {
     setStatus(value);
 
   };
+  //setStatus for filter course by status
+  const handleChangeIsDelete = (value: boolean) => {
+    setIsDelete(value);
+
+  };
   // set status for chang status
   const handleChangeStatus = async (value: string) => {
     setChangeStatus(value);
@@ -234,7 +241,7 @@ const InstructorManageCourses: React.FC = () => {
 
   // setCateId
   const handleCateChange = (value: string) => {
-    setCateId(value + "");
+    setCateId(value);
   };
   //search course by course name
   const handleSearchLogStatus = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -293,11 +300,12 @@ const InstructorManageCourses: React.FC = () => {
       key: 'status',
       render: (status: string, record: Course) => (
         <>
-          {(status !== "waiting_approve" && status !== "reject") &&
-            <Tag onClick={() => { showModalChangeStatus(status, record._id, record.name); }}
-              className="text-blue-500 cursor-pointer">
-              {status}
-            </Tag>}
+          {/* {(status !== "waiting_approve" && status !== "reject") && */}
+          <Tag color={getColor(status)} onClick={() => { showModalChangeStatus(status, record._id, record.name); }}
+            className="text-blue-500 cursor-pointer">
+            {status === "waiting_approve" ? "waiting approve" : status}
+          </Tag>
+          {/* } */}
         </>
       )
     },
@@ -500,6 +508,7 @@ const InstructorManageCourses: React.FC = () => {
                 onChange={handleChangeStatus}
                 options={
                   (statusDefaultChange === "inactive" && [{ label: <span>active</span>, value: 'active' }]) ||
+                  (statusDefaultChange === "reject" && [{ label: <span>waiting approve</span>, value: 'waiting_approve' }]) ||
                   (statusDefaultChange === "active" && [{ label: <span>inactive</span>, value: 'inactive' }]) ||
                   (statusDefaultChange === "new" && [
                     { label: <span>waiting approve</span>, value: 'waiting_approve' },
@@ -508,7 +517,7 @@ const InstructorManageCourses: React.FC = () => {
                     { label: <span>active</span>, value: 'active' },
                     { label: <span>inactive</span>, value: 'inactive' },
                   ]) ||
-                  []
+                  [{ label: <span>Only admin can change status from waiting approve to approve or reject</span>, value: 'active' },]
                 }
               />
 
@@ -516,7 +525,6 @@ const InstructorManageCourses: React.FC = () => {
             <Form.Item
               label="Comment"
               name="comment"
-              rules={[{ required: true, message: 'Please enter comment!' }]}
             >
               <TextArea value={comment} onChange={handleSaveComment} />
             </Form.Item>
@@ -554,13 +562,14 @@ const InstructorManageCourses: React.FC = () => {
         <div className="grid xl:grid-cols-3 grid-cols-1 gap-10">
           {/* filter course by status */}
           <Select
-            defaultValue="new"
+            defaultValue="all"
             style={{ width: 200 }}
             className="m-5"
             onChange={handleChange}
             options={[
               {
                 options: [
+                  { label: <span>all</span>, value: '' },
                   { label: <span>new</span>, value: 'new' },
                   { label: <span>waiting approve</span>, value: 'waiting_approve' },
                   { label: <span>approve</span>, value: 'approve' },
@@ -571,15 +580,34 @@ const InstructorManageCourses: React.FC = () => {
               },
             ]}
           />
+          {/* filter course by isDelete */}
           <Select
-            defaultValue="java"
+            defaultValue={false}
+            style={{ width: 200 }}
+            className="m-5"
+            onChange={handleChangeIsDelete}
+            options={[
+              {
+                options: [
+                  { label: <span>true</span>, value: true },
+                  { label: <span>false</span>, value: false },
+                ],
+              },
+            ]}
+          />
+          {/* filter course by categories */}
+          <Select
+            defaultValue="All Categories"
             style={{ width: 200 }}
             className="m-5"
             onChange={handleCateChange}
-            options={categories.map(cate => ({
-              value: cate._id,
-              label: cate.name
-            }))}
+            options={[
+              { value: "", label: "All Categories" },
+              ...categories.map(cate => ({
+                value: cate._id,
+                label: cate.name
+              }))
+            ]}
           />
           <Input.Search
             placeholder="Search"

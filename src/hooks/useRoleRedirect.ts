@@ -22,17 +22,17 @@ const useRoleRedirect = () => {
     switch (userRole) {
       case roles.STUDENT:
         if (path.includes("/instructor") || path.includes("/admin") || path.includes(paths.LOGIN) || path.includes(paths.REGISTER) || path.includes(paths.FORGOT_PASSWORD)) {
-          navigate("/");
+          navigate(paths.HOME);
         }
         break;
       case roles.ADMIN:
         if (!path.includes("/admin") || path.includes(paths.LOGIN) || path.includes(paths.REGISTER) || path.includes(paths.FORGOT_PASSWORD)) {
-          navigate("/admin/dashboard");
+          navigate(paths.ADMIN_HOME);
         }
         break;
       case roles.INSTRUCTOR:
         if (!path.includes("/instructor")|| path.includes(paths.LOGIN) || path.includes(paths.REGISTER) || path.includes(paths.FORGOT_PASSWORD)) {
-          navigate("/instructor/dashboard");
+          navigate(paths.INSTRUCTOR_HOME);
         }
         break;
       default:

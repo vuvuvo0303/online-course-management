@@ -1,5 +1,5 @@
-import { Breadcrumb, Button, Input, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
-import { API_INSTRUCTOR_GET_SUBSCRIBER, API_INSTRUCTOR_GET_SUBSCRIPTIONS, getColor, getColorStatusSubscribe } from "../../../consts/index";
+import { Breadcrumb, Input, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
+import { API_INSTRUCTOR_GET_SUBSCRIBER, API_INSTRUCTOR_GET_SUBSCRIPTIONS, getColorStatusSubscribe } from "../../../consts/index";
 import { format } from "date-fns";
 import { Subscription } from "models/Subscription";
 import { useEffect, useState } from "react";
@@ -26,7 +26,7 @@ const InstructorManageSubscriptions = () => {
                     }
                 })
                 if (res) {
-                    console.log("check res: ", res);
+                    console.log("check res subs: ", res);
                     setSubscriptions(res.data.pageData)
                     setLoading(false)
                 }

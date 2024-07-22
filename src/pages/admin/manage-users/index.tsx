@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Breadcrumb,
   Button,
@@ -15,7 +15,7 @@ import {
   Radio,
   Select,
   Spin,
-  Avatar,
+  Avatar, message,
 } from "antd";
 import {
   DeleteOutlined,
@@ -27,7 +27,6 @@ import {
 } from "@ant-design/icons";
 
 import { format } from "date-fns";
-import { toast } from "react-toastify";
 
 import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 
@@ -38,17 +37,19 @@ import {
   API_CHANGE_ROLE,
   API_CHANGE_STATUS,
   API_CREATE_USER,
-  API_DELETE_USER,
-  API_GET_USERS,
+  API_GET_USERS, API_UPDATE_USER,
   paths,
 } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
+import ResponseData from "models/ResponseData.ts";
+import { useDebounce } from "../../../hooks/index.ts";
+import { deleteUser } from "../../../services/users.ts";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 
 const AdminManageUsers: React.FC = () => {
-  const [data, setData] = useState<User[]>([]);
+  const [dataUsers, setDataUsers] = useState<User[]>([]);
 
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -69,12 +70,13 @@ const AdminManageUsers: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("true");
 
+  const debouncedSearch = useDebounce(searchText, 500);
 
   useEffect(() => {
-    fetchUsers();
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
+    getUsers();
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch]);
 
-  const fetchUsers = useCallback(async () => {
+  const getUsers = useCallback(async () => {
     setLoading(true);
     try {
       let statusValue: boolean | undefined = undefined;
@@ -89,46 +91,26 @@ const AdminManageUsers: React.FC = () => {
           role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
           status: statusValue,
           is_delete: false,
-          keyword: searchText,
+          keyword: debouncedSearch,
         },
         pageInfo: {
           pageNum: pagination.current,
           pageSize: pagination.pageSize,
         },
       });
-
-      if (response.data && response.data.pageData) {
-        setData(response.data.pageData);
-        setPagination({
-          ...pagination,
-          total: response.data.pageInfo.totalItems,
-          current: response.data.pageInfo.pageNum,
-          pageSize: response.data.pageInfo.pageSize,
-        });
-      } else {
-        // Xử lý trường hợp không có dữ liệu
-      }
+      setDataUsers(response.data.pageData);
+      setPagination({
+        ...pagination,
+        total: response.data.pageInfo.totalItems,
+        current: response.data.pageInfo.pageNum,
+        pageSize: response.data.pageInfo.pageSize,
+      });
     } catch (error) {
       // Xử lý trường hợp lỗi
     }
     setLoading(false);
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
 
-
-  const handleDelete = useCallback(
-    async (_id: string, email: string) => {
-      try {
-        await axiosInstance.delete(`${API_DELETE_USER}/${_id}`);
-        setData((prevData) => prevData.filter((user) => user._id !== _id));
-        toast.success(`Deleted user ${email} successfully`);
-        fetchUsers();
-
-      } catch (error) {
-        //
-      }
-    },
-    [fetchUsers]
-  );
 
   const handleAddNewUser = useCallback(
     async (values: User) => {
@@ -146,18 +128,18 @@ const AdminManageUsers: React.FC = () => {
         const response = await axiosInstance.post(API_CREATE_USER, userData);
 
         const newUser = response.data.data;
-        setData((prevData) => [...prevData, newUser]);
-        toast.success("Created new user successfully");
+        setDataUsers((prevData) => [...prevData, newUser]);
+        message.success("Created new user successfully");
         setIsModalVisible(false);
         form.resetFields();
         setLoading(false);
-        fetchUsers();
+        getUsers();
         setFileList([]);
       } catch (error) {
         setLoading(false);
       }
     },
-    [fetchUsers, form]
+    [getUsers, form]
   );
 
   const getBase64 = (file: FileType): Promise<string> =>
@@ -179,20 +161,19 @@ const AdminManageUsers: React.FC = () => {
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
-  const handleStatusChange = useCallback(async (checked: boolean, userId: string) => {
+  const handleStatusChange = async (checked: boolean, userId: string) => {
     try {
       await axiosInstance.put(API_CHANGE_STATUS, {
         user_id: userId,
         status: checked,
       });
-      fetchUsers();
-
-      setData((prevData: User[]) => prevData.map((user) => (user._id === userId ? { ...user, status: checked } : user)));
-      toast.success(`User status updated successfully`);
+      const updateData = dataUsers.map((user) => (user._id === userId ? { ...user, status: checked } : user))
+      setDataUsers(updateData);
+      message.success(`User status updated successfully`);
     } catch (error) {
       // Handle error silently
     }
-  }, []);
+  };
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -203,150 +184,147 @@ const AdminManageUsers: React.FC = () => {
   const handleRoleChange = async (value: UserRole, recordId: string) => {
     try {
       await axiosInstance.put(API_CHANGE_ROLE, { user_id: recordId, role: value });
-      setData((prevData: User[]) =>
+      setDataUsers((prevData: User[]) =>
         prevData.map((user) => (user._id === recordId ? { ...user, role: value } : user))
       );
-      toast.success(`Role changed successfully`);
+      message.success(`Role changed successfully`);
     } catch (error) {
       // Handle error silently
     }
   }
 
-  const columns: TableColumnsType<User> = useMemo(
-    () => [
-      {
-        title: "Avatar",
-        dataIndex: "avatar",
-        key: "avatar",
-        render: (avatar: string) => (
-          <Avatar
-            size={50}
-            src={
-              avatar
-                ? avatar
-                : "https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-8/32/user--avatar--filled-256.png"
-            }
+  const columns: TableColumnsType<User> = [
+    {
+      title: "Avatar",
+      dataIndex: "avatar",
+      key: "avatar",
+      render: (avatar: string) => (
+        <Avatar
+          size={50}
+          src={
+            avatar
+              ? avatar
+              : "https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-8/32/user--avatar--filled-256.png"
+          }
+        />
+      ),
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: "20%",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      width: "20%",
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+      width: "10%",
+      render: (role: UserRole, record: User) => (
+        <Select
+          defaultValue={role}
+          onChange={(value) => handleRoleChange(value, record._id)}
+          style={{ width: "100%" }}
+        >
+          <Select.Option classNAme="text-red-700" value="student"> <span className="text-blue-800">Student</span></Select.Option>
+          <Select.Option value="instructor"><span className="text-green-700">Instructor</span></Select.Option>
+          <Select.Option value="admin"><span className="text-violet-500">Admin</span></Select.Option>
+        </Select>
+      ),
+    },
+    {
+      title: "Created Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      width: "10%",
+    },
+    {
+      title: "Updated Date",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      width: "10%",
+    },
+
+    {
+      title: "Status",
+      key: "status",
+      dataIndex: "status",
+      width: "10%",
+      render: (status: boolean, record: User) => (
+        <Switch defaultChecked={status} onChange={(checked) => handleStatusChange(checked, record._id)} />
+      ),
+    },
+    {
+      title: "Verify",
+      dataIndex: "is_verified",
+      key: "is_verified",
+      render: (is_verified: boolean) => (
+        <span>
+          {is_verified ? (
+            <img src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png" alt="" />
+          ) : (
+            <img src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png" alt="" />
+          )}
+        </span>
+      ),
+    },
+
+    {
+      title: "Action",
+      key: "action",
+      width: "15%",
+      render: (record: User) => (
+        <div>
+          <EditOutlined
+            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
+            style={{ fontSize: "20px" }}
+            onClick={() => {
+              setModalMode("Edit");
+              setIsModalVisible(true);
+              form.setFieldsValue(record);
+              setFormData(record);
+
+              const avatarUrl = typeof record.avatar === "string" ? record.avatar : "";
+
+              setFileList(
+                avatarUrl
+                  ? [
+                    {
+                      uid: "-1",
+                      name: "avatar.png",
+                      status: "done",
+                      url: avatarUrl,
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    } as UploadFile<any>,
+                  ]
+                  : []
+              );
+            }}
           />
-        ),
-      },
-      {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
-        width: "20%",
-      },
-      {
-        title: "Email",
-        dataIndex: "email",
-        key: "email",
-        width: "20%",
-      },
-      {
-        title: "Role",
-        dataIndex: "role",
-        key: "role",
-        width: "10%",
-        render: (role: UserRole, record: User) => (
-          <Select
-            defaultValue={role}
-            onChange={(value) => handleRoleChange(value, record._id)}
-            style={{ width: "100%" }}
+          <Popconfirm
+            title="Delete the User"
+            description="Are you sure to delete this User?"
+            onConfirm={() => deleteUser(record._id, record.email, getUsers)}
+            okText="Yes"
+            cancelText="No"
           >
-            <Select.Option classNAme="text-red-700" value="student"> <span className="text-blue-800">Student</span></Select.Option>
-            <Select.Option value="instructor"><span className="text-green-700">Instructor</span></Select.Option>
-            <Select.Option value="admin"><span className="text-violet-500">Admin</span></Select.Option>
-          </Select>
-        ),
-      },
-      {
-        title: "Created Date",
-        dataIndex: "created_at",
-        key: "created_at",
-        render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
-        width: "10%",
-      },
-      {
-        title: "Updated Date",
-        dataIndex: "updated_at",
-        key: "updated_at",
-        render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
-        width: "10%",
-      },
-
-      {
-        title: "Status",
-        key: "status",
-        dataIndex: "status",
-        width: "10%",
-        render: (status: boolean, record: User) => (
-          <Switch defaultChecked={status} onChange={(checked) => handleStatusChange(checked, record._id)} />
-        ),
-      },
-      {
-        title: "Verify",
-        dataIndex: "is_verified",
-        key: "is_verified",
-        render: (is_verified: boolean) => (
-          <span>
-            {is_verified ? (
-              <img src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png" alt="" />
-            ) : (
-              <img src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png" alt="" />
-            )}
-          </span>
-        ),
-      },
-
-      {
-        title: "Action",
-        key: "action",
-        width: "15%",
-        render: (record: User) => (
-          <div>
-            <EditOutlined
-              className="hover:cursor-pointer text-blue-400 hover:opacity-60"
+            <DeleteOutlined
+              className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
               style={{ fontSize: "20px" }}
-              onClick={() => {
-                setModalMode("Edit");
-                setIsModalVisible(true);
-                form.setFieldsValue(record);
-                setFormData(record);
-
-                const avatarUrl = typeof record.avatar === "string" ? record.avatar : "";
-
-                setFileList(
-                  avatarUrl
-                    ? [
-                      {
-                        uid: "-1",
-                        name: "avatar.png",
-                        status: "done",
-                        url: avatarUrl,
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      } as UploadFile<any>,
-                    ]
-                    : []
-                );
-              }}
             />
-            <Popconfirm
-              title="Delete the User"
-              description="Are you sure to delete this User?"
-              onConfirm={() => handleDelete(record._id, record.email)}
-              okText="Yes"
-              cancelText="No"
-            >
-              <DeleteOutlined
-                className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
-                style={{ fontSize: "20px" }}
-              />
-            </Popconfirm>
-          </div>
-        ),
-      },
-    ],
-    [handleStatusChange, form, handleDelete]
-  );
+          </Popconfirm>
+        </div>
+      ),
+    },
+  ]
 
   const handleTableChange = (pagination: PaginationProps) => {
     const newPagination: { current: number; pageSize: number; total: number } = {
@@ -383,9 +361,7 @@ const AdminManageUsers: React.FC = () => {
         email: values.email,
       };
 
-      const response = await axiosInstance.put(`/api/users/${formData._id}`, updatedUser);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
+      const response: ResponseData = await axiosInstance.put(`${API_UPDATE_USER}/${formData._id}`, updatedUser);
       if (response.success) {
         if (formData.role !== values.role) {
           await axiosInstance.put(API_CHANGE_ROLE, {
@@ -394,14 +370,14 @@ const AdminManageUsers: React.FC = () => {
           });
         }
 
-        setData((prevData) =>
+        setDataUsers((prevData) =>
           prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
         );
 
-        toast.success("Updated user successfully");
+        message.success("Updated user successfully");
         setIsModalVisible(false);
         form.resetFields();
-        fetchUsers();
+        getUsers();
       } else {
         // Handle error for edit users
       }
@@ -430,7 +406,7 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
-    fetchUsers();
+    getUsers();
   };
 
   return (
@@ -485,7 +461,7 @@ const AdminManageUsers: React.FC = () => {
         </Select>
       </Space>
       <Spin spinning={loading}>
-        <Table columns={columns} dataSource={data} rowKey={(record: User) => record._id} pagination={false} onChange={handleTableChange} />
+        <Table columns={columns} dataSource={dataUsers} rowKey={(record: User) => record._id} pagination={false} onChange={handleTableChange} />
       </Spin>
       <div className="flex justify-end py-8">
         <Pagination

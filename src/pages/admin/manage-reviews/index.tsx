@@ -1,16 +1,15 @@
-import { Breadcrumb, Pagination, Popconfirm, Rate, Table } from "antd";
+import { Breadcrumb, message, Pagination, Popconfirm, Rate, Table } from "antd";
 import type { TableProps } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined, HomeOutlined } from "@ant-design/icons";
 import { Review } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { API_DELETE_REVIEW, API_GET_REVIEWS, paths } from "../../../consts";
-import { toast } from "react-toastify";
 import { format } from "date-fns";
 
 
-const AdminManageFeedbacks: React.FC = () => {
-  const [data, setData] = useState<Review[]>([]);
+const AdminManageReviews: React.FC = () => {
+  const [dataReviews, setDataReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const [pagination,] = useState({
@@ -21,11 +20,11 @@ const AdminManageFeedbacks: React.FC = () => {
 
   useEffect(() => {
 
-    fetchReviews();
+    getReviews();
   }, [pagination.pageSize, pagination.pageNum]);
 
 
-  const fetchReviews = useCallback(async () => {
+  const getReviews = useCallback(async () => {
     try {
       const response = await axiosInstance.post(API_GET_REVIEWS,
         {
@@ -42,7 +41,7 @@ const AdminManageFeedbacks: React.FC = () => {
           }
         }
       );
-      setData(response.data.pageData)
+      setDataReviews(response.data.pageData)
       setLoading(false)
     } catch (error) {
       console.error("Error fetching students:", error);
@@ -54,14 +53,14 @@ const AdminManageFeedbacks: React.FC = () => {
     async (_id: string, reviewer_name: string, course_name: string) => {
       try {
         await axiosInstance.delete(`${API_DELETE_REVIEW}/${_id}`);
-        setData(prevReview => prevReview.filter(review => review._id === _id));
-        toast.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
-        fetchReviews();
+        setDataReviews(prevReview => prevReview.filter(review => review._id === _id));
+        message.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
+        getReviews();
       } catch {
         //
       }
     }
-    , [fetchReviews])
+    , [getReviews])
 
   const columns: TableProps<Review>["columns"] = [
     {
@@ -139,7 +138,7 @@ const AdminManageFeedbacks: React.FC = () => {
           },
         ]}
       />
-      <Table rowKey={(record: Review) => record._id} columns={columns} dataSource={data} />
+      <Table rowKey={(record: Review) => record._id} columns={columns} dataSource={dataReviews} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.totalItems}
@@ -153,5 +152,5 @@ const AdminManageFeedbacks: React.FC = () => {
   );
 };
 
-export default AdminManageFeedbacks;
+export default AdminManageReviews;
 
