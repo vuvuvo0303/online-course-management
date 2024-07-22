@@ -216,10 +216,14 @@ export const paths = {
   INSTRUCTOR_UPDATE_LECTURE:
     "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
-  INSTRUCTOR_LECTURES_OF_COURSE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lessons",
-  INSTRUCTOR_MANAGE_SESSION_OF_COURSE: "manage-courses/:courseId/manage-sessions",
-  INSTRUCTOR_CREATE_SESSION: "manage-courses/:courseId/manage-sessions/create-session",
-  INSTRUCTOR_UPDATE_SESSION: "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
+  INSTRUCTOR_LECTURES_OF_COURSE:
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures",
+  INSTRUCTOR_MANAGE_SESSION_OF_COURSE:
+    "manage-courses/:courseId/manage-sessions",
+  INSTRUCTOR_CREATE_SESSION:
+    "manage-courses/:courseId/manage-sessions/create-session",
+  INSTRUCTOR_UPDATE_SESSION:
+    "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:_id",
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
   INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS:
@@ -227,10 +231,10 @@ export const paths = {
   INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS:
     "manage-all-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_ALL_LECTURES: "manage-all-lessons",
-  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lessons/create-lesson",
-  INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
-  INSTRUCTOR_MANAGE_SUBSCRIPTIONS: "manage-subscriptions",
-  INSTRUCTOR_MANAGE_PURCHASES: "manage-purchases",
+  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES:
+    "manage-all-lessons/create-lesson",
+  INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES:
+    "manage-all-lectures/update-lecture/:lectureId",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",
