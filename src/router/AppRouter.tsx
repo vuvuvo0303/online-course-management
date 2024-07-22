@@ -28,7 +28,6 @@ const InternalServerError = lazy(() => import("../pages/internal-server-error"))
 const VerifyToken = lazy(() => import("../pages/verify-token"));
 
 // Student Page
-const StudentPaymentHistory = lazy(() => import("../pages/payment/studentPaymentHistory"));
 const Checkout = lazy(() => import("../pages/checkout"));
 const Profile = lazy(() => import("../pages/profile"));
 const Cart = lazy(() => import("../pages/cart"));
@@ -39,7 +38,6 @@ const StudentInstructorPurchase = lazy(() => import("../pages/purchase/student-i
 // Instructor Page
 const InstructorDashboard = lazy(() => import("../pages/instructor/instructor-dashboard/index"));
 const InstructorManagerReviews = lazy(() => import("../pages/instructor/manage-reviews"));
-const PaymentHistory = lazy(() => import("../pages/payment/payment-history"));
 const InstructorManageCourses = lazy(() => import("../pages/instructor/manage-course/index"));
 const InstructorResources = lazy(() => import("../pages/instructor/resources"));
 const InstructorTools = lazy(() => import("../pages/instructor/tools"));
@@ -101,7 +99,6 @@ const AppRouter: React.FC = () => {
         <Route path={paths.INTERNAL_SERVER_ERROR} element={<InternalServerError />} />
 
         {/* Route for Student */}
-        <Route path={paths.STUDENT_PAYMENT_HISTORY} element={<StudentPaymentHistory />} />
         <Route path={paths.STUDENT_PROFILE} element={<Profile />} />
         <Route path={paths.STUDENT_CART} element={<Cart />} />
         <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
@@ -159,10 +156,6 @@ const AppRouter: React.FC = () => {
           />
           <Route path={paths.INSTRUCTOR_PROFILE} element={<Profile />} />
           <Route
-            path={paths.INSTRUCTOR_PAYMENT_HISTORY}
-            element={canAccess([roles.INSTRUCTOR]) ? <PaymentHistory /> : <Navigate to={paths.HOME} />}
-          />
-          <Route
             path={paths.INSTRUCTOR_CREATE_COURSE}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to={paths.HOME} />}
           />
@@ -201,10 +194,6 @@ const AppRouter: React.FC = () => {
           <Route
             path={paths.INSTRUCTOR_MANAGE_SUBSCRIPTIONS}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageSubscriptions /> : <Navigate to={paths.HOME} />}
-          />
-          <Route
-            path={paths.INSTRUCTOR_MANAGE_PURCHASES}
-            element={canAccess([roles.INSTRUCTOR]) ? <StudentInstructorPurchase /> : <Navigate to={paths.HOME} />}
           />
         </Route>
 

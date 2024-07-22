@@ -1,8 +1,3 @@
-/* Fake API */
-const BASE_URL = "https://665fbf245425580055b0b23d.mockapi.io";
-export const API_COURSES_URL = `${BASE_URL}/courses`;
-export const API_PAYMENT_URL = `${BASE_URL}/payments`;
-
 /* API */
 
 //Base URL
@@ -25,6 +20,7 @@ export const API_CHANGE_PASSWORD = "/api/users/change-password";
 export const API_CHANGE_STATUS = "/api/users/change-status";
 export const API_CHANGE_ROLE = "/api/users/change-role";
 export const API_DELETE_USER = "/api/users";
+export const API_REVIEW_PROFILE_INSTRUCTOR = "/api/users/review-profile-instructor";
 //Category
 export const API_CREATE_CATEGORY = "/api/category";
 export const API_GET_CATEGORIES = "/api/category/search";
@@ -203,9 +199,9 @@ export const paths = {
   INSTRUCTOR_UPDATE_COURSE: "manage-courses/update-course/:_id",
   INSTRUCTOR_UPDATE_COURSE_DETAIL:
     "manage-courses/course-detail/:id/update-course/:_id",
-  INSTRUCTOR_PAYMENT_HISTORY: "payment-history",
   INSTRUCTOR_MANAGE_REVIEWS: "manage-reviews",
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
+  INSTRUCTOR_MANAGE_SUBSCRIPTIONS: "manage-subscriptions",
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Radio, Input, Form, Row, Col, Tag, message } from "antd";
 import { ToastContainer } from "react-toastify";
 
-import { API_PAYMENT_URL, getColorCart } from "../../consts";
+import {  getColorCart } from "../../consts";
 import styles from "./checkout.module.css";
 import { Cart } from "../../models";
 import { displayCart, updateStatusCart } from '../../services';
@@ -29,7 +29,7 @@ const Checkout: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => { 
      getCart();
-    fetchPaymentDetails();
+    //fetchPaymentDetails();
     // fetchCourseDetails();
     loadUserFromLocalStorage();
   }, []);
@@ -51,31 +51,31 @@ const Checkout: React.FC = () => {
       setLoading(false)
     }
   }
-  const fetchPaymentDetails = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(API_PAYMENT_URL);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.length > 0) {
-          const paymentData = data[0];
-          const createdDateUTC = new Date(
-            paymentData.createdDate
-          ).toUTCString();
-          paymentData.createdDate = createdDateUTC;
-          // setPayment(paymentData);
-        } else {
-          message.error("No payment found.");
-        }
-      } else {
-        message.error("Failed to fetch payment details.");
-      }
-    } catch (error) {
-      message.error("Error fetching payment details.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetchPaymentDetails = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch(API_);
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       if (data.length > 0) {
+  //         const paymentData = data[0];
+  //         const createdDateUTC = new Date(
+  //           paymentData.createdDate
+  //         ).toUTCString();
+  //         paymentData.createdDate = createdDateUTC;
+  //         // setPayment(paymentData);
+  //       } else {
+  //         message.error("No payment found.");
+  //       }
+  //     } else {
+  //       message.error("Failed to fetch payment details.");
+  //     }
+  //   } catch (error) {
+  //     message.error("Error fetching payment details.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // const fetchCourseDetails = async () => {
   //   try {

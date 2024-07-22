@@ -1,12 +1,12 @@
 import {Table, TableColumnsType, Tag} from "antd";
 import {useCallback, useEffect, useState} from "react";
-import { Payment } from "../../../../models";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import {API_GET_PURCHASE_BY_STUDENT} from "../../../../consts/index.ts";
 import {format} from "date-fns";
+import {Purchase} from "../../../../models/Purchase.ts";
 
 const ManagePaymentCourse = () => {
-    const columns: TableColumnsType<Payment> = [
+    const columns: TableColumnsType<Purchase> = [
         {
             title: 'Purchase No',
             dataIndex: 'purchase_no',
@@ -50,7 +50,7 @@ const ManagePaymentCourse = () => {
         },
     ];
 
-    const [data, setData] = useState<Payment[]>([]);
+    const [data, setData] = useState<Purchase[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
 
@@ -85,7 +85,7 @@ const ManagePaymentCourse = () => {
 
     return (
         <div>
-            <Table columns={columns} dataSource={data} rowKey={(record:Payment) => record._id} />
+            <Table columns={columns} dataSource={data} rowKey={(record:Purchase) => record._id} />
         </div>
     )
 }

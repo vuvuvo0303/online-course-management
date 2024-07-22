@@ -89,14 +89,6 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={"/payment-history"}>
-          Payment History
-        </Link>
-      ),
-      key: "2",
-    },
-    {
-      label: (
         <Link className="text-lg" to={"/help"}>
           Help
         </Link>

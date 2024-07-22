@@ -11,8 +11,8 @@ import {
   Pagination,
   TablePaginationConfig,
 } from "antd";
-import { API_GET_USERS } from "../../../consts";
-import { Instructor } from "models/User";
+import { API_GET_USERS, API_REVIEW_PROFILE_INSTRUCTOR } from "../../../consts";
+import { Instructor } from "../../../models/User";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
@@ -121,8 +121,8 @@ const AdminInstructorRequest = () => {
       ),
     },
   ];
-  
-  
+
+
 
   const fetchInstructorRequest = async () => {
     setLoading(true);
@@ -138,13 +138,13 @@ const AdminInstructorRequest = () => {
           pageSize: pagination.pageSize,
         },
       });
-  
+
       if (response.data && response.data.pageData) {
-        const dataWithApprovalStatus = response.data.pageData.map((instructor) => ({
+        const dataWithApprovalStatus = response.data.pageData.map((instructor: Instructor) => ({
           ...instructor,
           isApproved: instructor.is_verified, // Hoặc thêm logic để xác định trạng thái phê duyệt
         }));
-  
+
         setDataSource(dataWithApprovalStatus);
         setPagination((prev) => ({
           ...prev,
@@ -156,12 +156,12 @@ const AdminInstructorRequest = () => {
         //
       }
     } catch (error) {
-      console.error("Error fetching instructors:", error);
+      //
     } finally {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchInstructorRequest();
   }, [pagination.current, pagination.pageSize, debouncedSearch]);
@@ -169,29 +169,27 @@ const AdminInstructorRequest = () => {
 
   const handleApprove = async (record: Instructor) => {
     try {
-      const response = await axiosInstance.put("/api/users/review-profile-instructor", {
+      const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
         user_id: record._id,
         status: "approve",
         comment: "",
       });
-  
+
       if (response && response.data && response.data.success) {
-        message.success("Email phê duyệt đã được gửi thành công");
+        message.success("Email is send for instructor");
         const updatedDataSource = dataSource.map((item) =>
           item._id === record._id ? { ...item, isApproved: true } : item
         );
         setDataSource(updatedDataSource);
       } else {
-        message.error("Phê duyệt giảng viên thất bại: API không thành công");
-        console.error("API response error:", response.data);
+        message.error("Failed to approve instructor");
       }
     } catch (error) {
-      message.error("Lỗi khi phê duyệt giảng viên");
-      console.error("Error approving instructor:", error);
+      //
     }
   };
-  
-  
+
+
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
@@ -201,7 +199,7 @@ const AdminInstructorRequest = () => {
     if (!selectedInstructor) return;
 
     try {
-      const response = await axiosInstance.put("/api/users/review-profile-instructor", {
+      const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
         user_id: selectedInstructor._id,
         status: "reject",
         comment: rejectReason,

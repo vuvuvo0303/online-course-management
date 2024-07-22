@@ -10,8 +10,6 @@ import {
   paths, roles,
 } from "../../consts";
 import { GoogleLogin } from "@react-oauth/google";
-// import Lottie from "lottie-react";
-// import vutru from "../../assets/vutru.json";
 import axiosInstance from "../../services/axiosInstance.ts";
 
 type FieldType = {
@@ -119,7 +117,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#18a5a7] via-[#ffe998] to-[#ffb330] relative">
-      <div className="w-full md:w-1/2 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[650px] mb-[30px] mt-[30px]">
+      <div className="w-full md:w-1/2 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[650px] mb-[30px]">
         <div className="w-1/2 flex items-center justify-center">
           <img
             src={Login5}

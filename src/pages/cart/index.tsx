@@ -10,7 +10,8 @@ const Cart: React.FC = () => {
         <div className=" mt-0">
           <div>
             <ul className="min-w-full m-0 p-0">
-              <CartComponents />
+                <CartComponents />
+
             </ul>
           </div>
 
