@@ -349,6 +349,7 @@ const AdminManageCategories: React.FC = () => {
     {
       title: "Action",
       key: "action",
+      width: "10%",
       render: (_: unknown, record: Category) => (
         <div>
           <EditOutlined

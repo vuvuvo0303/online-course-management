@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
-import { message, Popconfirm, TableColumnsType } from "antd";
+import {Form, message, Modal, Popconfirm, TableColumnsType} from "antd";
 import { Breadcrumb, Button, Image, Table } from "antd";
 import { Blog } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
@@ -10,6 +10,8 @@ import { format } from "date-fns";
 
 const AdminManageBlogs: React.FC = () => {
   const [data, setData] = useState<Blog[]>([]);
+  const [form] = Form.useForm();
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   const handleDelete = async (id: string, title: string) => {
@@ -61,21 +63,21 @@ const AdminManageBlogs: React.FC = () => {
       key: "content",
     },
     {
-      title: "Blog Image",
+      title: "Image",
       dataIndex: "image_url",
       key: "image_url",
       width: "15%",
       render: (image_url: string) => <Image width={100} height={100} src={image_url} />,
     },
     {
-      title: "Created At",
+      title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
       render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
       width: "10%",
     },
     {
-      title: "Updated At",
+      title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
       render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
@@ -83,7 +85,7 @@ const AdminManageBlogs: React.FC = () => {
     },
     {
       title: "Action",
-      width: "15%",
+      width: "10%",
       key: "action",
       render: (record: Blog) => (
         <div>
@@ -136,8 +138,19 @@ const AdminManageBlogs: React.FC = () => {
           ]}
         />
         <div className="py-2">
-          <Button type="primary">Add New Blogs</Button>
+          <Button type="primary"
+          onClick={() => {
+            setIsModalVisible(true);
+            form.resetFields();
+          }}
+          >Add New Blog</Button>
         </div>
+
+        <Modal title="Add New Blog" open={isModalVisible} onCancel={() => setIsModalVisible(false)}>
+          <Form form={form} layout="vertical">
+
+          </Form>
+        </Modal>
       </div>
       <Table columns={columns} dataSource={data} rowKey={(record: Blog) => record._id} />;
     </div>

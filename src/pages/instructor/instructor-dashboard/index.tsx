@@ -6,14 +6,15 @@ import TopNews from "./topnew";
 import ProfileOverview from "./profile-overview";
 import axiosInstance from "../../../services/axiosInstance";
 import { useEffect, useState } from "react";
+import { API_GET_COURSES, paths } from "../../../consts/index";
 
 const InstructorDashboard: React.FC = () => {
   const [totalCourse, setTotalCourse] = useState<number>(0);
-   //fetch courses
-   useEffect(() => {
+  //fetch courses
+  useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axiosInstance.post(`/api/course/search`, {
+        const response = await axiosInstance.post(API_GET_COURSES, {
           "searchCondition": {
             "keyword": "",
             "category": "",
@@ -25,13 +26,12 @@ const InstructorDashboard: React.FC = () => {
             "pageSize": 100
           }
         });
-        if (res.data.pageData) {
-          console.log("check res: ", res);
-          setTotalCourse(res.data.pageInfo.totalItems);
+        if (response.data.pageData) {
+          setTotalCourse(response.data.pageInfo.totalItems);
         }
       } catch (error) {
         console.log("Error: ", error);
-      } 
+      }
     };
     fetchCourses();
   }, [])
@@ -41,7 +41,7 @@ const InstructorDashboard: React.FC = () => {
         className="py-2"
         items={[
           {
-            href: "/",
+            href: paths.INSTRUCTOR_HOME,
             title: <HomeOutlined />,
           },
           {
@@ -60,7 +60,7 @@ const InstructorDashboard: React.FC = () => {
       />
       <div className="flex justify-between drop-shadow-xl gap-3">
         <Badge.Ribbon text="Flearn" color="blue">
-          <Link to="/instructor/manage-courses">
+          <Link to={paths.INSTRUCTOR_MANAGE_COURSES}>
             {" "}
             <Card title="Total courses " bordered={false} style={{ width: 300 }}>
               <div className="flex justify-between items-center px-5">
