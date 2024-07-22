@@ -1,6 +1,6 @@
-
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { Link } from 'react-router-dom';
 import "./List.module.css";
 
 const responsive = {
@@ -46,22 +46,24 @@ const List = () => {
 
     return (
         <div className="w-full">
-            <h2 className="text-2xl font-bold mb-4 text-center">Topics recommended for you</h2>
+            <Link to={`/category`}>
+                <h2 className="text-2xl font-bold mb-4 text-center">Topics recommended for you</h2>
+            </Link>
             <Carousel
                 responsive={responsive}
                 itemClass="carousel-item-padding-10px"
-                swipeable={true} // Allow swipe navigation on touch devices
-                draggable={false} // Disable dragging
-                showDots={false} // Hide pagination dots
-                arrows={true} // Show navigation arrows
-                centerMode={false} // Disable center mode
-                infinite={false} // Disable infinite loop
+                swipeable={true}
+                draggable={false}
+                showDots={false}
+                arrows={true}
+                centerMode={false}
+                infinite={false}
                 className="flex flex-wrap gap-4"
             >
                 {splitTopics.map((pair, index) => (
                     <div key={index} className="flex flex-col gap-2">
                         {pair.map((topic, idx) => (
-                            <div key={idx} className="bg-white-transparent border border-[lightgray] px-4 py-2 flex items-center justify-center">
+                            <div key={idx} className="bg-white border border-[lightgray] px-4 py-2 flex items-center justify-center">
                                 <span className="text-gray-800 font-medium">{topic}</span>
                             </div>
                         ))}

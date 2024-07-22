@@ -14,14 +14,16 @@ const Policy = lazy(() => import("../pages/policy"));
 const Terms = lazy(() => import("../pages/terms"));
 const Guidelines = lazy(() => import("../pages/guideline"));
 const About = lazy(() => import("../pages/about"));
+const NameCategory = lazy(() => import("../pages/category"));
 const Course = lazy(() => import("../pages/course"));
 const AllCourses = lazy(() => import("../pages/course/all-courses"));
+const CourseDetails = lazy(() => import("../pages/course-detail"));
+const Lesson = lazy(() => import("../pages/course/lesson"));
 const BlogDetail = lazy(() => import("../pages/blog/blog-detail"));
 const BlogList = lazy(() => import("../pages/blog"));
 const Enrollment = lazy(() => import("../pages/enrollment"));
 const SiteMap = lazy(() => import("../pages/sitemap"));
 const NotFound = lazy(() => import("../pages/notfound"));
-const CourseDetail = lazy(() => import("../pages/course-detail"));
 const BecomeInstructorPage = lazy(() => import("../pages/teaching"));
 const CoursesCategory = lazy(() => import("../pages/courses"));
 const ForgotPassword = lazy(() => import("../pages/forgot-password"));
@@ -80,6 +82,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.GUIDELINES} element={<Guidelines />} />
         <Route path={paths.SUPPORT} element={<Support />} />
         <Route path={paths.BLOGS} element={<BlogList />} />
+        <Route path={paths.NAME_CATEGORY} element={<NameCategory />} />
         <Route path={paths.COURSE} element={<Course />} />
         <Route path={paths.ALL_COURSES} element={<AllCourses />} />
         <Route path={paths.BLOG_DETAIL} element={<BlogDetail />} />
@@ -91,14 +94,15 @@ const AppRouter: React.FC = () => {
         <Route path={paths.FORGOT_PASSWORD} element={<ForgotPassword />} />
         <Route path={paths.VERIFY_TOKEN} element={<VerifyToken />} />
         <Route path={paths.INTERNAL_SERVER_ERROR} element={<InternalServerError />} />
+        <Route path={paths.COURSE_DETAILS} element={<CourseDetails />} />
 
         {/* Route for Student */}
         <Route path={paths.STUDENT_PAYMENT_HISTORY} element={<StudentPaymentHistory />} />
         <Route path={paths.STUDENT_PROFILE} element={<Profile />} />
         <Route path={paths.STUDENT_CART} element={<Cart />} />
         <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
-        <Route path={paths.COURSE_DETAIL} element={<CourseDetail />} />
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
+        <Route path={paths.LESSON} element={<Lesson />} />
 
         {/* Route for Instructor */}
         <Route path="/instructor/*" element={canAccess([roles.INSTRUCTOR]) ? <Dashboard /> : <Navigate to={paths.HOME} />}>
