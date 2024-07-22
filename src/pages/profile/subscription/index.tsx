@@ -1,85 +1,103 @@
-import { FC } from 'react';
-import { Card, Avatar, Button } from 'antd';
+import { FC, useEffect, useState } from 'react';
+import { Card, Avatar, Button, Row, Col } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { Subscription } from '../../../models';
+import { getItemsBySubscriber, handleSubscriptionByInstructorOrStudent } from '../../../services';
 
 // Define the props interface
 interface ProfileCardProps {
+    instructor_id: string;
     name: string;
-    title: string;
-    students: string;
-    courses: string;
+    // title: string;
+    // students: string;
+    // courses: string;
     image: string;
     subscribed: boolean;
 }
 
-const ProfileCard: FC<ProfileCardProps> = ({ name, title, students, courses, image, subscribed }) => {
+const Subscriptions: FC = () => {
+
+    const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+    // const [countInstrucotrs, setCountInstructors] = useState<number>(0);
+    // const [instructorId, setInstructorId] = useState<string[]>([]);
+    // const [instructors, setInstructors] = useState<Instructor[]>([])
+    const getSubscriber = async () => {
+        const res = await getItemsBySubscriber("", 1, 100);
+        setSubscriptions(res);
+        // setCountInstructors(res.length);
+    }
+    // // get instructor id to call api  to get instructor
+    // const getInstructorId = async () => {
+    //     const arr: string[] = [];
+    //     for (let index = 0; index < subscriptions.length; index++) {
+    //         arr[index] = subscriptions[index]._id;
+    //     }
+    //     setInstructorId(arr);
+    // }
+    // // this function will get detail information of all instructor that subscription return
+    // const getAllInstructorDetail = async() => {
+    //     // create a tempory variable to save instructor detail
+    //     const instructorArray: Instructor[] = []
+    //     for (let index = 0; index < countInstrucotrs; index++) {
+    //         const getInstructorDetail = await getInstructoDetailPublic(instructorId[index]);
+    //         instructorArray[index] = getInstructorDetail
+    //     }
+    //     setInstructors(instructorArray);
+    // }
+
+    useEffect(() => {
+        getSubscriber();
+        // getInstructorId();
+        // getAllInstructorDetail();
+    }, [])
+
+const ProfileCard: FC<ProfileCardProps> = ({ name, image, subscribed, instructor_id }) => {
+
+    const handleSubcribe = async (instructor_id: string) => {
+        await handleSubscriptionByInstructorOrStudent(instructor_id);
+        getSubscriber();
+    }
     return (
         <Card
             className="bg-gray-800 text-white"
             bordered={false}
             style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)' }}
         >
-            <Card.Meta
-                avatar={<Avatar src={image} icon={!image && <UserOutlined />} size={64} />}
-                title={<span className="text-lg font-bold text-black">{name}</span>}
-                description={<span className="text-black">{title}</span>}
-            />
-            <div className="mt-4 flex items-center justify-between">
-                <div>
-                    <div className="text-black">
-                        {students} Students
+            <Row gutter={50}>
+                <Col span={6}>
+                    <Card.Meta
+                        avatar={<Avatar src={image} icon={!image && <UserOutlined />} size={64} />}
+                    // title={}
+                    // description={<span className="text-black">{title}</span>}
+                    />
+                </Col>
+                <Col span={18}>
+                    <span className="text-lg font-bold text-black">{name}</span>
+                    <div className=" flex items-center justify-between">
+                        <Button
+                            onClick={() => handleSubcribe(instructor_id)}
+                            type={subscribed ? "default" : "primary"}
+                            className={subscribed ? "bg-red-500 text-white" : "bg-red-500 text-white"}
+                            style={{ borderColor: subscribed ? "gray" : "red" }}
+                        >
+                            {subscribed ? "Subscribed" : "Subscribe"}
+                        </Button>
                     </div>
-                    <div className="text-black">
-                        {courses} Courses
-                    </div>
-                </div>
-                <Button
-                    type={subscribed ? "default" : "primary"}
-                    className={subscribed ? "bg-gray-500 text-gray-100" : "bg-red-500 text-black"}
-                    style={{ borderColor: subscribed ? "gray" : "red" }}
-                >
-                    {subscribed ? "Subscribed" : "Subscribe"}
-                </Button>
-            </div>
+                </Col>
+            </Row>
         </Card>
     );
 };
 
-const Subscriptions: FC = () => {
-    const profiles: ProfileCardProps[] = [
+    const profiles: ProfileCardProps[] = subscriptions.map((subs) => (
         {
-            name: "John Doe",
-            title: "Wordpress & Plugin Tutor, Pierian Data Inc.",
-            students: "100K",
-            courses: "15",
+            instructor_id: subs.instructor_id,
+            name: subs.instructor_name,
             image: "https://static.vecteezy.com/system/resources/previews/014/194/215/original/avatar-icon-human-a-person-s-badge-social-media-profile-symbol-the-symbol-of-a-person-vector.jpg",
-            subscribed: true,
-        },
-        {
-            name: "Kerstin Cable",
-            title: "Language Learning Coach, Writer, Online Tutor",
-            students: "14K",
-            courses: "11",
-            image: "https://img.freepik.com/premium-vector/avatar-icon0002_750950-43.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1721001600&semt=ais_user",
-            subscribed: false,
-        },
-        {
-            name: "Jose Portilla",
-            title: "Head of Data Science, Pierian Data Inc.",
-            students: "1M",
-            courses: "25",
-            image: "https://static.vecteezy.com/system/resources/previews/014/194/222/original/avatar-icon-human-a-person-s-badge-social-media-profile-symbol-the-symbol-of-a-person-vector.jpg",
-            subscribed: true,
-        },
-        {
-            name: "Jose Portilla",
-            title: "Head of Data Science, Pierian Data Inc.",
-            students: "1M",
-            courses: "25",
-            image: "https://static.vecteezy.com/system/resources/previews/014/194/198/original/avatar-icon-human-a-person-s-badge-social-media-profile-symbol-the-symbol-of-a-person-vector.jpg",
-            subscribed: true,
-        },
-    ];
+            subscribed: subs.is_subscribed,
+        }
+    ));
+
 
     return (
         <div className="container mx-auto px-4 py-4">

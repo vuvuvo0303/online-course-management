@@ -1,17 +1,16 @@
 import { Purchase } from "../../../models";
 import { useEffect, useState } from "react";
-import { getItemsByStudent, handleSubscriptionByInstructorOrStudent } from "../../../services";
-import { Avatar, Button, message, Modal, Table, TableProps } from "antd";
-import { getInstructoDetailPublic } from "../../../services";
-import { Instructor } from "../../../models/User";
-import { AntDesignOutlined, YoutubeOutlined } from "@ant-design/icons";
+import { getItemsByStudent } from "../../../services";
+
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { Table, TableProps } from "antd";
 
 const StudentInstructorPurchase = () => {
     const [purchases, setPurchases] = useState<Purchase[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
-
+    
     const getPurchase = async () => {
         const response = await getItemsByStudent("", "", "", "");
         setPurchases(response);

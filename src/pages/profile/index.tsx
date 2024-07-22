@@ -85,7 +85,7 @@ const Profile: React.FC = () => {
           <TabPane tab="About" key="1" />
           <TabPane tab="Purchased" key="2" />
           <TabPane tab="Subscriptions" key="3" />
-          {!googleID && <TabPane tab="Change Password" key="4" />}
+          {!googleID && <TabPane tab="" key="4" />}
 
         </Tabs>
         <div className="course-content">
