@@ -33,7 +33,7 @@ const AdminManageBlogs: React.FC = () => {
       message.success(`Deleted blog ${title} successfully`);
       await getBlogs();
     } catch (error) {
-      message.error("Failed to delete blog");
+      //
     }
   };
 
@@ -77,7 +77,10 @@ const AdminManageBlogs: React.FC = () => {
   const handleSubmit = async (values: Blog) => {
     try {
       if (isUpdateMode && currentBlog) {
-        await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, values);
+        const userString = localStorage.getItem("user");
+        const user = userString ? JSON.parse(userString) : "";
+        const payload = {...values,user_id: user._id}
+        await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
         message.success("Blog updated successfully");
       } else {
         await axiosInstance.post(API_CREATE_BLOG, values);
