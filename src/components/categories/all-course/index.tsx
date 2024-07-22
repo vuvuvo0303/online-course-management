@@ -135,11 +135,11 @@ const AllCourses: React.FC = () => {
                                     className="max-w-[300px] mx-auto"
                                     cover={
                                         <div className="avatar-container">
-                                            <Link to={`${paths.COURSE}`}>
+                                            <Link to={`/course/all-courses/course/${course._id}`}>
                                                 <img
                                                     alt="example"
                                                     src={course.image_url}
-                                                    className="w-full max-h-32"
+                                                    className="w-full max-h-[10rem]"
 
                                                 />
                                             </Link>
@@ -149,7 +149,7 @@ const AllCourses: React.FC = () => {
                                 >
                                     <Meta
                                         className="card-meta truncate"
-                                        title={<Link to={`${paths.COURSE}`}>{course.name}</Link>}
+                                        title={<Link to={`/course/all-courses/course/${course._id}`}>{course.name}</Link>}
                                         description={course.description}
                                     />
                                     <div className="rating-container card-meta">
