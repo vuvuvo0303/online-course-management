@@ -4,7 +4,7 @@ import axiosInstance from "./axiosInstance"
 
 
 // display cart
-export const displayCart = async (status: string) => {
+export const getCarts = async (status: string) => {
     try {
         const response = await axiosInstance.post(API_GET_CARTS, {
             "searchCondition": {

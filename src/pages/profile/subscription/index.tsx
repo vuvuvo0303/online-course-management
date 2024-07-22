@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { Card, Avatar, Button, Row, Col, Dropdown, Space, message, MenuProps, Modal } from 'antd';
+import { Card, Avatar, Button, Row, Col, Dropdown, Space, MenuProps, Modal } from 'antd';
 import { BellOutlined, DownOutlined, UserOutlined } from '@ant-design/icons';
 import { Subscription } from '../../../models';
 import { getItemsBySubscriber, handleSubscriptionByInstructorOrStudent } from '../../../services';
@@ -22,7 +22,7 @@ const Subscriptions: FC = () => {
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [instructorName, setInstructorName] = useState('');
-
+    const [loading, setLoading] = useState<boolean>(true);
     const [isSubscribe, setIsSubscribe] = useState<boolean>(false);
     const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
     const [instructorId, setInstructorId] = useState<string>('');
@@ -31,15 +31,24 @@ const Subscriptions: FC = () => {
         const res = await getItemsBySubscriber("", 1, 100);
         setSubscriptions(res);
         setLoadingButton(false)
+        setLoading(false);
     }
     useEffect(() => {
         getSubscriber();
     }, [])
 
+    if(loading){
+        return <p className='items-center text-center'>Loading ...</p>
+    }
+
     const handleSubscribe = async (instructor_id: string) => {
         setLoadingButton(true)
         await handleSubscriptionByInstructorOrStudent(instructor_id);
         getSubscriber();
+        setTimeout(() => {
+            setOpen(false);
+            setConfirmLoading(false);
+        }, 1500);
     }
     const showModal = () => {
         setOpen(true);
@@ -49,11 +58,6 @@ const Subscriptions: FC = () => {
         setConfirmLoading(true);
         setIsSubscribe(!isSubscribe);
         handleSubscribe(instructorId);
-
-        setTimeout(() => {
-            setOpen(false);
-            setConfirmLoading(false);
-        }, 2000);
     };
     const handleCancel = () => {
         console.log('Clicked cancel button');
@@ -185,7 +189,10 @@ const Subscriptions: FC = () => {
             >
                 <p>Unsubscribe from <span className='font-bold'>{instructorName}</span></p>
             </Modal>
-            <div className="container mx-auto px-4 py-4">
+            {
+                subscriptions.length > 0 ?
+                (
+                    <div className="container mx-auto px-4 py-4">
                 <h2 className="text-2xl font-bold mb-4">Subscriptions</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {profiles.map((profile) => (
@@ -193,6 +200,12 @@ const Subscriptions: FC = () => {
                     ))}
                 </div>
             </div>
+                ):(
+                    <h1 className='text-center items-center my-10 font-bold'>
+                    You have not subscribed to any channel yet
+                    </h1>
+                )
+            }
         </>
     );
 };

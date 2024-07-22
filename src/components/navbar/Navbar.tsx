@@ -7,7 +7,7 @@ import SearchTool from '../SearchTool';
 import Drawer from '../Drawer';
 import PopoverContent from '../PopoverContent';
 import { logout } from "../../services/auth.ts";
-import { displayCart } from '../../services';
+import { getCarts } from '../../services';
 
 
 const Navbar: React.FC = () => {
@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
   }, [token])
 
   const countCart = async () => {
-    const res = await displayCart("new");
+    const res = await getCarts("new");
     if (res) {
       setTotalCarts(res.length);
     }

@@ -1,7 +1,7 @@
 import styles from './cartComponents.module.css';
-import { Checkbox, Col, Form, Row, Tag } from "antd";
+import { Checkbox, Col, Form, message, Row, Tag } from "antd";
 import { getColorCart, imgCourse, paths } from "../../consts/index.ts";
-import { deleteCart, displayCart, updateStatusCart } from '../../services/cart.ts';
+import { deleteCart, getCarts, updateStatusCart } from '../../services/cart.ts';
 import { useEffect, useState } from 'react';
 import { Cart } from '../../models';
 import { useNavigate } from 'react-router-dom';
@@ -10,8 +10,9 @@ import { Link } from 'react-router-dom';
 
 const CartComponents = () => {
 
-    const [cartNew, setCartNew] = useState<Cart[]>([]);
-    const [cartCancel, setCartCancel] = useState<Cart[]>([]);
+    const [cartsNew, setCartsNew] = useState<Cart[]>([]);
+    const [cartsCancel, setCartsCancel] = useState<Cart[]>([]);
+    const [cartsWaitingPaid, setCartsWaitingPaid] = useState<Cart[]>([]);
     const [totalMoney, setTotalMoney] = useState<number>(0);
     const [totalCost, setTotalCost] = useState<number>(0);
     const [totalCourse, setTotalCourse] = useState<number>(0);
@@ -21,27 +22,37 @@ const CartComponents = () => {
     const [indexCartChecked, setIndexCartChecked] = useState<number>(0);
 
     const getCartNew = async () => {
-        const response = await displayCart("new");
+        const response = await getCarts("new");
         if (response) {
-            setCartNew(response);
+            setCartsNew(response);
             setLoading(false);
         }
     };
 
     const getCartCancel = async () => {
-        const response = await displayCart("cancel");
+        const response = await getCarts("cancel");
         if (response) {
-            setCartCancel(response);
+            setCartsCancel(response);
             setLoading(false);
         }
     };
 
     const token = localStorage.getItem("token");
 
+    const getCartWaitingPaid = async () => {
+        setLoading(true)
+        const res = await getCarts("waiting_paid");
+        if (res) {
+            setCartsWaitingPaid(res);
+            setLoading(false)
+        }
+    }
+
     useEffect(() => {
         if (token) {
             getCartNew();
             getCartCancel();
+            getCartWaitingPaid();
         }
     }, [token]);
 
@@ -110,17 +121,27 @@ const CartComponents = () => {
     };
 
     const handleCheckoutNow = async () => {
-        for (const element of cartsChecked) {
-            await updateStatusCart("waiting_paid", element._id, element.cart_no);
+        // if at least 1 cart is selected
+        if (cartsChecked.length > 0) {
+            for (const element of cartsChecked) {
+                await updateStatusCart("waiting_paid", element._id, element.cart_no);
+            }
+            navigate(paths.STUDENT_CHECKOUT);
+        } else {
+            // if there is at least 1 cart with status is waiting paid
+            if (cartsWaitingPaid.length > 0) {
+                navigate(paths.STUDENT_CHECKOUT);
+            } else {
+                message.error("Please select at least one cart")
+            }
         }
-        navigate(paths.STUDENT_CHECKOUT);
     };
 
     return (
         <div className={`${styles.shopping_wrapper}`} style={{ minWidth: "768px" }}>
             <h3 className={styles.h3_cart_title}>{totalCourse} Courses in Cart</h3>
             <Form {...formItemLayout} initialValues={{}}>
-                {cartNew.length === 0 && cartCancel.length === 0 ? (
+                {cartsNew.length === 0 && cartsCancel.length === 0 ? (
                     <div className={styles.empty_cart_container}>
                         <img width={200} height={200} alt='empty-cart-display' src='https://s.udemycdn.com/browse_components/flyout/empty-shopping-cart-v2-2x.jpg' />
                         <p className='text-lg mb-4'>Your cart is empty. Keep shopping to find a course!</p>
@@ -142,7 +163,7 @@ const CartComponents = () => {
                                     </Row>
                                 </Col>
                             </Row>
-                            {cartNew.map((cart) => (
+                            {cartsNew.map((cart) => (
                                 <div style={{ minWidth: "768px" }} key={cart._id}>
                                     <Row className='border my-5' gutter={10}>
                                         <Col span={6}>
@@ -182,7 +203,7 @@ const CartComponents = () => {
                                     </Row>
                                 </div>
                             ))}
-                            {cartCancel.map((cart) => (
+                            {cartsCancel.map((cart) => (
                                 <div style={{ minWidth: "768px" }} key={cart._id}>
                                     <Row className='border my-5' gutter={10}>
                                         <Col span={6}>

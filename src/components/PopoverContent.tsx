@@ -1,7 +1,7 @@
 import { Cart } from "../models";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { displayCart } from "../services";
+import { getCarts } from "../services";
 
 const CourseCard = ({ image, title, author, price }: { image: string; title: string; author: string; price: string }) => {
     return (
@@ -25,8 +25,8 @@ const Popup = () => {
     // show cart when student hover shop cart icon
     const getCart = async () => {
 
-        const res = await displayCart("new");
-        const res2 = await displayCart("cancel");
+        const res = await getCarts("new");
+        const res2 = await getCarts("cancel");
         let totalCost = 0;
         if (res) {
             setCartNew(res);

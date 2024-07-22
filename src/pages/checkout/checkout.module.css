@@ -72,7 +72,17 @@
   gap: 10px;
   margin-left: 20px;
 }
-
+.empty_cart_container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
+  box-shadow: 0 0 2px #d1d7dc;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 10px;
+}
 .paymentForm {
   margin-top: 20px;
   margin-left: 20px;
