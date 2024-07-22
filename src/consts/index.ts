@@ -138,12 +138,10 @@ export const getColorPurchase = (status: string) => {
   switch (status) {
     case "new":
       return "red";
-    case "request_payout":
+    case "request_paid":
       return "blue";
     case "completed":
       return "yellow";
-    case "rejected":
-      return "purple";
   }
 };
 

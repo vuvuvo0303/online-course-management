@@ -121,6 +121,14 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
+        <Link className="text-lg" to={"/purchase"}>
+          Purchase
+        </Link>
+      ),
+      key: "6",
+    },
+    {
+      label: (
         <p onClick={() => logout(navigate)} className="text-lg hover:cursor-pointer hover:text-red-600">
           Logout
         </p>

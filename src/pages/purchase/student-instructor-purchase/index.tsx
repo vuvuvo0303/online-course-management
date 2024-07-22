@@ -46,7 +46,7 @@ const StudentInstructorPurchase = () => {
             render: (status: string) => (
                 <>
                     <Tag color={getColorPurchase(status)}>
-                        {status === "request_payout" ? "request payout" : status}
+                        {status === "request_paid" ? "request paid" : status}
                     </Tag>
                 </>
             )
