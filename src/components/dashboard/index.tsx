@@ -49,16 +49,7 @@ const Dashboard: React.FC = () => {
         email: user.email,
       });
     }
-  }, [navigate]);
-
-  const handleLogout = () => {
-    localStorage.clear();
-    if (user.role === roles.ADMIN) {
-      navigate("/admin/login");
-    } else {
-      navigate(paths.HOME);
-    }
-  };
+  }, [navigate, userRole]);
 
   function getItem(
     label: React.ReactNode,
@@ -99,11 +90,20 @@ const Dashboard: React.FC = () => {
             <DesktopOutlined />
           ),
           getItem(
+            "Manage Subscriptions",
+            "/instructor/manage-subscriptions",
+            <DesktopOutlined />
+          ),
+          getItem(
+            "Manage Purchases",
+            "/instructor/manage-purchases",
+            <DesktopOutlined />
+          ),
+          getItem(
             "Manage Students",
             "/instructor/manage-students",
             <TeamOutlined />
           ),
-          getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
           getItem(
             "Payment History",
@@ -126,6 +126,11 @@ const Dashboard: React.FC = () => {
             "/admin/instructor-requests",
             <TeamOutlined />
           ),
+          getItem(
+            "Manage Purchases",
+            "/admin/manage-all-purchase",
+            <TeamOutlined />
+          ),
 
           getItem(
             "Manage Categories",
@@ -144,8 +149,8 @@ const Dashboard: React.FC = () => {
             <CommentOutlined />
           ),
           getItem(
-            "Payment History",
-            "/admin/payment-history",
+            "Manage Payouts",
+            "/admin/manage-payouts",
             <DesktopOutlined />
           ),
         ]);
@@ -259,7 +264,7 @@ const Dashboard: React.FC = () => {
     {
       label: (
         <p
-          onClick={handleLogout}
+          onClick={() => logout(navigate)}
           className="text-lg hover:cursor-pointer hover:text-red-600"
         >
           Logout
