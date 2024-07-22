@@ -1,12 +1,11 @@
 import { Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { paths } from '../../consts';
-import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, UserOutlined, HeartOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import SearchTool from '../SearchTool';
 import Drawer from '../Drawer';
 import PopoverContent from '../PopoverContent';
-import Popup from '../Popup';
 import { logout } from "../../services/auth.ts";
 import { displayCart } from '../../services';
 
@@ -136,7 +135,7 @@ const Navbar: React.FC = () => {
         <div className='mt-3'>
           {!isLoginPage && !isRegisterPage && !isForgotPassword && <Drawer />}
         </div>
-        <Link to="/">
+        <Link to= {paths.HOME}>
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
@@ -161,28 +160,6 @@ const Navbar: React.FC = () => {
                   <HeartOutlined className="text-gray-400 text-3xl" />
                 </Badge>
               </Link>
-            </Popover>
-
-            <Popover
-              content={<Popup />}
-              overlayInnerStyle={{ padding: 0 }}
-              trigger="click"
-              placement="bottom"
-            >
-              <Badge className='hidden md:block' count={2}>
-                <MailOutlined className="text-gray-400 text-3xl" />
-              </Badge>
-            </Popover>
-
-            <Popover
-              content={<Popup />}
-              overlayInnerStyle={{ padding: 0 }}
-              trigger="click"
-              placement="bottom"
-            >
-              <Badge className='hidden md:block' count={3}>
-                <BellOutlined className="text-gray-400 text-3xl" />
-              </Badge>
             </Popover>
 
             <Popover
