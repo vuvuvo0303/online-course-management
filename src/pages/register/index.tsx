@@ -1,10 +1,18 @@
-import { Button, Form, FormProps, Image, Input, message, Radio, Upload } from "antd";
+import {
+  Button,
+  Form,
+  FormProps,
+  Image,
+  Input,
+  message,
+  Radio,
+  Upload,
+} from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import Vector from "../../assets/Vector.png";
-import Rectangle from "../../assets/Rectangle .jpg";
 import register from "../../assets/register.json";
 import Lottie from "lottie-react";
 import { useForm } from "antd/es/form/Form";
@@ -112,11 +120,18 @@ const RegisterPage: React.FC = () => {
       <div className="w-full md:w-1/2 flex flex-col justify-center pt-5 bg-white rounded-l-lg">
         <div className="mr-4">
           <div className="flex justify-center ml-20 items-center">
-            <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">Register </h1>
-            <Lottie animationData={register} style={{ width: "100px", height: "100px" }} />
+            <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">
+              Register{" "}
+            </h1>
+            <Lottie
+              animationData={register}
+              style={{ width: "100px", height: "100px" }}
+            />
           </div>
 
-          <span className="flex justify-center mb-4">Learn from top experts. Sign up for FLearn now!</span>
+          <span className="flex justify-center mb-4">
+            Learn from top experts. Sign up for FLearn now!
+          </span>
         </div>
         <div className="mb-6">
           <div className=" flex justify-center ">
@@ -148,9 +163,7 @@ const RegisterPage: React.FC = () => {
                 wrapperCol={{ span: 24 }}
                 className="mb-3"
               >
-                <Input
-                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
               </Form.Item>
 
               <Form.Item
@@ -171,9 +184,7 @@ const RegisterPage: React.FC = () => {
                 wrapperCol={{ span: 24 }}
                 className="mb-5"
               >
-                <Input
-                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm "
-                />
+                <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
               </Form.Item>
 
               <Form.Item
@@ -194,19 +205,19 @@ const RegisterPage: React.FC = () => {
                 wrapperCol={{ span: 24 }}
                 className="mb-5"
               >
-                <Input.Password
-                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                />
+                <Input.Password className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
               </Form.Item>
 
               <Form.Item
                 name="role"
-                rules={[{ required: true, message: "Please select your role!" }]}
+                rules={[
+                  { required: true, message: "Please select your role!" },
+                ]}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 className="mb-5"
               >
-                <Radio.Group onChange={e => setRole(e.target.value)}>
+                <Radio.Group onChange={(e) => setRole(e.target.value)}>
                   <Radio value="student">Student</Radio>
                   <Radio value="instructor">Instructor</Radio>
                 </Radio.Group>
@@ -217,45 +228,56 @@ const RegisterPage: React.FC = () => {
                   <Form.Item
                     label="Video"
                     name="video"
-                    rules={[{ required: true, message: "Please input your video link!" }]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your video link!",
+                      },
+                    ]}
                     labelCol={{ span: 24 }}
                     wrapperCol={{ span: 24 }}
                     className="mb-5"
                   >
-                    <Input
-                      className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm "
-                    />
+                    <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
                   </Form.Item>
 
                   <Form.Item
                     label="Description"
                     name="description"
-                    rules={[{ required: true, message: "Please input your description!" }]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your description!",
+                      },
+                    ]}
                     labelCol={{ span: 24 }}
                     wrapperCol={{ span: 24 }}
                     className="mb-5"
                   >
-                    <Input
-                      className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm "
-                    />
+                    <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
                   </Form.Item>
 
                   <Form.Item
                     label="Phone Number"
                     name="phone_number"
-                    rules={[{ required: true, message: "Please input your phone number!" }]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your phone number!",
+                      },
+                    ]}
                     labelCol={{ span: 24 }}
                     wrapperCol={{ span: 24 }}
                     className="mb-5"
                   >
-                    <Input
-                      className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm "
-                    />
+                    <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
                   </Form.Item>
 
                   <Form.Item
                     name="avatarUrl"
-                    rules={[{ required: true, message: "Please upload your Avatar" }]}
+                    rules={[
+                      { required: true, message: "Please upload your Avatar" },
+                    ]}
                   >
                     <Upload
                       action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
@@ -287,7 +309,10 @@ const RegisterPage: React.FC = () => {
           <span className="mt-4 block text-center">
             Do you already have an account?{" "}
             <strong>
-              <Link to={"/login"} className="hover:cursor-pointer hover:text-red-400">
+              <Link
+                to={"/login"}
+                className="hover:cursor-pointer hover:text-red-400"
+              >
                 Back to Sign in
               </Link>
             </strong>
@@ -296,7 +321,11 @@ const RegisterPage: React.FC = () => {
       </div>
       <div className="hidden md:flex w-1/2 pb-12 items-center justify-center">
         <div className="rounded-lg overflow-hidden w-[80%] shadow-pink-300 mt-20">
-          <img className="shadow-xl rounded-xl w-full" src={Rectangle} alt="logo" />
+          <img
+            className="shadow-xl rounded-xl w-full"
+            src={Rectangle}
+            alt="logo"
+          />
         </div>
       </div>
 
