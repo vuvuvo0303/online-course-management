@@ -195,6 +195,10 @@ const AppRouter: React.FC = () => {
             path={paths.INSTRUCTOR_MANAGE_SUPSCRIPTIONS}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageSubscriptions /> : <Navigate to={paths.HOME} />}
           />
+          <Route
+            path={paths.INSTRUCTOR_MANAGE_PURCHASES}
+            element={canAccess([roles.INSTRUCTOR]) ? <StudentInstructorPurchase /> : <Navigate to={paths.HOME} />}
+          />
         </Route>
 
         {/* Route for Admin */}
