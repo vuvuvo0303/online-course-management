@@ -22,7 +22,7 @@ const StudentInstructorPurchase = () => {
         setPurchases(res);
         setLoading(false);
     }
-
+    
     useEffect(() => {
         getPurchase();
     }, [])
@@ -93,7 +93,9 @@ const StudentInstructorPurchase = () => {
         setOpen(false);
     };
     const handleSubscribe = async (instructor_id: string) => {
-        const res = handleSubscriptionByInstructorOrStudent(instructor_id);
+        await handleSubscriptionByInstructorOrStudent(instructor_id);
+        const getInfomationInstructor = await getInstructoDetailPublic(instructor_id);
+        setInstructor(getInfomationInstructor);
     }
     return (
         <>

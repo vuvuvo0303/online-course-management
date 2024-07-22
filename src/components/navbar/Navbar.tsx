@@ -32,7 +32,6 @@ const Navbar: React.FC = () => {
   const token = localStorage.getItem("token")
 
   useEffect(() => {
- 
    if(token){
     countCart();
    }

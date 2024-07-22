@@ -24,25 +24,32 @@ const Popup = () => {
     }, [])
     // show cart when student hover shop cart icon
     const getCart = async () => {
-     
-        const res = await displayCart("new" && "cancel");
-        setCarts(res);
+
+        const res = await displayCart("new");
+        const res2 = await displayCart("cancel");
+        let totalCost = 0;
         if (res) {
-            let totalCost = 0;
-            setCarts(res);
-            console.log("res: ", res);
+            setCartNew(res);
             for (let index = 0; index < res.length; index++) {
-              totalCost += res[index].price
+                totalCost += res[index].price
+
             }
             setTotalCost(totalCost);
-          }
+        }
+        if (res2) {
+            setCartCancel(res2);
+            for (let index = 0; index < res2.length; index++) {
+                totalCost += res[index].price
+            }
+            setTotalCost(totalCost);
+        }
     }
-
-    const [carts, setCarts] = useState<Cart[]>([])
+    const [cartNew, setCartNew] = useState<Cart[]>([])
+    const [cartCancel, setCartCancel] = useState<Cart[]>([])
     return (
         <div className="">
             {
-                carts.map((cart) => {
+                cartNew.map((cart) => {
                     return (
                         <>
                             <Link to="/">
@@ -50,7 +57,7 @@ const Popup = () => {
                                     image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
                                     title={cart.course_name}
                                     author={cart.instructor_name}
-                                    price={cart.price+""}
+                                    price={cart.price + ""}
                                 />
                             </Link>
                             <hr className="w-full my-4 border-gray-300" />
@@ -58,7 +65,23 @@ const Popup = () => {
                     )
                 })
             }
-
+            {
+                cartCancel.map((cart) => {
+                    return (
+                        <>
+                            <Link to="/">
+                                <CourseCard
+                                    image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
+                                    title={cart.course_name}
+                                    author={cart.instructor_name}
+                                    price={cart.price + ""}
+                                />
+                            </Link>
+                            <hr className="w-full my-4 border-gray-300" />
+                        </>
+                    )
+                })
+            }
             <button className="mt-2 ml-[1rem] px-4 py-2 bg-black text-white w-[19rem] rounded">View cart</button>
             <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost}</div>
         </div>
