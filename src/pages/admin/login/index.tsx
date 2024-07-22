@@ -77,6 +77,7 @@ const AdminLoginPage: React.FC = () => {
               style={{ marginBottom: "10px", height: "80px" }}
             >
               <Input
+                placeholder="Enter Your Email"
                 className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 style={{ width: "100%" }}
               />
@@ -97,6 +98,7 @@ const AdminLoginPage: React.FC = () => {
               style={{ marginTop: "20px", height: "100px" }}
             >
               <Input.Password
+                placeholder="Enter Your Password"
                 className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 style={{ width: "100%" }}
               />

@@ -156,7 +156,7 @@ const LoginPage: React.FC = () => {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
-              <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto" />
+              <Input placeholder="Enter Your Email" className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto" />
             </Form.Item>
 
             <Form.Item
@@ -173,7 +173,7 @@ const LoginPage: React.FC = () => {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
-              <Input.Password className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto" />
+              <Input.Password placeholder="Enter your password" className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto" />
             </Form.Item>
             <div className="flex justify-center">
               <Link
@@ -231,7 +231,7 @@ const LoginPage: React.FC = () => {
       </div>
       <Modal
         title="Select Role"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
       >
@@ -246,6 +246,7 @@ const LoginPage: React.FC = () => {
             <>
               <Form.Item label="Description" required>
                 <Input
+                  placeholder="Description"
                   name="description"
                   value={additionalFields.description}
                   onChange={handleAdditionalFieldsChange}
@@ -253,6 +254,7 @@ const LoginPage: React.FC = () => {
               </Form.Item>
               <Form.Item label="Phone Number" required>
                 <Input
+                  placeholder="Phone Number"
                   name="phone_number"
                   value={additionalFields.phone_number}
                   onChange={handleAdditionalFieldsChange}

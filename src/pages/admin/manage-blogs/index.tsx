@@ -1,32 +1,45 @@
 import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
-import { Form, message, Modal, Popconfirm, TableColumnsType } from "antd";
+import { Form, message, Modal, Popconfirm, TableColumnsType, Input, Select } from "antd";
 import { Breadcrumb, Button, Image, Table } from "antd";
-import { Blog } from "../../../models";
+import { Blog, Category } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
-import { API_DELETE_BLOG, API_GET_BLOGS, paths } from "../../../consts/index.ts";
+import { API_DELETE_BLOG, API_GET_BLOGS, API_CREATE_BLOG, API_UPDATE_BLOG, paths, API_GET_BLOG } from "../../../consts/index.ts";
 import { format } from "date-fns";
-
+import { getCategories } from "../../../services/category.ts";
 
 const AdminManageBlogs: React.FC = () => {
   const [dataBlogs, setDataBlogs] = useState<Blog[]>([]);
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getBlogs();
+      const categoriesData = await getCategories();
+      setCategories(categoriesData);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
 
   const handleDelete = async (id: string, title: string) => {
     try {
       await axiosInstance.delete(`${API_DELETE_BLOG}/${id}`);
-      message.success(`Delete blog ${title} successfully`);
+      message.success(`Deleted blog ${title} successfully`);
       await getBlogs();
     } catch (error) {
-      //
+      message.error("Failed to delete blog");
     }
   };
 
   const getBlogs = async () => {
-    const response = await axiosInstance.post(API_GET_BLOGS,
-      {
+    try {
+      const response = await axiosInstance.post(API_GET_BLOGS, {
         "searchCondition": {
           "category_id": "",
           "is_deleted": false
@@ -36,14 +49,49 @@ const AdminManageBlogs: React.FC = () => {
           "pageSize": 100
         }
       });
-    setDataBlogs(response.data.pageData);
+      setDataBlogs(response.data.pageData);
+    } catch (error) {
+      message.error("Failed to fetch blogs");
+    }
   };
-  useEffect(() => {
 
-    getBlogs();
-    setLoading(false)
-  }, []);
+  const handleUpdateClick = async (id: string) => {
+    setIsUpdateMode(true);
+    setIsModalVisible(true);
+    try {
+      const response = await axiosInstance.get(`${API_GET_BLOG}/${id}`);
+      const blogData = response.data;
+      setCurrentBlog(blogData);
+      form.setFieldsValue({
+        name: blogData.name,
+        category_id: blogData.category_id,
+        image_url: blogData.image_url,
+        description: blogData.description,
+        content: blogData.content
+      });
+    } catch (error) {
+      //
+    }
+  };
 
+  const handleSubmit = async (values: Blog) => {
+    try {
+      if (isUpdateMode && currentBlog) {
+        await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, values);
+        message.success("Blog updated successfully");
+      } else {
+        await axiosInstance.post(API_CREATE_BLOG, values);
+        message.success("Blog added successfully");
+      }
+      setIsModalVisible(false);
+      form.resetFields();
+      setIsUpdateMode(false);
+      setCurrentBlog(null);
+      await getBlogs();
+    } catch (error) {
+      //
+    }
+  };
 
   const columns: TableColumnsType<Blog> = [
     {
@@ -92,11 +140,12 @@ const AdminManageBlogs: React.FC = () => {
           <EditOutlined
             className="hover:cursor-pointer text-blue-400 hover:opacity-60"
             style={{ fontSize: "20px" }}
+            onClick={() => handleUpdateClick(record._id)}
           />
           <Popconfirm
-            title="Delete the User"
+            title="Delete the Blog"
             description="Are you sure to delete this Blog?"
-            onConfirm={() => handleDelete(record._id, record.title)}
+            onConfirm={() => handleDelete(record._id, record.name)}
             okText="Yes"
             cancelText="No"
           >
@@ -111,7 +160,7 @@ const AdminManageBlogs: React.FC = () => {
   ];
 
   if (loading) {
-    return <p className="text-center">Loading...</p>
+    return <p className="text-center">Loading...</p>;
   }
 
   return (
@@ -138,21 +187,128 @@ const AdminManageBlogs: React.FC = () => {
           ]}
         />
         <div className="py-2">
-          <Button type="primary"
-            onClick={() => {
-              setIsModalVisible(true);
-              form.resetFields();
-            }}
-          >Add New Blog</Button>
+          <Button type="primary" onClick={() => {
+            setIsUpdateMode(false);
+            setIsModalVisible(true);
+            form.resetFields();
+          }}>
+            Add New Blog
+          </Button>
         </div>
 
-        <Modal title="Add New Blog" open={isModalVisible} onCancel={() => setIsModalVisible(false)}>
-          <Form form={form} layout="vertical">
-
-          </Form>
+        <Modal
+          title={isUpdateMode ? "Update Blog" : "Add New Blog"}
+          open={isModalVisible}
+          onCancel={() => {
+            setIsModalVisible(false);
+            setIsUpdateMode(false);
+            setCurrentBlog(null);
+            form.resetFields();
+          }}
+          footer={null}
+        >
+          {isUpdateMode && currentBlog ? (
+            <Form form={form} layout="vertical" onFinish={handleSubmit}>
+              <Form.Item
+                name="name"
+                label="Title"
+                rules={[{ required: true, message: 'Please input the blog title!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="category_id"
+                label="Category"
+                rules={[{ required: true, message: 'Please select a category!' }]}
+              >
+                <Select placeholder="Select a category">
+                  {categories.map(category => (
+                    <Select.Option key={category._id} value={category._id}>
+                      {category.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="image_url"
+                label="Image URL"
+                rules={[{ required: true, message: 'Please input the image URL!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="description"
+                label="Description"
+                rules={[{ required: true, message: 'Please input the description!' }]}
+              >
+                <Input.TextArea maxLength={250} />
+              </Form.Item>
+              <Form.Item
+                name="content"
+                label="Content"
+                rules={[{ required: true, message: 'Please input the content!' }]}
+              >
+                <Input.TextArea maxLength={250} />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Update
+                </Button>
+              </Form.Item>
+            </Form>
+          ) : (
+            <Form form={form} layout="vertical" onFinish={handleSubmit}>
+              <Form.Item
+                name="name"
+                label="Title"
+                rules={[{ required: true, message: 'Please input the blog title!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="category_id"
+                label="Category"
+                rules={[{ required: true, message: 'Please select a category!' }]}
+              >
+                <Select placeholder="Select a category">
+                  {categories.map(category => (
+                    <Select.Option key={category._id} value={category._id}>
+                      {category.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="image_url"
+                label="Image URL"
+                rules={[{ required: true, message: 'Please input the image URL!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="description"
+                label="Description"
+                rules={[{ required: true, message: 'Please input the description!' }]}
+              >
+                <Input.TextArea maxLength={250} />
+              </Form.Item>
+              <Form.Item
+                name="content"
+                label="Content"
+                rules={[{ required: true, message: 'Please input the content!' }]}
+              >
+                <Input.TextArea maxLength={250} />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          )}
         </Modal>
       </div>
-      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id} />;
+      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id} />
     </div>
   );
 };

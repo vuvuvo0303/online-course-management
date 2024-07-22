@@ -80,7 +80,7 @@ const VerifyToken: React.FC = () => {
                                         ]}
                                     >
                                         <Input
-                                            placeholder="Enter your email"
+                                            placeholder="Enter Your Email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             className="w-full"

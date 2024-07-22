@@ -18,7 +18,7 @@ const NameCategory = lazy(() => import("../pages/category"));
 const Course = lazy(() => import("../pages/course"));
 const AllCourses = lazy(() => import("../pages/course/all-courses"));
 const CourseDetails = lazy(() => import("../pages/course-detail"));
-const Lesson = lazy(() => import("../pages/course/lesson"));
+//const Lesson = lazy(() => import("../pages/course/lesson"));
 const BlogDetail = lazy(() => import("../pages/blog/blog-detail"));
 const BlogList = lazy(() => import("../pages/blog"));
 const Enrollment = lazy(() => import("../pages/enrollment"));
@@ -104,7 +104,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.VERIFY_TOKEN} element={<VerifyToken />} />
         <Route path={paths.INTERNAL_SERVER_ERROR} element={<InternalServerError />} />
         <Route path={paths.COURSE_DETAILS} element={<CourseDetails />} />
-        <Route path="/user/:id" element={<User />} />
+        <Route path={paths.USER_DETAIL} element={<User />} />
 
         {/* Route for Student */}
         <Route path={paths.STUDENT_PROFILE} element={<Profile />} />

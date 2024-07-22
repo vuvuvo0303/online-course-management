@@ -82,6 +82,7 @@ const AdminInstructorRequest = () => {
     {
       title: "Verify",
       dataIndex: "is_verified",
+      width: "10%",
       key: "is_verified",
       render: (is_verified: boolean) => (
         <span>
@@ -96,6 +97,7 @@ const AdminInstructorRequest = () => {
     {
       title: "Action",
       key: "action",
+      width: "20%",
       render: (_, record) => (
         <Space size="middle">
           {record.isApproved ? (

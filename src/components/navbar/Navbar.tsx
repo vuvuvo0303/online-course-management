@@ -13,7 +13,7 @@ import { displayCart } from '../../services';
 const Navbar: React.FC = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
-  const [totalCarts, setTotalCarts] =  useState<number>(0)
+  const [totalCarts, setTotalCarts] = useState<number>(0)
   const [dataUser, setDataUser] = useState<{ role: string | null; fullName: string | null; email: string | null; avatarUrl: string | null }>({
     role: null,
     fullName: null,
@@ -31,11 +31,11 @@ const Navbar: React.FC = () => {
   const token = localStorage.getItem("token")
 
   useEffect(() => {
-   if(token){
-    countCart();
-   }
+    if (token) {
+      countCart();
+    }
   }, [token])
-  
+
   const countCart = async () => {
     const res = await displayCart("new");
     if (res) {
@@ -135,7 +135,7 @@ const Navbar: React.FC = () => {
         <div className='mt-3'>
           {!isLoginPage && !isRegisterPage && !isForgotPassword && <Drawer />}
         </div>
-        <Link to= {paths.HOME}>
+        <Link to={paths.HOME}>
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
