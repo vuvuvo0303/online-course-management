@@ -1,0 +1,7 @@
+.custom-modal .ant-modal-content {
+    width: 350px;
+    
+  }
+  .ant-modal .ant-modal-body{
+    font-size: 16px;
+  }
