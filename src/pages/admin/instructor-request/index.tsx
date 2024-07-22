@@ -1,12 +1,23 @@
-import { Avatar, Breadcrumb, Button, Space, Table, TableProps, message, Modal, Input } from "antd";
+import {
+  Avatar,
+  Breadcrumb,
+  Button,
+  Space,
+  Table,
+  TableProps,
+  message,
+  Modal,
+  Input,
+  Pagination,
+  TablePaginationConfig,
+} from "antd";
 import { API_GET_USERS } from "../../../consts";
 import { Instructor } from "models/User";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
-import useDebounce from "../../../hooks/useDebounce";
+import { useDebounce } from "../../../hooks";
 
 const { TextArea } = Input;
 
@@ -14,9 +25,10 @@ const AdminInstructorRequest = () => {
   const [dataSource, setDataSource] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
-  
+
+
   const debouncedSearch = useDebounce(searchText, 500);
-  const [pagination, setPagination] = useState({
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
@@ -53,19 +65,18 @@ const AdminInstructorRequest = () => {
       key: "email",
       width: "20%",
     },
-
     {
-      title: "Created Date",
+      title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
       width: "10%",
     },
     {
-      title: "Updated Date",
+      title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
       width: "10%",
     },
     {
@@ -87,21 +98,31 @@ const AdminInstructorRequest = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button
-            type="primary"
-            className="p-3"
-            style={{ backgroundColor: "#33FF00" }}
-            onClick={() => handleApprove(record)}
-          >
-            Approve
-          </Button>
-          <Button type="primary" className="px-5" danger onClick={() => showRejectModal(record)}>
-            Reject
-          </Button>
+          {record.isApproved ? (
+            <Button type="primary" danger onClick={() => handleDelete(record)}>
+              Delete
+            </Button>
+          ) : (
+            <>
+              <Button
+                type="primary"
+                className="p-3"
+                style={{ backgroundColor: "#33FF00" }}
+                onClick={() => handleApprove(record)}
+              >
+                Approve
+              </Button>
+              <Button type="primary" className="px-5" danger onClick={() => showRejectModal(record)}>
+                Reject
+              </Button>
+            </>
+          )}
         </Space>
       ),
     },
   ];
+  
+  
 
   const fetchInstructorRequest = async () => {
     setLoading(true);
@@ -109,27 +130,28 @@ const AdminInstructorRequest = () => {
       const response = await axiosInstance.post(API_GET_USERS, {
         searchCondition: {
           role: "instructor",
+          is_verified: false,
           keyword: debouncedSearch,
-
         },
         pageInfo: {
           pageNum: pagination.current,
           pageSize: pagination.pageSize,
         },
       });
-
+  
       if (response.data && response.data.pageData) {
-        const unverifiedInstructors = response.data.pageData.filter(
-          (instructor: Instructor) => !instructor.is_verified
-        );
-
-        setDataSource(unverifiedInstructors);
-        setPagination({
-          ...pagination,
-          total: unverifiedInstructors.length,
-          current: response.data.pageInfo.pageNum,
-          pageSize: response.data.pageInfo.pageSize,
-        });
+        const dataWithApprovalStatus = response.data.pageData.map((instructor) => ({
+          ...instructor,
+          isApproved: instructor.is_verified, // Hoặc thêm logic để xác định trạng thái phê duyệt
+        }));
+  
+        setDataSource(dataWithApprovalStatus);
+        setPagination((prev) => ({
+          ...prev,
+          total: response.data.pageInfo?.totalItems || response.data.length,
+          current: response.data.pageInfo?.pageNum || 1,
+          pageSize: response.data.pageInfo?.pageSize || response.data.length,
+        }));
       } else {
         //
       }
@@ -139,10 +161,11 @@ const AdminInstructorRequest = () => {
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     fetchInstructorRequest();
-  }, [pagination.current, pagination.pageSize,debouncedSearch]);
+  }, [pagination.current, pagination.pageSize, debouncedSearch]);
+
 
   const handleApprove = async (record: Instructor) => {
     try {
@@ -151,15 +174,27 @@ const AdminInstructorRequest = () => {
         status: "approve",
         comment: "",
       });
-
-      if (response.data.success) {
-        message.success("Instructor approved successfully");
-        fetchInstructorRequest();
+  
+      if (response && response.data && response.data.success) {
+        message.success("Email phê duyệt đã được gửi thành công");
+        const updatedDataSource = dataSource.map((item) =>
+          item._id === record._id ? { ...item, isApproved: true } : item
+        );
+        setDataSource(updatedDataSource);
+      } else {
+        message.error("Phê duyệt giảng viên thất bại: API không thành công");
+        console.error("API response error:", response.data);
       }
     } catch (error) {
-      message.error("Error approving instructor");
+      message.error("Lỗi khi phê duyệt giảng viên");
       console.error("Error approving instructor:", error);
     }
+  };
+  
+  
+
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
   };
 
   const handleReject = async () => {
@@ -177,11 +212,18 @@ const AdminInstructorRequest = () => {
         fetchInstructorRequest();
       }
     } catch (error) {
-      message.error("Error rejecting instructor");
-      console.error("Error rejecting instructor:", error);
+      //
     } finally {
       setIsModalVisible(false);
     }
+  };
+
+  const handlePaginationChange = (page: number, pageSize?: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize || 10,
+    }));
   };
 
   const showRejectModal = (record: Instructor) => {
@@ -195,33 +237,38 @@ const AdminInstructorRequest = () => {
 
   return (
     <div>
-      <Breadcrumb className="p-2">
+      <Breadcrumb className="p-3">
         <Breadcrumb.Item>
           <HomeOutlined />
         </Breadcrumb.Item>
         <Breadcrumb.Item>Manage Instructor's Request</Breadcrumb.Item>
       </Breadcrumb>
-      <Input.Search 
-          placeholder="Search By Name"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          className="p-2"
-          style={{ width: 200 }}
-          enterButton={<SearchOutlined className="text-white" />}
-        />
+      <Input.Search
+        placeholder="Search By Name"
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        className="p-2 mb-4"
+        style={{ width: 200 }}
+        enterButton={<SearchOutlined className="text-white" />}
+      />
       <Table
         columns={columns}
         dataSource={dataSource}
         loading={loading}
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          onChange: (page, pageSize) => {
-            setPagination({ ...pagination, current: page, pageSize });
-          },
-        }}
+        pagination={false}
+        onChange={handleTableChange}
+        className="overflow-auto"
       />
+      <div className="flex justify-end py-8">
+        <Pagination
+          total={pagination.total}
+          showTotal={(total) => `Total ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
+      </div>
       <Modal
         title="Reject Instructor"
         visible={isModalVisible}

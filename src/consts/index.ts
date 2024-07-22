@@ -1,10 +1,7 @@
 /* Fake API */
 const BASE_URL = "https://665fbf245425580055b0b23d.mockapi.io";
 export const API_COURSES_URL = `${BASE_URL}/courses`;
-export const API_ENROLLMENT_URL = `${BASE_URL}/enrollments`;
 export const API_PAYMENT_URL = `${BASE_URL}/payments`;
-export const API_REVIEW_URL = `${BASE_URL}/reviews`;
-export const API_BLOGS_URL = `${BASE_URL}/blogs`;
 
 /* API */
 
@@ -42,6 +39,7 @@ export const API_UPDATE_COURSE = "/api/course";
 export const API_DELETE_COURSE = "/api/course";
 export const API_COURSE_STATUS = "/api/course/change-status";
 export const API_COURSE_DETAIL = "/api/course";
+
 //Session
 export const API_CREATE_SESSION = "/api/session";
 export const API_GET_SESSIONS = "/api/session/search";
@@ -66,11 +64,12 @@ export const API_COURSE_LOGS = "/api/course/log/search";
 export const API_CREATE_CART = "/api/cart";
 export const API_GET_CARTS = "/api/cart/search";
 export const API_UPDATE_STATUS_CART = "/api/cart/update-status";
+export const API_DELETE_CART = "/api/cart";
 //export const API_DELETE_CART = "/api/cart";
 //Purchase
-export const API_GET_ITEMS_BY_ADMIN = "/api/purchase/search";
-export const API_GET_ITEMS_BY_INSTRUCTOR = "api/purchase/search-for-instructor";
-export const API_GET_ITEMS_BY_STUDENT = "api/purchase/search-for-student";
+export const API_GET_PURCHASE_BY_ADMIN = "/api/purchase/search";
+export const API_GET_PURCHASE_BY_INSTRUCTOR = "api/purchase/search-for-instructor";
+export const API_GET_PURCHASE_BY_STUDENT = "api/purchase/search-for-student";
 //Payout
 export const API_CREATE_PAYOUT = "/api/payout";
 export const API_GET_PAYOUTS = "/api/payout/search";
@@ -78,7 +77,16 @@ export const API_UPDATE_STATUS_PAYOUT = "/api/payout/update-status";
 //Client
 export const API_CLIENT_GET_COURSES = "/api/client/course/search";
 export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course";
-
+//Blog
+export const API_CREATE_BLOG = "/api/blog";
+export const API_GET_BLOGS = "/api/blog/search";
+export const API_GET_BLOG = "/api/blog";
+export const API_UPDATE_BLOG = "/api/blog";
+export const API_DELETE_BLOG = "/api/blog";
+//Subscription
+export const API_INSTRUCTOR_OR_STUDENT_SUBSCRIPTIONS = "/api/subscription";
+export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-instructor";
+export const API_INSTRUCTOR_GET_SUBSCRIBER = "/api/subscription/search-for-subscriber";
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";
@@ -113,6 +121,40 @@ export const getColor = (status: string) => {
   }
 };
 
+export const getColorCart = (status: string) => {
+  switch (status) {
+    case "new":
+      return "red";
+    case "waiting_paid":
+      return "blue";
+    case "cancel":
+      return "yellow";
+    case "completed":
+      return "purple";
+  }
+};
+
+export const getColorPurchase = (status: string) => {
+  switch (status) {
+    case "new":
+      return "red";
+    case "request_payout":
+      return "blue";
+    case "completed":
+      return "yellow";
+    case "rejected":
+      return "purple";
+  }
+};
+
+export const getColorStatusSubscribe = (status: boolean) => {
+  switch (status) {
+    case true:
+      return "red";
+    case false:
+      return "blue";
+  }
+};
 export const getColorLessonType = (type: string) => {
   switch (type) {
     case "video":
@@ -140,6 +182,7 @@ export const paths = {
   CONTACT: "/contact",
   TEACHING: "/teaching",
   COURSE: "/course",
+  ALL_COURSES: "/course/all-courses",
   SITEMAP: "/sitemap",
   NOTFOUND: "/notfound",
   COURSE_DETAIL: "/course/:id",
@@ -154,7 +197,7 @@ export const paths = {
   STUDENT_ENROLLMENT: "/enrollment",
   STUDENT_CHECKOUT: "/checkout",
   STUDENT_CART: "/cart",
-
+  STUDENT_PURCHASE: "/purchase",
   /* INSTRUCTORS PATHS */
   INSTRUCTOR_DASHBOARD: "dashboard",
   INSTRUCTOR_PROFILE: "profile",
@@ -173,14 +216,10 @@ export const paths = {
   INSTRUCTOR_UPDATE_LECTURE:
     "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
-  INSTRUCTOR_LECTURES_OF_COURSE:
-    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures",
-  INSTRUCTOR_MANAGE_SESSION_OF_COURSE:
-    "manage-courses/:courseId/manage-sessions",
-  INSTRUCTOR_CREATE_SESSION:
-    "manage-courses/:courseId/manage-sessions/create-session",
-  INSTRUCTOR_UPDATE_SESSION:
-    "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
+  INSTRUCTOR_LECTURES_OF_COURSE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lessons",
+  INSTRUCTOR_MANAGE_SESSION_OF_COURSE: "manage-courses/:courseId/manage-sessions",
+  INSTRUCTOR_CREATE_SESSION: "manage-courses/:courseId/manage-sessions/create-session",
+  INSTRUCTOR_UPDATE_SESSION: "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:_id",
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
   INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS:
@@ -188,23 +227,24 @@ export const paths = {
   INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS:
     "manage-all-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_ALL_LECTURES: "manage-all-lessons",
-  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES:
-    "manage-all-lessons/create-lesson",
-  INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES:
-    "manage-all-lectures/update-lecture/:lectureId",
+  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lessons/create-lesson",
+  INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
+  INSTRUCTOR_MANAGE_SUBSCRIPTIONS: "manage-subscriptions",
+  INSTRUCTOR_MANAGE_PURCHASES: "manage-purchases",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",
   ADMIN_MANAGE_LECTURES: "manage-lectures",
   ADMIN_MANAGE_USERS: "manage-users",
-  ADMIN_LOGIN: "admin/login",
+  ADMIN_LOGIN: "/admin/login",
   ADMIN_INSTRUCTOR_REQUEST: "instructor-requests",
+  ADMIN_MANAGE_PURCHASE:"manage-all-purchase",
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
   ADMIN_MANAGE_BLOGS: "manage-blogs",
   ADMIN_MANAGE_COURSES: "manage-courses",
   ADMIN_MANAGE_REVIEWS: "manage-reviews",
-  ADMIN_PAYMENT_HISTORY: "payment-history",
+  ADMIN_MANAGE_PAYOUTS: "manage-payouts",
   ADMIN_MANAGE_SESSION_OF_COURSE: "manage-course/:courseId/manage-session",
   ADMIN_MANAGE_LECTURES_OF_COURSE:
     "manage-course/:courseId/manage-session/:sessionId/lecture",

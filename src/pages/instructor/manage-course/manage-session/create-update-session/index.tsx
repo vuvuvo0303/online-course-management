@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Breadcrumb, Select } from "antd";
+import { Button, Form, Input, Breadcrumb, Select, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Editor } from '@tinymce/tinymce-react';
 import { HomeOutlined } from "@ant-design/icons";
 import { Course, Session } from "../../../../../models";
-import { toast } from "react-toastify";
 import { User } from "../../../../../models/User";
-import {API_CREATE_SESSION, API_UPDATE_SESSION} from "../../../../../consts";
+import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
 
 const formItemLayout = {
@@ -21,13 +20,14 @@ const formItemLayout = {
 };
 
 const CreateUpdateSession = () => {
-  const token = localStorage.getItem("token")
+
   const { courseId, sessionId } = useParams<{ courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const [role, setRole] = useState<string>('');
-  const [courseId2, setCourseId2] = useState<string>("");
+  const [des, setDes] = useState<string>("");
+  const [courseIdUpdate, setCourseIdUpdate] = useState<string>("");
   const [courses, setCourses] = useState<Course[]>([]);
   const [userId, setUserId] = useState<string>('');
   //value of tinymce (field: description)
@@ -40,106 +40,132 @@ const CreateUpdateSession = () => {
   }, []);
 
   useEffect(() => {
-    if (courseId) {
-      setCourseId2(courseId);
-    }
     // update session
     if (sessionId) {
-      const fetchData = async () => {
+      const fetchSession = async () => {
         try {
-          const response = await axiosInstance.get(`/api/session/${sessionId}`);
+          const response = await axiosInstance.get(`${API_GET_SESSION}/${sessionId}`);
           const data = response.data;
           form.setFieldsValue({
             name: data.name,
             description: data.description,
-            course_id: data.course_id
+            course_id: {
+              value: data.course_id, label: data.course_name
+            },
+            position_order: data.position_order
           });
           setValue(data.description);
+          // if instructor don't update new course , program will use old data
+          setCourseIdUpdate(data.course_id)
         } catch (error) {
           //
         } finally {
           setLoading(false);
         }
       };
-      fetchData();
+      fetchSession();
     } else {
       setLoading(false);
     }
 
-  }, [courseId, form, sessionId, token]);
-
+  }, [courseId, form, sessionId]);
+  //Fetch course
   useEffect(() => {
-    if (!courseId) {
-      const fetchCourses = async () => {
-        try {
-          const res = await axiosInstance.post(`/api/course/search`,
-            {
-              "searchCondition": {
-                "keyword": "",
-                "category": "",
-                "status": "new",
-                "is_deleted": false
-              },
-              "pageInfo": {
-                "pageNum": 1,
-                "pageSize": 10
-              }
+    const fetchCourses = async () => {
+      try {
+        const res = await axiosInstance.post(API_GET_COURSES,
+          {
+            "searchCondition": {
+              "keyword": "",
+              "category": "",
+              "status": "new",
+              "is_deleted": false
+            },
+            "pageInfo": {
+              "pageNum": 1,
+              "pageSize": 10
             }
-          );
-          if (res.data) {
-            setCourses(res.data.pageData);
           }
-        } catch (error) {
-          console.log("Error: ", error);
-        } finally {
-          setLoading(false)
+        );
+        if (res.data) {
+          console.log("courses: ", res.data.pageData);
+
+          setCourses(res.data.pageData);
         }
-      };
-      fetchCourses();
-    }
-  }, [courseId, userId, role])
+      } catch (error) {
+        console.log("Error: ", error);
+      } finally {
+        setLoading(false)
+      }
+    };
+    fetchCourses();
+  }, [userId, role])
 
   const onFinish = async (values: Session) => {
     values.description = value;
-    setLoading(true);
-    // manage course -> manage session -> update session
-    if (courseId2 && sessionId) {
+    // setLoading(true);
+    console.log("check values: ", values);
+    // update session component for manga sessions and manage all sessions
+    if (sessionId) {
       try {
-       await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`, { ...values, user_id: userId, position_order: 3, _id: sessionId })
-        toast.success("Update Session Successfully!")
+        const updatess = await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`,
+          {
+            "name": values.name,
+            "course_id": courseIdUpdate,
+            "description": des,
+            "position_order": 3
+          }
+        )
+        console.log("check update: ", updatess);
+        message.success("Update Session Successfully!")
       } catch (error) {
         //
       }
-      navigate(`/instructor/manage-courses/${courseId}/manage-sessions`);
-    } else {
-      // manage course -> manage session -> create session
-      if (courseId2) {
-        try {
-          await axiosInstance.post(API_CREATE_SESSION, values);
-          toast.success("Create Session Successfully!")
-          navigate(`/instructor/manage-courses/${courseId}/manage-sessions`);
-        } catch (error) {
-          setLoading(false)
-        }
+      if (courseId) {
+        // redirect to manage session 
+        navigate(`/instructor/manage-courses/${courseId}/manage-sessions`);
+      } else {
+        // redirect to manage all session 
+        navigate(`/instructor/manage-all-sessions`);
       }
-      else {
-        // manage all sessions - create session
-        try {
-          await axiosInstance.post(`/api/session`, values);
-          toast.success("Create Session Successfully!")
-          navigate(`/instructor/manage-all-sessions`);
-        } catch (error) {
-          setLoading(false)
+    } else {
+      // create session component for manga sessions and manage all sessions
+      try {
+        // manage course -> manage session
+        if (courseId) {
+          setCourseIdUpdate(courseId);
+        } else {
+          setCourseIdUpdate(values.course_id)
         }
+        await axiosInstance.post(`${API_CREATE_SESSION}`, {
+          "name": values.name,
+          "course_id": courseIdUpdate,
+          "description": des,
+          "position_order": 1
+        });
+        message.success("Create Session Successfully!")
+        if (courseId) {
+          // redirect to manage session 
+          navigate(`/instructor/manage-courses/${courseId}/manage-sessions`);
+        } else {
+          // redirect to manage all session
+          navigate(`/instructor/manage-all-sessions`);
+        }
+      } catch (error) {
+        //
       }
     }
 
   };
 
   const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
+    console.log("check courseIdUpdate: ", value);
+    setCourseIdUpdate(value);
   };
 
+  const handleEditorChange = (value: string) => {
+    setDes(value);
+  };
   return (
     <div className="flex justify-center items-center h-full mt-10">
       {loading ? (
@@ -187,50 +213,60 @@ const CreateUpdateSession = () => {
               name="description"
             >
               <Editor
-                apiKey="lt4vdqf8v4f2upughnh411hs6gbwhtw3iuz6pwzc9o3ddk7u"
-                onEditorChange={(newValue) => setValue(newValue)}
-                initialValue={value}
+                apiKey="oppz09dr2j6na1m8aw9ihopacggkqdg19jphtdksvl25ol4k"
                 init={{
-                  directionality: 'ltr',
-                  plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
-                  toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-                  tinycomments_mode: 'embedded',
-                  tinycomments_author: 'Author name',
-                  mergetags_list: [
-                    { value: 'First.Name', title: 'First Name' },
-                    { value: 'Email', title: 'Email' },
+                  placeholder: "Description",
+
+                  height: 200,
+                  menubar: true,
+                  plugins: [
+                    "advlist autolink lists link image charmap print preview anchor",
+                    "searchreplace visualblocks code fullscreen textcolor ",
+                    "insertdatetime media table paste code help wordcount",
                   ],
-                  ai_request: (respondWith: { string: (callback: () => Promise<string>) => void }) =>
-                    respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+                  textcolor_rows: "4",
+
+                  toolbar:
+                    "undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent ",
                 }}
-              />
+                onEditorChange={handleEditorChange}
+              ></Editor>
             </Form.Item>
 
             {
-              !courseId && (
-                <Form.Item label="Course Id" name="course_id" rules={[{ required: true, message: 'Please input course!' }]}>
-                  <Select
-
-                    onChange={handleChange}
-                    options={courses.map(course => (
-                      {
-                        value: course._id, label: course.name
-                      }
-                    ))
+              //  create and update session in manage all session
+              !courseId &&
+              <Form.Item label="Course name" name="course_id" rules={[{ required: true, message: 'Please input course!' }]}>
+                <Select
+                  defaultValue={"Choose course name"}
+                  onChange={handleChange}
+                  options={courses.map(course => (
+                    {
+                      value: course._id, label: course.name
                     }
-                  />
-                </Form.Item>
-              )
+                  ))
+                  }
+                />
+              </Form.Item>
             }
-
 
             {
-              courseId && (
-                <Form.Item hidden label="Course Id" name="course_id" initialValue={courseId}>
-                  <Input />
-                </Form.Item>
-              )
+              // update session in manage session 
+              courseId && sessionId &&
+              <Form.Item label="Course name" name="course_id" rules={[{ required: true, message: 'Please input course!' }]}>
+                <Select
+                  defaultValue={"Choose course name"}
+                  onChange={handleChange}
+                  options={courses.map(course => (
+                    {
+                      value: course._id, label: course.name
+                    }
+                  ))
+                  }
+                />
+              </Form.Item>
             }
+
             <Form.Item wrapperCol={{ span: 24, offset: 6 }}>
               <Button type="primary" htmlType="submit" loading={loading}>
                 Submit

@@ -2,6 +2,7 @@ export type UserRole = "admin" | "instructor" | "student";
 
 export class User {
   _id: string;
+  
   google_id?: string;
   name: string;
   email: string; // unique
@@ -150,7 +151,8 @@ export class Admin extends User {
 export class Instructor extends User {
   description: string;
   degree: string;
-
+  isApproved?: boolean;
+  is_subscribed?: boolean
   constructor(
     _id: string = "",
     name: string = "",
@@ -164,11 +166,15 @@ export class Instructor extends User {
     phone_number?: string,
     avatar?: string,
     video?: string,
+    
     dob?: Date,
     created_at?: Date,
     updated_at?: Date,
     is_deleted?: boolean,
-    is_verified?: boolean // add this parameter
+    is_verified?: boolean,
+    is_subscribed?: boolean
+    // add this parameter
+    // is_subscribed?: boolean
   ) {
     super(
       _id,
@@ -186,8 +192,11 @@ export class Instructor extends User {
       created_at,
       updated_at,
       is_deleted,
-      is_verified // add this parameter to super
+      is_verified ,
+      
+      // add this parameter to super
     );
+    this.is_subscribed = is_subscribed;
     this.description = description;
     this.degree = degree;
   }

@@ -1,10 +1,10 @@
 
-import PaymentCourses from "./courses";
 import PaymentSubscriptions from "./subscriptions";
 import PaymentRefunds from "./refunds";
 
 import { Tabs, TabsProps } from "antd";
 import { useState } from "react";
+import ManagePaymentCourse from "./courses";
 
 
 const StudentPaymentHistory: React.FC = () => {
@@ -34,8 +34,10 @@ const StudentPaymentHistory: React.FC = () => {
         return <PaymentRefunds />;
       case "subscriptions":
         return <PaymentSubscriptions />;
+      case "courses":
+        return <ManagePaymentCourse />;
       default:
-        return <PaymentCourses />;
+        return <ManagePaymentCourse />;
     }
   };
 

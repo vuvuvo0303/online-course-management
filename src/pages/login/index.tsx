@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, FormProps, Input, Modal, Select } from "antd";
+import { Button, Form, FormProps, Input, message, Modal, Select } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Login5 from "../../assets/Login5.jpg";
 import { handleNavigateRole, login } from "../../services/auth";
-import { toast } from "react-toastify";
 import {
   API_CURRENT_LOGIN_USER,
   API_LOGIN_WITH_GOOGLE,
   API_REGISTER_WITH_GOOGLE,
-  paths,
+  paths, roles,
 } from "../../consts";
 import { GoogleLogin } from "@react-oauth/google";
 // import Lottie from "lottie-react";
@@ -64,7 +63,7 @@ const LoginPage: React.FC = () => {
       localStorage.setItem("token", responseLogin.data.token);
       const currentUser = await axiosInstance.get(API_CURRENT_LOGIN_USER);
       localStorage.setItem("user", JSON.stringify(currentUser.data));
-      toast.success("Login successfully");
+      message.success("Login successfully");
       navigate(paths.HOME);
     } catch (error) {
       setIsModalVisible(true);
@@ -84,7 +83,7 @@ const LoginPage: React.FC = () => {
       localStorage.setItem("token", responseLogin.data.token);
       const currentUser = await axiosInstance.get(API_CURRENT_LOGIN_USER);
       localStorage.setItem("user", JSON.stringify(currentUser.data));
-      toast.success("Registered and logged in successfully");
+      message.success("Registered and logged in successfully");
       navigate(paths.HOME);
     } catch (error) {
       console.log(error);
@@ -245,7 +244,7 @@ const LoginPage: React.FC = () => {
               <Select.Option value="instructor">Instructor</Select.Option>
             </Select>
           </Form.Item>
-          {role === "instructor" && (
+          {role === roles.INSTRUCTOR && (
             <>
               <Form.Item label="Description" required>
                 <Input

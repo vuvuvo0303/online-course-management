@@ -9,6 +9,7 @@ export { default as Terms } from "./terms";
 export { default as Guidelines } from "./guideline";
 export { default as About } from "./about";
 export { default as Course } from "./course";
+export { default as AllCourse } from "./course/all-courses";
 export { default as BlogDetail } from "./blog/blog-detail";
 export { default as BlogList } from "./blog";
 export { default as Enrollment } from "./enrollment/index";
@@ -30,12 +31,10 @@ export { default as Cart } from "./cart";
 
 /* Instructor Page */
 export { default as InstructorDashboard } from "./instructor/instructor-dashboard/index";
-export { default as InstructorManageLectures } from "./instructor/manage-lectures";
 export { default as InstructorManageFeedbacks } from "./instructor/manage-instructor-feedbacks";
 export { default as PaymentHistory } from "./payment/payment-history";
 export { default as InstructorCreateCourse } from "./instructor/manage-course/create-update-course";
 export { default as InstructorManageCourses } from "./instructor/manage-course/index";
-export { default as InstructorManageStudents } from "./instructor/manage-students";
 export { default as InstructorManageBlogs } from "./instructor/manage-blogs/index";
 export { default as InstructorResources } from "./instructor/resources";
 export { default as InstructorTools } from "./instructor/tools";
@@ -44,7 +43,7 @@ export { default as CreateLecture } from "./instructor/manage-course/manage-sess
 export { default as ManageSession } from "./instructor/manage-course/manage-session/";
 export { default as CreateUpdateSession } from "./instructor/manage-course/manage-session/create-update-session";
 export { default as ManageAllSession } from "./manage-all-session";
-
+export { default as InstructorManageSubscriptions } from "./instructor/manage-subscriptions";
 /* Admin Page */
 export { default as AdminLoginPage } from "./admin/login";
 export { default as AdminDashboard } from "./admin/dashboard";
@@ -55,4 +54,5 @@ export { default as AdminCategoryDetail } from "./admin/manage-categories/detail
 export { default as AdminManageCourses } from "./admin/manage-course";
 export { default as AdminManageFeedbacks } from "./admin/manage-reviews";
 export { default as Dashboard } from "../components/dashboard/index";
+export { default as AdminPayout } from "./admin/manage_payout"
 

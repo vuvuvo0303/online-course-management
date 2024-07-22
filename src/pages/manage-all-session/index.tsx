@@ -1,22 +1,21 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, Modal, Select, Table, TableProps } from "antd";
+import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Input, message, Modal, Select, Table, TableProps } from "antd";
 import { useEffect, useState } from "react";
-import { Session } from "../../models";
+import { Course, Session } from "../../models";
 import { Link } from "react-router-dom";
 import { User } from "../../models/User";
-import { toast } from "react-toastify";
 import axiosInstance from "../../services/axiosInstance.ts";
-import { API_DELETE_SESSION, API_GET_SESSIONS } from "../../consts";
-import useDebounce from "../../hooks/useDebounce";
+import { API_DELETE_SESSION, API_GET_COURSES, API_GET_SESSIONS } from "../../consts";
+import { useDebounce } from "../../hooks";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 
 const ManageAllSession = () => {
     const [keyword, setKeyword] = useState<string>('');
     const [open, setOpen] = useState(false);
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [course_id, setCourse_id] = useState<string>('');
     const [is_deleted, setIs_deleted] = useState<boolean>(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [role, setRole] = useState<string>('');
@@ -53,7 +52,7 @@ const ManageAllSession = () => {
             // Xóa session trước
             await axiosInstance.delete(`${API_DELETE_SESSION}/${sessionId}`);
             setSessions(sessions.filter(session => session._id !== sessionId));
-            toast.success("Delete Session Successfully!");
+            message.success("Delete Session Successfully!");
         } catch (error) {
             //
         }
@@ -72,6 +71,34 @@ const ManageAllSession = () => {
         setIs_deleted(value);
     };
 
+    //fetch courses
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await axiosInstance.post(API_GET_COURSES, {
+                    "searchCondition": {
+                        "keyword": "",
+                        "category_id": "",
+                        "status": "",
+                        "is_deleted": false
+                    },
+                    "pageInfo": {
+                        "pageNum": 1,
+                        "pageSize": 100
+                    }
+                });
+                if (response.data.pageData) {
+                    setCourses(response.data.pageData);
+                }
+            } catch (error) {
+                console.log("Error occurred: ", error);
+
+            } finally {
+                setLoading(false)
+            }
+        };
+        fetchCourses();
+    }, [])
 
     //fetch session
     useEffect(() => {
@@ -80,7 +107,7 @@ const ManageAllSession = () => {
                 const response = await axiosInstance.post(API_GET_SESSIONS, {
                     "searchCondition": {
                         "keyword": debouncedSearchTerm,
-                        "course_id": "",
+                        "course_id": course_id,
                         "is_position_order": true,
                         "is_deleted": is_deleted
                     },
@@ -90,16 +117,22 @@ const ManageAllSession = () => {
                     }
                 });
                 if (response) {
-                    setSessions(response.data.pageData);
+                    const sortedSessions = response.data.pageData.sort((a: Session, b: Session) => {
+                        const dateA = new Date(a.created_at).getTime();
+                        const dateB = new Date(b.created_at).getTime();
+                        return dateB - dateA;
+                    });
+                    setSessions(sortedSessions);
                 }
             } catch (error) {
-                //
+                // handle error
             } finally {
                 setLoading(false);
             }
         };
         fetchSession();
-    }, [userId, role, is_deleted, keyword, debouncedSearchTerm]);
+    }, [userId, role, is_deleted, keyword, debouncedSearchTerm, course_id]);
+
 
     if (loading === true) {
         return <div className="text-center">Loading...</div>;
@@ -117,16 +150,35 @@ const ManageAllSession = () => {
             key: 'name',
         },
         {
-            title: 'Created At',
-            dataIndex: 'created_at',
-            key: 'created_at',
-            render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+            title: 'Lesson',
+            dataIndex: 'name',
+            key: 'name',
+            render: (name: string, record: Session) => (
+                <>
+                    {
+                        role === "instructor" ?
+                            (
+                                <Link className="text-blue-500" to={`/instructor/manage-courses/${record.course_id}/manage-sessions/${record._id}/manage-lectures`}>Lesson of {name}</Link>
+                            )
+                            :
+                            (
+                                <Link className="text-blue-500" to={`/admin/manage-all-sessions/${record._id}/manage-lecture`}>Lesson of {name}</Link>
+                            )
+                    }
+                </>
+            )
         },
         {
-            title: 'Updated At',
+            title: 'Created Date',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+        },
+        {
+            title: 'Updated Date',
             dataIndex: 'updated_at',
             key: 'updated_at',
-            render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+            render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
         },
         {
             title: 'Action',
@@ -134,16 +186,6 @@ const ManageAllSession = () => {
             key: '_id',
             render: (_id: string, record: Session) => (
                 <>
-                    {
-                        role === "instructor" ?
-                            (
-                                <Link to={`/instructor/manage-courses/${record.course_id}/manage-sessions/${_id}/manage-lectures`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-                            )
-                            :
-                            (
-                                <Link to={`/admin/manage-all-sessions/${_id}/manage-lecture`}><EyeOutlined className="text-purple-500 m-2" /></Link>
-                            )
-                    }
                     <Link to={`/instructor/manage-all-sessions/update-session/${_id}`}><EditOutlined className="m-2 text-blue-500" /></Link>
                     <DeleteOutlined className="text-red-500 m-2" onClick={() => showModal(_id, record)} />
                 </>
@@ -160,6 +202,10 @@ const ManageAllSession = () => {
         setKeyword(e.target.value);
     };
 
+    // set course_id
+    const handleCourseChange = (value: string) => {
+        setCourse_id(value);
+    };
     return (
         <div>
             <Modal
@@ -191,8 +237,9 @@ const ManageAllSession = () => {
                 </Breadcrumb.Item>
             </Breadcrumb>
             <h1 className="text-center my-5">Manage All Session</h1>
+            {/* filter session by true false */}
             <div className="grid grid-cols-2">
-                <div className="grid grid-cols-2">
+                <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-10">
                     <Select
                         defaultValue={is_deleted}
                         onChange={handleChange}
@@ -207,11 +254,25 @@ const ManageAllSession = () => {
                             },
                         ]}
                     />
+                    {/* filter session by course */}
+                    <Select
+                        defaultValue="All Courses"
+                        style={{ width: 200 }}
+                        className="mt-10"
+                        onChange={handleCourseChange}
+                        options={[
+                            { value: "", label: "All Courses" },
+                            ...courses.map(course => ({
+                                value: course._id,
+                                label: course.name
+                            }))
+                        ]}
+                    />
                     <Input
                         placeholder="Search"
                         value={keyword}
                         onChange={handleSearch}
-                        className="m-10"
+                        className="my-10"
                         style={{ width: 200 }}
                     />
                 </div>

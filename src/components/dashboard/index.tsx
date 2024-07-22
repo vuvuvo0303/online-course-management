@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   CheckOutlined,
   CommentOutlined,
-  CopyOutlined,
   DesktopOutlined,
   FundOutlined,
   FundProjectionScreenOutlined,
@@ -19,7 +18,8 @@ import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
 import logo2 from "../../assets/logo2.jpg";
-import { paths, roles } from "../../consts";
+import { roles } from "../../consts";
+import { logout } from "../../services/auth.ts";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -49,16 +49,8 @@ const Dashboard: React.FC = () => {
         email: user.email,
       });
     }
-  }, [navigate]);
+  }, [navigate, userRole]);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    if (user.role === roles.ADMIN) {
-      navigate("/admin/login");
-    } else {
-      navigate(paths.HOME);
-    }
-  };
 
   function getItem(
     label: React.ReactNode,
@@ -78,32 +70,13 @@ const Dashboard: React.FC = () => {
       if (dataUser.role === roles.INSTRUCTOR) {
         setItems([
           getItem("Dashboard", "/instructor/dashboard", <FundOutlined />),
-          getItem(
-            "Manage Reviews",
-            "/instructor/manage-reviews",
-            <CommentOutlined />
-          ),
-          getItem(
-            "Manage Courses",
-            "/instructor/manage-courses",
-            <FundProjectionScreenOutlined />
-          ),
-          getItem(
-            "Manage All Sessions",
-            "/instructor/manage-all-sessions",
-            <DesktopOutlined />
-          ),
-          getItem(
-            "Manage All Lessons",
-            "/instructor/manage-all-lessons",
-            <DesktopOutlined />
-          ),
-          getItem(
-            "Manage Students",
-            "/instructor/manage-students",
-            <TeamOutlined />
-          ),
-          getItem("Manage Blogs", "/instructor/manage-blogs", <CopyOutlined />),
+          getItem("Manage Reviews", "/instructor/manage-reviews", <CommentOutlined />),
+          getItem("Manage Courses", "/instructor/manage-courses", <FundProjectionScreenOutlined />),
+          getItem("Manage All Sessions", "/instructor/manage-all-sessions", <DesktopOutlined />),
+          getItem("Manage All Lessons", "/instructor/manage-all-lessons", <DesktopOutlined />),
+          getItem("Manage Subscriptions", "/instructor/manage-subscriptions", <DesktopOutlined />),
+          getItem("Manage Purchases", "/instructor/manage-purchases", <DesktopOutlined />),
+          getItem("Manage Students", "/instructor/manage-students", <TeamOutlined />),
           // getItem("My Profile", "/instructor/profile", <UserOutlined />),
           getItem(
             "Payment History",
@@ -121,11 +94,9 @@ const Dashboard: React.FC = () => {
         setItems([
           getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
           getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
-          getItem(
-            "Instructor's Request",
-            "/admin/instructor-requests",
-            <TeamOutlined />
-          ),
+          getItem("Instructor's Request", "/admin/instructor-requests", <TeamOutlined />),
+          getItem("Manage Purchases", "/admin/manage-all-purchase", <TeamOutlined />),
+
 
           getItem(
             "Manage Categories",
@@ -138,16 +109,8 @@ const Dashboard: React.FC = () => {
             <FundProjectionScreenOutlined />
           ),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
-          getItem(
-            "Manage Reviews",
-            "/admin/manage-reviews",
-            <CommentOutlined />
-          ),
-          getItem(
-            "Payment History",
-            "/admin/payment-history",
-            <DesktopOutlined />
-          ),
+          getItem("Manage Reviews", "/admin/manage-reviews", <CommentOutlined />),
+          getItem("Manage Payouts", "/admin/manage-payouts", <DesktopOutlined />),
         ]);
       }
     }
@@ -258,10 +221,7 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <p
-          onClick={handleLogout}
-          className="text-lg hover:cursor-pointer hover:text-red-600"
-        >
+        <p onClick={() => logout(navigate)} className="text-lg hover:cursor-pointer hover:text-red-600">
           Logout
         </p>
       ),

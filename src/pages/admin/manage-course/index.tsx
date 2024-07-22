@@ -7,6 +7,7 @@ import {
   Form,
   Image,
   Input,
+  message,
   Modal,
   Pagination,
   Select,
@@ -16,14 +17,12 @@ import {
   TablePaginationConfig,
   Tag,
 } from "antd";
-import { API_COURSE_STATUS, getColor } from "../../../consts";
+import { API_COURSE_STATUS, API_GET_COURSES, getColor } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { Course } from "../../../models";
-import { toast } from "react-toastify";
 import TextArea from "antd/es/input/TextArea";
-import useDebounce from "../../../hooks/useDebounce";
+import { useDebounce } from "../../../hooks";
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [changeStatus, setChangeStatus] = useState<string>("");
@@ -66,14 +65,14 @@ const AdminManageCourses: React.FC = () => {
           pageSize: pagination.pageSize,
         },
       };
-      const res = await axiosInstance.post(`/api/course/search`, params);
-      if (res.data) {
-        setCourses(res.data.pageData || res.data);
+      const response = await axiosInstance.post(API_GET_COURSES, params);
+      if (response.data) {
+        setCourses(response.data.pageData || response.data);
         setPagination((prev) => ({
           ...prev,
-          total: res.data.pageInfo?.totalItems || res.data.length,
-          current: res.data.pageInfo?.pageNum || 1,
-          pageSize: res.data.pageInfo?.pageSize || res.data.length,
+          total: response.data.pageInfo?.totalItems || response.data.length,
+          current: response.data.pageInfo?.pageNum || 1,
+          pageSize: response.data.pageInfo?.pageSize || response.data.length,
         }));
       }
     } catch (error) {
@@ -117,7 +116,7 @@ const AdminManageCourses: React.FC = () => {
 
   const handleOkChangeStatus = async () => {
     if (!comment) {
-      return toast.error("Please enter comment");
+      return message.error("Please enter comment");
     }
     try {
       await axiosInstance.put(API_COURSE_STATUS, {
@@ -127,7 +126,7 @@ const AdminManageCourses: React.FC = () => {
       });
       setCourses(courses.filter((course) => course._id !== courseId));
     } catch (error) {
-      console.log("Error occurred: ", error);
+      //
     }
     setConfirmLoading(true);
     setTimeout(() => {
@@ -175,13 +174,13 @@ const AdminManageCourses: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy", { locale: vi }),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
     },
     {
       title: "Action",
@@ -245,8 +244,8 @@ const AdminManageCourses: React.FC = () => {
     }));
   };
   return (
-    <div>
-      {/* modal change status */}
+    <div className="container mx-auto p-4">
+      {/* Modal Change Status */}
       <Modal
         title="Change Status"
         open={openChangeStatus}
@@ -276,6 +275,7 @@ const AdminManageCourses: React.FC = () => {
         </Form.Item>
       </Modal>
 
+      {/* Modal Course Details */}
       <Modal
         title={
           <span className="text-2xl font-bold flex justify-center text-amber-700">
@@ -332,8 +332,9 @@ const AdminManageCourses: React.FC = () => {
         </div>
       </Modal>
 
+      {/* Breadcrumb */}
       <Breadcrumb
-        className="py-2"
+        className="py-3"
         items={[
           {
             href: "/",
@@ -345,13 +346,14 @@ const AdminManageCourses: React.FC = () => {
         ]}
       />
 
-      <Space style={{ marginBottom: 16 }}>
+      {/* Filters and Search */}
+      <Space className="flex flex-wrap justify-between mb-4">
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           onSearch={handleSearch}
-          style={{ width: 200 }}
+          className="w-48 md:w-64"
           enterButton={<SearchOutlined className="text-white" />}
         />
         <Select
@@ -360,7 +362,7 @@ const AdminManageCourses: React.FC = () => {
           optionFilterProp="children"
           onChange={handleCategoryChange}
           value={selectedCategoryName}
-          style={{ width: 200 }}
+          className="w-48 md:w-64"
         >
           {uniqueCategories.map((category) => (
             <Select.Option key={category.category_id} value={category.category_name}>
@@ -375,7 +377,7 @@ const AdminManageCourses: React.FC = () => {
           optionFilterProp="children"
           onChange={handleStatusChange}
           value={selectedStatus}
-          style={{ width: 200 }}
+          className="w-48 md:w-64"
         >
           <Select.Option value="">All Status</Select.Option>
           <Select.Option value="new">New</Select.Option>
@@ -386,7 +388,7 @@ const AdminManageCourses: React.FC = () => {
           <Select.Option value="inactive">Inactive</Select.Option>
         </Select>
       </Space>
-      <Table columns={columnsCourses} rowKey={(record) => record._id} dataSource={courses} pagination={false} onChange={handleTableChange} />
+      <Table columns={columnsCourses} rowKey={(record: Course) => record._id} dataSource={courses} pagination={false} onChange={handleTableChange} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

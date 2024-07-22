@@ -7,7 +7,7 @@ import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { Breadcrumb, Table } from "antd";
 import styles from "../managecategory.module.css";
 
-const CategoryDetail = () => {
+const CategoryDetail: React.FC = () => {
     const [cate, setCate] = useState<Category | null>(null);
     const { _id } = useParams<{ _id: string }>();
 
@@ -68,19 +68,14 @@ const CategoryDetail = () => {
             key: 'is_deleted',
         },
         {
-            title: 'Created At',
+            title: 'Created Date',
             dataIndex: 'created_at',
             key: 'created_at',
         },
         {
-            title: 'Updated At',
+            title: 'Updated Date',
             dataIndex: 'updated_at',
             key: 'updated_at',
-        },
-        {
-            title: '__v',
-            dataIndex: '__v',
-            key: '__v',
         },
     ];
 
