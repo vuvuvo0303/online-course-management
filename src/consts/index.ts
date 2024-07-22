@@ -206,6 +206,7 @@ export const paths = {
   INSTRUCTOR_PAYMENT_HISTORY: "payment-history",
   INSTRUCTOR_MANAGE_REVIEWS: "manage-reviews",
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
+  INSTRUCTOR_MANAGE_SUPSCRIPTIONS: "manage-subscriptions",
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",
@@ -233,6 +234,8 @@ export const paths = {
     "manage-all-lessons/create-lesson",
   INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES:
     "manage-all-lectures/update-lecture/:lectureId",
+  INSTRUCTOR_MANAGE_PURCHASES:
+    "manage-purchases",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",
@@ -240,7 +243,7 @@ export const paths = {
   ADMIN_MANAGE_USERS: "manage-users",
   ADMIN_LOGIN: "/admin/login",
   ADMIN_INSTRUCTOR_REQUEST: "instructor-requests",
-  ADMIN_MANAGE_PURCHASE:"manage-all-purchase",
+  ADMIN_MANAGE_PURCHASE: "manage-all-purchase",
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
   ADMIN_MANAGE_BLOGS: "manage-blogs",

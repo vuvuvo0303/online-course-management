@@ -26,7 +26,7 @@ const InstructorManageSubscriptions = () => {
                     }
                 })
                 if (res) {
-                    console.log("check res: ", res);
+                    console.log("check res subs: ", res);
                     setSubscriptions(res.data.pageData)
                     setLoading(false)
                 }

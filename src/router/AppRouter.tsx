@@ -199,7 +199,7 @@ const AppRouter: React.FC = () => {
             element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
           />
           <Route
-            path={paths.INSTRUCTOR_MANAGE_SUBSCRIPTIONS}
+            path={paths.INSTRUCTOR_MANAGE_SUPSCRIPTIONS}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageSubscriptions /> : <Navigate to={paths.HOME} />}
           />
           <Route
