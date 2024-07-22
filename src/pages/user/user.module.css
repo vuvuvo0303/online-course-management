@@ -1,0 +1,9 @@
+.instructor_profile_left_column{
+    padding-bottom: 2.4rem;
+}
+
+@media screen and (min-width: 43.81rem) {
+    .instructor_profile_left_column{
+        max-width: calc(100% - 20rem);
+    }
+}

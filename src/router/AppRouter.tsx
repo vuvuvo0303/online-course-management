@@ -28,6 +28,7 @@ const CoursesCategory = lazy(() => import("../pages/courses"));
 const ForgotPassword = lazy(() => import("../pages/forgot-password"));
 const InternalServerError = lazy(() => import("../pages/internal-server-error"));
 const VerifyToken = lazy(() => import("../pages/verify-token"));
+const User = lazy(() => import("../pages/user"));
 
 // Student Page
 const Checkout = lazy(() => import("../pages/checkout"));
@@ -101,6 +102,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.VERIFY_TOKEN} element={<VerifyToken />} />
         <Route path={paths.INTERNAL_SERVER_ERROR} element={<InternalServerError />} />
         <Route path={paths.COURSE_DETAILS} element={<CourseDetails />} />
+        <Route path="/user/:id" element={<User />} />
 
         {/* Route for Student */}
         <Route path={paths.STUDENT_PROFILE} element={<Profile />} />
