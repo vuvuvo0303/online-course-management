@@ -55,9 +55,21 @@ const StudentInstructorPurchase = () => {
             key: 'price',
         },
         {
+            title: 'Discount',
+            dataIndex: 'discount',
+            key: 'discount',
+            render: (discount: number) => `${discount}%`
+        },
+        {
+            title: 'Price paid',
+            dataIndex: 'price_paid',
+            key: 'price_paid',
+        },
+        {
             title: 'Created Date',
             dataIndex: 'created_at',
             key: 'created_at',
+            width: '10%',
             render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
         },
     ];
