@@ -83,7 +83,7 @@ export const API_CLIENT_GET_CATEGORIES = "/api/client/category/search";
 //Subscription
 export const API_INSTRUCTOR_OR_STUDENT_SUBSCRIPTIONS = "/api/subscription";
 export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-instructor";
-export const API_INSTRUCTOR_GET_SUBSCRIBER = "/api/subscription/search-for-subscriber";
+export const API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER = "/api/subscription/search-for-subscriber";
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";
@@ -196,6 +196,7 @@ export const paths = {
   STUDENT_CHECKOUT: "/checkout",
   STUDENT_CART: "/cart",
   STUDENT_PURCHASE: "/purchase",
+  STUDENT_SUBSCRIPTION: "/subscription",
   /* INSTRUCTORS PATHS */
   INSTRUCTOR_DASHBOARD: "dashboard",
   INSTRUCTOR_PROFILE: "profile",
