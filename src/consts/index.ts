@@ -203,30 +203,38 @@ export const paths = {
   INSTRUCTOR_PROFILE: "profile",
   INSTRUCTOR_CREATE_COURSE: "manage-courses/create-course",
   INSTRUCTOR_UPDATE_COURSE: "manage-courses/update-course/:_id",
-  INSTRUCTOR_UPDATE_COURSE_DETAIL: "manage-courses/course-detail/:id/update-course/:_id",
+  INSTRUCTOR_UPDATE_COURSE_DETAIL:
+    "manage-courses/course-detail/:id/update-course/:_id",
   INSTRUCTOR_PAYMENT_HISTORY: "payment-history",
   INSTRUCTOR_MANAGE_REVIEWS: "manage-reviews",
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
   INSTRUCTOR_TOOLS: "tools",
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",
-  INSTRUCTOR_CREATE_LECTURE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/create-lecture",
+  INSTRUCTOR_CREATE_LECTURE:
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/create-lecture",
   INSTRUCTOR_UPDATE_LECTURE:
     "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
-  INSTRUCTOR_LECTURES_OF_COURSE: "manage-courses/:courseId/manage-sessions/:sessionId/manage-lessons",
-  INSTRUCTOR_MANAGE_SESSION_OF_COURSE: "manage-courses/:courseId/manage-sessions",
-  INSTRUCTOR_CREATE_SESSION: "manage-courses/:courseId/manage-sessions/create-session",
-  INSTRUCTOR_UPDATE_SESSION: "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
+  INSTRUCTOR_LECTURES_OF_COURSE:
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures",
+  INSTRUCTOR_MANAGE_SESSION_OF_COURSE:
+    "manage-courses/:courseId/manage-sessions",
+  INSTRUCTOR_CREATE_SESSION:
+    "manage-courses/:courseId/manage-sessions/create-session",
+  INSTRUCTOR_UPDATE_SESSION:
+    "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:_id",
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
-  INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
-  INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/update-session/:sessionId",
+  INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS:
+    "manage-all-sessions/create-session",
+  INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS:
+    "manage-all-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_ALL_LECTURES: "manage-all-lessons",
-  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lessons/create-lesson",
-  INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
-  INSTRUCTOR_MANAGE_SUBSCRIPTIONS: "manage-subscriptions",
-  INSTRUCTOR_MANAGE_PURCHASES: "manage-purchases",
+  INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES:
+    "manage-all-lessons/create-lesson",
+  INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES:
+    "manage-all-lectures/update-lecture/:lectureId",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",
@@ -240,19 +248,25 @@ export const paths = {
   ADMIN_MANAGE_BLOGS: "manage-blogs",
   ADMIN_MANAGE_COURSES: "manage-courses",
   ADMIN_MANAGE_REVIEWS: "manage-reviews",
-  ADMIN_PAYMENT_HISTORY: "payment-history",
+  ADMIN_MANAGE_PAYOUTS: "manage-payouts",
   ADMIN_MANAGE_SESSION_OF_COURSE: "manage-course/:courseId/manage-session",
-  ADMIN_MANAGE_LECTURES_OF_COURSE: "manage-course/:courseId/manage-session/:sessionId/lecture",
-  ADMIN_MANAGE_LECTURES_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/:sessionId/manage-lecture",
+  ADMIN_MANAGE_LECTURES_OF_COURSE:
+    "manage-course/:courseId/manage-session/:sessionId/lecture",
+  ADMIN_MANAGE_LECTURES_OF_MANAGE_ALL_SESSIONS:
+    "manage-all-sessions/:sessionId/manage-lecture",
   /* SPECIAL PATHS */
   INSTRUCTOR_HOME: "/instructor/dashboard",
   ADMIN_HOME: "/admin/dashboard",
   ADMIN_MANAGE_ALL_SESSION: "manage-all-sessions",
-  ADMIN_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/create-session",
-  ADMIN_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/update-session/:sessionId",
+  ADMIN_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS:
+    "manage-all-sessions/create-session",
+  ADMIN_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS:
+    "manage-all-sessions/update-session/:sessionId",
   ADMIN_MANAGE_ALL_LECTURES: "manage-all-lectures",
-  ADMIN_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/create-lecture",
-  ADMIN_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES: "manage-all-lectures/update-lecture/:lectureId",
+  ADMIN_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES:
+    "manage-all-lectures/create-lecture",
+  ADMIN_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES:
+    "manage-all-lectures/update-lecture/:lectureId",
 
   /* IMG */
   AVATAR:
@@ -301,12 +315,32 @@ export const categoryCourse: categoryCourse = {
   "Mobile Development": ["iOS", "Android", "Flutter", "React Native"],
   "Game Development": ["Unity", "Unreal Engine", "Godot"],
   Entrepreneurship: ["Startup", "Business Planning", "Marketing"],
-  "Business Analytics & Intelligence": ["Data Analysis", "Power BI", "Data Science", "Data Visualization"],
+  "Business Analytics & Intelligence": [
+    "Data Analysis",
+    "Power BI",
+    "Data Science",
+    "Data Visualization",
+  ],
   Finance: ["Investing", "Trading", "Accounting", "Cryptocurrency"],
   "IT Certifications": ["AWS", "CompTIA", "Cisco", "Microsoft"],
-  "Personal Transformation": ["Leadership", "Personal Productivity", "Communication Skills", "Confidence"],
-  "Graphic Design & Illustration": ["Photoshop", "Illustrator", "InDesign", "Drawing"],
-  "Digital Marketing": ["SEO", "Social Media Marketing", "Google Analytics", "Content Marketing"],
+  "Personal Transformation": [
+    "Leadership",
+    "Personal Productivity",
+    "Communication Skills",
+    "Confidence",
+  ],
+  "Graphic Design & Illustration": [
+    "Photoshop",
+    "Illustrator",
+    "InDesign",
+    "Drawing",
+  ],
+  "Digital Marketing": [
+    "SEO",
+    "Social Media Marketing",
+    "Google Analytics",
+    "Content Marketing",
+  ],
   // Add other subcategories as needed
 };
 
@@ -459,7 +493,8 @@ export const topic_student = [
   {
     id: 4,
     name: "Purchase/Refunds",
-    description: "Learn about purchasing courses, how to send gifts, and refunds",
+    description:
+      "Learn about purchasing courses, how to send gifts, and refunds",
     img: "https://support.udemy.com/hc/theming_assets/01HZP8FJB5Y47293NZF0220ZKY",
     link: "#section1",
   },

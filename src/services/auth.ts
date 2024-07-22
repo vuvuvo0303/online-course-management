@@ -1,7 +1,7 @@
 import axiosInstance from "./axiosInstance.ts";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import {API_CURRENT_LOGIN_USER, API_LOGIN, paths, roles} from "../consts";
+import { API_LOGIN, paths, roles} from "../consts";
 import {User} from "models/User.ts";
 import { message } from "antd";
 
@@ -31,11 +31,10 @@ export async function login(email: string, password: string){
         }
         else{
           if (decodedToken.role === roles.ADMIN) {
-            const response = await axiosInstance.get(API_CURRENT_LOGIN_USER);
-            console.log(response)
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            message.error(`Your email: ${response.name} is not exists}`);
+            message.error(`You login wrong path. Navigate in 2s`);
+           setTimeout(() => {
+             window.location.href = paths.ADMIN_LOGIN;
+           }, 2000)
             return null;
           }
         }
@@ -52,25 +51,30 @@ export async function login(email: string, password: string){
 
 
 export const handleNavigateRole = async (token: string, navigate: ReturnType<typeof useNavigate>) => {
-  const response = await axiosInstance.get(API_LOGIN);
-  const user = response.data;
-  localStorage.setItem("token", token);
-  localStorage.setItem("user", JSON.stringify(user));
-  switch (user.role) {
-    case roles.STUDENT:
-      navigate(paths.HOME);
-      break;
-    case roles.INSTRUCTOR:
-      navigate(paths.INSTRUCTOR_HOME);
-      break;
-    case roles.ADMIN:
-      navigate(paths.ADMIN_HOME);
-      break;
-    default:
-      navigate(paths.HOME);
-      break;
+  try {
+    const response = await axiosInstance.get(API_LOGIN);
+    const user = response.data;
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    switch (user.role) {
+      case roles.STUDENT:
+        navigate(paths.HOME);
+        break;
+      case roles.INSTRUCTOR:
+        navigate(paths.INSTRUCTOR_HOME);
+        break;
+      case roles.ADMIN:
+        navigate(paths.ADMIN_HOME);
+        break;
+      default:
+        navigate(paths.HOME);
+        break;
+    }
+    message.success("Login successfully");
   }
-  message.success("Login successfully");
+  catch (error) {
+    //
+  }
 };
 
 export const logout = ( navigate: ReturnType<typeof useNavigate>) => {

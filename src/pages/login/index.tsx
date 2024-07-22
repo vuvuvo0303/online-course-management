@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, FormProps, Input, message, Modal, Select } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import Vector from "../../assets/Vector.png";
-import Rectangle from "../../assets/Rectangle .jpg";
+import Login5 from "../../assets/Login5.jpg";
 import { handleNavigateRole, login } from "../../services/auth";
 import {
   API_CURRENT_LOGIN_USER,
@@ -11,8 +10,8 @@ import {
   paths, roles,
 } from "../../consts";
 import { GoogleLogin } from "@react-oauth/google";
-import Lottie from "lottie-react";
-import vutru from "../../assets/vutru.json";
+// import Lottie from "lottie-react";
+// import vutru from "../../assets/vutru.json";
 import axiosInstance from "../../services/axiosInstance.ts";
 
 type FieldType = {
@@ -50,7 +49,9 @@ const LoginPage: React.FC = () => {
     setLoading(false);
   };
 
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
+  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
+    errorInfo
+  ) => {
     console.log("Failed:", errorInfo);
   };
 
@@ -106,7 +107,7 @@ const LoginPage: React.FC = () => {
   const handleModalOk = () => {
     const googleId = localStorage.getItem("token");
     if (googleId) {
-      handleRegisterWithGoogle(googleId)
+      handleRegisterWithGoogle(googleId);
       setIsModalVisible(false);
       localStorage.removeItem("token");
     }
@@ -117,101 +118,87 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <>
-      <div className="flex min-h-screen relative">
-        <img src={Vector} alt="" className="absolute bottom-8" />
-
-        <div className="w-full md:w-1/2 flex flex-col justify-center p-4 md:p-20 bg-white rounded-l-lg">
-          <div className="mr-6 ">
-            <div className="flex justify-center items-center ml-16 ">
-              <h1 className="flex justify-center mb-4 text-3xl md:text-7xl font-bold">
-                Welcome
-              </h1>
-              <Lottie
-                animationData={vutru}
-                style={{ width: "100px", height: "100px" }}
-              />
-            </div>
-
-            <span className="flex justify-center mb-4">
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#18a5a7] via-[#ffe998] to-[#ffb330] relative">
+      <div className="w-full md:w-1/2 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[650px] mb-[30px] mt-[30px]">
+        <div className="w-1/2 flex items-center justify-center">
+          <img
+            src={Login5}
+            alt="Vector"
+            className="object-cover w-full h-full"
+          />
+        </div>
+        <div className="w-1/2 flex flex-col justify-center p-4 md:p-8 bg-white rounded-lg">
+          <div className="flex flex-col items-center mb-4">
+            <h1 className="mb-2 text-2xl md:text-3xl font-bold text-center">
+              Welcome
+            </h1>
+            <span className="text-sm md:text-base text-center">
               Log in to become a part of FLearn
             </span>
           </div>
-
-          <div className="mt-6 flex justify-end">
-            <Form
-              name="basic"
-              className="space-y-2 w-full md:w-[80%]"
-              initialValues={{ remember: true }}
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-              autoComplete="off"
+          <Form
+            name="basic"
+            className="space-y-4 w-full"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+          >
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[
+                { required: true, message: "Please input your email!" },
+                {
+                  type: "email",
+                  message: "Please enter the correct email format!",
+                },
+                { pattern: /^\S*$/, message: "Email must not contain spaces!" },
+              ]}
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
             >
-              <div className="pb-2">
-                <Form.Item
-                  name="email"
-                  label="Email"
-                  rules={[
-                    { required: true, message: "Please input your email!" },
-                    {
-                      type: "email",
-                      message: "Please enter the correct email format!",
-                    },
-                    {
-                      pattern: /^\S*$/,
-                      message: "Password must not contain spaces!",
-                    },
-                  ]}
-                  labelCol={{ span: 24 }}
-                  wrapperCol={{ span: 24 }}
-                  className="mb-1"
-                >
-                  <Input className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                </Form.Item>
-                <Form.Item
-                  name="password"
-                  label="Password"
-                  rules={[
-                    { required: true, message: "Please input your password!" },
-                    {
-                      min: 6,
-                      message: "Password must be at least 6 characters!",
-                    },
-                    {
-                      pattern: /^\S*$/,
-                      message: "Password must not contain spaces!",
-                    },
-                  ]}
-                  labelCol={{ span: 24 }}
-                  wrapperCol={{ span: 24 }}
-                  className="mb-1 mt-5"
-                >
-                  <Input.Password className="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                </Form.Item>
-              </div>
+              <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto" />
+            </Form.Item>
 
+            <Form.Item
+              name="password"
+              label="Password"
+              rules={[
+                { required: true, message: "Please input your password!" },
+                { min: 6, message: "Password must be at least 6 characters!" },
+                {
+                  pattern: /^\S*$/,
+                  message: "Password must not contain spaces!",
+                },
+              ]}
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+            >
+              <Input.Password className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto" />
+            </Form.Item>
+            <div className="flex justify-center">
+              <Link
+                className="hover:text-green-600 mt-2"
+                to={paths.FORGOT_PASSWORD}
+              >
+                Forgot Password
+              </Link>
+            </div>
+            <Form.Item>
               <div className="flex justify-center">
-                <Link
-                  className="md:mr-40 hover:text-green-600"
-                  to={paths.FORGOT_PASSWORD}
-                >
-                  Forgot Password
-                </Link>
-              </div>
-
-              <Form.Item>
                 <Button
                   type="primary"
                   size="large"
                   htmlType="submit"
-                  className="w-full md:w-2/3 shadow-xl hover:shadow-sky-600 bg-black"
+                  className="w-2/3 shadow-xl hover:shadow-sky-600 bg-black"
                   loading={loading}
                 >
                   Login
                 </Button>
-              </Form.Item>
-            </Form>
-          </div>
+              </div>
+            </Form.Item>
+          </Form>
           <span className="mt-4 block text-center">
             Do you have an account?{" "}
             <strong>
@@ -223,31 +210,23 @@ const LoginPage: React.FC = () => {
               </Link>
             </strong>
           </span>
-          <div className="flex justify-center items-center mr-10">
-            <hr className="my-8 border-gray-50 w-36" />
-            <span className="text-center">
-              <strong>Login</strong> with others
-            </span>
-            <hr className="my-8 border-gray-50 w-36" />
+          <div className="flex justify-center items-center mt-6">
+            <hr className="border-gray-300 w-1/3" />
+            <span className="text-center mx-2">or</span>
+            <hr className="border-gray-300 w-1/3" />
           </div>
-          <div className="flex justify-center mr-10">
+          <div className="flex justify-center mt-6">
             <GoogleLogin
               onSuccess={(credentialResponse) => {
                 handleLoginWithGoogle(credentialResponse.credential as string);
-                localStorage.setItem("token", credentialResponse.credential as string);
+                localStorage.setItem(
+                  "token",
+                  credentialResponse.credential as string
+                );
               }}
               onError={() => {
                 console.log("Login Failed");
               }}
-            />
-          </div>
-        </div>
-        <div className="hidden md:flex w-1/2 items-center justify-center">
-          <div className="rounded-lg overflow-hidden w-[80%] shadow-pink-300">
-            <img
-              className="shadow-xl rounded-xl w-full"
-              src={Rectangle}
-              alt="logo"
             />
           </div>
         </div>
@@ -292,7 +271,7 @@ const LoginPage: React.FC = () => {
           )}
         </Form>
       </Modal>
-    </>
+    </div>
   );
 };
 
