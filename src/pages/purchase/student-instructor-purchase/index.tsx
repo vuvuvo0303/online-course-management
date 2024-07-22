@@ -2,7 +2,6 @@ import { Purchase } from "../../../models";
 import { useEffect, useState } from "react";
 import { getItemsByStudent, handleSubscriptionByInstructorOrStudent } from "../../../services";
 import { Avatar, Button, message, Modal, Table, TableProps } from "antd";
-import { getColorPurchase } from "../../../consts";
 import { getInstructoDetailPublic } from "../../../services";
 import { Instructor } from "../../../models/User";
 import { AntDesignOutlined, YoutubeOutlined } from "@ant-design/icons";
