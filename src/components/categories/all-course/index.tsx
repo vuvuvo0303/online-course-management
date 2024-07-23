@@ -7,8 +7,6 @@ import { HeartOutlined } from '@ant-design/icons';
 import { fetchCoursesByClient, addCourseToCart } from '../../../services';
 import { Course } from '../../../models';
 import { format } from 'date-fns';
-
-
 const { Meta } = Card;
 
 const AllCourses: React.FC = () => {
@@ -56,6 +54,7 @@ const AllCourses: React.FC = () => {
         const handleGoToCourse = async () => {
             await addCourseToCart(course._id);
         }
+
         const lastUpdated = format(new Date(course.updated_at), "dd/MM/yyyy");
         return (
             <div className="popover-content w-full">
