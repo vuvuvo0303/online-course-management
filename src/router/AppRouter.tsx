@@ -90,6 +90,9 @@ const ManageAllSession = lazy(() => import("../pages/manage-all-session"));
 const InstructorManageSubscriptions = lazy(
   () => import("../pages/instructor/manage-subscriptions")
 );
+const InstructorManagePayouts = lazy(
+  () => import("../pages/instructor/manage-payouts")
+);
 // Admin Page
 const AdminLoginPage = lazy(() => import("../pages/admin/login"));
 const AdminDashboard = lazy(() => import("../pages/admin/dashboard"));
@@ -386,6 +389,16 @@ const AppRouter: React.FC = () => {
             element={
               canAccess([roles.INSTRUCTOR]) ? (
                 <StudentInstructorPurchase />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
+          />
+          <Route
+            path={paths.INSTRUCTOR_MANAGE_PAYOUTS}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <InstructorManagePayouts />
               ) : (
                 <Navigate to={paths.HOME} />
               )
