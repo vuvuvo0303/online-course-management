@@ -31,6 +31,7 @@ export const API_DELETE_CATEGORY = "/api/category";
 export const API_CREATE_COURSE = "/api/course";
 export const API_GET_COURSES = "/api/course/search";
 export const API_GET_COURSE = "/api/course";
+
 export const API_UPDATE_COURSE = "/api/course";
 export const API_DELETE_COURSE = "/api/course";
 export const API_COURSE_STATUS = "/api/course/change-status";

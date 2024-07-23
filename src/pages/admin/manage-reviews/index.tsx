@@ -1,5 +1,5 @@
 import { Breadcrumb, message, Pagination, Popconfirm, Rate, Table } from "antd";
-import type { TableProps } from "antd";
+import type { PaginationProps, TablePaginationConfig, TableProps } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined, HomeOutlined } from "@ant-design/icons";
 import { Review } from "../../../models";
@@ -7,61 +7,76 @@ import axiosInstance from "../../../services/axiosInstance.ts";
 import { API_DELETE_REVIEW, API_GET_REVIEWS, paths } from "../../../consts";
 import { format } from "date-fns";
 
-
-const AdminManageReviews: React.FC = () => {
-  const [dataReviews, setDataReviews] = useState<Review[]>([]);
+const AdminManageFeedbacks: React.FC = () => {
+  const [data, setData] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [pagination,] = useState({
-    pageNum: 1,
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
     pageSize: 10,
-    totalItems: 0
+    total: 0,
   });
 
   useEffect(() => {
+    fetchReviews();
+  }, [pagination.current, pagination.pageSize]);
 
-    getReviews();
-  }, [pagination.pageSize, pagination.pageNum]);
-
-
-  const getReviews = useCallback(async () => {
+  const fetchReviews = useCallback(async () => {
     try {
-      const response = await axiosInstance.post(API_GET_REVIEWS,
-        {
-          searchCondition: {
-            course_id: "",
-            rating: 0,
-            is_instructor: false,
-            is_rating_order: false,
-            is_deleted: false
-          },
-          pageInfo: {
-            pageNum: 1,
-            pageSize: 10
-          }
-        }
-      );
-      setDataReviews(response.data.pageData)
-      setLoading(false)
+      const response = await axiosInstance.post(API_GET_REVIEWS, {
+        searchCondition: {
+          course_id: "",
+          rating: 0,
+          is_instructor: false,
+          is_rating_order: false,
+          is_deleted: false,
+        },
+        pageInfo: {
+          pageNum: pagination.current,
+          pageSize: pagination.pageSize,
+        },
+      });
+      setData(response.data.pageData);
+
+      setPagination({
+        ...pagination,
+        total: response.data.pageInfo.totalItems,
+        current: response.data.pageInfo.pageNum,
+        pageSize: response.data.pageInfo.pageSize,
+      });
     } catch (error) {
       console.error("Error fetching students:", error);
+    } finally {
+      setLoading(false);
     }
   }, []);
-
 
   const handleDeleteReview = useCallback(
     async (_id: string, reviewer_name: string, course_name: string) => {
       try {
         await axiosInstance.delete(`${API_DELETE_REVIEW}/${_id}`);
-        setDataReviews(prevReview => prevReview.filter(review => review._id === _id));
+        setData((prevReview) => prevReview.filter((review) => review._id === _id));
         message.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
-        getReviews();
+        fetchReviews();
       } catch {
         //
       }
-    }
-    , [getReviews])
+    },
+    [fetchReviews]
+  );
+  const handleTableChange = (pagination: PaginationProps) => {
+    const newPagination: { current: number; pageSize: number; total: number } = {
+      current: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      total: pagination.total ?? 0,
+    };
 
+    setPagination(newPagination);
+  };
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({ ...pagination, current: page, pageSize });
+  };
   const columns: TableProps<Review>["columns"] = [
     {
       title: "User Name",
@@ -122,7 +137,7 @@ const AdminManageReviews: React.FC = () => {
   ];
 
   if (loading) {
-    return <p className="text-center">Loading...</p>
+    return <p className="text-center">Loading...</p>;
   }
   return (
     <div>
@@ -131,20 +146,27 @@ const AdminManageReviews: React.FC = () => {
         items={[
           {
             title: <HomeOutlined />,
-            href: paths.ADMIN_HOME
+            href: paths.ADMIN_HOME,
           },
           {
             title: "Manage Feedbacks",
           },
         ]}
       />
-      <Table rowKey={(record: Review) => record._id} columns={columns} dataSource={dataReviews} />
+      <Table
+        rowKey={(record: Review) => record._id}
+        columns={columns}
+        dataSource={data}
+        pagination={false}
+        onChange={handleTableChange}
+      />
       <div className="flex justify-end py-8">
         <Pagination
-          total={pagination.totalItems}
-          showTotal={(total) => `Total ${total} items`}
-          current={pagination.pageNum}
+          total={pagination.total}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          current={pagination.current}
           pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
           showSizeChanger
         />
       </div>
@@ -152,5 +174,4 @@ const AdminManageReviews: React.FC = () => {
   );
 };
 
-export default AdminManageReviews;
-
+export default AdminManageFeedbacks;

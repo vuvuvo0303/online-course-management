@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
-import { Form, message, Modal, Popconfirm, TableColumnsType, Input, Select } from "antd";
+import { message, Pagination, Popconfirm, TableColumnsType, TablePaginationConfig } from "antd";
 import { Breadcrumb, Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
@@ -14,6 +14,7 @@ const AdminManageBlogs: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0 });
   const [categories, setCategories] = useState<Category[]>([]);
   const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
 
@@ -37,17 +38,17 @@ const AdminManageBlogs: React.FC = () => {
     }
   };
 
-  const getBlogs = async () => {
+  const fetchBlogs = async () => {
     try {
       const response = await axiosInstance.post(API_GET_BLOGS, {
-        "searchCondition": {
-          "category_id": "",
-          "is_deleted": false
+        searchCondition: {
+          category_id: "",
+          is_deleted: false,
         },
-        "pageInfo": {
-          "pageNum": 1,
-          "pageSize": 100
-        }
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 100,
+        },
       });
       setDataBlogs(response.data.pageData);
     } catch (error) {
@@ -165,7 +166,16 @@ const AdminManageBlogs: React.FC = () => {
   if (loading) {
     return <p className="text-center">Loading...</p>;
   }
-
+  const handlePaginationChange = (page: number, pageSize?: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize || 10,
+    }));
+  };
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
+  };
   return (
     <div>
       <div className="flex justify-between">
@@ -311,7 +321,17 @@ const AdminManageBlogs: React.FC = () => {
           )}
         </Modal>
       </div>
-      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id} />
+      <Table columns={columns} dataSource={data} rowKey={(record: Blog) => record._id}   onChange={handleTableChange} pagination={false}/>
+      <div className="flex justify-end py-8">
+        <Pagination
+          total={pagination.total}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
+      </div>
     </div>
   );
 };

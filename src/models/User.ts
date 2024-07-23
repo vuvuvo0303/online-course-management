@@ -153,6 +153,8 @@ export class Instructor extends User {
   degree: string;
   isApproved?: boolean;
   is_subscribed?: boolean
+  isRejected?: boolean;
+
   constructor(
     _id: string = "",
     name: string = "",

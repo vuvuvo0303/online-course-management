@@ -1,9 +1,17 @@
-import { EditOutlined, EyeOutlined, HomeOutlined, PlayCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  EditOutlined,
+  
+  HomeOutlined,
+  PlayCircleOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
   Button,
+  Empty,
   Form,
   Image,
   Input,
@@ -15,12 +23,13 @@ import {
   Table,
   TableColumnsType,
   TablePaginationConfig,
+  TableProps,
   Tag,
 } from "antd";
-import { API_COURSE_STATUS, API_GET_COURSES, getColor } from "../../../consts";
+import { API_COURSE_LOGS, API_COURSE_STATUS, API_GET_COURSES, getColor } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
-import { Course } from "../../../models";
+import { Course, Log } from "../../../models";
 import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
 const AdminManageCourses: React.FC = () => {
@@ -29,7 +38,7 @@ const AdminManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [courseId, setCourseId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-
+  const [keywordLogStatus, setKeywordLogStatus] = useState<string>("");
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
@@ -38,8 +47,13 @@ const AdminManageCourses: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>("All Status");
   const [comment, setComment] = useState<string>("");
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [openLogStatus, setOpenLogStatus] = useState(false);
+  const [newStatus, setNewStatus] = useState<string>("");
+  const [oldStatus, setOldStatus] = useState<string>("");
+  const [logs, setLogs] = useState<Log[]>([]);
+  const [logLoading, setLogLoading] = useState<boolean>(true);
 
-  const [status, setStatus] = useState<string>("new");
+  const [status, setStatus] = useState<string>("");
   const debouncedSearchTerm = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -50,7 +64,40 @@ const AdminManageCourses: React.FC = () => {
   const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setComment(e.target.value);
   };
-
+  const fetchLog = async () => {
+    try {
+      setLogLoading(true);
+      const response = await axiosInstance.post(API_COURSE_LOGS, {
+        searchCondition: {
+          course_id: courseId,
+          keyword: keywordLogStatus,
+          old_status: oldStatus,
+          new_status: newStatus,
+          is_deleted: false,
+        },
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 100,
+        },
+      });
+      if (response) {
+        setLogs(
+          response.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          })
+        );
+        setLogLoading(false);
+      }
+    } catch (error) {
+      //
+    }
+  };
+  useEffect(() => {
+    //fetch logs
+    if (courseId) {
+      fetchLog();
+    }
+  }, [courseId, oldStatus, newStatus, keywordLogStatus, setLogLoading, setLogs]);
   const fetchCourses = useCallback(async () => {
     try {
       const params = {
@@ -138,6 +185,55 @@ const AdminManageCourses: React.FC = () => {
   const handleCancel = () => {
     setOpenChangeStatus(false);
   };
+  const columnsLogs: TableProps["columns"] = [
+    {
+      title: "Created Date ",
+      dataIndex: "created_at",
+      key: "created_at",
+      defaultSortOrder: "descend",
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+    },
+    {
+      title: "Name",
+      dataIndex: "course_name",
+      key: "course_name",
+      width: 200,
+    },
+    {
+      title: "Old Status",
+      dataIndex: "old_status",
+      key: "old_status",
+      render: (old_status: string) => (
+        <>
+          <div className="flex justify-between">
+            <Tag color={getColor(old_status)}>{old_status === "waiting_approve" ? "waiting approve" : old_status}</Tag>
+            <ArrowRightOutlined style={{ color: "purple" }} />
+          </div>
+        </>
+      ),
+    },
+
+    {
+      title: "New Status",
+      dataIndex: "new_status",
+      key: "new_status",
+      render: (new_status: string) => (
+        <>
+          <Tag color={getColor(new_status)}>{new_status === "waiting_approve" ? "waiting approve" : new_status}</Tag>
+        </>
+      ),
+    },
+    {
+      title: "Comment",
+      dataIndex: "comment",
+      key: "comment",
+      render: (comment: string) => (
+        <>
+          <div className="truncate">{comment === "" ? "" : comment}</div>
+        </>
+      ),
+    },
+  ];
 
   const columnsCourses: TableColumnsType<Course> = [
     {
@@ -152,6 +248,7 @@ const AdminManageCourses: React.FC = () => {
       ),
     },
 
+
     { title: "Category", dataIndex: "category_name", key: "category_name" },
     {
       title: "Status",
@@ -159,7 +256,8 @@ const AdminManageCourses: React.FC = () => {
       key: "status",
       render: (status: string, record: Course) => (
         <>
-          <div className="flex justify-between">
+          <div className="flex justify-between text-blue-500 cursor-pointer"  onClick={() => showModalLogStatus(record._id)} >
+          
             <Tag color={getColor(status)}>{status === "waiting_approve" ? "waiting approve" : status}</Tag>
             {status === "waiting_approve" ? (
               <EditOutlined onClick={() => showModalChangeStatus(record._id)} className="text-blue-500" />
@@ -182,18 +280,18 @@ const AdminManageCourses: React.FC = () => {
       key: "updated_at",
       render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
     },
-    {
-      title: "Action",
-      key: "action",
-      width: "15",
-      render: (record: Course) => (
-        <>
-          <Link to={`/admin/manage-course/${record._id}/manage-session`}>
-            <EyeOutlined className="text-purple-500 m-2" />
-          </Link>
-        </>
-      ),
-    },
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   width: "15",
+    //   render: (record: Course) => (
+    //     <>
+    //       <Link to={`/admin/manage-course/${record._id}/manage-session`}>
+    //         <EyeOutlined className="text-purple-500 m-2" />
+    //       </Link>
+    //     </>
+    //   ),
+    // },
   ];
 
   if (loading) {
@@ -221,6 +319,11 @@ const AdminManageCourses: React.FC = () => {
       });
     }
   });
+  const showModalLogStatus = async (course_id: string) => {
+    setCourseId(course_id);
+
+    setOpenLogStatus(true);
+  };
 
   const uniqueCategories = Array.from(uniqueCategoriesMap.values());
   uniqueCategories.unshift({ category_id: "", category_name: "All Categories" });
@@ -243,8 +346,109 @@ const AdminManageCourses: React.FC = () => {
       current: 1,
     }));
   };
+
+  const handleOkLogStatus = () => {
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpenLogStatus(false);
+      setConfirmLoading(false);
+    }, 500);
+  };
+  const handleChangeOldStatus = (value: string) => {
+    setNewStatus("");
+    setOldStatus(value);
+  };
+  const handleAllLog = () => {
+    setOldStatus("");
+    setNewStatus("");
+  };
+  const handleSearchLogStatus = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeywordLogStatus(e.target.value);
+  };
+  const handleChangeNewStatus = (value: string) => {
+    setOldStatus("");
+    setNewStatus(value);
+  };
   return (
     <div className="container mx-auto p-4">
+      <Modal
+        width={1200}
+        title="Log Status"
+        open={openLogStatus}
+        onOk={handleOkLogStatus}
+        confirmLoading={confirmLoading}
+        footer={null}
+        onCancel={() => setOpenLogStatus(false)}
+      >
+        <div>
+          {/* Filter all log  */}
+
+          <Button onClick={handleAllLog} type="primary">
+            All log
+          </Button>
+          <Input
+            placeholder="Search"
+            value={keywordLogStatus}
+            onChange={handleSearchLogStatus}
+            className="m-5"
+            style={{ width: 200 }}
+          />
+          {/* Filter log by old status */}
+          <Select
+            defaultValue="Filter by old status"
+            style={{ width: 200 }}
+            className="m-5"
+            onChange={handleChangeOldStatus}
+            options={[
+              {
+                options: [
+                  { label: <span>new</span>, value: "new" },
+                  { label: <span>waiting approve</span>, value: "waiting_approve" },
+                  { label: <span>approve</span>, value: "approve" },
+                  { label: <span>reject</span>, value: "reject" },
+                  { label: <span>active</span>, value: "active" },
+                  { label: <span>inactive</span>, value: "inactive" },
+                ],
+              },
+            ]}
+          />
+          {/* Filter log by new status */}
+          <Select
+            defaultValue="Filter by new status"
+            style={{ width: 200 }}
+            className="m-5"
+            onChange={handleChangeNewStatus}
+            options={[
+              {
+                options: [
+                  { label: <span>new</span>, value: "new" },
+                  { label: <span>waiting_approve</span>, value: "waiting_approve" },
+                  { label: <span>approve</span>, value: "approve" },
+                  { label: <span>reject</span>, value: "reject" },
+                  { label: <span>active</span>, value: "active" },
+                  { label: <span>inactive</span>, value: "inactive" },
+                ],
+              },
+            ]}
+          />
+          <div>
+            {logLoading === false ? (
+              logs && logs.length > 0 ? (
+                <Table rowKey={(record: Log) => record._id} columns={columnsLogs} dataSource={logs} />
+              ) : (
+                <div>
+                  <Empty />
+                </div>
+              )
+            ) : (
+              <div className="text-center">Loading ...</div>
+            )}
+          </div>
+          <div className="flex justify-end ">
+            <Button type="primary"  danger >Close</Button>
+          </div>
+        </div>
+      </Modal>
       {/* Modal Change Status */}
       <Modal
         title="Change Status"
@@ -309,6 +513,10 @@ const AdminManageCourses: React.FC = () => {
               {selectedCourse.session_count}
             </div>
             <div>
+              <span className="text-base font-bold">Lesson: </span>
+              {selectedCourse.lesson_count}
+            </div>
+            <div>
               <span className="text-base font-bold">Thumbnail: </span>
               <Image src={selectedCourse.image_url} alt={selectedCourse.name} style={{ width: "100%" }} />
             </div>
@@ -326,7 +534,7 @@ const AdminManageCourses: React.FC = () => {
           </div>
         )}
         <div className="flex justify-end">
-          <Button type="primary" onClick={() => setIsModalVisible(false)}>
+          <Button type="primary" danger onClick={() => setIsModalVisible(false)}>
             Close
           </Button>
         </div>
@@ -347,13 +555,13 @@ const AdminManageCourses: React.FC = () => {
       />
 
       {/* Filters and Search */}
-      <Space className="flex flex-wrap justify-between mb-4">
+      <Space className="flex flex-wrap  mb-4">
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           onSearch={handleSearch}
-          className="w-48 md:w-64"
+            className="w-full md:w-48"
           enterButton={<SearchOutlined className="text-white" />}
         />
         <Select
@@ -362,7 +570,7 @@ const AdminManageCourses: React.FC = () => {
           optionFilterProp="children"
           onChange={handleCategoryChange}
           value={selectedCategoryName}
-          className="w-48 md:w-64"
+          className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
         >
           {uniqueCategories.map((category) => (
             <Select.Option key={category.category_id} value={category.category_name}>
@@ -377,7 +585,7 @@ const AdminManageCourses: React.FC = () => {
           optionFilterProp="children"
           onChange={handleStatusChange}
           value={selectedStatus}
-          className="w-48 md:w-64"
+          className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
         >
           <Select.Option value="">All Status</Select.Option>
           <Select.Option value="new">New</Select.Option>
@@ -388,11 +596,17 @@ const AdminManageCourses: React.FC = () => {
           <Select.Option value="inactive">Inactive</Select.Option>
         </Select>
       </Space>
-      <Table columns={columnsCourses} rowKey={(record: Course) => record._id} dataSource={courses} pagination={false} onChange={handleTableChange} />
+      <Table
+        columns={columnsCourses}
+        rowKey={(record: Course) => record._id}
+        dataSource={courses}
+        pagination={false}
+        onChange={handleTableChange}
+      />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
-          showTotal={(total) => `Total ${total} items`}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           current={pagination.current}
           pageSize={pagination.pageSize}
           onChange={handlePaginationChange}
