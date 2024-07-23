@@ -24,13 +24,15 @@ import { useDebounce } from "../../../hooks";
 const { TextArea } = Input;
 
 const AdminInstructorRequest = () => {
-  const [dataInstructorRequest, setDataInstructorRequest] = useState<
-    Instructor[]
-  >([]);
+  const [dataInstructorRequest, setDataInstructorRequest] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
   const debouncedSearch = useDebounce(searchText, 500);
-  const [dataSource, setDataSource] = useState<Instructor[]>([]);
+  const [dataSource,setDataSource] =useState<Instructor[]>([])
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -45,7 +47,7 @@ const AdminInstructorRequest = () => {
   //   fetchInstructorRequest();
   // }, [pagination.current, pagination.pageSize, debouncedSearch]);
 
-  useEffect(() => {
+useEffect(() => {
     const savedData = localStorage.getItem("instructorData");
     if (savedData) {
       setDataSource(JSON.parse(savedData));
@@ -65,6 +67,7 @@ const AdminInstructorRequest = () => {
   useEffect(() => {
     localStorage.setItem("instructorData", JSON.stringify(dataSource));
   }, [dataSource]);
+
 
   const columns: TableProps<Instructor>["columns"] = [
     {
@@ -165,6 +168,11 @@ const AdminInstructorRequest = () => {
       ),
     },
   ];
+<<<<<<< Updated upstream
+
+
+=======
+>>>>>>> Stashed changes
 
   const fetchInstructorRequest = async () => {
     setLoading(true);
@@ -181,14 +189,23 @@ const AdminInstructorRequest = () => {
         },
       });
 
+<<<<<<< Updated upstream
+
+      if (response.data && response.data.pageData) {
+        const dataWithApprovalStatus = response.data.pageData.map((instructor: Instructor) => ({
+          ...instructor,
+          isApproved: instructor.is_verified,
+          isRejected: false,
+        }));
+=======
       if (response.data && response.data.pageData) {
         const dataWithApprovalStatus = response.data.pageData.map(
-          (instructor: Instructor) => ({
+          (instructor) => ({
             ...instructor,
             isApproved: instructor.is_verified,
-            isRejected: false,
           })
         );
+>>>>>>> Stashed changes
 
         setDataSource(dataWithApprovalStatus);
         setPagination((prev) => ({
@@ -213,6 +230,7 @@ const AdminInstructorRequest = () => {
 
   const handleApprove = async (record: Instructor) => {
     try {
+<<<<<<< Updated upstream
       const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
         user_id: record._id,
         status: "approve",
@@ -227,11 +245,33 @@ const AdminInstructorRequest = () => {
         setDataInstructorRequest(updatedDataSource);
       } else {
         message.error("Failed to approve instructor");
+=======
+      const response = await axiosInstance.put(
+        "/api/users/review-profile-instructor",
+        {
+          user_id: record._id,
+          status: "approve",
+          comment: "",
+        }
+      );
+
+      if (response) {
+        message.success("Email phê duyệt đã được gửi thành công");
+        const updatedDataSource = dataSource.map((item) =>
+          item._id === record._id ? { ...item, isApproved: true } : item
+        );
+        setDataSource(updatedDataSource);
+>>>>>>> Stashed changes
       }
     } catch (error) {
       //
     }
   };
+<<<<<<< Updated upstream
+
+
+=======
+>>>>>>> Stashed changes
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
@@ -241,19 +281,28 @@ const AdminInstructorRequest = () => {
     if (!selectedInstructor) return;
 
     try {
+<<<<<<< Updated upstream
       const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
         user_id: selectedInstructor._id,
         status: "reject",
         comment: rejectReason,
       });
+=======
+      const response = await axiosInstance.put(
+        "/api/users/review-profile-instructor",
+        {
+          user_id: selectedInstructor._id,
+          status: "reject",
+          comment: rejectReason,
+        }
+      );
+>>>>>>> Stashed changes
 
       if (response) {
         message.success("Instructor rejected successfully");
 
         const updatedDataSource = dataSource.map((item) =>
-          item._id === selectedInstructor._id
-            ? { ...item, isRejected: true }
-            : item
+          item._id === selectedInstructor._id ? { ...item, isRejected: true } : item
         );
         setDataSource(updatedDataSource);
       }
@@ -264,6 +313,8 @@ const AdminInstructorRequest = () => {
       setIsModalVisible(false);
     }
   };
+
+  
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPagination((prev) => ({
@@ -309,9 +360,7 @@ const AdminInstructorRequest = () => {
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
-          showTotal={(total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`
-          }
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           current={pagination.current}
           pageSize={pagination.pageSize}
           onChange={handlePaginationChange}
@@ -338,3 +387,7 @@ const AdminInstructorRequest = () => {
 };
 
 export default AdminInstructorRequest;
+
+
+
+
