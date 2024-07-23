@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
 import { Suspense, lazy } from "react";
-// import StudentSubscription from "pages/student/subscription";
 
 // Guest Page
 const Home = lazy(() => import("../pages/home"));

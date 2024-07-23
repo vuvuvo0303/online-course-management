@@ -494,7 +494,7 @@ const AdminManageCourses: React.FC = () => {
           <div className="flex flex-col gap-2">
             <div>
               <span className="text-base font-bold">Course's Instructor: </span>
-              {selectedCourse.user_name}
+              {selectedCourse.instructor_name}
             </div>
             <div>
               <span className="text-base font-bold">Price: </span>
