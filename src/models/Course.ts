@@ -20,7 +20,15 @@ export class Course {
   is_in_cart: boolean;
   is_purchased: boolean;
   average_rating: number;
-  review_count: number; // Added to reflect the API response
+  review_count: number;
+  session_list: Array<{
+    name: string;
+    full_time: number;
+    lesson_list: Array<{
+      name: string;
+      full_time: number;
+    }>;
+  }>;
 
   constructor(
     _id: string = "",
@@ -44,7 +52,15 @@ export class Course {
     is_in_cart: boolean = false,
     is_purchased: boolean = false,
     average_rating: number = 0,
-    review_count: number = 0, // Initialize review_count
+    review_count: number = 0,
+    session_list: Array<{
+      name: string;
+      full_time: number;
+      lesson_list: Array<{
+        name: string;
+        full_time: number;
+      }>;
+    }> = [],
   ) {
     this._id = _id;
     this.name = name;
@@ -68,5 +84,6 @@ export class Course {
     this.is_purchased = is_purchased;
     this.average_rating = average_rating;
     this.review_count = review_count;
+    this.session_list = session_list;
   }
 }

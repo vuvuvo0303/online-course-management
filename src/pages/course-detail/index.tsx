@@ -1,8 +1,9 @@
+// CourseDetails.tsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Spin, Tabs } from "antd";
 import axiosInstance from "../../services/axiosInstance";
-import { Course } from "../../models";
+import { Course } from "../../models/Course";
 import CourseCard from "./course-card/CourseCard";
 import About from "./about/about";
 import Content from "./content/content";
@@ -70,8 +71,8 @@ const CourseDetails: React.FC = () => {
             </div>
 
             <div className="course-content">
-                {activeTabKey === "1" && <About />} {/* Render corresponding content based on active tab */}
-                {activeTabKey === "2" && <Content />}
+                {activeTabKey === "1" && <About />}
+                {activeTabKey === "2" && course && <Content course={course} />}
                 {activeTabKey === "3" && <ReviewPage />}
                 {activeTabKey === "4" && <Instructor />}
             </div>
