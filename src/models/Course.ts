@@ -21,7 +21,7 @@ export class Course {
   is_in_cart: boolean;
   is_purchased: boolean;
   average_rating: number;
-  review_count: number; // Added to reflect the API response
+
 
   constructor(
     price_paid: number = 0,
@@ -38,17 +38,17 @@ export class Course {
     discount: number = 0,
     created_at: Date = new Date(),
     updated_at: Date = new Date(),
-    price_paid: number = 0,
+  
     full_time: number = 0,
     instructor_id: string = "",
-    instructor_name: string = "",
+  
     category_name: string = "",
     session_count: number = 0,
     lesson_count: number = 0,
     is_in_cart: boolean = false,
     is_purchased: boolean = false,
     average_rating: number = 0,
-    review_count: number = 0, // Initialize review_count
+  
   ) {
     this.instructor_name = instructor_name;
     this.price_paid = price_paid;

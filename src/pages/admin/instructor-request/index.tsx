@@ -15,7 +15,7 @@ import {
 } from "antd";
 import { API_GET_USERS, API_REVIEW_PROFILE_INSTRUCTOR } from "../../../consts";
 import { Instructor } from "../../../models/User";
-import { useEffect, useState } from "react";
+
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
@@ -28,6 +28,7 @@ const AdminInstructorRequest = () => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const debouncedSearch = useDebounce(searchText, 500);
+  const [dataSource,setDataSource] =useState<Instructor[]>([])
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -251,9 +252,7 @@ useEffect(() => {
     }
   };
 
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
-  };
+  
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPagination((prev) => ({

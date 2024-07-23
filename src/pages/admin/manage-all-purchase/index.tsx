@@ -1,4 +1,5 @@
 import { Breadcrumb, Input, Pagination, Select, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
+
 import { API_GET_PURCHASE_BY_ADMIN, getColorPurchase } from "../../../consts/index";
 import { format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
@@ -23,8 +24,7 @@ interface Purchase {
   student_name: string;
   instructor_name: string;
 }
-import { HomeOutlined } from "@ant-design/icons";
-import { Purchase } from "../../../models/Purchase";
+
 
 
 const ManageAllPurchase = () => {
@@ -136,7 +136,7 @@ const ManageAllPurchase = () => {
   };
   return (
     <div>
-      <Breadcrumb className="p-3">
+      
       <Breadcrumb className="p-3">
         <Breadcrumb.Item>
           <HomeOutlined />
@@ -169,7 +169,7 @@ const ManageAllPurchase = () => {
       </div>
       <Table
         columns={columns}
-        dataSource={dataPurchases}
+        dataSource={dataSource}
         pagination={{
           current: pagination.current,
           pageSize: pagination.pageSize,

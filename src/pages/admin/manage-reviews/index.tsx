@@ -21,7 +21,7 @@ const AdminManageFeedbacks: React.FC = () => {
     fetchReviews();
   }, [pagination.current, pagination.pageSize]);
 
-  const getReviews = useCallback(async () => {
+  const fetchReviews = useCallback(async () => {
     try {
       const response = await axiosInstance.post(API_GET_REVIEWS, {
         searchCondition: {
@@ -57,7 +57,7 @@ const AdminManageFeedbacks: React.FC = () => {
         await axiosInstance.delete(`${API_DELETE_REVIEW}/${_id}`);
         setData((prevReview) => prevReview.filter((review) => review._id === _id));
         message.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
-        getReviews();
+        fetchReviews();
       } catch {
         //
       }
