@@ -1,24 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance.ts";
-import {
-  API_GET_PAYOUTS,
-  API_UPDATE_STATUS_PAYOUT,
-  paths,
-} from "../../../consts/index.ts";
-import {
-  Breadcrumb,
-  Button,
-  Table,
-  TableColumnsType,
-  Tag,
-  message,
-} from "antd";
+import { API_GET_PAYOUTS, API_UPDATE_STATUS_PAYOUT, paths } from "../../../consts/index.ts";
+import { Breadcrumb, Button, Table, TableColumnsType, Tag, message } from "antd";
 import { format } from "date-fns";
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { Payout } from "models/Payout.ts";
 
 const AdminManagePayouts: React.FC = () => {
-  const [dataPayouts, setDataPayouts] = useState<Payout[]>([]);
+    const [dataPayouts, setDataPayouts] = useState<Payout[]>([]);
 
   const getPayouts = useCallback(async () => {
     const response = await axiosInstance.post(API_GET_PAYOUTS, {
@@ -117,62 +106,58 @@ const AdminManagePayouts: React.FC = () => {
     (payout) => payout.status === "request_payout"
   );
 
-  if (hasRequestPayout) {
-    columns.push({
-      title: "Action",
-      key: "action",
-      width: "20%",
-      render: (record: Payout) => (
-        <div>
-          <Button
-            type="primary"
-            onClick={() => handleStatusChange(record._id, "completed")}
-          >
-            Completed
-          </Button>
-          <Button
-            type="primary"
-            danger
-            onClick={() => handleStatusChange(record._id, "rejected")}
-          >
-            Rejected
-          </Button>
-        </div>
-      ),
-    });
-  }
+    if (hasRequestPayout) {
+        columns.push({
+            title: "Action",
+            key: "action",
+            width: "20%",
+            render: (record: Payout) => (
+                <div>
+                    <Button
+                        type="primary"
+                        onClick={() => handleStatusChange(record._id, "completed")}
+                    >
+                        Completed
+                    </Button>
+                    <Button
+                        type="primary"
+                        danger
+                        onClick={() => handleStatusChange(record._id, "rejected")}
+                    >
+                        Rejected
+                    </Button>
+                </div>
+            ),
+        });
+    }
 
-  return (
-    <div>
-      <div className="flex justify-between">
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              title: <HomeOutlined />,
-            },
-            {
-              href: paths.ADMIN_HOME,
-              title: (
-                <>
-                  <UserOutlined />
-                  <span>Admin</span>
-                </>
-              ),
-            },
-            {
-              title: "Manage Payment",
-            },
-          ]}
-        />
-      </div>
-      <Table
-        columns={columns}
-        dataSource={dataPayouts}
-        rowKey={(record: Payout) => record._id}
-      />
-    </div>
-  );
+    return (
+        <div>
+            <div className="flex justify-between">
+                <Breadcrumb
+                    className="py-2"
+                    items={[
+                        {
+                            title: <HomeOutlined />,
+                        },
+                        {
+                            href: paths.ADMIN_HOME,
+                            title: (
+                                <>
+                                    <UserOutlined />
+                                    <span>Admin</span>
+                                </>
+                            ),
+                        },
+                        {
+                            title: "Manage Payment",
+                        },
+                    ]}
+                />
+            </div>
+            <Table columns={columns} dataSource={dataPayouts} rowKey={(record: Payout) => record._id} />
+        </div>
+    );
 };
 
 export default AdminManagePayouts;

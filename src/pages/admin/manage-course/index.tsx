@@ -64,7 +64,6 @@ const AdminManageCourses: React.FC = () => {
   const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setComment(e.target.value);
   };
-<<<<<<< Updated upstream
   const fetchLog = async () => {
     try {
       setLogLoading(true);
@@ -99,13 +98,6 @@ const AdminManageCourses: React.FC = () => {
       fetchLog();
     }
   }, [courseId, oldStatus, newStatus, keywordLogStatus, setLogLoading, setLogs]);
-=======
-
-
-
-  
-
->>>>>>> Stashed changes
   const fetchCourses = useCallback(async () => {
     try {
       const params = {
