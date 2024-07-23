@@ -29,7 +29,7 @@ export const deleteUser = async (_id: string, email: string, fetchUsers: () => P
 };
 
 //USER-06 Get Instructor Detail
-export const getInstructoDetailPublic = async (instructor_id: string) => {
+export const getInstructorDetailPublic = async (instructor_id: string) => {
     try {
         const response = await axiosInstance.get(`${API_GET_USER_DETAIL}/${instructor_id}`
         )
@@ -38,7 +38,7 @@ export const getInstructoDetailPublic = async (instructor_id: string) => {
             return response.data;
         }
     } catch (error) {
-        console.log("getInstructoDetailPublic - Error occurred: ", error)
+        console.log("getInstructorDetailPublic - Error occurred: ", error)
         return [];
     }
 }

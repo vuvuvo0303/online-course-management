@@ -1,10 +1,8 @@
 import React from 'react';
 import styles from './cartComponents.module.css';
 import { Checkbox, Col, Form, Row, Tag } from "antd";
-import { getColorCart, imgCourse, paths } from "../../consts/index.ts";
+import { getColorCart, imgCourse } from "../../consts/index.ts";
 import { Cart } from '../../models';
-import { Link } from 'react-router-dom';
-import CustomButton from '../../components/CustomButton.tsx';
 
 interface CartComponentsProps {
     cartsNew?: Cart;
@@ -31,14 +29,9 @@ const CartComponents: React.FC<CartComponentsProps>
         return (
             <div className={`${styles.shopping_wrapper}`} style={{ minWidth: "768px" }}>
                 <Form {...formItemLayout} initialValues={{}}>
-                    {(!cartsNew && !cartsCancel) ? (
-                        <div className={styles.empty_cart_container}>
-                            <img width={200} height={200} alt='empty-cart-display' src='https://s.udemycdn.com/browse_components/flyout/empty-shopping-cart-v2-2x.jpg' />
-                            <p className='text-lg mb-4'>Your cart is empty. Keep shopping to find a course!</p>
-                            <Link to={paths.HOME}>
-                                <CustomButton title='Keep Shopping' containerStyles='bg-purple-500' />
-                            </Link>
-                        </div>
+                    {!cartsNew && !cartsCancel ? (
+                        <>
+                        </>
                     ) : (
                         <>
                             {cartsNew && (

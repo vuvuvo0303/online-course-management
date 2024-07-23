@@ -35,10 +35,11 @@ const Checkout = lazy(() => import("../pages/checkout"));
 const Profile = lazy(() => import("../pages/profile"));
 const Cart = lazy(() => import("../pages/cart"));
 const StudentSubscription = lazy(() => import("../pages/student/subscription"));
-// Student and Instructor Page
-const StudentInstructorPurchase = lazy(() => import("../pages/purchase/student-instructor-purchase"));
+const StudenManagePurchase = lazy(() => import("../pages/purchase"));
 
 // Instructor Page
+const InstructorManagePayout = lazy(() => import("../pages/instructor/manage-payout"));
+const InstructorManagePurchase = lazy(() => import("../pages/instructor/manage-purchase"));
 const InstructorDashboard = lazy(() => import("../pages/instructor/instructor-dashboard/index"));
 const InstructorManagerReviews = lazy(() => import("../pages/instructor/manage-reviews"));
 const InstructorManageCourses = lazy(() => import("../pages/instructor/manage-course/index"));
@@ -110,7 +111,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.STUDENT_CART} element={<Cart />} />
         <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
-        <Route path={paths.STUDENT_PURCHASE} element={<StudentInstructorPurchase />} />
+        <Route path={paths.STUDENT_PURCHASE} element={<StudenManagePurchase />} />
         <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
         {/* Route for Instructor */}
         <Route
@@ -204,7 +205,11 @@ const AppRouter: React.FC = () => {
           />
           <Route
             path={paths.INSTRUCTOR_MANAGE_PURCHASES}
-            element={canAccess([roles.INSTRUCTOR]) ? <StudentInstructorPurchase /> : <Navigate to={paths.HOME} />}
+            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManagePurchase /> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_MANAGE_PAYOUTS}
+            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManagePayout /> : <Navigate to={paths.HOME} />}
           />
         </Route>
 
