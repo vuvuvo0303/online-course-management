@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 import { useState, useEffect, useCallback } from "react";
 import {
   Breadcrumb,
@@ -43,17 +42,11 @@ import {
   API_UPDATE_USER,
   paths,
 } from "../../../consts";
-=======
-import React, { useCallback, useEffect, useState } from "react";
->>>>>>> Stashed changes
 import axiosInstance from "../../../services/axiosInstance.ts";
-import { API_GET_PAYOUTS, paths } from "../../../consts/index.ts";
-import { Breadcrumb, Button, Table, TableColumnsType, Tag, notification } from "antd";
-import { format } from "date-fns";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
-import { Payout } from "models/Payout.ts";
+import ResponseData from "models/ResponseData.ts";
+import { useDebounce } from "../../../hooks/index.ts";
+import { deleteUser } from "../../../services/users.ts";
 
-<<<<<<< Updated upstream
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AdminManageUsers: React.FC = () => {
@@ -61,18 +54,18 @@ const AdminManageUsers: React.FC = () => {
 
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
-=======
-const InstructorManagePayouts: React.FC = () => {
-  const [data, setData] = useState<Payout[]>([]);
->>>>>>> Stashed changes
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({
+  const [form] = Form.useForm();
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
+    total: 0,
   });
+  const [formData, setFormData] = useState<Partial<User>>({});
 
-<<<<<<< Updated upstream
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
   const [selectedRole, setSelectedRole] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("true");
@@ -81,16 +74,17 @@ const InstructorManagePayouts: React.FC = () => {
 
   useEffect(() => {
     getUsers();
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch]);
+  }, [
+    pagination.current,
+    pagination.pageSize,
+    selectedRole,
+    selectedStatus,
+    debouncedSearch,
+  ]);
 
   const getUsers = useCallback(async () => {
-=======
-  const fetchPayouts = useCallback(async (pageNum = 1, pageSize = 10) => {
->>>>>>> Stashed changes
     setLoading(true);
-    setError(null);
     try {
-<<<<<<< Updated upstream
       let statusValue: boolean | undefined = undefined;
       if (selectedStatus === "true") {
         statusValue = true;
@@ -98,38 +92,36 @@ const InstructorManagePayouts: React.FC = () => {
         statusValue = false;
       }
       const response = await axiosInstance.post(API_GET_USERS, {
-=======
-      const response = await axiosInstance.post(API_GET_PAYOUTS, {
->>>>>>> Stashed changes
         searchCondition: {
-          payout_no: "",
-          instructor_id: "",
-          status: "",
+          role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
+          status: statusValue,
           is_delete: false,
+          keyword: debouncedSearch,
         },
         pageInfo: {
-          pageNum,
-          pageSize,
+          pageNum: pagination.current,
+          pageSize: pagination.pageSize,
         },
       });
       setDataUsers(response.data.pageData);
       setPagination({
+        ...pagination,
+        total: response.data.pageInfo.totalItems,
         current: response.data.pageInfo.pageNum,
         pageSize: response.data.pageInfo.pageSize,
-        total: response.data.totalCount,
       });
-    } catch (err) {
-      setError("Failed to fetch data");
-      notification.error({
-        message: "Error",
-        description: "Failed to fetch data",
-      });
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      // Xử lý trường hợp lỗi
     }
-  }, []);
+    setLoading(false);
+  }, [
+    pagination.current,
+    pagination.pageSize,
+    selectedRole,
+    selectedStatus,
+    searchText,
+  ]);
 
-<<<<<<< Updated upstream
   const handleAddNewUser = useCallback(
     async (values: User) => {
       try {
@@ -137,7 +129,11 @@ const InstructorManagePayouts: React.FC = () => {
 
         let avatarUrl = values.avatar;
 
-        if (values.avatar && typeof values.avatar !== "string" && values.avatar?.file?.originFileObj) {
+        if (
+          values.avatar &&
+          typeof values.avatar !== "string" &&
+          values.avatar?.file?.originFileObj
+        ) {
           avatarUrl = await uploadFile(values.avatar.file.originFileObj);
         }
 
@@ -177,7 +173,8 @@ const InstructorManagePayouts: React.FC = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
+    setFileList(newFileList);
 
   const handleStatusChange = async (checked: boolean, userId: string) => {
     try {
@@ -185,7 +182,9 @@ const InstructorManagePayouts: React.FC = () => {
         user_id: userId,
         status: checked,
       });
-      const updateData = data.map((user) => (user._id === userId ? { ...user, status: checked } : user));
+      const updateData = data.map((user) =>
+        user._id === userId ? { ...user, status: checked } : user
+      );
       setData(updateData);
       message.success(`User status updated successfully`);
     } catch (error) {
@@ -201,8 +200,15 @@ const InstructorManagePayouts: React.FC = () => {
   );
   const handleRoleChange = async (value: UserRole, recordId: string) => {
     try {
-      await axiosInstance.put(API_CHANGE_ROLE, { user_id: recordId, role: value });
-      setData((prevData: User[]) => prevData.map((user) => (user._id === recordId ? { ...user, role: value } : user)));
+      await axiosInstance.put(API_CHANGE_ROLE, {
+        user_id: recordId,
+        role: value,
+      });
+      setData((prevData: User[]) =>
+        prevData.map((user) =>
+          user._id === recordId ? { ...user, role: value } : user
+        )
+      );
       message.success(`Role changed successfully`);
     } catch (error) {
       // Handle error silently
@@ -210,32 +216,44 @@ const InstructorManagePayouts: React.FC = () => {
   };
 
   const columns: TableColumnsType<User> = [
-=======
-  useEffect(() => {
-    fetchPayouts(pagination.current, pagination.pageSize);
-  }, [fetchPayouts, pagination.current, pagination.pageSize]);
-
-  const handleTableChange = (pagination: any) => {
-    fetchPayouts(pagination.current, pagination.pageSize);
-  };
-
-  const columns: TableColumnsType<Payout> = [
->>>>>>> Stashed changes
     {
-      title: "Payout No",
-      dataIndex: "payout_no",
-      key: "payout_no",
-      width: "15%",
-      render: (text) => <Button type="link">{text}</Button>,
+      title: "Avatar",
+      dataIndex: "avatar",
+      key: "avatar",
+      render: (avatar: string) => (
+        <Avatar
+          size={50}
+          src={
+            avatar
+              ? avatar
+              : "https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-8/32/user--avatar--filled-256.png"
+          }
+        />
+      ),
     },
     {
-      title: "Instructor Name",
-      dataIndex: "instructor_name",
-      key: "instructor_name",
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: "20%",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      width: "20%",
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
       width: "10%",
-<<<<<<< Updated upstream
       render: (role: UserRole, record: User) => (
-        <Select defaultValue={role} onChange={(value) => handleRoleChange(value, record._id)} style={{ width: "100%" }}>
+        <Select
+          defaultValue={role}
+          onChange={(value) => handleRoleChange(value, record._id)}
+          style={{ width: "100%" }}
+        >
           <Select.Option classNAme="text-red-700" value="student">
             {" "}
             <span className="text-blue-800">Student</span>
@@ -247,63 +265,22 @@ const InstructorManagePayouts: React.FC = () => {
             <span className="text-violet-500">Admin</span>
           </Select.Option>
         </Select>
-=======
-    },
-    {
-      title: "Instructor Email",
-      dataIndex: "instructor_email",
-      key: "instructor_email",
-      width: "10%",
-    },
-    {
-      title: "Instructor Paid",
-      dataIndex: "balance_instructor_paid",
-      key: "balance_instructor_paid",
-      width: "10%",
-    },
-    {
-      title: "Instructor Receive",
-      dataIndex: "balance_instructor_received",
-      key: "balance_instructor_received",
-      width: "10%",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      width: "10%",
-      render: (status: string) => (
-        <Tag
-          color={
-            status === "new"
-              ? "blue"
-              : status === "request_payout"
-              ? "orange"
-              : status === "completed"
-              ? "green"
-              : "red"
-          }
-        >
-          {status}
-        </Tag>
->>>>>>> Stashed changes
       ),
     },
     {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      width: "10%",
       render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      width: "10%",
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      width: "10%",
       render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      width: "10%",
     },
-<<<<<<< Updated upstream
 
     {
       title: "Status",
@@ -311,7 +288,10 @@ const InstructorManagePayouts: React.FC = () => {
       dataIndex: "status",
       width: "10%",
       render: (status: boolean, record: User) => (
-        <Switch defaultChecked={status} onChange={(checked) => handleStatusChange(checked, record._id)} />
+        <Switch
+          defaultChecked={status}
+          onChange={(checked) => handleStatusChange(checked, record._id)}
+        />
       ),
     },
     {
@@ -321,9 +301,15 @@ const InstructorManagePayouts: React.FC = () => {
       render: (is_verified: boolean) => (
         <span>
           {is_verified ? (
-            <img src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png" alt="" />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png"
+              alt=""
+            />
           ) : (
-            <img src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png" alt="" />
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png"
+              alt=""
+            />
           )}
         </span>
       ),
@@ -344,7 +330,8 @@ const InstructorManagePayouts: React.FC = () => {
               form.setFieldsValue(record);
               setFormData(record);
 
-              const avatarUrl = typeof record.avatar === "string" ? record.avatar : "";
+              const avatarUrl =
+                typeof record.avatar === "string" ? record.avatar : "";
 
               setFileList(
                 avatarUrl
@@ -379,11 +366,12 @@ const InstructorManagePayouts: React.FC = () => {
   ];
 
   const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } = {
-      current: pagination.current ?? 1,
-      pageSize: pagination.pageSize ?? 10,
-      total: pagination.total ?? 0,
-    };
+    const newPagination: { current: number; pageSize: number; total: number } =
+      {
+        current: pagination.current ?? 1,
+        pageSize: pagination.pageSize ?? 10,
+        total: pagination.total ?? 0,
+      };
 
     setPagination(newPagination);
   };
@@ -403,7 +391,11 @@ const InstructorManagePayouts: React.FC = () => {
     try {
       let avatarUrl = values.avatar;
 
-      if (values.avatar && typeof values.avatar !== "string" && values.avatar.file?.originFileObj) {
+      if (
+        values.avatar &&
+        typeof values.avatar !== "string" &&
+        values.avatar.file?.originFileObj
+      ) {
         avatarUrl = await uploadFile(values.avatar.file.originFileObj);
       }
 
@@ -413,7 +405,10 @@ const InstructorManagePayouts: React.FC = () => {
         email: values.email,
       };
 
-      const response: ResponseData = await axiosInstance.put(`${API_UPDATE_USER}/${formData._id}`, updatedUser);
+      const response: ResponseData = await axiosInstance.put(
+        `${API_UPDATE_USER}/${formData._id}`,
+        updatedUser
+      );
       if (response.success) {
         if (formData.role !== values.role) {
           await axiosInstance.put(API_CHANGE_ROLE, {
@@ -423,7 +418,11 @@ const InstructorManagePayouts: React.FC = () => {
         }
 
         setDataUsers((prevData) =>
-          prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
+          prevData.map((user) =>
+            user._id === formData._id
+              ? { ...user, ...updatedUser, role: values.role }
+              : user
+          )
         );
 
         message.success("Updated user successfully");
@@ -464,38 +463,18 @@ const InstructorManagePayouts: React.FC = () => {
   return (
     <div>
       <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-=======
-  ];
-
-  return (
-    <div>
-      <div className="flex justify-between">
->>>>>>> Stashed changes
         <Breadcrumb
           className="py-2"
           items={[
             {
               title: <HomeOutlined />,
-<<<<<<< Updated upstream
               href: paths.ADMIN_HOME,
-=======
->>>>>>> Stashed changes
             },
             {
-              href: paths.INSTRUCTOR_HOME,
-              title: (
-                <>
-                  <UserOutlined />
-                  <span>Instructor</span>
-                </>
-              ),
-            },
-            {
-              title: "Manage Payouts",
+              title: "Manage Users",
             },
           ]}
         />
-<<<<<<< Updated upstream
 
         <div className="mt-3 md:mt-0">
           <Button
@@ -520,7 +499,11 @@ const InstructorManagePayouts: React.FC = () => {
           enterButton={<SearchOutlined className="text-white" />}
         />
 
-        <Select value={selectedRole} onChange={handleRolefilter} className="w-full md:w-32 mt-2 md:mt-0 md:ml-2">
+        <Select
+          value={selectedRole}
+          onChange={handleRolefilter}
+          className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+        >
           <Select.Option value="All">All Roles</Select.Option>
           <Select.Option value="Admin">
             <span className="text-violet-500">Admin</span>
@@ -533,7 +516,11 @@ const InstructorManagePayouts: React.FC = () => {
           </Select.Option>
         </Select>
 
-        <Select value={selectedStatus} onChange={handleStatus} className="w-full md:w-32 mt-2 md:mt-0 md:ml-2">
+        <Select
+          value={selectedStatus}
+          onChange={handleStatus}
+          className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+        >
           <Select.Option value="true">Active</Select.Option>
           <Select.Option value="false">Inactive</Select.Option>
         </Select>
@@ -553,7 +540,9 @@ const InstructorManagePayouts: React.FC = () => {
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
-          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          showTotal={(total, range) =>
+            `${range[0]}-${range[1]} of ${total} items`
+          }
           current={pagination.current}
           pageSize={pagination.pageSize}
           onChange={handlePaginationChange}
@@ -568,11 +557,19 @@ const InstructorManagePayouts: React.FC = () => {
         footer={null}
       >
         <Form form={form} onFinish={onFinish} layout="vertical">
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input the name!" }]}
+          >
             <Input />
           </Form.Item>
           {modalMode === "Add" && (
-            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[{ required: true, message: "Please input the email!" }]}
+            >
               <Input />
             </Form.Item>
           )}
@@ -580,7 +577,9 @@ const InstructorManagePayouts: React.FC = () => {
             <Form.Item
               name="password"
               label="Password"
-              rules={[{ required: true, message: "Please input the password!" }]}
+              rules={[
+                { required: true, message: "Please input the password!" },
+              ]}
             >
               <Input.Password />
             </Form.Item>
@@ -633,24 +632,8 @@ const InstructorManagePayouts: React.FC = () => {
           src={previewImage}
         />
       )}
-=======
-      </div>
-      {error && <div>{error}</div>}
-      <Table
-        columns={columns}
-        dataSource={data}
-        loading={loading}
-        rowKey={(record: Payout) => record._id}
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-        }}
-        onChange={handleTableChange}
-      />
->>>>>>> Stashed changes
     </div>
   );
 };
 
-export default InstructorManagePayouts;
+export default AdminManageUsers;

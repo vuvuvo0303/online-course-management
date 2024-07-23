@@ -34,12 +34,6 @@ const VerifyToken = lazy(() => import("../pages/verify-token"));
 const User = lazy(() => import("../pages/user"));
 
 // Student Page
-<<<<<<< Updated upstream
-=======
-const StudentPaymentHistory = lazy(
-  () => import("../pages/payment/studentPaymentHistory")
-);
->>>>>>> Stashed changes
 const Checkout = lazy(() => import("../pages/checkout"));
 const Profile = lazy(() => import("../pages/profile"));
 const Cart = lazy(() => import("../pages/cart"));
@@ -50,22 +44,15 @@ const StudentInstructorPurchase = lazy(
 );
 
 // Instructor Page
-<<<<<<< Updated upstream
-const InstructorDashboard = lazy(() => import("../pages/instructor/instructor-dashboard/index"));
-const InstructorManagerReviews = lazy(() => import("../pages/instructor/manage-reviews"));
-const InstructorManageCourses = lazy(() => import("../pages/instructor/manage-course/index"));
-=======
 const InstructorDashboard = lazy(
   () => import("../pages/instructor/instructor-dashboard/index")
 );
 const InstructorManagerReviews = lazy(
   () => import("../pages/instructor/manage-reviews")
 );
-const PaymentHistory = lazy(() => import("../pages/payment/payment-history"));
 const InstructorManageCourses = lazy(
   () => import("../pages/instructor/manage-course/index")
 );
->>>>>>> Stashed changes
 const InstructorResources = lazy(() => import("../pages/instructor/resources"));
 const InstructorTools = lazy(() => import("../pages/instructor/tools"));
 const LectureOfCourse = lazy(
@@ -83,18 +70,13 @@ const UpdateLecture = lazy(
       "../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson"
     )
 );
+// const ManageStudent = lazy(() => import("../pages/instructor/m"))
 const ManageSession = lazy(
   () => import("../pages/instructor/manage-course/manage-session/")
 );
 const InstructorCreateCourse = lazy(
   () => import("../pages/instructor/manage-course/create-update-course")
 );
-<<<<<<< Updated upstream
-// const ManageStudent = lazy(() => import("../pages/instructor/m"))
-const ManageSession = lazy(() => import("../pages/instructor/manage-course/manage-session/"));
-const InstructorCreateCourse = lazy(() => import("../pages/instructor/manage-course/create-update-course"));
-=======
->>>>>>> Stashed changes
 const CreateUpdateSession = lazy(
   () =>
     import(
@@ -107,9 +89,6 @@ const ManageAllLesson = lazy(
 const ManageAllSession = lazy(() => import("../pages/manage-all-session"));
 const InstructorManageSubscriptions = lazy(
   () => import("../pages/instructor/manage-subscriptions")
-);
-const InstructorManagePayouts = lazy(
-  () => import("../pages/instructor/manage-payouts")
 );
 // Admin Page
 const AdminLoginPage = lazy(() => import("../pages/admin/login"));
@@ -160,37 +139,26 @@ const AppRouter: React.FC = () => {
         <Route path="/courses/:id" element={<CoursesCategory />} />
         <Route path={paths.FORGOT_PASSWORD} element={<ForgotPassword />} />
         <Route path={paths.VERIFY_TOKEN} element={<VerifyToken />} />
-<<<<<<< Updated upstream
-        <Route path={paths.INTERNAL_SERVER_ERROR} element={<InternalServerError />} />
-        <Route path={paths.COURSE_DETAILS} element={<CourseDetails />} />
-        <Route path={paths.USER_DETAIL} element={<User />} />
-
-        {/* Route for Student */}
-=======
         <Route
           path={paths.INTERNAL_SERVER_ERROR}
           element={<InternalServerError />}
         />
+        <Route path={paths.COURSE_DETAILS} element={<CourseDetails />} />
+        <Route path={paths.USER_DETAIL} element={<User />} />
 
         {/* Route for Student */}
-        <Route
-          path={paths.STUDENT_PAYMENT_HISTORY}
-          element={<StudentPaymentHistory />}
-        />
->>>>>>> Stashed changes
         <Route path={paths.STUDENT_PROFILE} element={<Profile />} />
         <Route path={paths.STUDENT_CART} element={<Cart />} />
         <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
-<<<<<<< Updated upstream
-        <Route path={paths.STUDENT_PURCHASE} element={<StudentInstructorPurchase />} />
-        <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
-=======
         <Route
           path={paths.STUDENT_PURCHASE}
           element={<StudentInstructorPurchase />}
         />
->>>>>>> Stashed changes
+        <Route
+          path={paths.STUDENT_SUBSCRIPTION}
+          element={<StudentSubscription />}
+        />
         {/* Route for Instructor */}
         <Route
           path="/instructor/*"
@@ -314,19 +282,6 @@ const AppRouter: React.FC = () => {
           />
           <Route path={paths.INSTRUCTOR_PROFILE} element={<Profile />} />
           <Route
-<<<<<<< Updated upstream
-=======
-            path={paths.INSTRUCTOR_PAYMENT_HISTORY}
-            element={
-              canAccess([roles.INSTRUCTOR]) ? (
-                <PaymentHistory />
-              ) : (
-                <Navigate to={paths.HOME} />
-              )
-            }
-          />
-          <Route
->>>>>>> Stashed changes
             path={paths.INSTRUCTOR_CREATE_COURSE}
             element={
               canAccess([roles.INSTRUCTOR]) ? (
@@ -416,24 +371,21 @@ const AppRouter: React.FC = () => {
               )
             }
           />
-<<<<<<< Updated upstream
           <Route
             path={paths.INSTRUCTOR_MANAGE_SUPSCRIPTIONS}
-=======
-          {/* <Route
-            path={paths.INSTRUCTOR_MANAGE_SUBSCRIPTIONS}
->>>>>>> Stashed changes
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageSubscriptions /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <InstructorManageSubscriptions />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_MANAGE_PURCHASES}
-            element={canAccess([roles.INSTRUCTOR]) ? <StudentInstructorPurchase /> : <Navigate to={paths.HOME} />}
-          /> */}
-          <Route
-            path={paths.INSTRUCTOR_MANAGE_PAYOUTS}
             element={
               canAccess([roles.INSTRUCTOR]) ? (
-                <InstructorManagePayouts />
+                <StudentInstructorPurchase />
               ) : (
                 <Navigate to={paths.HOME} />
               )
