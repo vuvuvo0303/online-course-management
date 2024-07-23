@@ -34,9 +34,7 @@ const Navbar: React.FC = () => {
   const [cartsCancel, setCartsCancel] = useState<Cart[]>([])
   const [totalCost, setTotalCost] = useState<number>(0);
 
-  useEffect(() => {
-    getCart();
-  }, [])
+ 
 
   // show cart when student hover shop cart icon
   const getCart = async () => {
@@ -62,6 +60,7 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     if (token) {
+      getCart();
       countCart();
     }
   }, [token])

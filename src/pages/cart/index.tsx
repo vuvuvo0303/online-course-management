@@ -169,7 +169,6 @@ const CartPage: React.FC = () => {
                 )
               }
             </ul>
-
             <div className={styles.cart_checkout}>
               <div className={styles.total_price}>
                 <div className={styles.total_checkout_container}>
@@ -208,8 +207,6 @@ const CartPage: React.FC = () => {
               </div>
             </div>
           </div>
-
-
         </div>
       </div>
     </div>
