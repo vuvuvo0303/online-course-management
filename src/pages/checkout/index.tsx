@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Radio, Input, Form, Row, Col, Tag, message } from "antd";
+import { Radio, Input, Form, Row, Col, Tag, message } from "antd";
 import { ToastContainer } from "react-toastify";
 
 import { getColorCart, paths } from "../../consts";
@@ -68,7 +68,7 @@ const Checkout: React.FC = () => {
       console.log("handlePayment: ", res);
     }
     message.success("Cancel Checkout Successfully")
-    navigate("/cart")
+    navigate(paths.STUDENT_CART)
   }
   const handlePayment = async () => {
     if (!paymentMethod) {
@@ -88,7 +88,7 @@ const Checkout: React.FC = () => {
           await new Promise((resolve) => setTimeout(resolve, 2000));
           setLoading(false);
           message.success("Payment successful!");
-          navigate("/cart")
+          navigate(paths.STUDENT_PURCHASE)
         } catch (error) {
           console.error("Payment failed:", error);
           setLoading(false);
@@ -173,7 +173,7 @@ const Checkout: React.FC = () => {
                         <img width={200} height={200} alt='empty-cart-display' src='https://s.udemycdn.com/browse_components/flyout/empty-shopping-cart-v2-2x.jpg' />
                         <p className='text-lg mb-4'>You must check in at least 1 course in the cart before click on checkout</p>
                         <Link to={paths.HOME}>
-                          <CustomButton title='Keep Shopping' containerStyles='bg-purple-500' />
+                          <CustomButton handlePayment={handlePayment} title='Keep Shopping' containerStyles='bg-purple-500' />
                         </Link>
                       </div>
                     </>
@@ -357,6 +357,12 @@ const Checkout: React.FC = () => {
         </div>
       </div>
       <div className={styles.summary}>
+        {
+          carts.length > 0 &&
+          <div onClick={handleCancelPayment} className="float-right mt-10 mr-10 text-purple-500 cursor-pointer">
+            Cancel
+          </div>
+        }
         <h2 className={styles.summaryTitle}>
           <strong>Summary</strong>
         </h2>
@@ -387,26 +393,13 @@ const Checkout: React.FC = () => {
             .
           </p>
 
-          <div className="grid grid-cols-2">
+          <div >
             {carts.length > 0 ?
               (
                 <>
-                  <Button
-                    type="primary"
-                    className={`${styles.payButton} mt-5 w-full`}
-                    onClick={handlePayment}
-                    loading={loading}
-                    disabled={loading}
-                  >
-                    {loading ? "Processing..." : "Complete "}
-                  </Button>
-                  {/* <CustomButton
-                    title='Complete Checkout' containerStyles='bg-purple-500' /> */}
-                  <Button
-                    onClick={handleCancelPayment}
-                    className={`text-white mt-5 ${styles.payButton} bg-red-500`}>
-                    Cancel
-                  </Button>
+                  <div className="mt-10">
+                    <CustomButton handlePayment={handlePayment} title='Complete Checkout' containerStyles='bg-purple-500' />
+                  </div>
                 </>
               ) :
               (

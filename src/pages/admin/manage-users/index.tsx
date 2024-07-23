@@ -182,10 +182,10 @@ const AdminManageUsers: React.FC = () => {
         user_id: userId,
         status: checked,
       });
-      const updateData = data.map((user) =>
+      const updateData = dataUsers.map((user) =>
         user._id === userId ? { ...user, status: checked } : user
       );
-      setData(updateData);
+      setDataUsers(updateData);
       message.success(`User status updated successfully`);
     } catch (error) {
       // Handle error silently
@@ -204,7 +204,7 @@ const AdminManageUsers: React.FC = () => {
         user_id: recordId,
         role: value,
       });
-      setData((prevData: User[]) =>
+      setDataUsers((prevData: User[]) =>
         prevData.map((user) =>
           user._id === recordId ? { ...user, role: value } : user
         )
@@ -529,7 +529,7 @@ const AdminManageUsers: React.FC = () => {
       <Spin spinning={loading}>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={dataUsers}
           rowKey={(record: User) => record._id}
           pagination={false}
           onChange={handleTableChange}

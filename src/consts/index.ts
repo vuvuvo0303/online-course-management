@@ -200,12 +200,14 @@ export const paths = {
   STUDENT_PURCHASE: "/purchase",
   STUDENT_SUBSCRIPTION: "/subscription",
   /* INSTRUCTORS PATHS */
+ 
   INSTRUCTOR_DASHBOARD: "dashboard",
   INSTRUCTOR_PROFILE: "profile",
   INSTRUCTOR_CREATE_COURSE: "manage-courses/create-course",
   INSTRUCTOR_UPDATE_COURSE: "manage-courses/update-course/:_id",
   INSTRUCTOR_UPDATE_COURSE_DETAIL:
     "manage-courses/course-detail/:id/update-course/:_id",
+    INSTRUCTOR_MANAGE_PAYOUTS: "manage-payouts",
   INSTRUCTOR_MANAGE_REVIEWS: "manage-reviews",
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
   INSTRUCTOR_MANAGE_SUPSCRIPTIONS: "manage-subscriptions",
