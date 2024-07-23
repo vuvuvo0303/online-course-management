@@ -35,6 +35,7 @@ export const API_DELETE_CATEGORY = "/api/category";
 export const API_CREATE_COURSE = "/api/course";
 export const API_GET_COURSES = "/api/course/search";
 export const API_GET_COURSE = "/api/course";
+
 export const API_UPDATE_COURSE = "/api/course";
 export const API_DELETE_COURSE = "/api/course";
 export const API_COURSE_STATUS = "/api/course/change-status";
@@ -137,7 +138,7 @@ export const getColorPurchase = (status: string) => {
   switch (status) {
     case "new":
       return "red";
-    case "request_payout":
+    case "request_paid":
       return "blue";
     case "completed":
       return "yellow";
@@ -233,7 +234,7 @@ export const paths = {
   ADMIN_MANAGE_USERS: "manage-users",
   ADMIN_LOGIN: "/admin/login",
   ADMIN_INSTRUCTOR_REQUEST: "instructor-requests",
-  ADMIN_MANAGE_PURCHASE:"manage-all-purchase",
+  ADMIN_MANAGE_PURCHASE: "manage-all-purchase",
   ADMIN_MANAGE_CATEGORIES: "manage-categories",
   ADMIN_CATEGORY_DETAIL: "manage-categories/:_id",
   ADMIN_MANAGE_BLOGS: "manage-blogs",

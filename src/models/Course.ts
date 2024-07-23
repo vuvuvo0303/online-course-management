@@ -9,17 +9,23 @@ export class Course {
   video_url?: string;
   image_url?: string;
   price: number;
+  review_count:number;
   discount: number;
   created_at: Date;
   updated_at: Date;
   is_deleted: boolean;
   user_name: string;
+  instructor_name:string;
+  price_paid:number;
   category_name: string;
   session_count: number;
   lesson_count: number;
   average_rating: number;
   constructor(
+    price_paid: number = 0,
+    instructor_name: string = "",
     _id: string = "",
+    review_count:number=0,
     name: string = "",
     category_id: string = "",
     user_id: string = "",
@@ -39,6 +45,9 @@ export class Course {
     lesson_count: number = 0,
     average_rating: number = 0,
   ) {
+    this.instructor_name = instructor_name;
+    this.price_paid = price_paid;
+    this.review_count=review_count;
     this._id = _id;
     this.name = name;
     this.category_id = category_id;

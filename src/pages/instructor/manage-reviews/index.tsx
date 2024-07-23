@@ -3,7 +3,7 @@ import { Rate, Input, Button, Modal, Form, Select, message } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import axiosInstance from '../../../services/axiosInstance.ts';
 import { useParams } from 'react-router-dom';
-import { API_GET_COURSES } from 'consts/index.ts';
+import { API_GET_COURSES } from '../../../consts/index.ts';
 
 interface Review {
     name: string;

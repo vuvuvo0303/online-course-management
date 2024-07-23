@@ -10,14 +10,10 @@ import {
   Pagination,
   Popconfirm,
   Spin,
-  Select, message,
+  Select,
+  message,
 } from "antd";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  HomeOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Category } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
@@ -39,7 +35,7 @@ const AdminManageCategories: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [parentCategories, setParentCategories] = useState<Category[]>([]);
-  
+
   const debouncedSearchTerm = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -61,8 +57,7 @@ const AdminManageCategories: React.FC = () => {
           pageNum: pagination.current,
           pageSize: pagination.pageSize,
         },
-      }
-      )
+      });
       setData(response.data.pageData || response.data);
       setPagination((prev) => ({
         ...prev,
@@ -75,9 +70,7 @@ const AdminManageCategories: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  },
-    [pagination.current, pagination.pageSize, searchText, debouncedSearchTerm]
-  );
+  }, [pagination.current, pagination.pageSize, searchText, debouncedSearchTerm]);
 
   useEffect(() => {
     fetchCategories();
@@ -113,14 +106,10 @@ const AdminManageCategories: React.FC = () => {
   }, [form]);
 
   const handleDelete = async (_id: string, name: string) => {
-    const isParentCategory = data.some(
-      (category) => category.parent_category_id === _id
-    );
+    const isParentCategory = data.some((category) => category.parent_category_id === _id);
 
     if (isParentCategory) {
-      message.error(
-        `Cannot delete category ${name} as it is a parent category of another category.`
-      );
+      message.error(`Cannot delete category ${name} as it is a parent category of another category.`);
       return;
     }
 
@@ -131,13 +120,10 @@ const AdminManageCategories: React.FC = () => {
     } catch (error) {
       //
     }
-  }
+  };
 
   const updateCategory = useCallback(
-    async (
-      values: Partial<Category> & { _id: string | null },
-      originalCreatedAt: string
-    ) => {
+    async (values: Partial<Category> & { _id: string | null }, originalCreatedAt: string) => {
       let parentCategoryId = null;
 
       if (values.parent_category_id && values.parent_category_id !== "none") {
@@ -158,18 +144,11 @@ const AdminManageCategories: React.FC = () => {
           updated_at: new Date().toISOString(),
         };
 
-        const response = await axiosInstance.put(
-          `${API_UPDATE_CATEGORY}/${values._id}`,
-          updatedCategory
-        );
+        const response = await axiosInstance.put(`${API_UPDATE_CATEGORY}/${values._id}`, updatedCategory);
 
         if (response.data) {
           setData((prevData) =>
-            prevData.map((category) =>
-              category._id === values._id
-                ? { ...category, ...response.data }
-                : category
-            )
+            prevData.map((category) => (category._id === values._id ? { ...category, ...response.data } : category))
           );
           setIsModalVisible(false);
           form.resetFields();
@@ -222,36 +201,22 @@ const AdminManageCategories: React.FC = () => {
             >
               <Input />
             </Form.Item>
-            <Form.Item
-              label="Parent Category"
-              name="parent_category_id"
-              rules={[{ required: false }]}
-            >
+            <Form.Item label="Parent Category" name="parent_category_id" rules={[{ required: false }]}>
               <Select placeholder="Select parent category">
                 <Select.Option key="none" value="none">
                   None
                 </Select.Option>
                 {parentCategories
-                  .filter(
-                    (parentCategory) =>
-                      parentCategory._id !== form.getFieldValue("_id")
-                  )
+                  .filter((parentCategory) => parentCategory._id !== form.getFieldValue("_id"))
                   .map((parentCategory) => (
-                    <Select.Option
-                      key={parentCategory._id}
-                      value={parentCategory._id}
-                    >
+                    <Select.Option key={parentCategory._id} value={parentCategory._id}>
                       {parentCategory.name}
                     </Select.Option>
                   ))}
               </Select>
             </Form.Item>
 
-            <Form.Item
-              label="Description"
-              name="description"
-              rules={[{ required: false }]}
-            >
+            <Form.Item label="Description" name="description" rules={[{ required: false }]}>
               <Input.TextArea rows={4} />
             </Form.Item>
           </Form>
@@ -275,9 +240,7 @@ const AdminManageCategories: React.FC = () => {
 
         let parentCategoryId = null;
         if (values.parent_category_id) {
-          const parentCategory = data.find(
-            (category) => category.name === values.parent_category_id
-          );
+          const parentCategory = data.find((category) => category.name === values.parent_category_id);
           if (parentCategory) {
             parentCategoryId = parentCategory._id;
           }
@@ -288,10 +251,7 @@ const AdminManageCategories: React.FC = () => {
           parent_category_id: parentCategoryId,
         };
 
-        const response = await axiosInstance.post(
-          API_CREATE_CATEGORY,
-          categoryData
-        );
+        const response = await axiosInstance.post(API_CREATE_CATEGORY, categoryData);
         if (response.data) {
           const newCategory = response.data;
           setData((prevData) => [...prevData, newCategory]);
@@ -320,9 +280,7 @@ const AdminManageCategories: React.FC = () => {
       dataIndex: "parent_category_id",
       key: "parent_category_id",
       render: (parent_category_id: string) => {
-        const category = data.find(
-          (category) => category._id === parent_category_id
-        );
+        const category = data.find((category) => category._id === parent_category_id);
         return category ? category.name : "None";
       },
     },
@@ -336,15 +294,13 @@ const AdminManageCategories: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) =>
-        format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) =>
-        format(new Date(updated_at), "dd/MM/yyyy"),
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
     },
     {
       title: "Action",
@@ -402,7 +358,7 @@ const AdminManageCategories: React.FC = () => {
           items={[
             {
               title: <HomeOutlined />,
-              href: paths.ADMIN_HOME
+              href: paths.ADMIN_HOME,
             },
             {
               title: "Manage Categories",
@@ -414,7 +370,7 @@ const AdminManageCategories: React.FC = () => {
           Add New Category
         </Button>
       </div>
-      <Space >
+      <Space>
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
@@ -438,7 +394,7 @@ const AdminManageCategories: React.FC = () => {
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
-          showTotal={(total) => `Total ${total} items`}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           current={pagination.current}
           pageSize={pagination.pageSize}
           onChange={handlePaginationChange}
@@ -461,18 +417,10 @@ const AdminManageCategories: React.FC = () => {
           labelCol={{ span: 24 }}
           validateTrigger={validateOnOpen ? "onSubmit" : "onChange"}
         >
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please input the name!" }]}
-          >
+          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Parent Category"
-            name="parent_category_id"
-            rules={[{ required: false }]}
-          >
+          <Form.Item label="Parent Category" name="parent_category_id" rules={[{ required: false }]}>
             <Select placeholder="Select parent category">
               {parentCategories.map((category) => (
                 <Select.Option key={category._id} value={category.name}>
@@ -481,11 +429,7 @@ const AdminManageCategories: React.FC = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[{ required: false }]}
-          >
+          <Form.Item label="Description" name="description" rules={[{ required: false }]}>
             <Input.TextArea rows={4} />
           </Form.Item>
           <Form.Item>

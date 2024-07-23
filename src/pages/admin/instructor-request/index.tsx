@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   Breadcrumb,
@@ -10,10 +11,10 @@ import {
   Input,
   Pagination,
   TablePaginationConfig,
+  Tag,
 } from "antd";
 import { API_GET_USERS } from "../../../consts";
 import { Instructor } from "models/User";
-import { useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
@@ -25,8 +26,6 @@ const AdminInstructorRequest = () => {
   const [dataSource, setDataSource] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
-
-
   const debouncedSearch = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -36,6 +35,32 @@ const AdminInstructorRequest = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
   const [rejectReason, setRejectReason] = useState("");
+
+  // useEffect(() => {
+  //   fetchInstructorRequest();
+  // }, [pagination.current, pagination.pageSize, debouncedSearch]);
+
+useEffect(() => {
+    const savedData = localStorage.getItem("instructorData");
+    if (savedData) {
+      setDataSource(JSON.parse(savedData));
+    } else {
+      fetchInstructorRequest();
+    }
+  }, []);
+
+  // Fetch data từ API
+  useEffect(() => {
+    if (!localStorage.getItem("instructorData")) {
+      fetchInstructorRequest();
+    }
+  }, [pagination.current, pagination.pageSize, debouncedSearch]);
+
+  // Lưu data vào localStorage
+  useEffect(() => {
+    localStorage.setItem("instructorData", JSON.stringify(dataSource));
+  }, [dataSource]);
+
 
   const columns: TableProps<Instructor>["columns"] = [
     {
@@ -98,10 +123,10 @@ const AdminInstructorRequest = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          {record.isApproved ? (
-            <Button type="primary" danger onClick={() => handleDelete(record)}>
-              Delete
-            </Button>
+          {record.isRejected ? (
+            <Tag color="red">Account rejected</Tag>
+          ) : record.isApproved ? (
+            <Tag color="green">Verification email sent</Tag>
           ) : (
             <>
               <Button
@@ -121,8 +146,6 @@ const AdminInstructorRequest = () => {
       ),
     },
   ];
-  
-  
 
   const fetchInstructorRequest = async () => {
     setLoading(true);
@@ -138,13 +161,14 @@ const AdminInstructorRequest = () => {
           pageSize: pagination.pageSize,
         },
       });
-  
+
       if (response.data && response.data.pageData) {
-        const dataWithApprovalStatus = response.data.pageData.map((instructor) => ({
+        const dataWithApprovalStatus = response.data.pageData.map((instructor: Instructor) => ({
           ...instructor,
-          isApproved: instructor.is_verified, // Hoặc thêm logic để xác định trạng thái phê duyệt
+          isApproved: instructor.is_verified,
+          isRejected: false,
         }));
-  
+
         setDataSource(dataWithApprovalStatus);
         setPagination((prev) => ({
           ...prev,
@@ -153,7 +177,7 @@ const AdminInstructorRequest = () => {
           pageSize: response.data.pageInfo?.pageSize || response.data.length,
         }));
       } else {
-        //
+        // Handle case when response.data is empty
       }
     } catch (error) {
       console.error("Error fetching instructors:", error);
@@ -161,11 +185,6 @@ const AdminInstructorRequest = () => {
       setLoading(false);
     }
   };
-  
-  useEffect(() => {
-    fetchInstructorRequest();
-  }, [pagination.current, pagination.pageSize, debouncedSearch]);
-
 
   const handleApprove = async (record: Instructor) => {
     try {
@@ -174,27 +193,20 @@ const AdminInstructorRequest = () => {
         status: "approve",
         comment: "",
       });
-  
-      if (response && response.data && response.data.success) {
+
+      if (response) {
         message.success("Email phê duyệt đã được gửi thành công");
+
         const updatedDataSource = dataSource.map((item) =>
           item._id === record._id ? { ...item, isApproved: true } : item
         );
+
         setDataSource(updatedDataSource);
-      } else {
-        message.error("Phê duyệt giảng viên thất bại: API không thành công");
-        console.error("API response error:", response.data);
       }
     } catch (error) {
       message.error("Lỗi khi phê duyệt giảng viên");
       console.error("Error approving instructor:", error);
     }
-  };
-  
-  
-
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
   };
 
   const handleReject = async () => {
@@ -207,15 +219,24 @@ const AdminInstructorRequest = () => {
         comment: rejectReason,
       });
 
-      if (response.data.success) {
+      if (response) {
         message.success("Instructor rejected successfully");
-        fetchInstructorRequest();
+
+        const updatedDataSource = dataSource.map((item) =>
+          item._id === selectedInstructor._id ? { ...item, isRejected: true } : item
+        );
+        setDataSource(updatedDataSource);
       }
     } catch (error) {
-      //
+      message.error("Lỗi khi từ chối giảng viên");
+      console.error("Error rejecting instructor:", error);
     } finally {
       setIsModalVisible(false);
     }
+  };
+
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
   };
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
@@ -262,7 +283,7 @@ const AdminInstructorRequest = () => {
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
-          showTotal={(total) => `Total ${total} items`}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           current={pagination.current}
           pageSize={pagination.pageSize}
           onChange={handlePaginationChange}
@@ -281,7 +302,7 @@ const AdminInstructorRequest = () => {
           rows={4}
           value={rejectReason}
           onChange={(e) => setRejectReason(e.target.value)}
-          placeholder="Please enter the reason for rejection"
+          placeholder="Please provide the reason for rejection"
         />
       </Modal>
     </div>
@@ -289,3 +310,7 @@ const AdminInstructorRequest = () => {
 };
 
 export default AdminInstructorRequest;
+
+
+
+
