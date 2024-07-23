@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { useState, useEffect, useCallback } from "react";
 import {
   Breadcrumb,
@@ -42,11 +43,17 @@ import {
   API_UPDATE_USER,
   paths,
 } from "../../../consts";
+=======
+import React, { useCallback, useEffect, useState } from "react";
+>>>>>>> Stashed changes
 import axiosInstance from "../../../services/axiosInstance.ts";
-import ResponseData from "models/ResponseData.ts";
-import { useDebounce } from "../../../hooks/index.ts";
-import { deleteUser } from "../../../services/users.ts";
+import { API_GET_PAYOUTS, paths } from "../../../consts/index.ts";
+import { Breadcrumb, Button, Table, TableColumnsType, Tag, notification } from "antd";
+import { format } from "date-fns";
+import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { Payout } from "models/Payout.ts";
 
+<<<<<<< Updated upstream
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AdminManageUsers: React.FC = () => {
@@ -54,18 +61,18 @@ const AdminManageUsers: React.FC = () => {
 
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
+=======
+const InstructorManagePayouts: React.FC = () => {
+  const [data, setData] = useState<Payout[]>([]);
+>>>>>>> Stashed changes
   const [loading, setLoading] = useState<boolean>(false);
-  const [form] = Form.useForm();
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [pagination, setPagination] = useState({
+  const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<{ current: number; pageSize: number }>({
     current: 1,
     pageSize: 10,
-    total: 0,
   });
-  const [formData, setFormData] = useState<Partial<User>>({});
 
+<<<<<<< Updated upstream
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
   const [selectedRole, setSelectedRole] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("true");
@@ -77,8 +84,13 @@ const AdminManageUsers: React.FC = () => {
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch]);
 
   const getUsers = useCallback(async () => {
+=======
+  const fetchPayouts = useCallback(async (pageNum = 1, pageSize = 10) => {
+>>>>>>> Stashed changes
     setLoading(true);
+    setError(null);
     try {
+<<<<<<< Updated upstream
       let statusValue: boolean | undefined = undefined;
       if (selectedStatus === "true") {
         statusValue = true;
@@ -86,30 +98,38 @@ const AdminManageUsers: React.FC = () => {
         statusValue = false;
       }
       const response = await axiosInstance.post(API_GET_USERS, {
+=======
+      const response = await axiosInstance.post(API_GET_PAYOUTS, {
+>>>>>>> Stashed changes
         searchCondition: {
-          role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
-          status: statusValue,
+          payout_no: "",
+          instructor_id: "",
+          status: "",
           is_delete: false,
-          keyword: debouncedSearch,
         },
         pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
+          pageNum,
+          pageSize,
         },
       });
       setDataUsers(response.data.pageData);
       setPagination({
-        ...pagination,
-        total: response.data.pageInfo.totalItems,
         current: response.data.pageInfo.pageNum,
         pageSize: response.data.pageInfo.pageSize,
+        total: response.data.totalCount,
       });
-    } catch (error) {
-      // Xử lý trường hợp lỗi
+    } catch (err) {
+      setError("Failed to fetch data");
+      notification.error({
+        message: "Error",
+        description: "Failed to fetch data",
+      });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
+  }, []);
 
+<<<<<<< Updated upstream
   const handleAddNewUser = useCallback(
     async (values: User) => {
       try {
@@ -190,38 +210,30 @@ const AdminManageUsers: React.FC = () => {
   };
 
   const columns: TableColumnsType<User> = [
+=======
+  useEffect(() => {
+    fetchPayouts(pagination.current, pagination.pageSize);
+  }, [fetchPayouts, pagination.current, pagination.pageSize]);
+
+  const handleTableChange = (pagination: any) => {
+    fetchPayouts(pagination.current, pagination.pageSize);
+  };
+
+  const columns: TableColumnsType<Payout> = [
+>>>>>>> Stashed changes
     {
-      title: "Avatar",
-      dataIndex: "avatar",
-      key: "avatar",
-      render: (avatar: string) => (
-        <Avatar
-          size={50}
-          src={
-            avatar
-              ? avatar
-              : "https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-8/32/user--avatar--filled-256.png"
-          }
-        />
-      ),
+      title: "Payout No",
+      dataIndex: "payout_no",
+      key: "payout_no",
+      width: "15%",
+      render: (text) => <Button type="link">{text}</Button>,
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      width: "20%",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      width: "20%",
-    },
-    {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
+      title: "Instructor Name",
+      dataIndex: "instructor_name",
+      key: "instructor_name",
       width: "10%",
+<<<<<<< Updated upstream
       render: (role: UserRole, record: User) => (
         <Select defaultValue={role} onChange={(value) => handleRoleChange(value, record._id)} style={{ width: "100%" }}>
           <Select.Option classNAme="text-red-700" value="student">
@@ -235,22 +247,63 @@ const AdminManageUsers: React.FC = () => {
             <span className="text-violet-500">Admin</span>
           </Select.Option>
         </Select>
+=======
+    },
+    {
+      title: "Instructor Email",
+      dataIndex: "instructor_email",
+      key: "instructor_email",
+      width: "10%",
+    },
+    {
+      title: "Instructor Paid",
+      dataIndex: "balance_instructor_paid",
+      key: "balance_instructor_paid",
+      width: "10%",
+    },
+    {
+      title: "Instructor Receive",
+      dataIndex: "balance_instructor_received",
+      key: "balance_instructor_received",
+      width: "10%",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: "10%",
+      render: (status: string) => (
+        <Tag
+          color={
+            status === "new"
+              ? "blue"
+              : status === "request_payout"
+              ? "orange"
+              : status === "completed"
+              ? "green"
+              : "red"
+          }
+        >
+          {status}
+        </Tag>
+>>>>>>> Stashed changes
       ),
     },
     {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
       width: "10%",
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
       width: "10%",
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
     },
+<<<<<<< Updated upstream
 
     {
       title: "Status",
@@ -411,18 +464,38 @@ const AdminManageUsers: React.FC = () => {
   return (
     <div>
       <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+=======
+  ];
+
+  return (
+    <div>
+      <div className="flex justify-between">
+>>>>>>> Stashed changes
         <Breadcrumb
           className="py-2"
           items={[
             {
               title: <HomeOutlined />,
+<<<<<<< Updated upstream
               href: paths.ADMIN_HOME,
+=======
+>>>>>>> Stashed changes
             },
             {
-              title: "Manage Users",
+              href: paths.INSTRUCTOR_HOME,
+              title: (
+                <>
+                  <UserOutlined />
+                  <span>Instructor</span>
+                </>
+              ),
+            },
+            {
+              title: "Manage Payouts",
             },
           ]}
         />
+<<<<<<< Updated upstream
 
         <div className="mt-3 md:mt-0">
           <Button
@@ -560,8 +633,24 @@ const AdminManageUsers: React.FC = () => {
           src={previewImage}
         />
       )}
+=======
+      </div>
+      {error && <div>{error}</div>}
+      <Table
+        columns={columns}
+        dataSource={data}
+        loading={loading}
+        rowKey={(record: Payout) => record._id}
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: pagination.total,
+        }}
+        onChange={handleTableChange}
+      />
+>>>>>>> Stashed changes
     </div>
   );
 };
 
-export default AdminManageUsers;
+export default InstructorManagePayouts;

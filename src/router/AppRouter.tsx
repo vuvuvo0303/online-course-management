@@ -27,52 +27,110 @@ const NotFound = lazy(() => import("../pages/notfound"));
 const BecomeInstructorPage = lazy(() => import("../pages/teaching"));
 const CoursesCategory = lazy(() => import("../pages/courses"));
 const ForgotPassword = lazy(() => import("../pages/forgot-password"));
-const InternalServerError = lazy(() => import("../pages/internal-server-error"));
+const InternalServerError = lazy(
+  () => import("../pages/internal-server-error")
+);
 const VerifyToken = lazy(() => import("../pages/verify-token"));
 const User = lazy(() => import("../pages/user"));
 
 // Student Page
+<<<<<<< Updated upstream
+=======
+const StudentPaymentHistory = lazy(
+  () => import("../pages/payment/studentPaymentHistory")
+);
+>>>>>>> Stashed changes
 const Checkout = lazy(() => import("../pages/checkout"));
 const Profile = lazy(() => import("../pages/profile"));
 const Cart = lazy(() => import("../pages/cart"));
 const StudentSubscription = lazy(() => import("../pages/student/subscription"));
 // Student and Instructor Page
-const StudentInstructorPurchase = lazy(() => import("../pages/purchase/student-instructor-purchase"));
+const StudentInstructorPurchase = lazy(
+  () => import("../pages/purchase/student-instructor-purchase")
+);
 
 // Instructor Page
+<<<<<<< Updated upstream
 const InstructorDashboard = lazy(() => import("../pages/instructor/instructor-dashboard/index"));
 const InstructorManagerReviews = lazy(() => import("../pages/instructor/manage-reviews"));
 const InstructorManageCourses = lazy(() => import("../pages/instructor/manage-course/index"));
+=======
+const InstructorDashboard = lazy(
+  () => import("../pages/instructor/instructor-dashboard/index")
+);
+const InstructorManagerReviews = lazy(
+  () => import("../pages/instructor/manage-reviews")
+);
+const PaymentHistory = lazy(() => import("../pages/payment/payment-history"));
+const InstructorManageCourses = lazy(
+  () => import("../pages/instructor/manage-course/index")
+);
+>>>>>>> Stashed changes
 const InstructorResources = lazy(() => import("../pages/instructor/resources"));
 const InstructorTools = lazy(() => import("../pages/instructor/tools"));
-const LectureOfCourse = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
+const LectureOfCourse = lazy(
+  () => import("../pages/instructor/manage-course/manage-session/manage-lesson")
+);
 const CreateUpdateLesson = lazy(
-  () => import("../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson")
+  () =>
+    import(
+      "../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson"
+    )
 );
 const UpdateLecture = lazy(
-  () => import("../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson")
+  () =>
+    import(
+      "../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson"
+    )
 );
+const ManageSession = lazy(
+  () => import("../pages/instructor/manage-course/manage-session/")
+);
+const InstructorCreateCourse = lazy(
+  () => import("../pages/instructor/manage-course/create-update-course")
+);
+<<<<<<< Updated upstream
 // const ManageStudent = lazy(() => import("../pages/instructor/m"))
 const ManageSession = lazy(() => import("../pages/instructor/manage-course/manage-session/"));
 const InstructorCreateCourse = lazy(() => import("../pages/instructor/manage-course/create-update-course"));
+=======
+>>>>>>> Stashed changes
 const CreateUpdateSession = lazy(
-  () => import("../pages/instructor/manage-course/manage-session/create-update-session")
+  () =>
+    import(
+      "../pages/instructor/manage-course/manage-session/create-update-session"
+    )
 );
-const ManageAllLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
+const ManageAllLesson = lazy(
+  () => import("../pages/instructor/manage-course/manage-session/manage-lesson")
+);
 const ManageAllSession = lazy(() => import("../pages/manage-all-session"));
-const InstructorManageSubscriptions = lazy(() => import("../pages/instructor/manage-subscriptions"));
+const InstructorManageSubscriptions = lazy(
+  () => import("../pages/instructor/manage-subscriptions")
+);
+const InstructorManagePayouts = lazy(
+  () => import("../pages/instructor/manage-payouts")
+);
 // Admin Page
 const AdminLoginPage = lazy(() => import("../pages/admin/login"));
 const AdminDashboard = lazy(() => import("../pages/admin/dashboard"));
 const AdminManageUsers = lazy(() => import("../pages/admin/manage-users"));
-const AdminInstructorRequest = lazy(() => import("../pages/admin/instructor-request"));
-const ManageAllPurchase = lazy(() => import("../pages/admin/manage-all-purchase/index"));
+const AdminInstructorRequest = lazy(
+  () => import("../pages/admin/instructor-request")
+);
+const ManageAllPurchase = lazy(
+  () => import("../pages/admin/manage-all-purchase/index")
+);
 const AdminManageBlogs = lazy(() => import("../pages/admin/manage-blogs"));
-const AdminManageCategories = lazy(() => import("../pages/admin/manage-categories"));
-const AdminCategoryDetail = lazy(() => import("../pages/admin/manage-categories/detail"));
+const AdminManageCategories = lazy(
+  () => import("../pages/admin/manage-categories")
+);
+const AdminCategoryDetail = lazy(
+  () => import("../pages/admin/manage-categories/detail")
+);
 const AdminManageCourses = lazy(() => import("../pages/admin/manage-course"));
 const AdminManageReviews = lazy(() => import("../pages/admin/manage-reviews"));
-const AdminManagePayouts = lazy(() => import("../pages/admin/manage-payouts"))
+const AdminManagePayouts = lazy(() => import("../pages/admin/manage-payouts"));
 const Dashboard = lazy(() => import("../components/dashboard/index"));
 
 const AppRouter: React.FC = () => {
@@ -102,155 +160,398 @@ const AppRouter: React.FC = () => {
         <Route path="/courses/:id" element={<CoursesCategory />} />
         <Route path={paths.FORGOT_PASSWORD} element={<ForgotPassword />} />
         <Route path={paths.VERIFY_TOKEN} element={<VerifyToken />} />
+<<<<<<< Updated upstream
         <Route path={paths.INTERNAL_SERVER_ERROR} element={<InternalServerError />} />
         <Route path={paths.COURSE_DETAILS} element={<CourseDetails />} />
         <Route path={paths.USER_DETAIL} element={<User />} />
 
         {/* Route for Student */}
+=======
+        <Route
+          path={paths.INTERNAL_SERVER_ERROR}
+          element={<InternalServerError />}
+        />
+
+        {/* Route for Student */}
+        <Route
+          path={paths.STUDENT_PAYMENT_HISTORY}
+          element={<StudentPaymentHistory />}
+        />
+>>>>>>> Stashed changes
         <Route path={paths.STUDENT_PROFILE} element={<Profile />} />
         <Route path={paths.STUDENT_CART} element={<Cart />} />
         <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
+<<<<<<< Updated upstream
         <Route path={paths.STUDENT_PURCHASE} element={<StudentInstructorPurchase />} />
         <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
+=======
+        <Route
+          path={paths.STUDENT_PURCHASE}
+          element={<StudentInstructorPurchase />}
+        />
+>>>>>>> Stashed changes
         {/* Route for Instructor */}
         <Route
           path="/instructor/*"
-          element={canAccess([roles.INSTRUCTOR]) ? <Dashboard /> : <Navigate to={paths.HOME} />}
+          element={
+            canAccess([roles.INSTRUCTOR]) ? (
+              <Dashboard />
+            ) : (
+              <Navigate to={paths.HOME} />
+            )
+          }
         >
           <Route
             path={paths.INSTRUCTOR_MANAGE_REVIEWS}
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManagerReviews /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <InstructorManagerReviews />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_MANAGE_COURSES}
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageCourses /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <InstructorManageCourses />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_DASHBOARD}
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorDashboard /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <InstructorDashboard />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_TOOLS}
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorTools /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <InstructorTools />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_RESOURCES}
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorResources /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <InstructorResources />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_CREATE_LECTURE}
-            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateLesson /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <CreateUpdateLesson />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES}
-            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateLesson /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <CreateUpdateLesson />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_MANAGE_ALL_LECTURES}
-            element={canAccess([roles.INSTRUCTOR]) ? <ManageAllLesson /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <ManageAllLesson />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_CREATE_LECTURE_OF_MANAGE_ALL_LECTURES}
-            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateLesson /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <CreateUpdateLesson />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_UPDATE_LECTURE_OF_MANAGE_ALL_LECTURES}
-            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateLesson /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <CreateUpdateLesson />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_UPDATE_LECTURE}
-            element={canAccess([roles.INSTRUCTOR]) ? <UpdateLecture /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <UpdateLecture />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route path={paths.INSTRUCTOR_PROFILE} element={<Profile />} />
           <Route
+<<<<<<< Updated upstream
+=======
+            path={paths.INSTRUCTOR_PAYMENT_HISTORY}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <PaymentHistory />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
+          />
+          <Route
+>>>>>>> Stashed changes
             path={paths.INSTRUCTOR_CREATE_COURSE}
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <InstructorCreateCourse />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_UPDATE_COURSE}
-            element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <InstructorCreateCourse />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_LECTURES_OF_COURSE}
-            element={canAccess([roles.INSTRUCTOR]) ? <LectureOfCourse /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <LectureOfCourse />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_MANAGE_SESSION_OF_COURSE}
-            element={canAccess([roles.INSTRUCTOR]) ? <ManageSession /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <ManageSession />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_CREATE_SESSION}
-            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <CreateUpdateSession />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_UPDATE_SESSION}
-            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <CreateUpdateSession />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_MANAGE_ALL_SESSION}
-            element={canAccess([roles.INSTRUCTOR]) ? <ManageAllSession /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <ManageAllSession />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS}
-            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <CreateUpdateSession />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
           <Route
             path={paths.INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS}
-            element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <CreateUpdateSession />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
+<<<<<<< Updated upstream
           <Route
             path={paths.INSTRUCTOR_MANAGE_SUPSCRIPTIONS}
+=======
+          {/* <Route
+            path={paths.INSTRUCTOR_MANAGE_SUBSCRIPTIONS}
+>>>>>>> Stashed changes
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageSubscriptions /> : <Navigate to={paths.HOME} />}
           />
           <Route
             path={paths.INSTRUCTOR_MANAGE_PURCHASES}
             element={canAccess([roles.INSTRUCTOR]) ? <StudentInstructorPurchase /> : <Navigate to={paths.HOME} />}
+          /> */}
+          <Route
+            path={paths.INSTRUCTOR_MANAGE_PAYOUTS}
+            element={
+              canAccess([roles.INSTRUCTOR]) ? (
+                <InstructorManagePayouts />
+              ) : (
+                <Navigate to={paths.HOME} />
+              )
+            }
           />
         </Route>
 
         {/* Route for Admin */}
         <Route path={paths.ADMIN_LOGIN} element={<AdminLoginPage />} />
-        <Route path="/admin/*" element={canAccess([roles.ADMIN]) ? <Dashboard /> : <Navigate to={paths.ADMIN_LOGIN} />}>
+        <Route
+          path="/admin/*"
+          element={
+            canAccess([roles.ADMIN]) ? (
+              <Dashboard />
+            ) : (
+              <Navigate to={paths.ADMIN_LOGIN} />
+            )
+          }
+        >
           <Route
             path={paths.ADMIN_DASHBOARD}
-            element={canAccess([roles.ADMIN]) ? <AdminDashboard /> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={
+              canAccess([roles.ADMIN]) ? (
+                <AdminDashboard />
+              ) : (
+                <Navigate to={paths.ADMIN_LOGIN} />
+              )
+            }
           />
           <Route
             path={paths.ADMIN_MANAGE_USERS}
-            element={canAccess([roles.ADMIN]) ? <AdminManageUsers /> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={
+              canAccess([roles.ADMIN]) ? (
+                <AdminManageUsers />
+              ) : (
+                <Navigate to={paths.ADMIN_LOGIN} />
+              )
+            }
           />
           <Route
             path={paths.ADMIN_INSTRUCTOR_REQUEST}
-            element={canAccess([roles.ADMIN]) ? <AdminInstructorRequest /> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={
+              canAccess([roles.ADMIN]) ? (
+                <AdminInstructorRequest />
+              ) : (
+                <Navigate to={paths.ADMIN_LOGIN} />
+              )
+            }
           />
           <Route
             path={paths.ADMIN_MANAGE_PURCHASE}
-            element={canAccess([roles.ADMIN]) ? <ManageAllPurchase /> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={
+              canAccess([roles.ADMIN]) ? (
+                <ManageAllPurchase />
+              ) : (
+                <Navigate to={paths.ADMIN_LOGIN} />
+              )
+            }
           />
           <Route
             path={paths.ADMIN_MANAGE_BLOGS}
-            element={canAccess([roles.ADMIN]) ? <AdminManageBlogs /> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={
+              canAccess([roles.ADMIN]) ? (
+                <AdminManageBlogs />
+              ) : (
+                <Navigate to={paths.ADMIN_LOGIN} />
+              )
+            }
           />
           <Route
             path={paths.ADMIN_MANAGE_CATEGORIES}
-            element={canAccess([roles.ADMIN]) ? <AdminManageCategories /> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={
+              canAccess([roles.ADMIN]) ? (
+                <AdminManageCategories />
+              ) : (
+                <Navigate to={paths.ADMIN_LOGIN} />
+              )
+            }
           />
           <Route
             path={paths.ADMIN_CATEGORY_DETAIL}
-            element={canAccess([roles.ADMIN]) ? <AdminCategoryDetail /> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={
+              canAccess([roles.ADMIN]) ? (
+                <AdminCategoryDetail />
+              ) : (
+                <Navigate to={paths.ADMIN_LOGIN} />
+              )
+            }
           />
           <Route
             path={paths.ADMIN_MANAGE_COURSES}
-            element={canAccess([roles.ADMIN]) ? <AdminManageCourses /> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={
+              canAccess([roles.ADMIN]) ? (
+                <AdminManageCourses />
+              ) : (
+                <Navigate to={paths.ADMIN_LOGIN} />
+              )
+            }
           />
           <Route
             path={paths.ADMIN_MANAGE_REVIEWS}
-            element={canAccess([roles.ADMIN]) ? <AdminManageReviews /> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={
+              canAccess([roles.ADMIN]) ? (
+                <AdminManageReviews />
+              ) : (
+                <Navigate to={paths.ADMIN_LOGIN} />
+              )
+            }
           />
           <Route
             path={paths.ADMIN_MANAGE_PAYOUTS}
-            element={canAccess([roles.ADMIN]) ? <AdminManagePayouts /> : <Navigate to={paths.ADMIN_LOGIN} />}
+            element={
+              canAccess([roles.ADMIN]) ? (
+                <AdminManagePayouts />
+              ) : (
+                <Navigate to={paths.ADMIN_LOGIN} />
+              )
+            }
           />
         </Route>
         <Route path="*" element={<NotFound />} />

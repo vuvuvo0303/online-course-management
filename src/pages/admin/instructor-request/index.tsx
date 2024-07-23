@@ -27,6 +27,10 @@ const AdminInstructorRequest = () => {
   const [dataInstructorRequest, setDataInstructorRequest] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
   const debouncedSearch = useDebounce(searchText, 500);
   const [dataSource,setDataSource] =useState<Instructor[]>([])
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -35,7 +39,8 @@ const AdminInstructorRequest = () => {
     total: 0,
   });
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
+  const [selectedInstructor, setSelectedInstructor] =
+    useState<Instructor | null>(null);
   const [rejectReason, setRejectReason] = useState("");
 
   // useEffect(() => {
@@ -114,9 +119,17 @@ useEffect(() => {
       render: (is_verified: boolean) => (
         <span>
           {is_verified ? (
-            <img src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png" alt="" width={50} />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png"
+              alt=""
+              width={50}
+            />
           ) : (
-            <img src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png" alt="" width={50} />
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png"
+              alt=""
+              width={50}
+            />
           )}
         </span>
       ),
@@ -141,7 +154,12 @@ useEffect(() => {
               >
                 Approve
               </Button>
-              <Button type="primary" className="px-5" danger onClick={() => showRejectModal(record)}>
+              <Button
+                type="primary"
+                className="px-5"
+                danger
+                onClick={() => showRejectModal(record)}
+              >
                 Reject
               </Button>
             </>
@@ -150,8 +168,11 @@ useEffect(() => {
       ),
     },
   ];
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 
   const fetchInstructorRequest = async () => {
     setLoading(true);
@@ -168,6 +189,7 @@ useEffect(() => {
         },
       });
 
+<<<<<<< Updated upstream
 
       if (response.data && response.data.pageData) {
         const dataWithApprovalStatus = response.data.pageData.map((instructor: Instructor) => ({
@@ -175,6 +197,15 @@ useEffect(() => {
           isApproved: instructor.is_verified,
           isRejected: false,
         }));
+=======
+      if (response.data && response.data.pageData) {
+        const dataWithApprovalStatus = response.data.pageData.map(
+          (instructor) => ({
+            ...instructor,
+            isApproved: instructor.is_verified,
+          })
+        );
+>>>>>>> Stashed changes
 
         setDataSource(dataWithApprovalStatus);
         setPagination((prev) => ({
@@ -197,9 +228,9 @@ useEffect(() => {
     fetchInstructorRequest();
   }, [pagination.current, pagination.pageSize, debouncedSearch]);
 
-
   const handleApprove = async (record: Instructor) => {
     try {
+<<<<<<< Updated upstream
       const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
         user_id: record._id,
         status: "approve",
@@ -214,13 +245,33 @@ useEffect(() => {
         setDataInstructorRequest(updatedDataSource);
       } else {
         message.error("Failed to approve instructor");
+=======
+      const response = await axiosInstance.put(
+        "/api/users/review-profile-instructor",
+        {
+          user_id: record._id,
+          status: "approve",
+          comment: "",
+        }
+      );
+
+      if (response) {
+        message.success("Email phê duyệt đã được gửi thành công");
+        const updatedDataSource = dataSource.map((item) =>
+          item._id === record._id ? { ...item, isApproved: true } : item
+        );
+        setDataSource(updatedDataSource);
+>>>>>>> Stashed changes
       }
     } catch (error) {
       //
     }
   };
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
@@ -230,11 +281,22 @@ useEffect(() => {
     if (!selectedInstructor) return;
 
     try {
+<<<<<<< Updated upstream
       const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
         user_id: selectedInstructor._id,
         status: "reject",
         comment: rejectReason,
       });
+=======
+      const response = await axiosInstance.put(
+        "/api/users/review-profile-instructor",
+        {
+          user_id: selectedInstructor._id,
+          status: "reject",
+          comment: rejectReason,
+        }
+      );
+>>>>>>> Stashed changes
 
       if (response) {
         message.success("Instructor rejected successfully");
