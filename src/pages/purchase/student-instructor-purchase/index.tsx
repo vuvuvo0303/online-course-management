@@ -1,51 +1,36 @@
-
 import { Purchase } from "../../../models";
 import { useEffect, useState } from "react";
 import { getItemsByStudent } from "../../../services";
-import { Table, Tag } from "antd";
-import { getColorPurchase } from "../../../consts";
+
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { Table, TableProps } from "antd";
 
 const StudentInstructorPurchase = () => {
     const [purchases, setPurchases] = useState<Purchase[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const navigate = useNavigate();
+    
     const getPurchase = async () => {
-        const res = await getItemsByStudent("", "", "", "");
-        console.log("res", res);
-        setPurchases(res);
+        const response = await getItemsByStudent("", "", "", "");
+        setPurchases(response);
         setLoading(false);
-    }
+    };
 
     useEffect(() => {
         getPurchase();
-    }, [])
+    }, []);
 
     if (loading) {
-        return (
-            <p>Loading ...</p>
-        )
+        return <p>Loading ...</p>;
     }
-    const columns = [
+
+    const columns: TableProps<Purchase>["columns"] = [
         {
-            title: 'purchase_no',
+            title: 'Purchase No',
             dataIndex: 'purchase_no',
             key: 'purchase_no',
-        },
-        {
-            title: 'status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: string) => (
-                <>
-                    <Tag color={getColorPurchase(status)}>
-                        {status === "request_payout" ? "request payout" : status}
-                    </Tag>
-                </>
-            )
-        },
-        {
-            title: 'Price',
-            dataIndex: 'price',
-            key: 'price',
+            width: '20%',
         },
         {
             title: 'Course Name',
@@ -53,25 +38,51 @@ const StudentInstructorPurchase = () => {
             key: 'course_name',
         },
         {
-            title: 'Student Name',
-            dataIndex: 'student_name',
-            key: 'student_name',
-        },
-        {
             title: 'Instructor Name',
             dataIndex: 'instructor_name',
             key: 'instructor_name',
+            width: '18%',
+            render: (instructor_name: string, record: Purchase) => (
+                <div onClick={() => navigateToUser(record.instructor_id)} className="text-blue-500 cursor-pointer">
+                    {instructor_name}
+                </div>
+            ),
+        },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+        },
+        {
+            title: 'Discount',
+            dataIndex: 'discount',
+            key: 'discount',
+            render: (discount: number) => `${discount}%`
+        },
+        {
+            title: 'Price paid',
+            dataIndex: 'price_paid',
+            key: 'price_paid',
+        },
+        {
+            title: 'Created Date',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            width: '10%',
+            render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
         },
     ];
 
-    return (
-        <>
-            <div className="container mx-auto">
-                <h1 className="text-center my-10">Manage Purchase</h1>
-                <Table dataSource={purchases} columns={columns} />
-            </div>
-        </>
-    )
+    const navigateToUser = (instructor_id: string) => {
+        navigate(`/user/${instructor_id}`);
+    };
 
-}
+    return (
+        <div className="container mx-auto px-10">
+            <h1 className="text-center my-10">Manage Purchased</h1>
+            <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} />
+        </div>
+    );
+};
+
 export default StudentInstructorPurchase;

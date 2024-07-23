@@ -1,20 +1,19 @@
 import { Dropdown, Badge, Space, MenuProps, Row, Col, Avatar, Popover } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { paths } from '../../consts';
-import { ShoppingCartOutlined, UserOutlined, MailOutlined, BellOutlined, HeartOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, UserOutlined, HeartOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import SearchTool from '../SearchTool';
 import Drawer from '../Drawer';
 import PopoverContent from '../PopoverContent';
-import Popup from '../Popup';
 import { logout } from "../../services/auth.ts";
-import { displayCart } from '../../services';
+import { getCarts } from '../../services';
 
 
 const Navbar: React.FC = () => {
   // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
-  const [totalCarts, setTotalCarts] =  useState<number>(0)
+  const [totalCarts, setTotalCarts] = useState<number>(0)
   const [dataUser, setDataUser] = useState<{ role: string | null; fullName: string | null; email: string | null; avatarUrl: string | null }>({
     role: null,
     fullName: null,
@@ -32,14 +31,13 @@ const Navbar: React.FC = () => {
   const token = localStorage.getItem("token")
 
   useEffect(() => {
- 
-   if(token){
-    CountCart();
-   }
+    if (token) {
+      countCart();
+    }
   }, [token])
-  
-  const CountCart = async () => {
-    const res = await displayCart("new");
+
+  const countCart = async () => {
+    const res = await getCarts("new");
     if (res) {
       setTotalCarts(res.length);
     }
@@ -90,14 +88,6 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={"/payment-history"}>
-          Payment History
-        </Link>
-      ),
-      key: "2",
-    },
-    {
-      label: (
         <Link className="text-lg" to={"/help"}>
           Help
         </Link>
@@ -145,7 +135,7 @@ const Navbar: React.FC = () => {
         <div className='mt-3'>
           {!isLoginPage && !isRegisterPage && !isForgotPassword && <Drawer />}
         </div>
-        <Link to="/">
+        <Link to={paths.HOME}>
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
@@ -170,28 +160,6 @@ const Navbar: React.FC = () => {
                   <HeartOutlined className="text-gray-400 text-3xl" />
                 </Badge>
               </Link>
-            </Popover>
-
-            <Popover
-              content={<Popup />}
-              overlayInnerStyle={{ padding: 0 }}
-              trigger="click"
-              placement="bottom"
-            >
-              <Badge className='hidden md:block' count={2}>
-                <MailOutlined className="text-gray-400 text-3xl" />
-              </Badge>
-            </Popover>
-
-            <Popover
-              content={<Popup />}
-              overlayInnerStyle={{ padding: 0 }}
-              trigger="click"
-              placement="bottom"
-            >
-              <Badge className='hidden md:block' count={3}>
-                <BellOutlined className="text-gray-400 text-3xl" />
-              </Badge>
             </Popover>
 
             <Popover

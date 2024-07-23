@@ -7,7 +7,7 @@ import CourseCard from "./course-card/CourseCard";
 import { Course } from "../../../models/Course"; // Import Course model here
 
 const AllCourses: React.FC = () => {
-    const [courses, setCourses] = useState<Course[]>([]); // Use Course[] for type safety
+    const [courses, setCourses] = useState<Course[]>([]);
     const [searchText, setSearchText] = useState<string>("");
     const [loading, setLoading] = useState(false);
     const [pagination, setPagination] = useState({

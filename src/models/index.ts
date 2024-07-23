@@ -3,7 +3,7 @@ export { Lessons } from './Lesson';
 export { Course } from './Course';
 export { Comment } from './Comment';
 export { Review } from './Review';
-export { Payment } from './Payment';
+export { Payout } from './Payout';
 export { Blog } from './Blog';
 export { Session } from './Session';
 export { Category } from './Category';

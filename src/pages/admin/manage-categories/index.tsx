@@ -28,13 +28,14 @@ import {
 } from "../../../consts";
 import { useDebounce } from "../../../hooks";
 const AdminManageCategories: React.FC = () => {
-  const [data, setData] = useState<Category[]>([]);
+  const [dataCategories, setDataCategories] = useState<Category[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [validateOnOpen, setValidateOnOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [parentCategories, setParentCategories] = useState<Category[]>([]);
+
 
   const debouncedSearchTerm = useDebounce(searchText, 500);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -57,8 +58,9 @@ const AdminManageCategories: React.FC = () => {
           pageNum: pagination.current,
           pageSize: pagination.pageSize,
         },
-      });
-      setData(response.data.pageData || response.data);
+      }
+      )
+      setDataCategories(response.data.pageData || response.data);
       setPagination((prev) => ({
         ...prev,
         total: response.data.pageInfo?.totalItems || response.data.length,
@@ -106,7 +108,9 @@ const AdminManageCategories: React.FC = () => {
   }, [form]);
 
   const handleDelete = async (_id: string, name: string) => {
-    const isParentCategory = data.some((category) => category.parent_category_id === _id);
+    const isParentCategory = dataCategories.some(
+      (category) => category.parent_category_id === _id
+    );
 
     if (isParentCategory) {
       message.error(`Cannot delete category ${name} as it is a parent category of another category.`);
@@ -147,8 +151,12 @@ const AdminManageCategories: React.FC = () => {
         const response = await axiosInstance.put(`${API_UPDATE_CATEGORY}/${values._id}`, updatedCategory);
 
         if (response.data) {
-          setData((prevData) =>
-            prevData.map((category) => (category._id === values._id ? { ...category, ...response.data } : category))
+          setDataCategories((prevData) =>
+            prevData.map((category) =>
+              category._id === values._id
+                ? { ...category, ...response.data }
+                : category
+            )
           );
           setIsModalVisible(false);
           form.resetFields();
@@ -160,7 +168,7 @@ const AdminManageCategories: React.FC = () => {
         setLoading(false);
       }
     },
-    [data, form]
+    [dataCategories, form]
   );
 
   const handleEditCategory = useCallback(
@@ -230,7 +238,7 @@ const AdminManageCategories: React.FC = () => {
         },
       });
     },
-    [form, updateCategory, fetchCategories, data]
+    [form, updateCategory, fetchCategories, dataCategories]
   );
 
   const addNewCategory = useCallback(
@@ -240,7 +248,9 @@ const AdminManageCategories: React.FC = () => {
 
         let parentCategoryId = null;
         if (values.parent_category_id) {
-          const parentCategory = data.find((category) => category.name === values.parent_category_id);
+          const parentCategory = dataCategories.find(
+            (category) => category.name === values.parent_category_id
+          );
           if (parentCategory) {
             parentCategoryId = parentCategory._id;
           }
@@ -254,7 +264,7 @@ const AdminManageCategories: React.FC = () => {
         const response = await axiosInstance.post(API_CREATE_CATEGORY, categoryData);
         if (response.data) {
           const newCategory = response.data;
-          setData((prevData) => [...prevData, newCategory]);
+          setDataCategories((prevData) => [...prevData, newCategory]);
           form.resetFields();
           fetchCategories();
           message.success(`Category ${values.name} created successfully.`);
@@ -266,7 +276,7 @@ const AdminManageCategories: React.FC = () => {
         setLoading(false);
       }
     },
-    [data, form, fetchCategories]
+    [dataCategories, form, fetchCategories]
   );
 
   const columns: ColumnType<Category>[] = [
@@ -280,7 +290,9 @@ const AdminManageCategories: React.FC = () => {
       dataIndex: "parent_category_id",
       key: "parent_category_id",
       render: (parent_category_id: string) => {
-        const category = data.find((category) => category._id === parent_category_id);
+        const category = dataCategories.find(
+          (category) => category._id === parent_category_id
+        );
         return category ? category.name : "None";
       },
     },
@@ -305,6 +317,7 @@ const AdminManageCategories: React.FC = () => {
     {
       title: "Action",
       key: "action",
+      width: "10%",
       render: (_: unknown, record: Category) => (
         <div>
           <EditOutlined
@@ -383,7 +396,7 @@ const AdminManageCategories: React.FC = () => {
       <Spin spinning={loading}>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={dataCategories}
           rowKey={(record: Category) => record._id}
           pagination={false}
           onChange={handleTableChange}

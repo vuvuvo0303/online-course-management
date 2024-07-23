@@ -21,7 +21,7 @@ const AdminManageFeedbacks: React.FC = () => {
     fetchReviews();
   }, [pagination.current, pagination.pageSize]);
 
-  const fetchReviews = useCallback(async () => {
+  const getReviews = useCallback(async () => {
     try {
       const response = await axiosInstance.post(API_GET_REVIEWS, {
         searchCondition: {
@@ -37,7 +37,7 @@ const AdminManageFeedbacks: React.FC = () => {
         },
       });
       setData(response.data.pageData);
-      
+
       setPagination({
         ...pagination,
         total: response.data.pageInfo.totalItems,
@@ -46,8 +46,8 @@ const AdminManageFeedbacks: React.FC = () => {
       });
     } catch (error) {
       console.error("Error fetching students:", error);
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -57,7 +57,7 @@ const AdminManageFeedbacks: React.FC = () => {
         await axiosInstance.delete(`${API_DELETE_REVIEW}/${_id}`);
         setData((prevReview) => prevReview.filter((review) => review._id === _id));
         message.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
-        fetchReviews();
+        getReviews();
       } catch {
         //
       }
@@ -153,16 +153,22 @@ const AdminManageFeedbacks: React.FC = () => {
           },
         ]}
       />
-      <Table rowKey={(record: Review) => record._id} columns={columns} dataSource={data} pagination={false} onChange={handleTableChange}/>
+      <Table
+        rowKey={(record: Review) => record._id}
+        columns={columns}
+        dataSource={data}
+        pagination={false}
+        onChange={handleTableChange}
+      />
       <div className="flex justify-end py-8">
-      <Pagination
-      total={pagination.total}
-      showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-      current={pagination.current}
-      pageSize={pagination.pageSize}
-      onChange={handlePaginationChange}
-      showSizeChanger
-    />
+        <Pagination
+          total={pagination.total}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
       </div>
     </div>
   );

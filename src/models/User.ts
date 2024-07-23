@@ -152,6 +152,7 @@ export class Instructor extends User {
   description: string;
   degree: string;
   isApproved?: boolean;
+  is_subscribed?: boolean
   isRejected?: boolean;
 
   constructor(
@@ -172,7 +173,10 @@ export class Instructor extends User {
     created_at?: Date,
     updated_at?: Date,
     is_deleted?: boolean,
-    is_verified?: boolean // add this parameter
+    is_verified?: boolean,
+    is_subscribed?: boolean
+    // add this parameter
+    // is_subscribed?: boolean
   ) {
     super(
       _id,
@@ -190,8 +194,11 @@ export class Instructor extends User {
       created_at,
       updated_at,
       is_deleted,
-      is_verified // add this parameter to super
+      is_verified ,
+      
+      // add this parameter to super
     );
+    this.is_subscribed = is_subscribed;
     this.description = description;
     this.degree = degree;
   }

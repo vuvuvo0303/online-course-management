@@ -1,5 +1,5 @@
 import { Breadcrumb, Input, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
-import { API_INSTRUCTOR_GET_SUBSCRIBER, API_INSTRUCTOR_GET_SUBSCRIPTIONS, getColorStatusSubscribe } from "../../../consts/index";
+import {  API_INSTRUCTOR_GET_SUBSCRIPTIONS, API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER, getColorStatusSubscribe } from "../../../consts/index";
 import { format } from "date-fns";
 import { Subscription } from "models/Subscription";
 import { useEffect, useState } from "react";
@@ -51,7 +51,7 @@ const InstructorManageSubscriptions = () => {
         if (key === "subscription") {
             setApiLink(API_INSTRUCTOR_GET_SUBSCRIPTIONS)
         } else {
-            setApiLink(API_INSTRUCTOR_GET_SUBSCRIBER)
+            setApiLink(API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER)
 
         }
 

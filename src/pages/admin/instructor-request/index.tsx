@@ -13,8 +13,9 @@ import {
   TablePaginationConfig,
   Tag,
 } from "antd";
-import { API_GET_USERS } from "../../../consts";
-import { Instructor } from "models/User";
+import { API_GET_USERS, API_REVIEW_PROFILE_INSTRUCTOR } from "../../../consts";
+import { Instructor } from "../../../models/User";
+import { useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
@@ -23,7 +24,7 @@ import { useDebounce } from "../../../hooks";
 const { TextArea } = Input;
 
 const AdminInstructorRequest = () => {
-  const [dataSource, setDataSource] = useState<Instructor[]>([]);
+  const [dataInstructorRequest, setDataInstructorRequest] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const debouncedSearch = useDebounce(searchText, 500);
@@ -107,6 +108,7 @@ useEffect(() => {
     {
       title: "Verify",
       dataIndex: "is_verified",
+      width: "10%",
       key: "is_verified",
       render: (is_verified: boolean) => (
         <span>
@@ -121,6 +123,7 @@ useEffect(() => {
     {
       title: "Action",
       key: "action",
+      width: "20%",
       render: (_, record) => (
         <Space size="middle">
           {record.isRejected ? (
@@ -147,6 +150,8 @@ useEffect(() => {
     },
   ];
 
+
+
   const fetchInstructorRequest = async () => {
     setLoading(true);
     try {
@@ -161,6 +166,7 @@ useEffect(() => {
           pageSize: pagination.pageSize,
         },
       });
+
 
       if (response.data && response.data.pageData) {
         const dataWithApprovalStatus = response.data.pageData.map((instructor: Instructor) => ({
@@ -180,40 +186,50 @@ useEffect(() => {
         // Handle case when response.data is empty
       }
     } catch (error) {
-      console.error("Error fetching instructors:", error);
+      //
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchInstructorRequest();
+  }, [pagination.current, pagination.pageSize, debouncedSearch]);
+
+
   const handleApprove = async (record: Instructor) => {
     try {
-      const response = await axiosInstance.put("/api/users/review-profile-instructor", {
+      const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
         user_id: record._id,
         status: "approve",
         comment: "",
       });
 
-      if (response) {
-        message.success("Email phê duyệt đã được gửi thành công");
-
-        const updatedDataSource = dataSource.map((item) =>
+      if (response && response.data && response.data.success) {
+        message.success("Email is send for instructor");
+        const updatedDataSource = dataInstructorRequest.map((item) =>
           item._id === record._id ? { ...item, isApproved: true } : item
         );
-
-        setDataSource(updatedDataSource);
+        setDataInstructorRequest(updatedDataSource);
+      } else {
+        message.error("Failed to approve instructor");
       }
     } catch (error) {
-      message.error("Lỗi khi phê duyệt giảng viên");
-      console.error("Error approving instructor:", error);
+      //
     }
+  };
+
+
+
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
   };
 
   const handleReject = async () => {
     if (!selectedInstructor) return;
 
     try {
-      const response = await axiosInstance.put("/api/users/review-profile-instructor", {
+      const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
         user_id: selectedInstructor._id,
         status: "reject",
         comment: rejectReason,
@@ -274,7 +290,7 @@ useEffect(() => {
       />
       <Table
         columns={columns}
-        dataSource={dataSource}
+        dataSource={dataInstructorRequest}
         loading={loading}
         pagination={false}
         onChange={handleTableChange}

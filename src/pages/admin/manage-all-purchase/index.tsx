@@ -1,7 +1,6 @@
 import { Breadcrumb, Input, Pagination, Select, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
 import { API_GET_PURCHASE_BY_ADMIN, getColorPurchase } from "../../../consts/index";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
@@ -24,6 +23,9 @@ interface Purchase {
   student_name: string;
   instructor_name: string;
 }
+import { HomeOutlined } from "@ant-design/icons";
+import { Purchase } from "../../../models/Purchase";
+
 
 const ManageAllPurchase = () => {
   const [dataSource, setDataSource] = useState<Purchase[]>([]);
@@ -59,7 +61,7 @@ const ManageAllPurchase = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy", { locale: vi }),
+      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
       width: "10%",
     },
     {
@@ -97,8 +99,6 @@ const ManageAllPurchase = () => {
         },
       });
 
-      console.log("API Response:", response.data);
-
       if (response.data && response.data.pageData) {
         const { pageData, pageInfo } = response.data;
         setDataSource(pageData);
@@ -118,7 +118,7 @@ const ManageAllPurchase = () => {
 
   useEffect(() => {
     fetchPurchase();
-  }, [fetchPurchase]);
+  }, []);
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPagination((prev) => ({
@@ -136,6 +136,7 @@ const ManageAllPurchase = () => {
   };
   return (
     <div>
+      <Breadcrumb className="p-3">
       <Breadcrumb className="p-3">
         <Breadcrumb.Item>
           <HomeOutlined />
@@ -168,9 +169,12 @@ const ManageAllPurchase = () => {
       </div>
       <Table
         columns={columns}
-        dataSource={dataSource}
-        pagination={false}
-        className="overflow-auto"
+        dataSource={dataPurchases}
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: pagination.total,
+        }}
         onChange={handleTableChange}
         rowKey="_id"
       />

@@ -3,7 +3,7 @@ import { Rate, Input, Button, Modal, Form, Select, message } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import axiosInstance from '../../../services/axiosInstance.ts';
 import { useParams } from 'react-router-dom';
-import { API_GET_COURSES } from '../../../consts/index.ts';
+import { API_GET_COURSE, API_GET_COURSES } from '../../../consts/index.ts';
 
 interface Review {
     name: string;
@@ -29,7 +29,7 @@ const ReviewPage: React.FC = () => {
 
     const fetchReviews = useCallback(async () => {
         try {
-            const response = await axiosInstance.get(`/api/review?course_id=${courseId}`);
+            const response = await axiosInstance.get(`${API_GET_COURSE}?course_id=${courseId}`);
             if (response.data) {
                 setReviews(response.data);
             }

@@ -50,7 +50,7 @@ import { deleteUser } from "../../../services/users.ts";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AdminManageUsers: React.FC = () => {
-  const [data, setData] = useState<User[]>([]);
+  const [dataUsers, setDataUsers] = useState<User[]>([]);
 
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -73,10 +73,10 @@ const AdminManageUsers: React.FC = () => {
   const debouncedSearch = useDebounce(searchText, 500);
 
   useEffect(() => {
-    fetchUsers();
+    getUsers();
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch]);
 
-  const fetchUsers = useCallback(async () => {
+  const getUsers = useCallback(async () => {
     setLoading(true);
     try {
       let statusValue: boolean | undefined = undefined;
@@ -97,7 +97,7 @@ const AdminManageUsers: React.FC = () => {
           pageSize: pagination.pageSize,
         },
       });
-      setData(response.data.pageData);
+      setDataUsers(response.data.pageData);
       setPagination({
         ...pagination,
         total: response.data.pageInfo.totalItems,
@@ -126,18 +126,18 @@ const AdminManageUsers: React.FC = () => {
         const response = await axiosInstance.post(API_CREATE_USER, userData);
 
         const newUser = response.data.data;
-        setData((prevData) => [...prevData, newUser]);
+        setDataUsers((prevData) => [...prevData, newUser]);
         message.success("Created new user successfully");
         setIsModalVisible(false);
         form.resetFields();
         setLoading(false);
-        fetchUsers();
+        getUsers();
         setFileList([]);
       } catch (error) {
         setLoading(false);
       }
     },
-    [fetchUsers, form]
+    [getUsers, form]
   );
 
   const getBase64 = (file: FileType): Promise<string> =>
@@ -311,7 +311,7 @@ const AdminManageUsers: React.FC = () => {
           <Popconfirm
             title="Delete the User"
             description="Are you sure to delete this User?"
-            onConfirm={() => deleteUser(record._id, record.email, fetchUsers)}
+            onConfirm={() => deleteUser(record._id, record.email, getUsers)}
             okText="Yes"
             cancelText="No"
           >
@@ -369,14 +369,14 @@ const AdminManageUsers: React.FC = () => {
           });
         }
 
-        setData((prevData) =>
+        setDataUsers((prevData) =>
           prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
         );
 
         message.success("Updated user successfully");
         setIsModalVisible(false);
         form.resetFields();
-        fetchUsers();
+        getUsers();
       } else {
         // Handle error for edit users
       }
@@ -405,7 +405,7 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
-    fetchUsers();
+    getUsers();
   };
 
   return (
@@ -489,7 +489,7 @@ const AdminManageUsers: React.FC = () => {
       </div>
 
       <Modal
-        title={modalMode === "Edit" ? "Edit User" : "Add User"}
+        title={modalMode === "Edit" ? "Edit User" : "Add New User"}
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}

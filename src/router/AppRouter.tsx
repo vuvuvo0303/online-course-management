@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
 import { Suspense, lazy } from "react";
+// import StudentSubscription from "pages/student/subscription";
 
 // Guest Page
 const Home = lazy(() => import("../pages/home"));
@@ -13,33 +14,34 @@ const Policy = lazy(() => import("../pages/policy"));
 const Terms = lazy(() => import("../pages/terms"));
 const Guidelines = lazy(() => import("../pages/guideline"));
 const About = lazy(() => import("../pages/about"));
+const NameCategory = lazy(() => import("../pages/category"));
 const Course = lazy(() => import("../pages/course"));
 const AllCourses = lazy(() => import("../pages/course/all-courses"));
+const CourseDetails = lazy(() => import("../pages/course-detail"));
+//const Lesson = lazy(() => import("../pages/course/lesson"));
 const BlogDetail = lazy(() => import("../pages/blog/blog-detail"));
 const BlogList = lazy(() => import("../pages/blog"));
 const Enrollment = lazy(() => import("../pages/enrollment"));
 const SiteMap = lazy(() => import("../pages/sitemap"));
 const NotFound = lazy(() => import("../pages/notfound"));
-const CourseDetail = lazy(() => import("../pages/course-detail"));
 const BecomeInstructorPage = lazy(() => import("../pages/teaching"));
 const CoursesCategory = lazy(() => import("../pages/courses"));
 const ForgotPassword = lazy(() => import("../pages/forgot-password"));
 const InternalServerError = lazy(() => import("../pages/internal-server-error"));
 const VerifyToken = lazy(() => import("../pages/verify-token"));
+const User = lazy(() => import("../pages/user"));
 
 // Student Page
-const StudentPaymentHistory = lazy(() => import("../pages/payment/studentPaymentHistory"));
 const Checkout = lazy(() => import("../pages/checkout"));
 const Profile = lazy(() => import("../pages/profile"));
 const Cart = lazy(() => import("../pages/cart"));
-
+const StudentSubscription = lazy(() => import("../pages/student/subscription"));
 // Student and Instructor Page
 const StudentInstructorPurchase = lazy(() => import("../pages/purchase/student-instructor-purchase"));
 
 // Instructor Page
 const InstructorDashboard = lazy(() => import("../pages/instructor/instructor-dashboard/index"));
 const InstructorManagerReviews = lazy(() => import("../pages/instructor/manage-reviews"));
-const PaymentHistory = lazy(() => import("../pages/payment/payment-history"));
 const InstructorManageCourses = lazy(() => import("../pages/instructor/manage-course/index"));
 const InstructorResources = lazy(() => import("../pages/instructor/resources"));
 const InstructorTools = lazy(() => import("../pages/instructor/tools"));
@@ -50,6 +52,7 @@ const CreateUpdateLesson = lazy(
 const UpdateLecture = lazy(
   () => import("../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson")
 );
+// const ManageStudent = lazy(() => import("../pages/instructor/m"))
 const ManageSession = lazy(() => import("../pages/instructor/manage-course/manage-session/"));
 const InstructorCreateCourse = lazy(() => import("../pages/instructor/manage-course/create-update-course"));
 const CreateUpdateSession = lazy(
@@ -69,7 +72,7 @@ const AdminManageCategories = lazy(() => import("../pages/admin/manage-categorie
 const AdminCategoryDetail = lazy(() => import("../pages/admin/manage-categories/detail"));
 const AdminManageCourses = lazy(() => import("../pages/admin/manage-course"));
 const AdminManageReviews = lazy(() => import("../pages/admin/manage-reviews"));
-const AdminPurchases = lazy(() => import("../pages/admin/purchase"))
+const AdminManagePayouts = lazy(() => import("../pages/admin/manage-payouts"))
 const Dashboard = lazy(() => import("../components/dashboard/index"));
 
 const AppRouter: React.FC = () => {
@@ -88,6 +91,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.GUIDELINES} element={<Guidelines />} />
         <Route path={paths.SUPPORT} element={<Support />} />
         <Route path={paths.BLOGS} element={<BlogList />} />
+        <Route path={paths.NAME_CATEGORY} element={<NameCategory />} />
         <Route path={paths.COURSE} element={<Course />} />
         <Route path={paths.ALL_COURSES} element={<AllCourses />} />
         <Route path={paths.BLOG_DETAIL} element={<BlogDetail />} />
@@ -99,15 +103,16 @@ const AppRouter: React.FC = () => {
         <Route path={paths.FORGOT_PASSWORD} element={<ForgotPassword />} />
         <Route path={paths.VERIFY_TOKEN} element={<VerifyToken />} />
         <Route path={paths.INTERNAL_SERVER_ERROR} element={<InternalServerError />} />
+        <Route path={paths.COURSE_DETAILS} element={<CourseDetails />} />
+        <Route path={paths.USER_DETAIL} element={<User />} />
 
         {/* Route for Student */}
-        <Route path={paths.STUDENT_PAYMENT_HISTORY} element={<StudentPaymentHistory />} />
         <Route path={paths.STUDENT_PROFILE} element={<Profile />} />
         <Route path={paths.STUDENT_CART} element={<Cart />} />
         <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
-        <Route path={paths.COURSE_DETAIL} element={<CourseDetail />} />
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
         <Route path={paths.STUDENT_PURCHASE} element={<StudentInstructorPurchase />} />
+        <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
         {/* Route for Instructor */}
         <Route
           path="/instructor/*"
@@ -159,10 +164,6 @@ const AppRouter: React.FC = () => {
           />
           <Route path={paths.INSTRUCTOR_PROFILE} element={<Profile />} />
           <Route
-            path={paths.INSTRUCTOR_PAYMENT_HISTORY}
-            element={canAccess([roles.INSTRUCTOR]) ? <PaymentHistory /> : <Navigate to={paths.HOME} />}
-          />
-          <Route
             path={paths.INSTRUCTOR_CREATE_COURSE}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorCreateCourse /> : <Navigate to={paths.HOME} />}
           />
@@ -199,7 +200,7 @@ const AppRouter: React.FC = () => {
             element={canAccess([roles.INSTRUCTOR]) ? <CreateUpdateSession /> : <Navigate to={paths.HOME} />}
           />
           <Route
-            path={paths.INSTRUCTOR_MANAGE_SUBSCRIPTIONS}
+            path={paths.INSTRUCTOR_MANAGE_SUPSCRIPTIONS}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageSubscriptions /> : <Navigate to={paths.HOME} />}
           />
           <Route
@@ -248,10 +249,11 @@ const AppRouter: React.FC = () => {
             element={canAccess([roles.ADMIN]) ? <AdminManageReviews /> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
           <Route
-            path={paths.ADMIN_PAYMENT_HISTORY}
-            element={canAccess([roles.ADMIN]) ? <AdminPurchases/> : <Navigate to={paths.ADMIN_LOGIN} />}
+            path={paths.ADMIN_MANAGE_PAYOUTS}
+            element={canAccess([roles.ADMIN]) ? <AdminManagePayouts /> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   );

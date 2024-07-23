@@ -2,21 +2,37 @@ import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { message, Pagination, Popconfirm, TableColumnsType, TablePaginationConfig } from "antd";
 import { Breadcrumb, Button, Image, Table } from "antd";
-import { Blog } from "../../../models";
+import { Blog, Category } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
-import { API_DELETE_BLOG, API_GET_BLOGS, paths } from "../../../consts/index.ts";
+import { API_DELETE_BLOG, API_GET_BLOGS, API_CREATE_BLOG, API_UPDATE_BLOG, paths, API_GET_BLOG } from "../../../consts/index.ts";
 import { format } from "date-fns";
+import { getCategories } from "../../../services/category.ts";
 
 const AdminManageBlogs: React.FC = () => {
-  const [data, setData] = useState<Blog[]>([]);
+  const [dataBlogs, setDataBlogs] = useState<Blog[]>([]);
+  const [form] = Form.useForm();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0 });
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getBlogs();
+      const categoriesData = await getCategories();
+      setCategories(categoriesData);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
 
   const handleDelete = async (id: string, title: string) => {
     try {
       await axiosInstance.delete(`${API_DELETE_BLOG}/${id}`);
-      message.success(`Delete blog ${title} successfully`);
-      await fetchBlogs();
+      message.success(`Deleted blog ${title} successfully`);
+      await getBlogs();
     } catch (error) {
       //
     }
@@ -34,28 +50,52 @@ const AdminManageBlogs: React.FC = () => {
           pageSize: 100,
         },
       });
-
-      if (response.data && response.data.pageData) {
-        const { pageData, pageInfo } = response.data;
-        setData(pageData);
-        setPagination((prev) => ({
-          ...prev,
-          total: pageInfo?.totalItems || response.data.length,
-          current: pageInfo?.pageNum || 1,
-          pageSize: pageInfo?.pageSize || response.data.length,
-        }));
-      } else {
-        setData([]);
-      }
+      setDataBlogs(response.data.pageData);
     } catch (error) {
-      console.error("Failed to fetch purchase data:", error);
+      message.error("Failed to fetch blogs");
     }
   };
 
-  useEffect(() => {
-    fetchBlogs();
-    setLoading(false);
-  }, [pagination.current, pagination.pageSize]);
+  const handleUpdateClick = async (id: string) => {
+    setIsUpdateMode(true);
+    setIsModalVisible(true);
+    try {
+      const response = await axiosInstance.get(`${API_GET_BLOG}/${id}`);
+      const blogData = response.data;
+      setCurrentBlog(blogData);
+      form.setFieldsValue({
+        name: blogData.name,
+        category_id: blogData.category_id,
+        image_url: blogData.image_url,
+        description: blogData.description,
+        content: blogData.content
+      });
+    } catch (error) {
+      //
+    }
+  };
+
+  const handleSubmit = async (values: Blog) => {
+    try {
+      if (isUpdateMode && currentBlog) {
+        const userString = localStorage.getItem("user");
+        const user = userString ? JSON.parse(userString) : "";
+        const payload = {...values,user_id: user._id}
+        await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
+        message.success("Blog updated successfully");
+      } else {
+        await axiosInstance.post(API_CREATE_BLOG, values);
+        message.success("Blog added successfully");
+      }
+      setIsModalVisible(false);
+      form.resetFields();
+      setIsUpdateMode(false);
+      setCurrentBlog(null);
+      await getBlogs();
+    } catch (error) {
+      //
+    }
+  };
 
   const columns: TableColumnsType<Blog> = [
     {
@@ -75,21 +115,21 @@ const AdminManageBlogs: React.FC = () => {
       key: "content",
     },
     {
-      title: "Blog Image",
+      title: "Image",
       dataIndex: "image_url",
       key: "image_url",
       width: "15%",
       render: (image_url: string) => <Image width={100} height={100} src={image_url} />,
     },
     {
-      title: "Created At",
+      title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
       render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
       width: "10%",
     },
     {
-      title: "Updated At",
+      title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
       render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
@@ -97,15 +137,19 @@ const AdminManageBlogs: React.FC = () => {
     },
     {
       title: "Action",
-      width: "15%",
+      width: "10%",
       key: "action",
       render: (record: Blog) => (
         <div>
-          <EditOutlined className="hover:cursor-pointer text-blue-400 hover:opacity-60" style={{ fontSize: "20px" }} />
+          <EditOutlined
+            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
+            style={{ fontSize: "20px" }}
+            onClick={() => handleUpdateClick(record._id)}
+          />
           <Popconfirm
-            title="Delete the User"
+            title="Delete the Blog"
             description="Are you sure to delete this Blog?"
-            onConfirm={() => handleDelete(record._id, record.title)}
+            onConfirm={() => handleDelete(record._id, record.name)}
             okText="Yes"
             cancelText="No"
           >
@@ -156,8 +200,126 @@ const AdminManageBlogs: React.FC = () => {
           ]}
         />
         <div className="py-2">
-          <Button type="primary">Add New Blogs</Button>
+          <Button type="primary" onClick={() => {
+            setIsUpdateMode(false);
+            setIsModalVisible(true);
+            form.resetFields();
+          }}>
+            Add New Blog
+          </Button>
         </div>
+
+        <Modal
+          title={isUpdateMode ? "Update Blog" : "Add New Blog"}
+          open={isModalVisible}
+          onCancel={() => {
+            setIsModalVisible(false);
+            setIsUpdateMode(false);
+            setCurrentBlog(null);
+            form.resetFields();
+          }}
+          footer={null}
+        >
+          {isUpdateMode && currentBlog ? (
+            <Form form={form} layout="vertical" onFinish={handleSubmit}>
+              <Form.Item
+                name="name"
+                label="Title"
+                rules={[{ required: true, message: 'Please input the blog title!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="category_id"
+                label="Category"
+                rules={[{ required: true, message: 'Please select a category!' }]}
+              >
+                <Select placeholder="Select a category">
+                  {categories.map(category => (
+                    <Select.Option key={category._id} value={category._id}>
+                      {category.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="image_url"
+                label="Image URL"
+                rules={[{ required: true, message: 'Please input the image URL!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="description"
+                label="Description"
+                rules={[{ required: true, message: 'Please input the description!' }]}
+              >
+                <Input.TextArea maxLength={250} />
+              </Form.Item>
+              <Form.Item
+                name="content"
+                label="Content"
+                rules={[{ required: true, message: 'Please input the content!' }]}
+              >
+                <Input.TextArea maxLength={250} />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Update
+                </Button>
+              </Form.Item>
+            </Form>
+          ) : (
+            <Form form={form} layout="vertical" onFinish={handleSubmit}>
+              <Form.Item
+                name="name"
+                label="Title"
+                rules={[{ required: true, message: 'Please input the blog title!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="category_id"
+                label="Category"
+                rules={[{ required: true, message: 'Please select a category!' }]}
+              >
+                <Select placeholder="Select a category">
+                  {categories.map(category => (
+                    <Select.Option key={category._id} value={category._id}>
+                      {category.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="image_url"
+                label="Image URL"
+                rules={[{ required: true, message: 'Please input the image URL!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="description"
+                label="Description"
+                rules={[{ required: true, message: 'Please input the description!' }]}
+              >
+                <Input.TextArea maxLength={250} />
+              </Form.Item>
+              <Form.Item
+                name="content"
+                label="Content"
+                rules={[{ required: true, message: 'Please input the content!' }]}
+              >
+                <Input.TextArea maxLength={250} />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          )}
+        </Modal>
       </div>
       <Table columns={columns} dataSource={data} rowKey={(record: Blog) => record._id}   onChange={handleTableChange} pagination={false}/>
       <div className="flex justify-end py-8">
