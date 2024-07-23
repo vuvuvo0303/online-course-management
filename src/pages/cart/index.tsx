@@ -4,7 +4,7 @@ import { deleteCart, getCarts, updateStatusCart } from '../../services/cart.ts';
 import { useEffect, useState } from 'react';
 import { Cart } from '../../models';
 import { useNavigate } from 'react-router-dom';
-import { message } from "antd";
+import { Col, message, Row } from "antd";
 import { paths } from "../../consts";
 const CartPage: React.FC = () => {
   const [cartsNew, setCartsNew] = useState<Cart[]>([]);
@@ -64,7 +64,7 @@ const CartPage: React.FC = () => {
   };
 
 
-
+  // handle calculate total cost, money for paid and total course
   const handlePlus = (cart: Cart[]) => {
     let total = 0;
     let totalCost = 0;
@@ -128,18 +128,38 @@ const CartPage: React.FC = () => {
   return (
     <div className="py-0 md:px-[4.8rem] px-4 mb-[4.4rem] max-w-[134rem] my-0 mx-auto">
       <h1 className="mt-10 main_h1">Course Cart</h1>
+      <h3 className={`${styles.h3_cart_title} mt-10`}>{totalCourse} Courses in Cart</h3>
       <div className="mt-8">
-
+        <Row className='border p-5 mt-10' gutter={10}>
+          <Col className='font-bold text-center' span={6}>Course</Col>
+          <Col span={6}></Col>
+          <Col className='font-bold' span={6}>Discount</Col>
+          <Col className='font-bold' span={6}>
+            <Row>
+              <Col span={12}>Total</Col>
+              <Col span={12}>Action</Col>
+            </Row>
+          </Col>
+        </Row>
         <div className=" mt-0">
           <div>
             <ul className="min-w-full m-0 p-0">
               {
                 cartsNew.map((cart) =>
                   <CartComponents
-                    totalCourse={totalCourse}
-                    cartsNew={cartsNew}
-                    cartsCancel={cartsCancel}
-                    totalMoney={totalMoney}
+                    cartsNew={cart}
+                    totalCost={totalCost}
+                    handleCheckoutNow={handleCheckoutNow}
+                    onChangeCheckBox={() => onChangeCheckBox(cart)}
+                    handleDeleteCart={() => handleDeleteCart(cart._id)}
+                    cartsWaitingPaid={cartsWaitingPaid}
+                  />
+                )
+              }
+              {
+                cartsCancel.map((cart) =>
+                  <CartComponents
+                    cartsNew={cart}
                     totalCost={totalCost}
                     handleCheckoutNow={handleCheckoutNow}
                     onChangeCheckBox={() => onChangeCheckBox(cart)}
