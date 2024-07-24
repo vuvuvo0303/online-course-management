@@ -2,82 +2,82 @@ import { Payout, Transaction } from "../../../models";
 import { useEffect, useState } from "react";
 import { getPayouts, updateStatusPayout } from "../../../services";
 import { format } from "date-fns";
-import { Table, TableProps, Tag, Button, ConfigProvider, Modal, Space } from "antd";
-import { getColorPurchase } from "../../../consts/index";
-import { createStyles, useTheme } from "antd-style";
+import { Table, TableProps, Tag, Button, Modal, TabsProps, Tabs } from "antd";
+import { getColorPayout } from "../../../consts/index";
+import { createStyles } from "antd-style";
 const useStyle = createStyles(({ token }) => ({
-  "my-modal-body": {
-    background: token.blue1,
-    padding: token.paddingSM,
-  },
-  "my-modal-mask": {
-    boxShadow: `inset 0 0 15px #fff`,
-  },
-  "my-modal-header": {
-    borderBottom: `1px dotted ${token.colorPrimary}`,
-  },
-  "my-modal-footer": {
-    color: token.colorPrimary,
-  },
-  "my-modal-content": {
-    border: "1px solid #333",
-  },
+    "my-modal-body": {
+        background: token.blue1,
+        padding: token.paddingSM,
+    },
+    "my-modal-mask": {
+        boxShadow: `inset 0 0 15px #fff`,
+    },
+    "my-modal-header": {
+        borderBottom: `1px dotted ${token.colorPrimary}`,
+    },
+    "my-modal-footer": {
+        color: token.colorPrimary,
+    },
+    "my-modal-content": {
+        border: "1px solid #333",
+    },
 }));
 
 const InstructorManagePayout = () => {
-  const [payouts, setPayouts] = useState<Payout[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState([false, false]);
-  const { styles } = useStyle();
-  const token = useTheme();
+    const [payouts, setPayouts] = useState<Payout[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState([false, false]);
+    const { styles } = useStyle();
+    const [statusPayout, setStatusPayout] = useState<string>("new")
 
-  const toggleModal = (idx: number, target: boolean, transactions?: Transaction[]) => {
-    if (transactions) {
-      setTransactions(transactions);
-    }
-    setIsModalOpen((p) => {
-      p[idx] = target;
-      return [...p];
-    });
-  };
+    const toggleModal = (idx: number, target: boolean, transactions?: Transaction[]) => {
+        if (transactions) {
+            setTransactions(transactions);
+        }
+        setIsModalOpen((p) => {
+            p[idx] = target;
+            return [...p];
+        });
+    };
 
-  const classNames = {
-    body: styles["my-modal-body"],
-    mask: styles["my-modal-mask"],
-    header: styles["my-modal-header"],
-    footer: styles["my-modal-footer"],
-    content: styles["my-modal-content"],
-  };
-  const modalStyles = {
-    // header: {
-    //     borderLeft: `5px solid ${token.colorPrimary}`,
-    //     borderRadius: 0,
-    //     paddingInlineStart: 5,
-    // },
-    // body: {
-    //     boxShadow: 'inset 0 0 5px #999',
-    //     borderRadius: 5,
-    // },
-    // mask: {
-    //     backdropFilter: 'blur(10px)',
-    // },
-    // content: {
-    //     boxShadow: '0 0 30px #999',
-    // },
-  };
+    const classNames = {
+        body: styles["my-modal-body"],
+        mask: styles["my-modal-mask"],
+        header: styles["my-modal-header"],
+        footer: styles["my-modal-footer"],
+        content: styles["my-modal-content"],
+    };
+    const modalStyles = {
+        // header: {
+        //     borderLeft: `5px solid ${token.colorPrimary}`,
+        //     borderRadius: 0,
+        //     paddingInlineStart: 5,
+        // },
+        // body: {
+        //     boxShadow: 'inset 0 0 5px #999',
+        //     borderRadius: 5,
+        // },
+        // mask: {
+        //     backdropFilter: 'blur(10px)',
+        // },
+        // content: {
+        //     boxShadow: '0 0 30px #999',
+        // },
+    };
 
-  const getPayoutsByInstructor = async () => {
-    setLoading(true);
-    const response = await getPayouts("", "", "", 1, 100);
-    console.log("response: ", response);
-    setPayouts(response);
-    setLoading(false);
-  };
+    const getPayoutsByInstructor = async () => {
+        setLoading(true);
+        const response = await getPayouts("", "", statusPayout, 1, 100);
+        console.log("response: ", response);
+        setPayouts(response);
+        setLoading(false);
+    };
 
-  useEffect(() => {
-    getPayoutsByInstructor();
-  }, []);
+    useEffect(() => {
+        getPayoutsByInstructor();
+    }, [statusPayout]);
 
     if (loading) {
         return (
@@ -152,33 +152,55 @@ const InstructorManagePayout = () => {
             )
         },
     ];
+    const items: TabsProps['items'] = [
+        {
+            key: 'new',
+            label: 'New',
+        },
+        {
+            key: 'request_payout',
+            label: 'Request Payout',
+        },
+        {
+            key: 'completed',
+            label: 'completed',
+        },
+        {
+            key: 'rejected',
+            label: 'Rejected',
+        },
+    ];
+    const onChange = (key: string) => {
+        setStatusPayout(key);
+    };
 
-  return (
-    <>
-      <Modal
-        title="Transactions"
-        open={isModalOpen[0]}
-        onOk={() => toggleModal(0, false)}
-        onCancel={() => toggleModal(0, false)}
-        footer=""
-        classNames={classNames}
-        styles={modalStyles}
-      >
-        {transactions.map((transaction) => (
-          <div className="bg-white" key={transaction._id}>
-            <p>Price: {transaction.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
-            <p>Discount: {transaction.discount}%</p>
-            <p>Price Paid: {transaction.price_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
-            <p>Created At: {format(new Date(transaction.created_at), "dd/MM/yyyy")}</p>
-          </div>
-        ))}
-      </Modal>
-      <div className="container mx-auto px-10">
-        <h1 className="text-center my-10">Manage Payout</h1>
-        <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
-      </div>
-    </>
-  );
+    return (
+        <>
+            <Modal
+                title="Transactions"
+                open={isModalOpen[0]}
+                onOk={() => toggleModal(0, false)}
+                onCancel={() => toggleModal(0, false)}
+                footer=""
+                classNames={classNames}
+                styles={modalStyles}
+            >
+                {transactions.map((transaction) => (
+                    <div className="bg-white" key={transaction._id}>
+                        <p>Price: {transaction.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                        <p>Discount: {transaction.discount}%</p>
+                        <p>Price Paid: {transaction.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                        <p>Created At: {format(new Date(transaction.created_at), "dd/MM/yyyy")}</p>
+                    </div>
+                ))}
+            </Modal>
+            <div className="container mx-auto px-10">
+                <h1 className="text-center my-10">Manage Payout</h1>
+                <Tabs defaultActiveKey={statusPayout} items={items} onChange={onChange} />
+                <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
+            </div>
+        </>
+    );
 };
 
 export default InstructorManagePayout;
