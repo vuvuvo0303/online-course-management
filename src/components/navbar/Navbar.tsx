@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
   const [cartsCancel, setCartsCancel] = useState<Cart[]>([])
   const [totalCost, setTotalCost] = useState<number>(0);
 
- 
+
 
   // show cart when student hover shop cart icon
   const getCart = async () => {
@@ -176,8 +176,8 @@ const Navbar: React.FC = () => {
         </Link>
       </div>
       {!isLoginOrRegister && !isForgotPassword && (
-        <div className="flexCenter lg:gap-20 gap-1">
-          <div className='lg:mr-20'>
+        <div className="flexCenter lg:gap-[60px] lg:mr-10">
+          <div className='lg:mr-[8rem]'>
             {!isLoginPage && !isRegisterPage && !isForgotPassword && <SearchTool />}
           </div>
           <>

@@ -8,6 +8,7 @@ import { Col, message, Row } from "antd";
 import { paths } from "../../consts";
 import { Link } from 'react-router-dom';
 import CustomButton from '../../components/CustomButton.tsx';
+
 const CartPage: React.FC = () => {
   const [cartsNew, setCartsNew] = useState<Cart[]>([]);
   const [cartsCancel, setCartsCancel] = useState<Cart[]>([]);

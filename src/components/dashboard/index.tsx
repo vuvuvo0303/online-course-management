@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  CheckOutlined,
   CommentOutlined,
   DesktopOutlined,
   FundOutlined,
@@ -175,10 +174,10 @@ const Dashboard: React.FC = () => {
       label: (
         <div className="text-sm">
           <Row>
-            <Col span={8} className="pl-3 pt-2 pb-2">
+            <Col span={8} className="p-5 pt-2 pb-2">
               <Avatar
                 src={typeof user.avatar === "string" ? user.avatar : undefined}
-                className="hover:cursor-pointer"
+                className="hover:cursor-pointer bg-black"
                 size={50}
                 icon={<UserOutlined />}
               />
@@ -186,25 +185,23 @@ const Dashboard: React.FC = () => {
             <Col span={16} className="pt-3 pr-3">
               <Row>
                 <p className="text-base font-bold">{dataUser.fullName}</p>
-                <CheckOutlined className="ml-2" />
               </Row>
               <div>
-                <p className="text-md">{dataUser.email}</p>
+                <p className="text-xs">{dataUser.email}</p>
               </div>
             </Col>
           </Row>
-          <div className="mt-2 text-lg font-bold">
-            {dataUser.role === "admin" ? (
-              ""
-            ) : (
-              <Link className="hover:text-red-600" to={"/instructor/profile"}>
-                View {dataUser.role} Profile
-              </Link>
-            )}
-          </div>
         </div>
       ),
       key: "1",
+    },
+    {
+      label: (
+        <Link className="text-lg" to={"/profile"}>
+          View {dataUser.role} Profile
+        </Link>
+      ),
+      key: "2",
     },
     {
       label: (
@@ -219,7 +216,7 @@ const Dashboard: React.FC = () => {
           Paid Memberships
         </Link>
       ),
-      key: "2",
+      key: "3",
     },
     {
       label: (
@@ -234,7 +231,7 @@ const Dashboard: React.FC = () => {
           Setting
         </Link>
       ),
-      key: "3",
+      key: "4",
     },
     {
       label: (
@@ -249,7 +246,7 @@ const Dashboard: React.FC = () => {
           Help
         </Link>
       ),
-      key: "4",
+      key: "5",
     },
     {
       label: (
@@ -264,7 +261,7 @@ const Dashboard: React.FC = () => {
           Send Feedback
         </Link>
       ),
-      key: "5",
+      key: "6",
     },
     {
       label: (
@@ -275,7 +272,7 @@ const Dashboard: React.FC = () => {
           Logout
         </p>
       ),
-      key: "6",
+      key: "7",
     },
   ];
 
