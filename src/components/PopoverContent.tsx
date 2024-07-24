@@ -1,6 +1,7 @@
-import { Cart } from "../models";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Empty } from "antd";
+import { Cart } from "../models";
 import { getCarts } from "../services";
 
 const CourseCard = ({ image, title, author, price }: { image: string; title: string; author: string; price: string }) => {
@@ -16,42 +17,45 @@ const CourseCard = ({ image, title, author, price }: { image: string; title: str
     );
 };
 
-
 const Popup = () => {
     const [totalCost, setTotalCost] = useState<number>(0);
+    const [cartNew, setCartNew] = useState<Cart[]>([]);
+    const [cartCancel, setCartCancel] = useState<Cart[]>([]);
+
     useEffect(() => {
         getCart();
-    }, [])
-    // show cart when student hover shop cart icon
-    const getCart = async () => {
+    }, []);
 
+    const getCart = async () => {
         const res = await getCarts("new");
         const res2 = await getCarts("cancel");
         let totalCost = 0;
+
         if (res) {
             setCartNew(res);
             for (let index = 0; index < res.length; index++) {
-                totalCost += res[index].price
-
+                totalCost += res[index].price;
             }
-            setTotalCost(totalCost);
         }
+
         if (res2) {
             setCartCancel(res2);
             for (let index = 0; index < res2.length; index++) {
-                totalCost += res[index].price
+                totalCost += res2[index].price;
             }
-            setTotalCost(totalCost);
         }
-    }
-    const [cartNew, setCartNew] = useState<Cart[]>([])
-    const [cartCancel, setCartCancel] = useState<Cart[]>([])
+
+        setTotalCost(totalCost);
+    };
+
     return (
         <div className="">
-            {
-                cartNew.map((cart) => {
-                    return (
-                        <>
+            {cartNew.length === 0 && cartCancel.length === 0 ? (
+                <Empty description="No items" />
+            ) : (
+                <>
+                    {cartNew.map((cart) => (
+                        <React.Fragment key={cart.course_id}>
                             <Link to="/">
                                 <CourseCard
                                     image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
@@ -61,14 +65,10 @@ const Popup = () => {
                                 />
                             </Link>
                             <hr className="w-full my-4 border-gray-300" />
-                        </>
-                    )
-                })
-            }
-            {
-                cartCancel.map((cart) => {
-                    return (
-                        <>
+                        </React.Fragment>
+                    ))}
+                    {cartCancel.map((cart) => (
+                        <React.Fragment key={cart.course_id}>
                             <Link to="/">
                                 <CourseCard
                                     image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
@@ -78,14 +78,14 @@ const Popup = () => {
                                 />
                             </Link>
                             <hr className="w-full my-4 border-gray-300" />
-                        </>
-                    )
-                })
-            }
-            <button className="mt-2 ml-[1rem] px-4 py-2 bg-black text-white w-[19rem] rounded">View cart</button>
-            <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost}</div>
+                        </React.Fragment>
+                    ))}
+                    <button className="mt-2 ml-[1rem] p-2 bg-black text-white w-[19rem] rounded">View cart</button>
+                    <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost}</div>
+                </>
+            )}
         </div>
-    ); 9
+    );
 };
 
 export default Popup;
