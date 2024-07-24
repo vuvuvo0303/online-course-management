@@ -118,7 +118,7 @@ const ManageAllPurchase = () => {
 
   useEffect(() => {
     fetchPurchase();
-  }, []);
+  },  [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPagination((prev) => ({
@@ -150,7 +150,7 @@ const ManageAllPurchase = () => {
             value={searchPurchase}
             onChange={(e) => setSearchPurchase(e.target.value)}
             className="p-2 "
-            style={{ width: 200 }}
+            style={{ width: 250 }}
             enterButton={<SearchOutlined className="text-white" />}
           />
           <Select
@@ -170,12 +170,10 @@ const ManageAllPurchase = () => {
       <Table
         columns={columns}
         dataSource={dataSource}
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-        }}
+        
+        pagination={false}
         onChange={handleTableChange}
+        
         rowKey="_id"
       />
       <div className="flex justify-end py-8">

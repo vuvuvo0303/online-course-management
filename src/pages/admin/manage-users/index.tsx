@@ -165,8 +165,8 @@ const AdminManageUsers: React.FC = () => {
         user_id: userId,
         status: checked,
       });
-      const updateData = data.map((user) => (user._id === userId ? { ...user, status: checked } : user));
-      setData(updateData);
+      const updateData = dataUsers.map((user) => (user._id === userId ? { ...user, status: checked } : user));
+      setDataUsers(updateData);
       message.success(`User status updated successfully`);
     } catch (error) {
       // Handle error silently
@@ -182,7 +182,7 @@ const AdminManageUsers: React.FC = () => {
   const handleRoleChange = async (value: UserRole, recordId: string) => {
     try {
       await axiosInstance.put(API_CHANGE_ROLE, { user_id: recordId, role: value });
-      setData((prevData: User[]) => prevData.map((user) => (user._id === recordId ? { ...user, role: value } : user)));
+      setDataUsers((prevData: User[]) => prevData.map((user) => (user._id === recordId ? { ...user, role: value } : user)));
       message.success(`Role changed successfully`);
     } catch (error) {
       // Handle error silently
@@ -440,7 +440,7 @@ const AdminManageUsers: React.FC = () => {
 
       <Space className="mb-2 flex flex-wrap">
         <Input.Search
-          placeholder="Search By Name"
+          placeholder="Search By Name and Email"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           className="w-full md:w-48"
@@ -469,7 +469,7 @@ const AdminManageUsers: React.FC = () => {
       <Spin spinning={loading}>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={dataUsers}
           rowKey={(record: User) => record._id}
           pagination={false}
           onChange={handleTableChange}

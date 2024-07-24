@@ -13,9 +13,8 @@ import {
   TablePaginationConfig,
   Tag,
 } from "antd";
-import { API_GET_USERS, API_REVIEW_PROFILE_INSTRUCTOR } from "../../../consts";
-import { Instructor } from "../../../models/User";
-
+import { API_GET_USERS } from "../../../consts";
+import { Instructor } from "models/User";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
@@ -24,11 +23,10 @@ import { useDebounce } from "../../../hooks";
 const { TextArea } = Input;
 
 const AdminInstructorRequest = () => {
-  const [dataInstructorRequest, setDataInstructorRequest] = useState<Instructor[]>([]);
+  const [dataSource, setDataSource] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const debouncedSearch = useDebounce(searchText, 500);
-  const [dataSource,setDataSource] =useState<Instructor[]>([])
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -42,27 +40,20 @@ const AdminInstructorRequest = () => {
   //   fetchInstructorRequest();
   // }, [pagination.current, pagination.pageSize, debouncedSearch]);
 
+// Fetch data từ API hoặc từ localStorage
 useEffect(() => {
-    const savedData = localStorage.getItem("instructorData");
-    if (savedData) {
-      setDataSource(JSON.parse(savedData));
-    } else {
-      fetchInstructorRequest();
-    }
-  }, []);
+  const savedData = localStorage.getItem("instructorData");
+  if (savedData) {
+    setDataSource(JSON.parse(savedData));
+  } else {
+    fetchInstructorRequest();
+  }
+}, [pagination.current, pagination.pageSize, debouncedSearch]);
 
-  // Fetch data từ API
-  useEffect(() => {
-    if (!localStorage.getItem("instructorData")) {
-      fetchInstructorRequest();
-    }
-  }, [pagination.current, pagination.pageSize, debouncedSearch]);
-
-  // Lưu data vào localStorage
-  useEffect(() => {
-    localStorage.setItem("instructorData", JSON.stringify(dataSource));
-  }, [dataSource]);
-
+// Lưu data vào localStorage
+useEffect(() => {
+  localStorage.setItem("instructorData", JSON.stringify(dataSource));
+}, [dataSource]);
 
   const columns: TableProps<Instructor>["columns"] = [
     {
@@ -109,7 +100,6 @@ useEffect(() => {
     {
       title: "Verify",
       dataIndex: "is_verified",
-      width: "10%",
       key: "is_verified",
       render: (is_verified: boolean) => (
         <span>
@@ -124,7 +114,6 @@ useEffect(() => {
     {
       title: "Action",
       key: "action",
-      width: "20%",
       render: (_, record) => (
         <Space size="middle">
           {record.isRejected ? (
@@ -151,8 +140,6 @@ useEffect(() => {
     },
   ];
 
-
-
   const fetchInstructorRequest = async () => {
     setLoading(true);
     try {
@@ -167,7 +154,6 @@ useEffect(() => {
           pageSize: pagination.pageSize,
         },
       });
-
 
       if (response.data && response.data.pageData) {
         const dataWithApprovalStatus = response.data.pageData.map((instructor: Instructor) => ({
@@ -187,50 +173,40 @@ useEffect(() => {
         // Handle case when response.data is empty
       }
     } catch (error) {
-      //
+      console.error("Error fetching instructors:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchInstructorRequest();
-  }, [pagination.current, pagination.pageSize, debouncedSearch]);
-
-
   const handleApprove = async (record: Instructor) => {
     try {
-      const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
+      const response = await axiosInstance.put("/api/users/review-profile-instructor", {
         user_id: record._id,
         status: "approve",
         comment: "",
       });
 
-      if (response && response.data && response.data.success) {
-        message.success("Email is send for instructor");
-        const updatedDataSource = dataInstructorRequest.map((item) =>
+      if (response) {
+        message.success("Email phê duyệt đã được gửi thành công");
+
+        const updatedDataSource = dataSource.map((item) =>
           item._id === record._id ? { ...item, isApproved: true } : item
         );
-        setDataInstructorRequest(updatedDataSource);
-      } else {
-        message.error("Failed to approve instructor");
+
+        setDataSource(updatedDataSource);
       }
     } catch (error) {
-      //
+      message.error("Lỗi khi phê duyệt giảng viên");
+      console.error("Error approving instructor:", error);
     }
-  };
-
-
-
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
   };
 
   const handleReject = async () => {
     if (!selectedInstructor) return;
 
     try {
-      const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
+      const response = await axiosInstance.put("/api/users/review-profile-instructor", {
         user_id: selectedInstructor._id,
         status: "reject",
         comment: rejectReason,
@@ -252,7 +228,9 @@ useEffect(() => {
     }
   };
 
-  
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
+  };
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPagination((prev) => ({
@@ -289,7 +267,7 @@ useEffect(() => {
       />
       <Table
         columns={columns}
-        dataSource={dataInstructorRequest}
+        dataSource={dataSource}
         loading={loading}
         pagination={false}
         onChange={handleTableChange}

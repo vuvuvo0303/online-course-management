@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
-import { message, Pagination, Popconfirm, TableColumnsType, TablePaginationConfig } from "antd";
+import { Form, Input, message, Modal, Pagination, Popconfirm, Select, TableColumnsType, TablePaginationConfig } from "antd";
 import { Breadcrumb, Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { API_DELETE_BLOG, API_GET_BLOGS, API_CREATE_BLOG, API_UPDATE_BLOG, paths, API_GET_BLOG } from "../../../consts/index.ts";
 import { format } from "date-fns";
 import { getCategories } from "../../../services/category.ts";
+// import useDebounce from "../../../hooks/useDebounce.ts";
 
 const AdminManageBlogs: React.FC = () => {
   const [dataBlogs, setDataBlogs] = useState<Blog[]>([]);
@@ -17,22 +18,27 @@ const AdminManageBlogs: React.FC = () => {
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0 });
   const [categories, setCategories] = useState<Category[]>([]);
   const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
+  // const debouncedSearch = useDebounce(searchText, 500);
+  // const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
-      await getBlogs();
+      await fetchBlogs();
       const categoriesData = await getCategories();
       setCategories(categoriesData);
       setLoading(false);
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    fetchBlogs();
+  }, [pagination.current, pagination.pageSize]);
 
   const handleDelete = async (id: string, title: string) => {
     try {
       await axiosInstance.delete(`${API_DELETE_BLOG}/${id}`);
       message.success(`Deleted blog ${title} successfully`);
-      await getBlogs();
+      await fetchBlogs();
     } catch (error) {
       //
     }
@@ -46,11 +52,18 @@ const AdminManageBlogs: React.FC = () => {
           is_deleted: false,
         },
         pageInfo: {
-          pageNum: 1,
-          pageSize: 100,
+          pageNum: pagination.current,
+          pageSize: pagination.pageSize,
         },
       });
       setDataBlogs(response.data.pageData);
+
+      setPagination({
+        ...pagination,
+        total: response.data.pageInfo.totalItems,
+        current: response.data.pageInfo.pageNum,
+        pageSize: response.data.pageInfo.pageSize,
+      });
     } catch (error) {
       message.error("Failed to fetch blogs");
     }
@@ -91,7 +104,7 @@ const AdminManageBlogs: React.FC = () => {
       form.resetFields();
       setIsUpdateMode(false);
       setCurrentBlog(null);
-      await getBlogs();
+      await fetchBlogs();
     } catch (error) {
       //
     }
@@ -173,6 +186,7 @@ const AdminManageBlogs: React.FC = () => {
       pageSize: pageSize || 10,
     }));
   };
+
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
   };
@@ -321,7 +335,7 @@ const AdminManageBlogs: React.FC = () => {
           )}
         </Modal>
       </div>
-      <Table columns={columns} dataSource={data} rowKey={(record: Blog) => record._id}   onChange={handleTableChange} pagination={false}/>
+      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id}   onChange={handleTableChange} pagination={false}/>
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
