@@ -143,6 +143,18 @@ export const getColorPurchase = (status: string) => {
   }
 };
 
+export const getColorPayout = (status: string) => {
+  switch (status) {
+    case "new":
+      return "red";
+    case "request_payout":
+      return "blue";
+    case "completed":
+      return "yellow";
+      case "reejected":
+      return "purple";
+  }
+};
 export const getColorStatusSubscribe = (status: boolean) => {
   switch (status) {
     case true:

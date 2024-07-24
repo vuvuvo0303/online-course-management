@@ -1,10 +1,10 @@
 import { Payout, Transaction } from "../../../models";
 import { useEffect, useState } from "react";
-import { getPayouts } from "../../../services";
+import { getPayouts, updateStatusPayout } from "../../../services";
 import { format } from "date-fns";
-import { Table, TableProps, Tag, Button, ConfigProvider, Modal, Space } from "antd";
-import { getColorPurchase } from "../../../consts/index";
-import { createStyles, useTheme } from 'antd-style';
+import { Table, TableProps, Tag, Modal, Button } from "antd";
+import { getColorPayout, getColorPurchase } from "../../../consts/index";
+import { createStyles } from 'antd-style';
 const useStyle = createStyles(({ token }) => ({
     'my-modal-body': {
         background: token.blue1,
@@ -30,10 +30,9 @@ const InstructorManagePayout = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isModalOpen, setIsModalOpen] = useState([false, false]);
     const { styles } = useStyle();
-    const token = useTheme();
 
     const toggleModal = (idx: number, target: boolean, transactions?: Transaction[]) => {
-        if(transactions){
+        if (transactions) {
             setTransactions(transactions);
         }
         setIsModalOpen((p) => {
@@ -86,6 +85,10 @@ const InstructorManagePayout = () => {
             </>
         );
     }
+    const handleRequestPayout = async (payout_id: string, status: string, comment?: string) => {
+        const res = await updateStatusPayout(payout_id, status, comment)
+        console.log("handleRequestPayout: ", res)
+    }
 
     const columns: TableProps<Payout>["columns"] = [
         {
@@ -105,8 +108,8 @@ const InstructorManagePayout = () => {
             key: 'status',
             render: (status: string) => (
                 <>
-                    <Tag color={getColorPurchase(status)}>
-                        {status === "request_paid" ? "request paid" : status}
+                    <Tag color={getColorPayout(status)}>
+                        {status === "request_payout" ? "request payout" : status}
                     </Tag>
                 </>
             )
@@ -139,6 +142,19 @@ const InstructorManagePayout = () => {
             key: 'updated_at',
             width: '10%',
             render: (updated_at: string) => format(new Date(updated_at), "dd/MM/yyyy"),
+        },
+        {
+            title: 'Action',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string, record) => (
+                status === "new" &&
+                <>
+                    <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
+                        Request Payout
+                    </Button>
+                </>
+            )
         },
     ];
 
