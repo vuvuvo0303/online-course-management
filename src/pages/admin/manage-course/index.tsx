@@ -1,11 +1,4 @@
-import {
-  ArrowRightOutlined,
-  EditOutlined,
-  
-  HomeOutlined,
-  PlayCircleOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { ArrowRightOutlined, EditOutlined, HomeOutlined, PlayCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -248,7 +241,6 @@ const AdminManageCourses: React.FC = () => {
       ),
     },
 
-
     { title: "Category", dataIndex: "category_name", key: "category_name" },
     {
       title: "Status",
@@ -256,8 +248,10 @@ const AdminManageCourses: React.FC = () => {
       key: "status",
       render: (status: string, record: Course) => (
         <>
-          <div className="flex justify-between text-blue-500 cursor-pointer"  onClick={() => showModalLogStatus(record._id)} >
-          
+          <div
+            className="flex justify-between text-blue-500 cursor-pointer"
+            onClick={() => showModalLogStatus(record._id)}
+          >
             <Tag color={getColor(status)}>{status === "waiting_approve" ? "waiting approve" : status}</Tag>
             {status === "waiting_approve" ? (
               <EditOutlined onClick={() => showModalChangeStatus(record._id)} className="text-blue-500" />
@@ -445,7 +439,9 @@ const AdminManageCourses: React.FC = () => {
             )}
           </div>
           <div className="flex justify-end ">
-            <Button type="primary"  danger >Close</Button>
+            <Button type="primary" danger onClick={() => setOpenLogStatus(false)}>
+              Close
+            </Button>
           </div>
         </div>
       </Modal>
@@ -561,7 +557,7 @@ const AdminManageCourses: React.FC = () => {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           onSearch={handleSearch}
-            className="w-full md:w-48"
+          className="w-full md:w-48"
           enterButton={<SearchOutlined className="text-white" />}
         />
         <Select
