@@ -1,16 +1,15 @@
 import { message } from "antd";
 import { API_CREATE_PAYOUT, API_GET_PAYOUTS, API_UPDATE_STATUS_PAYOUT } from "../consts";
 import axiosInstance from "./axiosInstance";
+import { TransactionsPurchase } from "models/Purchase";
 //PAYOUT-01 Create Payout (Admin, Instructor)
-export const createPayout = async (instructor_id: string, purchase_id: string) => {
+
+export const createPayout = async (instructor_id: string, transactions: TransactionsPurchase[]) => {
     try {
+        console.log("transactions: ", transactions)
         const response = await axiosInstance.post(API_CREATE_PAYOUT, {
             "instructor_id": instructor_id,
-            "transactions": [
-                {
-                    "purchase_id": purchase_id
-                }
-            ]
+            "transactions": transactions
         })
         if (response) {
             message.success("Create Payout Successfully!")
@@ -49,7 +48,7 @@ export const getPayouts = async (payout_no: string, instructor_id: string, statu
 }
 
 //PAYOUT-03 Update Status Payout (Admin, Instructor)
-export const updateStatusPayout = async (payout_id: string,status: string, comment?: string) => {
+export const updateStatusPayout = async (payout_id: string, status: string, comment?: string) => {
     try {
         const response = await axiosInstance.put(`${API_UPDATE_STATUS_PAYOUT}/${payout_id}`, {
             "status": status,

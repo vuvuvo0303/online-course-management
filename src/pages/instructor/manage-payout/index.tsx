@@ -170,6 +170,54 @@ const InstructorManagePayout = () => {
             label: 'Rejected',
         },
     ];
+    const columnsNotAction: TableProps<Payout>["columns"] = [
+        {
+            title: 'Payout No',
+            dataIndex: 'transactions',
+            key: 'transactions',
+            width: '20%',
+            render: (transactions: Transaction[], record: Payout) => (
+                <div onClick={() => toggleModal(0, true, transactions)} className="text-blue-500 cursor-pointer">
+                    {record.payout_no}
+                </div>
+            )
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string) => (
+                <>
+                    <Tag color={getColorPayout(status)}>
+                        {status === "request_payout" ? "request payout" : status}
+                    </Tag>
+                </>
+            )
+        },
+        {
+            title: 'Balance Origin',
+            dataIndex: 'balance_origin',
+            key: 'balance_origin',
+        },
+        {
+            title: 'Balance Instructor Paid',
+            dataIndex: 'balance_instructor_paid',
+            key: 'balance_instructor_paid',
+        },
+        {
+            title: 'Balance Instructor Received',
+            dataIndex: 'balance_instructor_received',
+            key: 'balance_instructor_received',
+        },
+        {
+            title: 'Created Date',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            width: '10%',
+            render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+        },
+    ];
+
     const onChange = (key: string) => {
         setStatusPayout(key);
     };
@@ -197,7 +245,10 @@ const InstructorManagePayout = () => {
             <div className="container mx-auto px-10">
                 <h1 className="text-center my-10">Manage Payout</h1>
                 <Tabs defaultActiveKey={statusPayout} items={items} onChange={onChange} />
-                <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
+                {
+                    statusPayout === "new" ? <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
+                    : <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columnsNotAction} />
+                }
             </div>
         </>
     );
