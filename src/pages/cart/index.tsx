@@ -6,6 +6,8 @@ import { Cart } from '../../models';
 import { useNavigate } from 'react-router-dom';
 import { Col, message, Row } from "antd";
 import { paths } from "../../consts";
+import { Link } from 'react-router-dom';
+import CustomButton from '../../components/CustomButton.tsx';
 const CartPage: React.FC = () => {
   const [cartsNew, setCartsNew] = useState<Cart[]>([]);
   const [cartsCancel, setCartsCancel] = useState<Cart[]>([]);
@@ -17,26 +19,6 @@ const CartPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [cartsChecked, setCartsChecked] = useState<Cart[]>([]);
   const [indexCartChecked, setIndexCartChecked] = useState<number>(0);
-
-  const fetchCartData = async () => {
-    setLoading(true);
-    try {
-      const newCarts = await getCarts("new");
-      const cancelCarts = await getCarts("cancel");
-      const waitingPaidCarts = await getCarts("waiting_paid");
-      setCartsNew(newCarts);
-      setCartsCancel(cancelCarts);
-      setCartsWaitingPaid(waitingPaidCarts);
-    } catch (error) {
-      message.error('Failed to load cart data.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCartData();
-  }, []);
 
   const getCartNew = async () => {
     const response = await getCarts("new");
@@ -164,6 +146,15 @@ const CartPage: React.FC = () => {
         <div className=" mt-0">
           <div>
             <ul className="min-w-full m-0 p-0">
+              {(cartsNew.length === 0 && cartsCancel.length === 0) &&
+                <div className={styles.empty_cart_container}>
+                  <img width={200} height={200} alt='empty-cart-display' src='https://s.udemycdn.com/browse_components/flyout/empty-shopping-cart-v2-2x.jpg' />
+                  <p className='text-lg mb-4'>Your cart is empty. Keep shopping to find a course!</p>
+                  <Link to={paths.HOME}>
+                    <CustomButton title='Keep Shopping' containerStyles='bg-purple-500' />
+                  </Link>
+                </div>
+              }
               {
                 cartsNew.map((cart) =>
                   <CartComponents
@@ -189,43 +180,45 @@ const CartPage: React.FC = () => {
                 )
               }
             </ul>
-            <div className={styles.cart_checkout}>
-              <div className={styles.total_price}>
-                <div className={styles.total_checkout_container}>
-                  <div className={styles.total_price_label}>Total:</div>
-                  <div className={styles.base_price_heading}>
-                    <span>₫{totalMoney}</span>
-                  </div>
-                  <div className={styles.discount_price_checkout}>
-                    <div>
-                      <s>
-                        <span>₫{totalCost}</span>
-                      </s>
+            {(cartsNew.length > 0 || cartsCancel.length > 0) &&
+              <div className={styles.cart_checkout}>
+                <div className={styles.total_price}>
+                  <div className={styles.total_checkout_container}>
+                    <div className={styles.total_price_label}>Total:</div>
+                    <div className={styles.base_price_heading}>
+                      <span>₫{totalMoney}</span>
+                    </div>
+                    <div className={styles.discount_price_checkout}>
+                      <div>
+                        <s>
+                          <span>₫{totalCost}</span>
+                        </s>
+                      </div>
+                    </div>
+                    <div className={styles.discount_price_checkout}>
                     </div>
                   </div>
-                  <div className={styles.discount_price_checkout}>
-                  </div>
-                </div>
-                {
-                  cartsWaitingPaid.length > 0 ? (
-                    cartsChecked.length > 0 ? (
-                      <button onClick={handleCheckoutNow} className={styles.checkout_button}>
-                        Checkout now with {cartsWaitingPaid.length} art in checkout page and {cartsChecked.length} cart checked
-                      </button>
-                    ) : (
-                      <>
+                  {
+                    cartsWaitingPaid.length > 0 ? (
+                      cartsChecked.length > 0 ? (
                         <button onClick={handleCheckoutNow} className={styles.checkout_button}>
-                          Checkout now with {cartsWaitingPaid.length} cart in checkout page
+                          Checkout now with {cartsWaitingPaid.length} art in checkout page and {cartsChecked.length} cart checked
                         </button>
-                      </>
-                    )
+                      ) : (
+                        <>
+                          <button onClick={handleCheckoutNow} className={styles.checkout_button}>
+                            Checkout now with {cartsWaitingPaid.length} cart in checkout page
+                          </button>
+                        </>
+                      )
 
-                  ) : (
-                    <button onClick={handleCheckoutNow} className={styles.checkout_button}>Checkout now</button>
-                  )
-                }
+                    ) : (
+                      <button onClick={handleCheckoutNow} className={styles.checkout_button}>Checkout now</button>
+                    )
+                  }
+                </div>
               </div>
-            </div>
+            }
           </div>
         </div>
       </div>

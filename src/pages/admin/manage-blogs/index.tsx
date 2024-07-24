@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
-import { message, Pagination, Popconfirm, TableColumnsType, TablePaginationConfig } from "antd";
+import {
+  Form,
+  Input,
+  message,
+  Modal,
+  Pagination,
+  Popconfirm,
+  Select,
+  TableColumnsType,
+  TablePaginationConfig
+} from "antd";
 import { Breadcrumb, Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
@@ -38,7 +48,7 @@ const AdminManageBlogs: React.FC = () => {
     }
   };
 
-  const fetchBlogs = async () => {
+  const getBlogs = async () => {
     try {
       const response = await axiosInstance.post(API_GET_BLOGS, {
         searchCondition: {
@@ -321,7 +331,7 @@ const AdminManageBlogs: React.FC = () => {
           )}
         </Modal>
       </div>
-      <Table columns={columns} dataSource={data} rowKey={(record: Blog) => record._id}   onChange={handleTableChange} pagination={false}/>
+      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id}   onChange={handleTableChange} pagination={false}/>
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

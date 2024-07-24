@@ -32,7 +32,7 @@ export const addCourseToCart = async (course_id: string) => {
         })
         if (response) {
             message.success("Add To Cart Successfully!")
-            return response.data.pageData;
+            return response.data.pageData
         }
     } catch (error) {
         return [];

@@ -1,5 +1,12 @@
+import { Cart } from "../models";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
+interface PopoverContentProps {
+    cartsNew: Cart[];
+    cartsCancel: Cart[];
+    totalCost: number;
+}
 import { Empty } from "antd";
 import { Cart } from "../models";
 import { getCarts } from "../services";
@@ -17,75 +24,125 @@ const CourseCard = ({ image, title, author, price }: { image: string; title: str
     );
 };
 
-const Popup = () => {
-    const [totalCost, setTotalCost] = useState<number>(0);
-    const [cartNew, setCartNew] = useState<Cart[]>([]);
-    const [cartCancel, setCartCancel] = useState<Cart[]>([]);
+const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost, cartsNew, cartsCancel }) => {
 
-    useEffect(() => {
-        getCart();
-    }, []);
+    const Popup = () => {
+        const [totalCost, setTotalCost] = useState<number>(0);
+        const [cartNew, setCartNew] = useState<Cart[]>([]);
+        const [cartCancel, setCartCancel] = useState<Cart[]>([]);
 
-    const getCart = async () => {
-        const res = await getCarts("new");
-        const res2 = await getCarts("cancel");
-        let totalCost = 0;
+        useEffect(() => {
+            getCart();
+        }, []);
 
-        if (res) {
-            setCartNew(res);
-            for (let index = 0; index < res.length; index++) {
-                totalCost += res[index].price;
+        const getCart = async () => {
+            const res = await getCarts("new");
+            const res2 = await getCarts("cancel");
+            let totalCost = 0;
+
+            if (res) {
+                setCartNew(res);
+                for (let index = 0; index < res.length; index++) {
+                    totalCost += res[index].price;
+                }
             }
-        }
 
-        if (res2) {
-            setCartCancel(res2);
-            for (let index = 0; index < res2.length; index++) {
-                totalCost += res2[index].price;
+            if (res2) {
+                setCartCancel(res2);
+                for (let index = 0; index < res2.length; index++) {
+                    totalCost += res2[index].price;
+                }
             }
-        }
 
-        setTotalCost(totalCost);
-    };
+            setTotalCost(totalCost);
+        };
 
-    return (
-        <div className="">
-            {cartNew.length === 0 && cartCancel.length === 0 ? (
+        return (
+            <div className="">
+                {!cartsNew && !cartsCancel ? (
+                    <div className="text-center items-center py-5 mt-2 ml-[1rem] px-4  w-[19rem] rounded">
+                        No Data
+                    </div>
+                ) : (
+                    cartsNew.length === 0 && cartsCancel.length === 0 ? (
+                        <div className="text-center items-center py-5 mt-2 ml-[1rem] px-4  w-[19rem] rounded">
+                            No Data
+                        </div>
+                    ) :
+                        (
+                            <>
+                                {cartsNew.map((cart) => (
+                                    <div key={cart._id}>
+                                        <Link to="/">
+                                            <CourseCard
+                                                image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
+                                                title={cart.course_name}
+                                                author={cart.instructor_name}
+                                                price={cart.price.toString()}
+                                            />
+                                        </Link>
+                                        <hr className="w-full my-4 border-gray-300" />
+                                    </div>
+                                ))}
+                                {cartsCancel.map((cart) => (
+                                    <div key={cart._id}>
+                                        <Link to="/">
+                                            <CourseCard
+                                                image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
+                                                title={cart.course_name}
+                                                author={cart.instructor_name}
+                                                price={cart.price.toString()}
+                                            />
+                                        </Link>
+                                        <hr className="w-full my-4 border-gray-300" />
+                                    </div>
+                                ))}
+                                <button className="mt-2 ml-[1rem] px-4 py-2 bg-black text-white w-[19rem] rounded">View cart</button>
+                                <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost}</div>
+                            </>
+                        )
+                )
+                }
+            </div >
+        );
+        {
+            cartNew.length === 0 && cartCancel.length === 0 ? (
                 <Empty description="No items" />
             ) : (
-                <>
-                    {cartNew.map((cart) => (
-                        <React.Fragment key={cart.course_id}>
-                            <Link to="/">
-                                <CourseCard
-                                    image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
-                                    title={cart.course_name}
-                                    author={cart.instructor_name}
-                                    price={cart.price + ""}
-                                />
-                            </Link>
-                            <hr className="w-full my-4 border-gray-300" />
-                        </React.Fragment>
-                    ))}
-                    {cartCancel.map((cart) => (
-                        <React.Fragment key={cart.course_id}>
-                            <Link to="/">
-                                <CourseCard
-                                    image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
-                                    title={cart.course_name}
-                                    author={cart.instructor_name}
-                                    price={cart.price + ""}
-                                />
-                            </Link>
-                            <hr className="w-full my-4 border-gray-300" />
-                        </React.Fragment>
-                    ))}
-                    <button className="mt-2 ml-[1rem] p-2 bg-black text-white w-[19rem] rounded">View cart</button>
-                    <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost}</div>
-                </>
-            )}
-        </div>
+            <>
+                {cartNew.map((cart) => (
+                    <React.Fragment key={cart.course_id}>
+                        <Link to="/">
+                            <CourseCard
+                                image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
+                                title={cart.course_name}
+                                author={cart.instructor_name}
+                                price={cart.price + ""}
+                            />
+                        </Link>
+                        <hr className="w-full my-4 border-gray-300" />
+                    </React.Fragment>
+                ))}
+                {cartCancel.map((cart) => (
+                    <React.Fragment key={cart.course_id}>
+                        <Link to="/">
+                            <CourseCard
+                                image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
+                                title={cart.course_name}
+                                author={cart.instructor_name}
+                                price={cart.price + ""}
+                            />
+                        </Link>
+                        <hr className="w-full my-4 border-gray-300" />
+                    </React.Fragment>
+                ))}
+                <button className="mt-2 ml-[1rem] p-2 bg-black text-white w-[19rem] rounded">View cart</button>
+                <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost}</div>
+            </>
+        )
+        }
+        </div >
     );
 };
 
-export default Popup;
+export default PopoverContent;
