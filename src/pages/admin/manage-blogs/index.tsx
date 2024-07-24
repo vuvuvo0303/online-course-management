@@ -41,7 +41,7 @@ const AdminManageBlogs: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetchBlogs();
+      await getBlogs();
       const categoriesData = await getCategories();
       setCategories(categoriesData);
       setLoading(false);
@@ -49,20 +49,20 @@ const AdminManageBlogs: React.FC = () => {
     fetchData();
   }, []);
   useEffect(() => {
-    fetchBlogs();
+    getBlogs();
   }, [pagination.current, pagination.pageSize]);
 
   const handleDelete = async (id: string, title: string) => {
     try {
       await axiosInstance.delete(`${API_DELETE_BLOG}/${id}`);
       message.success(`Deleted blog ${title} successfully`);
-      await fetchBlogs();
+      await getBlogs();
     } catch (error) {
       //
     }
   };
 
-  const fetchBlogs = async () => {
+  const getBlogs = async () => {
     try {
       const response = await axiosInstance.post(API_GET_BLOGS, {
         searchCondition: {
@@ -90,6 +90,7 @@ const AdminManageBlogs: React.FC = () => {
   const handleUpdateClick = async (id: string) => {
     setIsUpdateMode(true);
     setIsModalVisible(true);
+    setLoading(true);
     try {
       const response = await axiosInstance.get(`${API_GET_BLOG}/${id}`);
       const blogData = response.data;
@@ -103,6 +104,9 @@ const AdminManageBlogs: React.FC = () => {
       });
     } catch (error) {
       //
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -121,7 +125,7 @@ const AdminManageBlogs: React.FC = () => {
       form.resetFields();
       setIsUpdateMode(false);
       setCurrentBlog(null);
-      await fetchBlogs();
+      await getBlogs();
     } catch (error) {
       //
     }

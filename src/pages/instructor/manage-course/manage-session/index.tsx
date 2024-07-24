@@ -187,7 +187,7 @@ const ManageSession: React.FC = () => {
     <div>
       <Modal
         title="Confirm Delete"
-        visible={open}
+        open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
@@ -240,7 +240,7 @@ const ManageSession: React.FC = () => {
         </div>
       </div>
 
-      <Table dataSource={sessions} columns={columns} rowKey={(record: Session) => record._id} pagination={false} onChange={handleTableChange}/>
+      <Table dataSource={sessions} columns={columns} rowKey={(record: Session) => record._id} pagination={false} onChange={handleTableChange} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

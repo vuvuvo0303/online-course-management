@@ -111,12 +111,6 @@ const AdminManagePayouts: React.FC = () => {
       render: (text) => <Button type="link">{text}</Button>,
     },
     {
-      title: "Instructor Name",
-      dataIndex: "instructor_name",
-      key: "instructor_name",
-      width: "20%",
-    },
-    {
       title: "Instructor Email",
       dataIndex: "instructor_email",
       key: "instructor_email",
@@ -130,12 +124,12 @@ const AdminManagePayouts: React.FC = () => {
         <>{balance_instructor_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
       ),
     },
-    
+
     {
       title: "Instructor Receive",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
-      render:(balance_instructor_received:number) => <>{balance_instructor_received.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</>
+      render: (balance_instructor_received: number) => <>{balance_instructor_received.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
     },
     {
       title: "Status",

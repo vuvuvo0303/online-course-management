@@ -45,7 +45,7 @@ const AdminManageFeedbacks: React.FC = () => {
         pageSize: response.data.pageInfo.pageSize,
       });
     } catch (error) {
-      console.error("Error fetching students:", error);
+      //
     } finally {
       setLoading(false);
     }
@@ -96,6 +96,12 @@ const AdminManageFeedbacks: React.FC = () => {
       width: "30%",
     },
     {
+      title: "Rating",
+      dataIndex: "rating",
+      key: "rating",
+      render: (rating: number) => <Rate disabled allowHalf defaultValue={rating} />,
+    },
+    {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
@@ -107,12 +113,6 @@ const AdminManageFeedbacks: React.FC = () => {
       dataIndex: "updated_at",
       render: (updatedDate: Date) => format(new Date(updatedDate), "dd/MM/yyyy"),
       width: "10%",
-    },
-    {
-      title: "Rating",
-      dataIndex: "rating",
-      key: "rating",
-      render: (rating: number) => <Rate disabled allowHalf defaultValue={rating} />,
     },
     {
       title: "Action",
