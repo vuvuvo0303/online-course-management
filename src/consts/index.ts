@@ -62,7 +62,6 @@ export const API_CREATE_CART = "/api/cart";
 export const API_GET_CARTS = "/api/cart/search";
 export const API_UPDATE_STATUS_CART = "/api/cart/update-status";
 export const API_DELETE_CART = "/api/cart";
-//export const API_DELETE_CART = "/api/cart";
 //Purchase
 export const API_GET_PURCHASE_BY_ADMIN = "/api/purchase/search";
 export const API_GET_PURCHASE_BY_INSTRUCTOR = "api/purchase/search-for-instructor";
@@ -199,7 +198,7 @@ export const paths = {
   COURSE_DETAIL: "/course/:id",
   FORGOT_PASSWORD: "/forgot-password",
   VERIFY_TOKEN: "/verify-email/:token",
-  USER_DETAIL: "/users/:id",
+  USER_DETAIL: "/user/:id",
   INTERNAL_SERVER_ERROR: "/internal-server-error",
 
   /* STUDENT PATHS */

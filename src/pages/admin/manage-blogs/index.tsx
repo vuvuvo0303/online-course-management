@@ -17,6 +17,7 @@ import axiosInstance from "../../../services/axiosInstance.ts";
 import { API_DELETE_BLOG, API_GET_BLOGS, API_CREATE_BLOG, API_UPDATE_BLOG, paths, API_GET_BLOG } from "../../../consts/index.ts";
 import { format } from "date-fns";
 import { getCategories } from "../../../services/category.ts";
+import { getUserFromLocalStorrage } from "../../../services/auth.ts";
 // import useDebounce from "../../../hooks/useDebounce.ts";
 
 const AdminManageBlogs: React.FC = () => {
@@ -101,9 +102,8 @@ const AdminManageBlogs: React.FC = () => {
   const handleSubmit = async (values: Blog) => {
     try {
       if (isUpdateMode && currentBlog) {
-        const userString = localStorage.getItem("user");
-        const user = userString ? JSON.parse(userString) : "";
-        const payload = {...values,user_id: user._id}
+        const user = getUserFromLocalStorrage();
+        const payload = { ...values, user_id: user._id }
         await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
         message.success("Blog updated successfully");
       } else {
@@ -345,8 +345,8 @@ const AdminManageBlogs: React.FC = () => {
           )}
         </Modal>
       </div>
-      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id}   onChange={handleTableChange} pagination={false}/>
-      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id}   onChange={handleTableChange} pagination={false}/>
+      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id} onChange={handleTableChange} pagination={false} />
+      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id} onChange={handleTableChange} pagination={false} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

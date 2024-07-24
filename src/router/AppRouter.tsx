@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
 import { Suspense, lazy } from "react";
+import {Skeleton} from "antd";
 
 // Guest Page
 const Home = lazy(() => import("../pages/home"));
@@ -77,9 +78,8 @@ const Dashboard = lazy(() => import("../components/dashboard/index"));
 
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
-
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Skeleton active/>}>
       <Routes>
         {/* Route for Guest */}
         <Route path={paths.HOME} element={<Home />} />
@@ -211,6 +211,7 @@ const AppRouter: React.FC = () => {
             path={paths.INSTRUCTOR_MANAGE_PAYOUTS}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManagePayout /> : <Navigate to={paths.HOME} />}
           />
+          <Route path="*" element={<NotFound />} />
         </Route>
 
         {/* Route for Admin */}
@@ -256,6 +257,7 @@ const AppRouter: React.FC = () => {
             path={paths.ADMIN_MANAGE_PAYOUTS}
             element={canAccess([roles.ADMIN]) ? <AdminManagePayouts /> : <Navigate to={paths.ADMIN_LOGIN} />}
           />
+          <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
