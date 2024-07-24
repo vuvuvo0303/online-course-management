@@ -3,17 +3,17 @@ import { useEffect, useState } from "react";
 import { getItemsByInstructor } from "../../../services";
 
 import { format } from "date-fns";
-import { Button, Table, TableProps, Tag } from "antd";
+import { Button, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
 import { createPayout } from "../../../services/payout";
 import { getColorPurchase } from "../../../consts/index";
 
 const InstructorManagePurchase = () => {
     const [purchases, setPurchases] = useState<Purchase[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-
+    const [statusPurchase, setStatusPurchase] = useState<string>("new")
     const getPurchasesByInstructor = async () => {
         setLoading(true)
-        const response = await getItemsByInstructor("", "", "", "", 1, 100);
+        const response = await getItemsByInstructor("", "", "", statusPurchase, 1, 100);
         console.log("response: ", response)
         setPurchases(response);
         setLoading(false);
@@ -21,7 +21,7 @@ const InstructorManagePurchase = () => {
 
     useEffect(() => {
         getPurchasesByInstructor();
-    }, []);
+    }, [statusPurchase]);
 
     if (loading) {
         return (
@@ -97,10 +97,27 @@ const InstructorManagePurchase = () => {
 
         getPurchasesByInstructor();
     }
-
+    const items: TabsProps['items'] = [
+        {
+            key: 'new',
+            label: 'New',
+        },
+        {
+            key: 'request_paid',
+            label: 'Request Paid',
+        },
+        {
+            key: 'completed',
+            label: 'completed',
+        },
+    ];
+    const onChangeStatus = (key: string) => {
+        setStatusPurchase(key);
+    };
     return (
         <div className="container mx-auto px-10">
             <h1 className="text-center my-10">Manage Purchased</h1>
+            <Tabs defaultActiveKey={statusPurchase} items={items} onChange={onChangeStatus} />
             <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} />
         </div>
     );
