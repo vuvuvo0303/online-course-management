@@ -24,6 +24,7 @@ import {
 } from "../../../consts/index.ts";
 import { format } from "date-fns";
 import { getCategories } from "../../../services/category.ts";
+import { getUserFromLocalStorrage } from "../../../services/auth.ts";
 // import useDebounce from "../../../hooks/useDebounce.ts";
 
 const AdminManageBlogs: React.FC = () => {
@@ -108,9 +109,8 @@ const AdminManageBlogs: React.FC = () => {
   const handleSubmit = async (values: Blog) => {
     try {
       if (isUpdateMode && currentBlog) {
-        const userString = localStorage.getItem("user");
-        const user = userString ? JSON.parse(userString) : "";
-        const payload = { ...values, user_id: user._id };
+        const user = getUserFromLocalStorrage();
+        const payload = { ...values, user_id: user._id }
         await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
         message.success("Blog updated successfully");
       } else {

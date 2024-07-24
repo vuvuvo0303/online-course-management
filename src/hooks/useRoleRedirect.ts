@@ -2,24 +2,23 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { paths, roles } from "../consts";
+import { getUserFromLocalStorrage } from "../services/auth";
 
 const useRoleRedirect = () => {
-  const userString = localStorage.getItem("user");
-  const user = userString ? JSON.parse(userString) : null;  
-  const userRole = user?.role;
+  const user = getUserFromLocalStorrage();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (userRole) {
+    if (user.role) {
       redirectBasedOnRole();
     }
-  }, [userRole, location.pathname]);
+  }, [user.role, location.pathname]);
 
   const redirectBasedOnRole = () => {
     const path = location.pathname;
 
-    switch (userRole) {
+    switch (user.role) {
       case roles.STUDENT:
         if (path.includes("/instructor") || path.includes("/admin") || path.includes(paths.LOGIN) || path.includes(paths.REGISTER) || path.includes(paths.FORGOT_PASSWORD)) {
           navigate(paths.HOME);
@@ -42,7 +41,7 @@ const useRoleRedirect = () => {
   };
 
   const canAccess = (allowedRoles: string[]) => {
-    return userRole && allowedRoles.includes(userRole);
+    return user.role && allowedRoles.includes(user.role);
   };
 
   return { canAccess };

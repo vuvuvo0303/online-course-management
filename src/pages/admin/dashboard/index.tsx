@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance";
 import { API_CLIENT_GET_COURSES } from "../../../consts/index";
 import { Course } from "models/Course";
-import { Instructor } from "models/User";
 
 const AdminDashboard: React.FC = () => {
   const [topCourses, setTopCourses] = useState([]);

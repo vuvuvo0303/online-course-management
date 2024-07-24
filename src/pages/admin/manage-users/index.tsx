@@ -79,11 +79,9 @@ const AdminManageUsers: React.FC = () => {
   const getUsers = useCallback(async () => {
     setLoading(true);
     try {
-      let statusValue: boolean | undefined = undefined;
+      let statusValue: boolean | undefined = false;
       if (selectedStatus === "true") {
         statusValue = true;
-      } else if (selectedStatus === "false") {
-        statusValue = false;
       }
       const response = await axiosInstance.post(API_GET_USERS, {
         searchCondition: {
@@ -301,14 +299,14 @@ const AdminManageUsers: React.FC = () => {
               setFileList(
                 avatarUrl
                   ? [
-                      {
-                        uid: "-1",
-                        name: "avatar.png",
-                        status: "done",
-                        url: avatarUrl,
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      } as UploadFile<any>,
-                    ]
+                    {
+                      uid: "-1",
+                      name: "avatar.png",
+                      status: "done",
+                      url: avatarUrl,
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    } as UploadFile<any>,
+                  ]
                   : []
               );
             }}
@@ -331,7 +329,8 @@ const AdminManageUsers: React.FC = () => {
   ];
 
   const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } = {
+    const newPagination: { current: number; pageSize: number; total: number } =
+    {
       current: pagination.current ?? 1,
       pageSize: pagination.pageSize ?? 10,
       total: pagination.total ?? 0,

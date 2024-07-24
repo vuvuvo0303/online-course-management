@@ -2,6 +2,7 @@ import axios from "axios";
 import config from "../secret/config.ts";
 import {paths, roles} from "../consts";
 import { message } from "antd";
+import { getUserFromLocalStorrage } from "./auth.ts";
 
 const axiosInstance = axios.create({
     baseURL: config.BASE_URL,
@@ -44,9 +45,7 @@ axiosInstance.interceptors.response.use(
             if (data && data.message) {
                 if(error.response.status === 403){
                     message.error(data.message)
-                     const userString = localStorage.getItem("user");
-                     const user = userString ? JSON.parse(userString) : null;
-                     
+                     const user = getUserFromLocalStorrage();
                      setTimeout(() => {
                          if(user.role === roles.ADMIN){
                              window.location.href = paths.ADMIN_LOGIN;

@@ -93,11 +93,9 @@ const InstructorManagePurchase = () => {
     ];
 
     const handleCreatePayout = async (record: Purchase) => {
-        const res = await createPayout(record.instructor_id, record._id)
+        await createPayout(record.instructor_id, record._id)
 
         getPurchasesByInstructor();
-
-        console.log("check res: ", res)
     }
 
     return (

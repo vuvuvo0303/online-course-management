@@ -148,10 +148,10 @@ const AdminManagePayouts: React.FC = () => {
             status === "new"
               ? "blue"
               : status === "request_payout"
-              ? "orange"
-              : status === "completed"
-              ? "green"
-              : "red"
+                ? "orange"
+                : status === "completed"
+                  ? "green"
+                  : "red"
           }
         >
           {status}
@@ -207,7 +207,7 @@ const AdminManagePayouts: React.FC = () => {
               ),
             },
             {
-              title: "Manage Payment",
+              title: "Manage Payouts",
             },
           ]}
         />

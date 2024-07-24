@@ -1,6 +1,6 @@
 import { Payout, Transaction } from "../../../models";
 import { useEffect, useState } from "react";
-import { getPayouts } from "../../../services";
+import { getPayouts, updateStatusPayout } from "../../../services";
 import { format } from "date-fns";
 import { Table, TableProps, Tag, Button, ConfigProvider, Modal, Space } from "antd";
 import { getColorPurchase } from "../../../consts/index";
@@ -79,72 +79,79 @@ const InstructorManagePayout = () => {
     getPayoutsByInstructor();
   }, []);
 
-  if (loading) {
-    return (
-      <>
-        <p className="items-center text-center">Loading ...</p>
-      </>
-    );
-  }
+    if (loading) {
+        return (
+            <>
+                <p className="items-center text-center">Loading ...</p>
+            </>
+        );
+    }
+    const handleRequestPayout = async (payout_id: string, status: string, comment?: string) => {
+        const res = await updateStatusPayout(payout_id, status, comment)
+        console.log("handleRequestPayout: ", res)
+        getPayoutsByInstructor();
+    }
 
-  const columns: TableProps<Payout>["columns"] = [
-    {
-      title: "Pay No",
-      dataIndex: "transactions",
-      key: "transactions",
-      width: "20%",
-      render: (transactions: Transaction[], record: Payout) => (
-        <div onClick={() => toggleModal(0, true, transactions)} className="text-blue-500 cursor-pointer">
-          {record.payout_no}
-        </div>
-      ),
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) => (
-        <>
-          <Tag color={getColorPurchase(status)}>{status === "request_paid" ? "request paid" : status}</Tag>
-        </>
-      ),
-    },
-    {
-      title: "Balance Origin",
-      dataIndex: "balance_origin",
-      key: "balance_origin",
-
-      render: (balance_origin: number) => (
-        <>{balance_origin.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
-      ),
-    },
-    {
-      title: "Balance Instructor Paid",
-      dataIndex: "balance_instructor_paid",
-      key: 'balance_instructor_paid',
-            render:(balance_instructor_paid:number)=> <>{balance_instructor_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</>
-    },
-    {
-      title: "Balance Instructor Received",
-      dataIndex: "balance_instructor_received",
-      key: 'balance_instructor_received',
-      render:(balance_instructor_received:number)=> <>{balance_instructor_received.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</>
-    },
-    {
-      title: "Created At",
-      dataIndex: "created_at",
-      key: "created_at",
-      width: "10%",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
-    },
-    {
-      title: "Updated At",
-      dataIndex: "updated_at",
-      key: "updated_at",
-      width: "10%",
-      render: (updated_at: string) => format(new Date(updated_at), "dd/MM/yyyy"),
-    },
-  ];
+    const columns: TableProps<Payout>["columns"] = [
+        {
+            title: 'Payout No',
+            dataIndex: 'transactions',
+            key: 'transactions',
+            width: '20%',
+            render: (transactions: Transaction[], record: Payout) => (
+                <div onClick={() => toggleModal(0, true, transactions)} className="text-blue-500 cursor-pointer">
+                    {record.payout_no}
+                </div>
+            )
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string) => (
+                <>
+                    <Tag color={getColorPayout(status)}>
+                        {status === "request_payout" ? "request payout" : status}
+                    </Tag>
+                </>
+            )
+        },
+        {
+            title: 'Balance Origin',
+            dataIndex: 'balance_origin',
+            key: 'balance_origin',
+        },
+        {
+            title: 'Balance Instructor Paid',
+            dataIndex: 'balance_instructor_paid',
+            key: 'balance_instructor_paid',
+        },
+        {
+            title: 'Balance Instructor Received',
+            dataIndex: 'balance_instructor_received',
+            key: 'balance_instructor_received',
+        },
+        {
+            title: 'Created Date',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            width: '10%',
+            render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+        },
+        {
+            title: 'Action',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string, record) => (
+                status === "new" &&
+                <>
+                    <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
+                        Request Payout
+                    </Button>
+                </>
+            )
+        },
+    ];
 
   return (
     <>
