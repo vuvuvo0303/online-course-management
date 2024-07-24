@@ -2,14 +2,7 @@ export class Payout {
     _id: string = "";
     payout_no: string = "";
     status: string = "";
-    transactions: Array<{
-        price: number;
-        discount: number;
-        price_paid: number;
-        purchase_id: string;
-        _id: string;
-        created_at: Date;
-    }> = [];
+    transactions: Transaction
     instructor_id: string = "";
     balance_origin: number = 0;
     balance_instructor_paid: number = 0;
@@ -24,14 +17,7 @@ export class Payout {
         _id: string,
         payout_no: string,
         status: string,
-        transactions: Array<{
-            price: number;
-            discount: number;
-            price_paid: number;
-            purchase_id: string;
-            _id: string;
-            created_at: Date;
-        }>,
+        transactions: Transaction,
         instructor_id: string,
         balance_origin: number,
         balance_instructor_paid: number,
@@ -57,3 +43,28 @@ export class Payout {
         this.instructor_email = instructor_email;
     }
 }
+export class Transaction {
+    price: number;
+    discount: number;
+    price_paid: number;
+    purchase_id: string;
+    _id: string;
+    created_at: Date;
+
+    constructor(
+        price: number,
+        discount: number,
+        price_paid: number,
+        purchase_id: string,
+        _id: string,
+        created_at: Date
+    ) {
+        this.price = price;
+        this.discount = discount;
+        this.price_paid = price_paid;
+        this.purchase_id = purchase_id;
+        this._id = _id;
+        this.created_at = created_at;
+    }
+}
+

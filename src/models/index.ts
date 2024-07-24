@@ -4,6 +4,7 @@ export { Course } from './Course';
 export { Comment } from './Comment';
 export { Review } from './Review';
 export { Payout } from './Payout';
+export { Transaction } from './Payout';
 export { Blog } from './Blog';
 export { Session } from './Session';
 export { Category } from './Category';

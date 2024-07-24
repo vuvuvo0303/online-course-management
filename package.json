@@ -17,6 +17,7 @@
     "@tinymce/tinymce-react": "^5.1.1",
     "@types/antd": "^1.0.0",
     "antd": "^5.19.0",
+    "antd-style": "^3.6.2",
     "axios": "^1.7.2",
     "chart.js": "^4.4.3",
     "date-fns": "^3.6.0",

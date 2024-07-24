@@ -492,7 +492,7 @@ const AdminManageUsers: React.FC = () => {
 
       <Space className="mb-2 flex flex-wrap">
         <Input.Search
-          placeholder="Search By Name"
+          placeholder="Search By Name and Email"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           className="w-full md:w-48"

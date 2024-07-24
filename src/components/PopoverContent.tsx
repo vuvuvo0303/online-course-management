@@ -1,5 +1,7 @@
-import { Cart } from "../models";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Cart } from "../models";
+import { getCarts } from "../services";
 
 interface PopoverContentProps {
     cartsNew: Cart[];
@@ -20,54 +22,74 @@ const CourseCard = ({ image, title, author, price }: { image: string; title: str
     );
 };
 
-const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost, cartsNew, cartsCancel }) => {
+const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
+    const [loading, setLoading] = useState(true);
+    const [carts, setCarts] = useState<{ cartsNew: Cart[], cartsCancel: Cart[] }>({ cartsNew: [], cartsCancel: [] });
+
+    useEffect(() => {
+        const fetchCarts = async () => {
+            try {
+                const cartsNewResponse = await getCarts('new');
+                const cartsCancelResponse = await getCarts('cancel');
+                setCarts({
+                    cartsNew: cartsNewResponse,
+                    cartsCancel: cartsCancelResponse,
+                });
+            } catch (error) {
+                console.error("Failed to fetch carts:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCarts();
+    }, []);
+
+    if (loading) {
+        return <div className="text-center items-center py-5 mt-2 ml-[1rem] px-4 w-[19rem] rounded">Loading...</div>;
+    }
+
+    const isEmpty = carts.cartsNew.length === 0 && carts.cartsCancel.length === 0;
+
     return (
         <div className="">
-            {!cartsNew && !cartsCancel ? (
-                <div className="text-center items-center py-5 mt-2 ml-[1rem] px-4  w-[19rem] rounded">
+            {isEmpty ? (
+                <div className="text-center items-center py-5 mt-2 ml-[1rem] px-4 w-[19rem] rounded">
                     No Data
                 </div>
             ) : (
-                cartsNew.length === 0 && cartsCancel.length === 0 ? (
-                    <div className="text-center items-center py-5 mt-2 ml-[1rem] px-4  w-[19rem] rounded">
-                        No Data
-                    </div>
-                ) :
-                    (
-                        <>
-                            {cartsNew.map((cart) => (
-                                <div key={cart._id}>
-                                    <Link to="/">
-                                        <CourseCard
-                                            image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
-                                            title={cart.course_name}
-                                            author={cart.instructor_name}
-                                            price={cart.price.toString()}
-                                        />
-                                    </Link>
-                                    <hr className="w-full my-4 border-gray-300" />
-                                </div>
-                            ))}
-                            {cartsCancel.map((cart) => (
-                                <div key={cart._id}>
-                                    <Link to="/">
-                                        <CourseCard
-                                            image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
-                                            title={cart.course_name}
-                                            author={cart.instructor_name}
-                                            price={cart.price.toString()}
-                                        />
-                                    </Link>
-                                    <hr className="w-full my-4 border-gray-300" />
-                                </div>
-                            ))}
-                            <button className="mt-2 ml-[1rem] px-4 py-2 bg-black text-white w-[19rem] rounded">View cart</button>
-                            <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost}</div>
-                        </>
-                    )
-            )
-            }
-        </div >
+                <>
+                    {carts.cartsNew.map((cart) => (
+                        <div key={cart._id}>
+                            <Link to={`/course/${cart.course_id}`}>
+                                <CourseCard
+                                    image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
+                                    title={cart.course_name}
+                                    author={cart.instructor_name}
+                                    price={cart.price.toString()}
+                                />
+                            </Link>
+                            <hr className="w-full my-4 border-gray-300" />
+                        </div>
+                    ))}
+                    {carts.cartsCancel.map((cart) => (
+                        <div key={cart._id}>
+                            <Link to={`/course/${cart.course_id}`}>
+                                <CourseCard
+                                    image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
+                                    title={cart.course_name}
+                                    author={cart.instructor_name}
+                                    price={cart.price.toString()}
+                                />
+                            </Link>
+                            <hr className="w-full my-4 border-gray-300" />
+                        </div>
+                    ))}
+                    <button className="mt-2 ml-[1rem] px-4 py-2 bg-black text-white w-[19rem] rounded">View cart</button>
+                    <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost} đ</div>
+                </>
+            )}
+        </div>
     );
 };
 
