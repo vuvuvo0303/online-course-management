@@ -88,6 +88,7 @@ const InstructorManagePayout = () => {
     const handleRequestPayout = async (payout_id: string, status: string, comment?: string) => {
         const res = await updateStatusPayout(payout_id, status, comment)
         console.log("handleRequestPayout: ", res)
+        getPayoutsByInstructor();
     }
 
     const columns: TableProps<Payout>["columns"] = [
