@@ -26,7 +26,6 @@ const InstructorManageSubscriptions = () => {
                     }
                 })
                 if (res) {
-                    console.log("check res: ", res);
                     setSubscriptions(res.data.pageData)
                     setLoading(false)
                 }
@@ -47,7 +46,6 @@ const InstructorManageSubscriptions = () => {
     }
 
     const onChange = (key: string) => {
-        console.log("check key: ", key)
         if (key === "subscription") {
             setApiLink(API_INSTRUCTOR_GET_SUBSCRIPTIONS)
         } else {
@@ -87,7 +85,7 @@ const InstructorManageSubscriptions = () => {
             )
         },
         {
-            title: 'Created At ',
+            title: 'Created Date ',
             dataIndex: 'created_at',
             key: 'created_at',
             render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
@@ -123,7 +121,7 @@ const InstructorManageSubscriptions = () => {
                 style={{ width: 200 }}
                 enterButton={<SearchOutlined className="text-white" />}
             />
-            <Table columns={columns} dataSource={subscriptions} />
+            <Table columns={columns} dataSource={subscriptions} rowKey={(record:Subscription) => (record._id)}/>
         </>
     )
 }

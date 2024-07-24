@@ -4,9 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Editor } from '@tinymce/tinymce-react';
 import { HomeOutlined } from "@ant-design/icons";
 import { Course, Session } from "../../../../../models";
-import { User } from "../../../../../models/User";
 import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
 import axiosInstance from "../../../../../services/axiosInstance.ts";
+import { getUserFromLocalStorrage } from "../../../../../services/auth.ts";
 
 const formItemLayout = {
   labelCol: {
@@ -33,8 +33,7 @@ const CreateUpdateSession = () => {
   //value of tinymce (field: description)
   const [value, setValue] = useState<string>('Enter something here');
   useEffect(() => {
-    const userString = localStorage.getItem("user");
-    const user: User = userString ? JSON.parse(userString) : null;
+    const user = getUserFromLocalStorrage();
     setUserId(user?._id);
     setRole(user?.role);
   }, []);

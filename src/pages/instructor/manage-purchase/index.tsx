@@ -47,6 +47,7 @@ const InstructorManagePurchase = () => {
             title: 'Price',
             dataIndex: 'price',
             key: 'price',
+            render:(price:number)=> <>{price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</>
         },
         {
             title: 'Discount',
@@ -70,6 +71,7 @@ const InstructorManagePurchase = () => {
             title: 'Price paid',
             dataIndex: 'price_paid',
             key: 'price_paid',
+            render:(price_paid:number)=> <>{price_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</>
         },
         {
             title: 'Created Date',
@@ -91,11 +93,9 @@ const InstructorManagePurchase = () => {
     ];
 
     const handleCreatePayout = async (record: Purchase) => {
-        const res = await createPayout(record.instructor_id, record._id)
+        await createPayout(record.instructor_id, record._id)
 
         getPurchasesByInstructor();
-
-        console.log("check res: ", res)
     }
 
     return (

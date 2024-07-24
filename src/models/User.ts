@@ -18,6 +18,8 @@ export class User {
   updated_at?: Date;
   is_deleted?: boolean; // flag remove logic when user is deleted
   is_verified?: boolean; // add this property
+  balance: number;
+  balance_total: number;
 
   constructor(
     _id: string = "",
@@ -35,7 +37,9 @@ export class User {
     created_at?: Date,
     updated_at?: Date,
     is_deleted?: boolean,
-    is_verified?: boolean // add this parameter
+    is_verified?: boolean, // add this parameter
+    balance: number = 0,
+    balance_total : number = 0,
   ) {
     this._id = _id;
     this.google_id = google_id;
@@ -53,6 +57,8 @@ export class User {
     this.updated_at = updated_at;
     this.is_deleted = is_deleted;
     this.is_verified = is_verified; // add this initialization
+    this.balance = balance;
+    this.balance_total = balance_total;
   }
 }
 

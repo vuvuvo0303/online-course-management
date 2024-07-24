@@ -33,7 +33,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                                 <div>
                                     <p className="text-sm text-gray-700 mb-1">Lessons: {course.lesson_count}</p>
                                     <p className="text-sm text-gray-700 mb-1">Instructor: {course.instructor_name}</p>
-                                    <p className="text-sm text-gray-700 mb-1">Price: ${course.price}</p>
+                                    <p className="text-sm text-gray-700 mb-1">Price: ${course.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
                                 </div>
                             </div>
                         }

@@ -3,11 +3,11 @@ import { Breadcrumb, Button, Input, message, Modal, Select, Table, TableProps } 
 import { useEffect, useState } from "react";
 import { Course, Session } from "../../models";
 import { Link } from "react-router-dom";
-import { User } from "../../models/User";
 import axiosInstance from "../../services/axiosInstance.ts";
 import { API_DELETE_SESSION, API_GET_COURSES, API_GET_SESSIONS } from "../../consts";
 import { useDebounce } from "../../hooks";
 import { format } from "date-fns";
+import { getUserFromLocalStorrage } from "../../services/auth.ts";
 
 const ManageAllSession = () => {
     const [keyword, setKeyword] = useState<string>('');
@@ -60,8 +60,7 @@ const ManageAllSession = () => {
 
 
     useEffect(() => {
-        const userString = localStorage.getItem("user");
-        const user: User = userString ? JSON.parse(userString) : null;
+        const user = getUserFromLocalStorrage();
         setRole(user?.role);
         setUserId(user?._id)
     }, []);

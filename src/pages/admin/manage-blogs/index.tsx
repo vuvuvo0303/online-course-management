@@ -9,14 +9,22 @@ import {
   Popconfirm,
   Select,
   TableColumnsType,
-  TablePaginationConfig
+  TablePaginationConfig,
 } from "antd";
 import { Breadcrumb, Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
-import { API_DELETE_BLOG, API_GET_BLOGS, API_CREATE_BLOG, API_UPDATE_BLOG, paths, API_GET_BLOG } from "../../../consts/index.ts";
+import {
+  API_DELETE_BLOG,
+  API_GET_BLOGS,
+  API_CREATE_BLOG,
+  API_UPDATE_BLOG,
+  paths,
+  API_GET_BLOG,
+} from "../../../consts/index.ts";
 import { format } from "date-fns";
 import { getCategories } from "../../../services/category.ts";
+import { getUserFromLocalStorrage } from "../../../services/auth.ts";
 // import useDebounce from "../../../hooks/useDebounce.ts";
 
 const AdminManageBlogs: React.FC = () => {
@@ -91,7 +99,7 @@ const AdminManageBlogs: React.FC = () => {
         category_id: blogData.category_id,
         image_url: blogData.image_url,
         description: blogData.description,
-        content: blogData.content
+        content: blogData.content,
       });
     } catch (error) {
       //
@@ -101,9 +109,8 @@ const AdminManageBlogs: React.FC = () => {
   const handleSubmit = async (values: Blog) => {
     try {
       if (isUpdateMode && currentBlog) {
-        const userString = localStorage.getItem("user");
-        const user = userString ? JSON.parse(userString) : "";
-        const payload = {...values,user_id: user._id}
+        const user = getUserFromLocalStorrage();
+        const payload = { ...values, user_id: user._id }
         await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
         message.success("Blog updated successfully");
       } else {
@@ -224,11 +231,14 @@ const AdminManageBlogs: React.FC = () => {
           ]}
         />
         <div className="py-2">
-          <Button type="primary" onClick={() => {
-            setIsUpdateMode(false);
-            setIsModalVisible(true);
-            form.resetFields();
-          }}>
+          <Button
+            type="primary"
+            onClick={() => {
+              setIsUpdateMode(false);
+              setIsModalVisible(true);
+              form.resetFields();
+            }}
+          >
             Add New Blog
           </Button>
         </div>
@@ -249,17 +259,17 @@ const AdminManageBlogs: React.FC = () => {
               <Form.Item
                 name="name"
                 label="Title"
-                rules={[{ required: true, message: 'Please input the blog title!' }]}
+                rules={[{ required: true, message: "Please input the blog title!" }]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 name="category_id"
                 label="Category"
-                rules={[{ required: true, message: 'Please select a category!' }]}
+                rules={[{ required: true, message: "Please select a category!" }]}
               >
                 <Select placeholder="Select a category">
-                  {categories.map(category => (
+                  {categories.map((category) => (
                     <Select.Option key={category._id} value={category._id}>
                       {category.name}
                     </Select.Option>
@@ -269,21 +279,21 @@ const AdminManageBlogs: React.FC = () => {
               <Form.Item
                 name="image_url"
                 label="Image URL"
-                rules={[{ required: true, message: 'Please input the image URL!' }]}
+                rules={[{ required: true, message: "Please input the image URL!" }]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 name="description"
                 label="Description"
-                rules={[{ required: true, message: 'Please input the description!' }]}
+                rules={[{ required: true, message: "Please input the description!" }]}
               >
                 <Input.TextArea maxLength={250} />
               </Form.Item>
               <Form.Item
                 name="content"
                 label="Content"
-                rules={[{ required: true, message: 'Please input the content!' }]}
+                rules={[{ required: true, message: "Please input the content!" }]}
               >
                 <Input.TextArea maxLength={250} />
               </Form.Item>
@@ -298,17 +308,17 @@ const AdminManageBlogs: React.FC = () => {
               <Form.Item
                 name="name"
                 label="Title"
-                rules={[{ required: true, message: 'Please input the blog title!' }]}
+                rules={[{ required: true, message: "Please input the blog title!" }]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 name="category_id"
                 label="Category"
-                rules={[{ required: true, message: 'Please select a category!' }]}
+                rules={[{ required: true, message: "Please select a category!" }]}
               >
                 <Select placeholder="Select a category">
-                  {categories.map(category => (
+                  {categories.map((category) => (
                     <Select.Option key={category._id} value={category._id}>
                       {category.name}
                     </Select.Option>
@@ -318,21 +328,21 @@ const AdminManageBlogs: React.FC = () => {
               <Form.Item
                 name="image_url"
                 label="Image URL"
-                rules={[{ required: true, message: 'Please input the image URL!' }]}
+                rules={[{ required: true, message: "Please input the image URL!" }]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 name="description"
                 label="Description"
-                rules={[{ required: true, message: 'Please input the description!' }]}
+                rules={[{ required: true, message: "Please input the description!" }]}
               >
                 <Input.TextArea maxLength={250} />
               </Form.Item>
               <Form.Item
                 name="content"
                 label="Content"
-                rules={[{ required: true, message: 'Please input the content!' }]}
+                rules={[{ required: true, message: "Please input the content!" }]}
               >
                 <Input.TextArea maxLength={250} />
               </Form.Item>
@@ -345,8 +355,13 @@ const AdminManageBlogs: React.FC = () => {
           )}
         </Modal>
       </div>
-      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id}   onChange={handleTableChange} pagination={false}/>
-      <Table columns={columns} dataSource={dataBlogs} rowKey={(record: Blog) => record._id}   onChange={handleTableChange} pagination={false}/>
+      <Table
+        columns={columns}
+        dataSource={dataBlogs}
+        rowKey={(record: Blog) => record._id}
+        onChange={handleTableChange}
+        pagination={false}
+      />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

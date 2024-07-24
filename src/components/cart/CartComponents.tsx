@@ -57,14 +57,14 @@ const CartComponents: React.FC<CartComponentsProps>
                                         <Col span={6}>
                                             <div className='mt-12'>
                                                 <p>Discount: {cartsNew.discount}%</p>
-                                                <p>Cost: {cartsNew.price}</p>
+                                                <p>Cost: {cartsNew.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
                                             </div>
                                         </Col>
                                         <Col span={6}>
                                             <Row className='mt-12'>
                                                 <Col span={12}>
                                                     <p>Price:</p>
-                                                    <p>{cartsNew.price_paid}</p>
+                                                    <p>{cartsNew.price_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
                                                 </Col>
                                                 <Col span={12}>
                                                     <p onClick={() => handleDeleteCart(cartsNew._id)} className=' text-red-500 cursor-pointer'>Delete</p>
@@ -88,13 +88,13 @@ const CartComponents: React.FC<CartComponentsProps>
                                         </Col>
                                         <Col span={6}>
                                             <p className='pt-12'>Discount: {cartsCancel.discount}%</p>
-                                            <p>{cartsCancel.price}</p>
+                                            <p>{cartsCancel.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
                                         </Col>
                                         <Col span={6}>
                                             <Row>
                                                 <Col span={12}>
                                                     <p className='pt-12'>Total:</p>
-                                                    <p>{cartsCancel.price_paid}</p>
+                                                    <p>{cartsCancel.price_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
                                                 </Col>
                                                 <Col span={12}>
                                                     <p onClick={() => handleDeleteCart(cartsCancel._id)} className='pt-12 text-red-500 cursor-pointer'>Delete</p>

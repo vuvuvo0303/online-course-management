@@ -11,7 +11,6 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Lessons, Session } from "../../../../../../models/index.ts";
 import { HomeOutlined } from "@ant-design/icons";
-import { User } from "../../../../../../models/User.ts";
 import axiosInstance from "../../../../../../services/axiosInstance.ts";
 import {
   API_CREATE_LESSON,
@@ -23,6 +22,7 @@ import {
   paths,
 } from "../../../../../../consts";
 import { Editor } from "@tinymce/tinymce-react";
+import { getUserFromLocalStorrage } from "../../../../../../services/auth.ts";
 // import { Editor } from '@tinymce/tinymce-react';
 const formItemLayout = {
   labelCol: {
@@ -48,8 +48,7 @@ const CreateUpdateLesson: React.FC = () => {
   const [value, setValue] = useState<string>("Enter something here");
   const [des, setDes] = useState<string>("");
   useEffect(() => {
-    const userString = localStorage.getItem("user");
-    const user: User = userString ? JSON.parse(userString) : null;
+    const user = getUserFromLocalStorrage();
     setUserId(user?._id);
   }, []);
 
