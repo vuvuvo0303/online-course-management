@@ -69,7 +69,6 @@ const InstructorManagePayout = () => {
     const getPayoutsByInstructor = async () => {
         setLoading(true);
         const response = await getPayouts("", "", "", 1, 100);
-        console.log("response: ", response);
         setPayouts(response);
         setLoading(false);
     };
@@ -93,7 +92,7 @@ const InstructorManagePayout = () => {
 
     const columns: TableProps<Payout>["columns"] = [
         {
-            title: 'Pay No',
+            title: 'Payout No',
             dataIndex: 'transactions',
             key: 'transactions',
             width: '20%',
@@ -131,18 +130,11 @@ const InstructorManagePayout = () => {
             key: 'balance_instructor_received',
         },
         {
-            title: 'Created At',
+            title: 'Created Date',
             dataIndex: 'created_at',
             key: 'created_at',
             width: '10%',
             render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
-        },
-        {
-            title: 'Updated At',
-            dataIndex: 'updated_at',
-            key: 'updated_at',
-            width: '10%',
-            render: (updated_at: string) => format(new Date(updated_at), "dd/MM/yyyy"),
         },
         {
             title: 'Action',
