@@ -100,6 +100,11 @@ const Dashboard: React.FC = () => {
             <DesktopOutlined />
           ),
           getItem(
+            "Manage Payouts",
+            "/instructor/manage-payouts",
+            <DesktopOutlined />
+          ),
+          getItem(
             "Manage Students",
             "/instructor/manage-students",
             <TeamOutlined />

@@ -162,7 +162,10 @@ const AdminManagePayouts: React.FC = () => {
     },
   ];
 
-  const hasRequestPayout = dataPayouts.some((payout) => payout.status === "request_payout");
+  // Check if there are any records with status "request_payout"
+  const hasRequestPayout = dataPayouts.some(
+    (payout) => payout.status === "request_payout"
+  );
 
   if (hasRequestPayout) {
     columns.push({

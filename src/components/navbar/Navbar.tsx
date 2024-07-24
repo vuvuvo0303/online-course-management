@@ -8,6 +8,7 @@ import Drawer from '../Drawer';
 import PopoverContent from '../PopoverContent';
 import { logout } from "../../services/auth.ts";
 import { getCarts } from '../../services';
+import { Cart } from '../../models/Cart.ts';
 
 
 const Navbar: React.FC = () => {
@@ -29,9 +30,37 @@ const Navbar: React.FC = () => {
   const user = localStorage.getItem("user");
 
   const token = localStorage.getItem("token")
+  const [cartsNew, setCartsNew] = useState<Cart[]>([])
+  const [cartsCancel, setCartsCancel] = useState<Cart[]>([])
+  const [totalCost, setTotalCost] = useState<number>(0);
+
+ 
+
+  // show cart when student hover shop cart icon
+  const getCart = async () => {
+    const res = await getCarts("new");
+    const res2 = await getCarts("cancel");
+    let totalCost = 0;
+    if (res) {
+      setCartsNew(res);
+      for (let index = 0; index < res.length; index++) {
+        totalCost += res[index].price
+
+      }
+      setTotalCost(totalCost);
+    }
+    if (res2) {
+      setCartsCancel(res2);
+      for (let index = 0; index < res2.length; index++) {
+        totalCost += res[index].price
+      }
+      setTotalCost(totalCost);
+    }
+  }
 
   useEffect(() => {
     if (token) {
+      getCart();
       countCart();
     }
   }, [token])
@@ -77,14 +106,17 @@ const Navbar: React.FC = () => {
               </div>
             </Col>
           </Row>
-          <div className="mt-2 text-lg font-bold">
-            <Link className="hover:text-red-600" to={"/profile"}>
-              View {dataUser.role} Profile
-            </Link>
-          </div>
         </div>
       ),
       key: "1",
+    },
+    {
+      label: (
+        <Link className="text-lg" to={"/profile"}>
+          View {dataUser.role} Profile
+        </Link>
+      ),
+      key: "2",
     },
     {
       label: (
@@ -144,16 +176,21 @@ const Navbar: React.FC = () => {
         </Link>
       </div>
       {!isLoginOrRegister && !isForgotPassword && (
-        <div className="flexCenter lg:gap-10 gap-1">
-          <div>
+        <div className="flexCenter lg:gap-20 gap-1">
+          <div className='lg:mr-20'>
             {!isLoginPage && !isRegisterPage && !isForgotPassword && <SearchTool />}
           </div>
           <>
             <Popover
-              content={<PopoverContent />}
+              content={<PopoverContent
+                totalCost={totalCost}
+                cartsNew={cartsNew}
+                cartsCancel={cartsCancel}
+              />}
               overlayInnerStyle={{ padding: 0 }}
               trigger="hover"
               placement="bottom"
+
             >
               <Link to={paths.STUDENT_ENROLLMENT}>
                 <Badge className='hidden md:block' count={4}>
@@ -163,13 +200,17 @@ const Navbar: React.FC = () => {
             </Popover>
 
             <Popover
-              content={<PopoverContent />}
+              content={<PopoverContent
+                totalCost={totalCost}
+                cartsNew={cartsNew}
+                cartsCancel={cartsCancel}
+              />}
               overlayInnerStyle={{ padding: 0 }}
               trigger="hover"
               placement="bottom"
             >
               <Link to={paths.STUDENT_CART}>
-                <Badge count={totalCarts} className='mt-[4px'>
+                <Badge count={totalCarts} className='mt-[4px]'>
                   <ShoppingCartOutlined className="text-gray-400 text-3xl mt-[3px]" />
                 </Badge>
               </Link>
@@ -182,6 +223,7 @@ const Navbar: React.FC = () => {
                     <Avatar
                       src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
                       className="hover:cursor-pointer hidden md:block mt-3"
+                      size={40}
                       icon={<UserOutlined />}
                     />
                   </Space>

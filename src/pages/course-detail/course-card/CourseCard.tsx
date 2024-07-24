@@ -1,14 +1,26 @@
-import React from "react";
-import { Rate } from "antd";
+import { Rate, message } from "antd";
+import { Link } from 'react-router-dom';
 import { Course } from "../../../models/Course";
 import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, EyeOutlined, DislikeOutlined, LikeOutlined, ShareAltOutlined } from '@ant-design/icons';
+import { addCourseToCart } from '../../../services/cart';
 
 interface CourseCardProps {
     course: Course;
     detailedView?: boolean;
 }
 
+
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
+
+    const handleAddToCart = async () => {
+        try {
+            await addCourseToCart(course._id); // Call the API to add the course to the cart
+            message.success('Course added to cart successfully!');
+        } catch (error) {
+            message.error('Failed to add course to cart.');
+        }
+    };
+
     return (
         <div className="flex flex-col lg:flex-row w-full lg:h-[24rem] bg-gray shadow-md rounded-lg p-5">
             <div className="rounded-lg overflow-hidden pt-5 sm:pb-5">
@@ -50,9 +62,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     </div>
                     <div className="text-xs">{course.discount}% off</div>
                     <div className="flex gap-4 mt-auto">
-                        <button className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
-                            <ShoppingCartOutlined className="mr-2" /> Add to Cart
-                        </button>
+                        <Link to='/cart'>
+                            <button onClick={handleAddToCart} className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
+                                <ShoppingCartOutlined className="mr-2" /> Add to Cart
+                            </button>
+                        </Link>
                         <button className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
                             Buy now
                         </button>

@@ -7,7 +7,6 @@ export class Course {
   video_url?: string;
   image_url?: string;
   price: number;
-  review_count:number;
   discount: number;
   created_at: Date;
   updated_at: Date;
@@ -21,13 +20,18 @@ export class Course {
   is_in_cart: boolean;
   is_purchased: boolean;
   average_rating: number;
-
+  review_count: number;
+  session_list: Array<{
+    name: string;
+    full_time: number;
+    lesson_list: Array<{
+      name: string;
+      full_time: number;
+    }>;
+  }>;
 
   constructor(
-    price_paid: number = 0,
-    instructor_name: string = "",
     _id: string = "",
-    review_count:number=0,
     name: string = "",
     category_id: string = "",
     description: string = "",
@@ -38,21 +42,26 @@ export class Course {
     discount: number = 0,
     created_at: Date = new Date(),
     updated_at: Date = new Date(),
-  
+    price_paid: number = 0,
     full_time: number = 0,
     instructor_id: string = "",
-  
+    instructor_name: string = "",
     category_name: string = "",
     session_count: number = 0,
     lesson_count: number = 0,
     is_in_cart: boolean = false,
     is_purchased: boolean = false,
     average_rating: number = 0,
-  
+    review_count: number = 0,
+    session_list: Array<{
+      name: string;
+      full_time: number;
+      lesson_list: Array<{
+        name: string;
+        full_time: number;
+      }>;
+    }> = [],
   ) {
-    this.instructor_name = instructor_name;
-    this.price_paid = price_paid;
-    this.review_count=review_count;
     this._id = _id;
     this.name = name;
     this.category_id = category_id;
@@ -75,5 +84,6 @@ export class Course {
     this.is_purchased = is_purchased;
     this.average_rating = average_rating;
     this.review_count = review_count;
+    this.session_list = session_list;
   }
 }

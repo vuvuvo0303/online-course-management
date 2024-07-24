@@ -80,7 +80,7 @@ const InstructorManageSubscriptions = () => {
                 <>           
                         <div >
                             <Tag color={getColorStatusSubscribe(is_subscribed)}>
-                                {is_subscribed === true ? "Subscribed" : "Un subscribed"}
+                                {is_subscribed === true ? "Subscribed" : "Unsubscribed"}
                             </Tag>
                         </div>
                 </>

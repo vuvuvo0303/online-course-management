@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Rate } from 'antd';
 import { TeamOutlined, FileWordOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { Course } from '../../../models/Course'; // Import the Course type
 
 const Info = () => {
     const [subscribed, setSubscribed] = useState(false);
@@ -41,7 +42,7 @@ const Info = () => {
                         className="rounded-full w-20 h-20 mr-4"
                     />
                     <div>
-                        <h3 className="text-xl font-bold">{instructor.name}</h3>
+                        <h3 className="text-xl font-bold">{Course.name}</h3>
                         <p className="text-gray-600">{instructor.role}</p>
                     </div>
                 </div>

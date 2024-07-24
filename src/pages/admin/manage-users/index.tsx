@@ -74,7 +74,13 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     getUsers();
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch]);
+  }, [
+    pagination.current,
+    pagination.pageSize,
+    selectedRole,
+    selectedStatus,
+    debouncedSearch,
+  ]);
 
   const getUsers = useCallback(async () => {
     setLoading(true);
@@ -108,7 +114,13 @@ const AdminManageUsers: React.FC = () => {
       // Xử lý trường hợp lỗi
     }
     setLoading(false);
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText]);
+  }, [
+    pagination.current,
+    pagination.pageSize,
+    selectedRole,
+    selectedStatus,
+    searchText,
+  ]);
 
   const handleAddNewUser = useCallback(
     async (values: User) => {
@@ -117,7 +129,11 @@ const AdminManageUsers: React.FC = () => {
 
         let avatarUrl = values.avatar;
 
-        if (values.avatar && typeof values.avatar !== "string" && values.avatar?.file?.originFileObj) {
+        if (
+          values.avatar &&
+          typeof values.avatar !== "string" &&
+          values.avatar?.file?.originFileObj
+        ) {
           avatarUrl = await uploadFile(values.avatar.file.originFileObj);
         }
 
@@ -157,7 +173,8 @@ const AdminManageUsers: React.FC = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
+    setFileList(newFileList);
 
   const handleStatusChange = async (checked: boolean, userId: string) => {
     try {
@@ -165,7 +182,9 @@ const AdminManageUsers: React.FC = () => {
         user_id: userId,
         status: checked,
       });
-      const updateData = dataUsers.map((user) => (user._id === userId ? { ...user, status: checked } : user));
+      const updateData = dataUsers.map((user) =>
+        user._id === userId ? { ...user, status: checked } : user
+      );
       setDataUsers(updateData);
       message.success(`User status updated successfully`);
     } catch (error) {
@@ -181,8 +200,15 @@ const AdminManageUsers: React.FC = () => {
   );
   const handleRoleChange = async (value: UserRole, recordId: string) => {
     try {
-      await axiosInstance.put(API_CHANGE_ROLE, { user_id: recordId, role: value });
-      setDataUsers((prevData: User[]) => prevData.map((user) => (user._id === recordId ? { ...user, role: value } : user)));
+      await axiosInstance.put(API_CHANGE_ROLE, {
+        user_id: recordId,
+        role: value,
+      });
+      setDataUsers((prevData: User[]) =>
+        prevData.map((user) =>
+          user._id === recordId ? { ...user, role: value } : user
+        )
+      );
       message.success(`Role changed successfully`);
     } catch (error) {
       // Handle error silently
@@ -223,7 +249,11 @@ const AdminManageUsers: React.FC = () => {
       key: "role",
       width: "10%",
       render: (role: UserRole, record: User) => (
-        <Select defaultValue={role} onChange={(value) => handleRoleChange(value, record._id)} style={{ width: "100%" }}>
+        <Select
+          defaultValue={role}
+          onChange={(value) => handleRoleChange(value, record._id)}
+          style={{ width: "100%" }}
+        >
           <Select.Option classNAme="text-red-700" value="student">
             {" "}
             <span className="text-blue-800">Student</span>
@@ -258,7 +288,10 @@ const AdminManageUsers: React.FC = () => {
       dataIndex: "status",
       width: "10%",
       render: (status: boolean, record: User) => (
-        <Switch defaultChecked={status} onChange={(checked) => handleStatusChange(checked, record._id)} />
+        <Switch
+          defaultChecked={status}
+          onChange={(checked) => handleStatusChange(checked, record._id)}
+        />
       ),
     },
     {
@@ -268,9 +301,15 @@ const AdminManageUsers: React.FC = () => {
       render: (is_verified: boolean) => (
         <span>
           {is_verified ? (
-            <img src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png" alt="" />
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png"
+              alt=""
+            />
           ) : (
-            <img src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png" alt="" />
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png"
+              alt=""
+            />
           )}
         </span>
       ),
@@ -291,7 +330,8 @@ const AdminManageUsers: React.FC = () => {
               form.setFieldsValue(record);
               setFormData(record);
 
-              const avatarUrl = typeof record.avatar === "string" ? record.avatar : "";
+              const avatarUrl =
+                typeof record.avatar === "string" ? record.avatar : "";
 
               setFileList(
                 avatarUrl
@@ -326,11 +366,12 @@ const AdminManageUsers: React.FC = () => {
   ];
 
   const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } = {
-      current: pagination.current ?? 1,
-      pageSize: pagination.pageSize ?? 10,
-      total: pagination.total ?? 0,
-    };
+    const newPagination: { current: number; pageSize: number; total: number } =
+      {
+        current: pagination.current ?? 1,
+        pageSize: pagination.pageSize ?? 10,
+        total: pagination.total ?? 0,
+      };
 
     setPagination(newPagination);
   };
@@ -350,7 +391,11 @@ const AdminManageUsers: React.FC = () => {
     try {
       let avatarUrl = values.avatar;
 
-      if (values.avatar && typeof values.avatar !== "string" && values.avatar.file?.originFileObj) {
+      if (
+        values.avatar &&
+        typeof values.avatar !== "string" &&
+        values.avatar.file?.originFileObj
+      ) {
         avatarUrl = await uploadFile(values.avatar.file.originFileObj);
       }
 
@@ -360,7 +405,10 @@ const AdminManageUsers: React.FC = () => {
         email: values.email,
       };
 
-      const response: ResponseData = await axiosInstance.put(`${API_UPDATE_USER}/${formData._id}`, updatedUser);
+      const response: ResponseData = await axiosInstance.put(
+        `${API_UPDATE_USER}/${formData._id}`,
+        updatedUser
+      );
       if (response.success) {
         if (formData.role !== values.role) {
           await axiosInstance.put(API_CHANGE_ROLE, {
@@ -370,7 +418,11 @@ const AdminManageUsers: React.FC = () => {
         }
 
         setDataUsers((prevData) =>
-          prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
+          prevData.map((user) =>
+            user._id === formData._id
+              ? { ...user, ...updatedUser, role: values.role }
+              : user
+          )
         );
 
         message.success("Updated user successfully");
@@ -447,7 +499,11 @@ const AdminManageUsers: React.FC = () => {
           enterButton={<SearchOutlined className="text-white" />}
         />
 
-        <Select value={selectedRole} onChange={handleRolefilter} className="w-full md:w-32 mt-2 md:mt-0 md:ml-2">
+        <Select
+          value={selectedRole}
+          onChange={handleRolefilter}
+          className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+        >
           <Select.Option value="All">All Roles</Select.Option>
           <Select.Option value="Admin">
             <span className="text-violet-500">Admin</span>
@@ -460,7 +516,11 @@ const AdminManageUsers: React.FC = () => {
           </Select.Option>
         </Select>
 
-        <Select value={selectedStatus} onChange={handleStatus} className="w-full md:w-32 mt-2 md:mt-0 md:ml-2">
+        <Select
+          value={selectedStatus}
+          onChange={handleStatus}
+          className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+        >
           <Select.Option value="true">Active</Select.Option>
           <Select.Option value="false">Inactive</Select.Option>
         </Select>
@@ -480,7 +540,9 @@ const AdminManageUsers: React.FC = () => {
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}
-          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          showTotal={(total, range) =>
+            `${range[0]}-${range[1]} of ${total} items`
+          }
           current={pagination.current}
           pageSize={pagination.pageSize}
           onChange={handlePaginationChange}
@@ -495,11 +557,19 @@ const AdminManageUsers: React.FC = () => {
         footer={null}
       >
         <Form form={form} onFinish={onFinish} layout="vertical">
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input the name!" }]}
+          >
             <Input />
           </Form.Item>
           {modalMode === "Add" && (
-            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[{ required: true, message: "Please input the email!" }]}
+            >
               <Input />
             </Form.Item>
           )}
@@ -507,7 +577,9 @@ const AdminManageUsers: React.FC = () => {
             <Form.Item
               name="password"
               label="Password"
-              rules={[{ required: true, message: "Please input the password!" }]}
+              rules={[
+                { required: true, message: "Please input the password!" },
+              ]}
             >
               <Input.Password />
             </Form.Item>

@@ -5,7 +5,6 @@ import {
   LinkedinOutlined,
   TwitterOutlined,
   YoutubeOutlined,
-  UserOutlined,
   SettingOutlined
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -24,6 +23,16 @@ const Profile: React.FC = () => {
   const user: User = userString ? JSON.parse(userString) : null;
   const googleID = user.google_id;
 
+  let avatarSrc;
+
+  if (typeof user.avatar === 'string') {
+    avatarSrc = user.avatar;
+  } else if (user.avatar?.file?.originFileObj) {
+    avatarSrc = URL.createObjectURL(user.avatar.file.originFileObj);
+  } else {
+    avatarSrc = 'https://static.vecteezy.com/system/resources/previews/009/734/564/non_2x/default-avatar-profile-icon-of-social-media-user-vector.jpg'; // Replace this with the URL of a default avatar image
+  }
+
   const onChange = (key: string) => {
     setActiveTabKey(key);
   };
@@ -34,33 +43,32 @@ const Profile: React.FC = () => {
         <div className="profile-info flex flex-col lg:flex-row items-center">
           <div className="mb-4 lg:mb-0 lg:mr-8">
             <Avatar
-              icon={<UserOutlined />}
-              alt="Profile"
+              src={avatarSrc}
+              alt={user.avatar ? 'User Avatar' : 'Default Avatar'}
               size={120}
-              className="mr-0 lg:mr-8"
             />
           </div>
           <div className='flex flex-col items-center lg:items-start'>
             <div className="text-center lg:text-left">
-              <h2 className="text-2xl font-bold">John Doe</h2>
-              <p className="text-lg">Junior Graphic Developer</p>
+              <h2 className="text-2xl font-bold">{user.name}</h2>
+              <p className="text-lg">{user.email}</p>
             </div>
-            <div className="flex flex-wrap space-x-0 lg:space-x-4 mt-4 border border-black w-full lg:w-auto">
-              <div className="p-4 bg-gray-800 rounded-lg text-center w-full lg:w-auto mb-2 lg:mb-0">
-                <p>Purchased</p>
-                <h3 className="text-xl font-bold">4</h3>
+            <div className="flex flex-wrap mt-4 sm:flex-row md:flex-wrap hidden sm:flex">
+              <div className="flex flex-col items-center justify-center bg-gray-800 p-4 border border-gray-600 text-center min-w-[150px]">
+                <p className="text-gray-400">Purchased</p>
+                <h3 className="text-2xl font-bold">4</h3>
               </div>
-              <div className="p-4 bg-gray-800 border-b-0 border-r-0 border-t-0 border border-black text-center w-full lg:w-auto mb-2 lg:mb-0">
-                <p>My Reviews</p>
-                <h3 className="text-xl font-bold">4</h3>
+              <div className="flex flex-col items-center justify-center bg-gray-800 p-4 border-t border-r border-b border-gray-600 text-center min-w-[150px]">
+                <p className="text-gray-400">My Reviews</p>
+                <h3 className="text-2xl font-bold">4</h3>
               </div>
-              <div className="p-4 bg-gray-800 text-center border-b-0 border-t-0 border border-black w-full lg:w-auto mb-2 lg:mb-0">
-                <p>Subscriptions</p>
-                <h3 className="text-xl font-bold">15K</h3>
+              <div className="flex flex-col items-center justify-center bg-gray-800 p-4 border-t border-r border-b border-gray-600 text-center min-w-[150px]">
+                <p className="text-gray-400">Subscriptions</p>
+                <h3 className="text-2xl font-bold">15K</h3>
               </div>
-              <div className="p-4 bg-gray-800 rounded-lg text-center w-full lg:w-auto">
-                <p>Certificates</p>
-                <h3 className="text-xl font-bold">2</h3>
+              <div className="flex flex-col items-center justify-center bg-gray-800 p-4 border-t border-r border-b border-gray-600 text-center min-w-[150px]">
+                <p className="text-gray-400 mt-[0.1rem]">Certificates</p>
+                <h3 className="text-2xl font-bold">2</h3>
               </div>
             </div>
           </div>
@@ -85,15 +93,13 @@ const Profile: React.FC = () => {
           <TabPane tab="About" key="1" />
           <TabPane tab="Purchased" key="2" />
           <TabPane tab="Subscriptions" key="3" />
-          {!googleID && <TabPane tab="" key="4" />}
-
+          {!googleID && <TabPane tab="Change Password" key="4" />}
         </Tabs>
         <div className="course-content">
           {activeTabKey === '1' && <About />}
           {activeTabKey === '2' && <Cart />}
           {activeTabKey === '3' && <Sub />}
           {!googleID && activeTabKey === '4' && <ChangePassword />}
-
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Spin, Tabs } from "antd";
+import { Skeleton, Tabs } from "antd";
 import axiosInstance from "../../services/axiosInstance";
-import { Course } from "../../models";
+import { Course } from "../../models/Course";
 import CourseCard from "./course-card/CourseCard";
 import About from "./about/about";
 import Content from "./content/content";
@@ -46,34 +46,36 @@ const CourseDetails: React.FC = () => {
         setActiveTabKey(key); // Update active tab key
     };
 
-    if (loading) {
-        return <div className="text-center"><Spin spinning={loading} /></div>;
-    }
-
-    if (!course) {
-        return <div className="text-center">No course details found.</div>;
-    }
-
     return (
         <div className="p-4">
-            <Spin spinning={loading}>
-                <CourseCard course={course} />
-            </Spin>
+            {/* Skeleton for CourseCard */}
+            <Skeleton loading={loading} active>
+                {!loading && course && <CourseCard course={course} />}
+            </Skeleton>
 
-            <div className="course-tabs">
-                <Tabs defaultActiveKey="1" centered onChange={onChange} activeKey={activeTabKey}>
-                    <TabPane tab="About" key="1" />
-                    <TabPane tab="Course Content" key="2" />
-                    <TabPane tab="Reviews" key="3" />
-                    <TabPane tab="Instructor" key="4" />
-                </Tabs>
-            </div>
+            {/* Tabs only visible when not loading */}
+            {!loading && course && (
+                <div className="course-tabs">
+                    <Tabs defaultActiveKey="1" centered onChange={onChange} activeKey={activeTabKey}>
+                        <TabPane tab="About" key="1" />
+                        <TabPane tab="Course Content" key="2" />
+                        <TabPane tab="Reviews" key="3" />
+                        <TabPane tab="Instructor" key="4" />
+                    </Tabs>
+                </div>
+            )}
 
             <div className="course-content">
-                {activeTabKey === "1" && <About />} {/* Render corresponding content based on active tab */}
-                {activeTabKey === "2" && <Content />}
-                {activeTabKey === "3" && <ReviewPage />}
-                {activeTabKey === "4" && <Instructor />}
+                {loading ? (
+                    <Skeleton active />
+                ) : (
+                    <>
+                        {activeTabKey === "1" && <About />}
+                        {activeTabKey === "2" && course && <Content course={course} />}
+                        {activeTabKey === "3" && <ReviewPage />}
+                        {activeTabKey === "4" && <Instructor />}
+                    </>
+                )}
             </div>
         </div>
     );

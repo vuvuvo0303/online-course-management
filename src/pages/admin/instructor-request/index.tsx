@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Avatar,
   Breadcrumb,
@@ -84,14 +84,14 @@ useEffect(() => {
       width: "20%",
     },
     {
-      title: "Created At",
+      title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
       render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
       width: "10%",
     },
     {
-      title: "Updated At",
+      title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
       render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
