@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getPayouts, updateStatusPayout } from "../../../services";
 import { format } from "date-fns";
 import { Table, TableProps, Tag, Modal, Button } from "antd";
-import { getColorPayout, getColorPurchase } from "../../../consts/index";
+import { getColorPayout } from "../../../consts/index";
 import { createStyles } from 'antd-style';
 const useStyle = createStyles(({ token }) => ({
     'my-modal-body': {

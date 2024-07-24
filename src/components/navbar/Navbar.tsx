@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
   const [cartsCancel, setCartsCancel] = useState<Cart[]>([])
   const [totalCost, setTotalCost] = useState<number>(0);
 
- 
+
 
   // show cart when student hover shop cart icon
   const getCart = async () => {
@@ -181,41 +181,45 @@ const Navbar: React.FC = () => {
             {!isLoginPage && !isRegisterPage && !isForgotPassword && <SearchTool />}
           </div>
           <>
-            <Popover
-              content={<PopoverContent
-                totalCost={totalCost}
-                cartsNew={cartsNew}
-                cartsCancel={cartsCancel}
-              />}
-              overlayInnerStyle={{ padding: 0 }}
-              trigger="hover"
-              placement="bottom"
+            { token &&
+              <>
+                <Popover
+                  content={<PopoverContent
+                    totalCost={totalCost}
+                    cartsNew={cartsNew}
+                    cartsCancel={cartsCancel}
+                  />}
+                  overlayInnerStyle={{ padding: 0 }}
+                  trigger="hover"
+                  placement="bottom"
 
-            >
-              <Link to={paths.STUDENT_ENROLLMENT}>
-                <Badge className='hidden md:block' count={4}>
-                  <HeartOutlined className="text-gray-400 text-3xl" />
-                </Badge>
-              </Link>
-            </Popover>
+                >
+                  <Link to={paths.STUDENT_ENROLLMENT}>
+                    <Badge className='hidden md:block' count={4}>
+                      <HeartOutlined className="text-gray-400 text-3xl" />
+                    </Badge>
+                  </Link>
+                </Popover>
 
-            <Popover
-              content={<PopoverContent
-                totalCost={totalCost}
-                cartsNew={cartsNew}
-                cartsCancel={cartsCancel}
-              />}
-              overlayInnerStyle={{ padding: 0 }}
-              trigger="hover"
-              placement="bottom"
-            >
-              <Link to={paths.STUDENT_CART}>
-                <Badge count={totalCarts} className='mt-[4px]'>
-                  <ShoppingCartOutlined className="text-gray-400 text-3xl mt-[3px]" />
-                </Badge>
-              </Link>
-            </Popover>
+                <Popover
+                  content={<PopoverContent
+                    totalCost={totalCost}
+                    cartsNew={cartsNew}
+                    cartsCancel={cartsCancel}
+                  />}
+                  overlayInnerStyle={{ padding: 0 }}
+                  trigger="hover"
+                  placement="bottom"
+                >
+                  <Link to={paths.STUDENT_CART}>
+                    <Badge count={totalCarts} className='mt-[4px]'>
+                      <ShoppingCartOutlined className="text-gray-400 text-3xl mt-[3px]" />
+                    </Badge>
+                  </Link>
+                </Popover>
 
+              </>
+            }
             {user ? (
               <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
                 <p onClick={(e) => e.preventDefault()}>
