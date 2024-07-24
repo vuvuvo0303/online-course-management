@@ -10,15 +10,14 @@ import {
   ToolOutlined,
   UnorderedListOutlined,
   UserOutlined,
-  WalletOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
 import logo2 from "../../assets/logo2.jpg";
-import { roles } from "../../consts";
-import { logout } from "../../services/auth.ts";
+import { paths, roles } from "../../consts";
+import { getUserFromLocalStorrage, logout } from "../../services/auth.ts";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -37,18 +36,16 @@ const Dashboard: React.FC = () => {
     email: null,
   });
 
-  const userString = localStorage.getItem("user");
-  const user: User = userString ? JSON.parse(userString) : null;
-  const userRole = user?.role;
+  const user: User = getUserFromLocalStorrage();
   useEffect(() => {
-    if (userRole && user) {
+    if (user) {
       setDataUser({
-        role: userRole,
+        role: user.role,
         fullName: user.name,
         email: user.email,
       });
     }
-  }, [navigate, userRole]);
+  }, []);
 
   function getItem(
     label: React.ReactNode,
@@ -67,7 +64,7 @@ const Dashboard: React.FC = () => {
     function loadItems() {
       if (dataUser.role === roles.INSTRUCTOR) {
         setItems([
-          getItem("Dashboard", "/instructor/dashboard", <FundOutlined />),
+          getItem("Dashboard", paths.INSTRUCTOR_DASHBOARD, <FundOutlined />),
           getItem(
             "Manage Reviews",
             "/instructor/manage-reviews",
@@ -103,17 +100,6 @@ const Dashboard: React.FC = () => {
             "/instructor/manage-payouts",
             <DesktopOutlined />
           ),
-          getItem(
-            "Manage Students",
-            "/instructor/manage-students",
-            <TeamOutlined />
-          ),
-          // getItem("My Profile", "/instructor/profile", <UserOutlined />),
-          getItem(
-            "Payment History",
-            "/instructor/payment-history",
-            <WalletOutlined />
-          ),
           getItem("Tools", "/instructor/tools", <ToolOutlined />),
           getItem(
             "Resources",
@@ -123,7 +109,7 @@ const Dashboard: React.FC = () => {
         ]);
       } else if (dataUser.role === roles.ADMIN) {
         setItems([
-          getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
+          getItem("Dashboard", paths.ADMIN_DASHBOARD, <FundOutlined />),
           getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
           getItem(
             "Instructor's Request",
