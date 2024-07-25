@@ -1,30 +1,79 @@
-import { useState, useCallback, useEffect } from 'react';
-import { Card, Popover, Button, Rate } from 'antd';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Card, Button, Skeleton, Rate } from 'antd';
 import Carousel from "react-multi-carousel";
+import axiosInstance from "../../../services/axiosInstance";
+import { API_CLIENT_GET_CATEGORIES } from "../../../consts";
 import { Link } from 'react-router-dom';
-import { categoryFilters, categoryCourse, paths } from "../../../consts/index";
-import { CheckOutlined, HeartOutlined } from '@ant-design/icons';
+import { fetchCoursesByClient } from '../../../services';
+import { Course } from '../../../models';
 import './Categories.css';
+import { paths } from '../../../consts';
+import { Category } from 'models/Category'; // Ensure this import is correct
 
 const { Meta } = Card;
 
-const Categories: React.FC = () => {
-    const [selectedCategory, setSelectedCategory] = useState<string>('Web Development');
-    const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 464);
-    const [ratings, setRatings] = useState<number[]>(Array.from({ length: categoryCourse[selectedCategory].length }, () => 3));
+const Categories = () => {
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [pagination, setPagination] = useState({
+        current: 1,
+        pageSize: 10,
+        total: 0,
+    });
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-    const handleResize = useCallback(() => {
-        setIsDesktop(window.innerWidth > 464);
-    }, []);
+    const fetchCategories = useCallback(async () => {
+        setLoading(true);
+        try {
+            const response = await axiosInstance.post(API_CLIENT_GET_CATEGORIES, {
+                searchCondition: {
+                    status: true,
+                    is_deleted: false,
+                },
+                pageInfo: {
+                    pageNum: pagination.current,
+                    pageSize: pagination.pageSize,
+                },
+            });
+
+            if (response.data) {
+                setCategories(response.data.pageData || []);
+                setPagination(prev => ({
+                    ...prev,
+                    total: response.data.pageInfo?.totalItems || response.data.length,
+                    current: response.data.pageInfo?.pageNum || 1,
+                    pageSize: response.data.pageInfo?.pageSize || prev.pageSize,
+                }));
+            }
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [pagination.current, pagination.pageSize]);
 
     useEffect(() => {
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [handleResize]);
+        fetchCategories();
+    }, [fetchCategories]);
 
-    const price = "$99.99"; // Example price, you can modify it as needed
+    // Fetch courses to display
+    const fetchCourse = async () => {
+        setLoading(true);
+        try {
+            const res = await fetchCoursesByClient("", "");
+            setCourses(res);
+        } catch (error) {
+            console.error("Failed to fetch courses:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchCourse();
+    }, []);
+
 
     const responsive = {
         superLargeDesktop: {
@@ -47,77 +96,19 @@ const Categories: React.FC = () => {
 
     const handleFilterClick = (filter: string) => {
         setSelectedCategory(filter);
-        setRatings(Array.from({ length: categoryCourse[filter].length }, () => 3));
-    };
-
-    const renderPopoverContent = (course: string) => {
-        const handleGoToCourse = () => {
-            window.location.href = paths.STUDENT_CART;
-        };
-
-        return (
-            <div className="popover-content w-full">
-                <Meta
-                    title={course}
-                    description={
-                        <div className="max-w-[350px] max-h-[410px] flex flex-col justify-between p-4 text-left">
-                            <div>
-                                <h3 className="text-green-600 text-[1rem] mb-2">Course Title</h3>
-                                <p className="text-black text-[0.8rem] mb-2">Updated at 7/2023</p>
-                            </div>
-                            <div>
-                                <p className="text-black text-[1rem] mb-2">Course description goes here.</p>
-                            </div>
-                            <div>
-                                <ul className="list-none">
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 1</li>
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 2</li>
-                                    <li className="text-black text-[1rem] ml-[1rem]"><CheckOutlined className='mr-[0.5rem]' />Feature 3</li>
-                                </ul>
-                            </div>
-                        </div>
-                    }
-                />
-                <div className="flex items-center ml-[4rem]">
-                    <Button
-                        type="default"
-                        onClick={handleGoToCourse}
-                        style={{
-                            backgroundColor: '#A020F0',
-                            borderColor: '#A020F0',
-                            color: '#fff',
-                            fontWeight: 'bold',
-                            padding: '4px 60px', // Adjust padding as needed
-                            lineHeight: 'normal', // Reset line height if necessary
-                        }}
-                    >
-                        Go to cart
-                    </Button>
-                    <Link to={paths.STUDENT_ENROLLMENT} className="ml-4 mt-[0.4rem]">
-                        <HeartOutlined className="text-black text-2xl" />
-                    </Link>
-                </div>
-            </div>
-        );
-    };
-
-    const handleRatingChange = (index: number, value: number) => {
-        const newRatings = [...ratings];
-        newRatings[index] = value;
-        setRatings(newRatings);
     };
 
     return (
         <div className="categories-container">
             <div className="categories-content">
                 <div className="category-filters-container">
-                    {categoryFilters.map((filter) => (
+                    {categories.map((category) => (
                         <Button
-                            key={filter}
+                            key={category._id}
                             className="category-filter-button"
-                            onClick={() => handleFilterClick(filter)}
+                            onClick={() => handleFilterClick(category.name)}
                         >
-                            {filter}
+                            {category.name}
                         </Button>
                     ))}
                 </div>
@@ -125,82 +116,88 @@ const Categories: React.FC = () => {
                 <Link to={`/courses/${selectedCategory}`}>
                     <Button
                         type="default"
-                        className="categories-button"
+                        className="categories-button lg:mr-[60rem]"
                         disabled={!selectedCategory}
                     >
-                        Explore Course
+                        Explore Category
                     </Button>
                 </Link>
 
-                <Carousel
-                    responsive={responsive}
-                    itemClass="carousel-item-padding-10px"
-                    swipeable={true}
-                    draggable={false}
-                    showDots={false}
-                    arrows={true}
-                    centerMode={false}
-                    infinite={true}
-                    className="categories-carousel"
-                >
-                    {categoryCourse[selectedCategory].map((course, index) => (
-                        <div key={course} className="category-card">
-                            <Popover
-                                content={renderPopoverContent(course)}
-                                title="Category Info"
-                                trigger="hover"
-                                placement="right"
-                                overlayStyle={{ textAlign: 'center' }}
-                            >
+                {loading ? (
+                    <Skeleton active />
+                ) : (
+                    <Carousel
+                        responsive={responsive}
+                        itemClass="carousel-item-padding-10px"
+                        swipeable={true}
+                        draggable={false}
+                        showDots={false}
+                        arrows={true}
+                        centerMode={false}
+                        infinite={true}
+                        className="categories-carousel"
+                    >
+                        {courses.map((course) => (
+                            <div key={course._id} className="flex justify-center">
                                 <Card
+                                    className="w-[20rem] mx-auto shadow-lg rounded-lg overflow-hidden"
                                     style={{ margin: '10px' }}
                                     cover={
-                                        <div className="avatar-container">
-                                            <Link to={`${paths.COURSE}`}>
+                                        <div className="h-48 bg-white flex items-center justify-center overflow-hidden">
+                                            <Link to={`/course/all-courses/course/${course._id}`}>
                                                 <img
-                                                    alt="example"
-                                                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                                                    style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+                                                    alt="course"
+                                                    src={course.image_url}
+                                                    className="object-cover w-full h-full p-2"
+                                                    onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                                                        const target = e.target as HTMLImageElement;
+                                                        target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s';
+                                                    }}
                                                 />
                                             </Link>
-                                            <div className="best-seller-label text-yellow-200 text-base">Best Seller</div>
                                         </div>
                                     }
                                 >
                                     <Meta
-                                        className="card-meta"
-                                        title={<Link to={`${paths.COURSE}`}>{course}</Link>}
-                                        description="This is the description"
+                                        className="truncate"
+                                        title={
+                                            <Link to={`/course/all-courses/course/${course._id}`} className="hover:underline">
+                                                {course.name}
+                                            </Link>
+                                        }
+                                        description={course.instructor_name}
                                     />
-                                    <div className="rating-container card-meta">
-                                        <span className="rating-number">{ratings[index]}</span>
-                                        <Rate value={ratings[index]} onChange={(value) => handleRatingChange(index, value)} />
-                                    </div>
-                                    <div className="card-meta price" style={{ marginTop: '10px' }}>
-                                        {price}
+                                    <div className="mt-2">
+                                        <div className="flexCenter items-center text-sm">
+                                            <span className="mr-2">{course.average_rating}</span>
+                                            <Rate value={course.average_rating} disabled />
+                                            <span className="ml-2 text-gray-500">({course.review_count})</span>
+                                        </div>
+                                        <div className="flexCenter items-baseline mt-2">
+                                            <div className="text-2xl text-gray-500 font-bold">₫{course.price_paid}</div>
+                                            <div className="text-xl text-gray-500 ml-2 line-through">₫{course.price}</div>
+                                        </div>
                                     </div>
                                 </Card>
-                            </Popover>
-                        </div>
-                    ))}
-                </Carousel>
+                            </div>
+                        ))}
+                    </Carousel>
+                )}
             </div>
-            {isDesktop && (
-                <div className="content-frame">
-                    <h2>Become an Instructor</h2>
-                    <img
-                        src="https://png.pngtree.com/png-vector/20190115/ourlarge/pngtree-teachers-day-cartoon-female-teacher-teacher-png-image_370554.jpg"
-                        alt="Instructor"
-                        className="instructor-image"
-                    />
-                    <p>Top instructors from around the world teach millions of students on FLearn. We provide the tools and skills to teach what you love.</p>
-                    <Link to={paths.TEACHING}>
-                        <Button type="primary" style={{ backgroundColor: 'gray', marginTop: '50px' }}>
-                            Start Teaching
-                        </Button>
-                    </Link>
-                </div>
-            )}
+            <div className="content-frame">
+                <h2>Become an Instructor</h2>
+                <img
+                    src="https://png.pngtree.com/png-vector/20190115/ourlarge/pngtree-teachers-day-cartoon-female-teacher-teacher-png-image_370554.jpg"
+                    alt="Instructor"
+                    className="instructor-image"
+                />
+                <p>Top instructors from around the world teach millions of students on FLearn. We provide the tools and skills to teach what you love.</p>
+                <Link to={paths.TEACHING}>
+                    <Button type="primary" style={{ backgroundColor: 'gray', marginTop: '50px' }}>
+                        Start Teaching
+                    </Button>
+                </Link>
+            </div>
         </div>
     );
 };

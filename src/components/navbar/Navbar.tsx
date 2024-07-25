@@ -164,14 +164,14 @@ const Navbar: React.FC = () => {
   return (
     <nav className="flex navbar justify-between w-full md:flex-row">
       <div className="flex gap-10 w-full">
-        <div className='mt-3'>
+        <div>
           {!isLoginPage && !isRegisterPage && !isForgotPassword && <Drawer />}
         </div>
         <Link to={paths.HOME}>
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
-            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} h-[2rem] w-[5rem] mt-3 ml-[50px]`}
+            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} w-[5rem] ml-[50px]`}
           />
         </Link>
       </div>
@@ -180,8 +180,15 @@ const Navbar: React.FC = () => {
           <div className='lg:mr-[8rem]'>
             {!isLoginPage && !isRegisterPage && !isForgotPassword && <SearchTool />}
           </div>
+          {!user && (
+            <div>
+              <Link to={paths.TEACHING} className="whitespace-nowrap overflow-hidden text-ellipsis mr-[40px]">
+                Be Our Instructor
+              </Link>
+            </div>
+          )}
           <>
-            { token &&
+            {token &&
               <>
                 <Popover
                   content={<PopoverContent
@@ -192,7 +199,6 @@ const Navbar: React.FC = () => {
                   overlayInnerStyle={{ padding: 0 }}
                   trigger="hover"
                   placement="bottom"
-
                 >
                   <Link to={paths.STUDENT_ENROLLMENT}>
                     <Badge className='hidden md:block' count={4}>
@@ -212,8 +218,8 @@ const Navbar: React.FC = () => {
                   placement="bottom"
                 >
                   <Link to={paths.STUDENT_CART}>
-                    <Badge count={totalCarts} className='mt-[4px]'>
-                      <ShoppingCartOutlined className="text-gray-400 text-3xl mt-[3px]" />
+                    <Badge count={totalCarts} className=''>
+                      <ShoppingCartOutlined className="text-gray-400 text-3xl" />
                     </Badge>
                   </Link>
                 </Popover>
@@ -221,12 +227,12 @@ const Navbar: React.FC = () => {
               </>
             }
             {user ? (
-              <Dropdown className='mb-2' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
+              <Dropdown className='' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
                 <p onClick={(e) => e.preventDefault()}>
                   <Space>
                     <Avatar
                       src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
-                      className="hover:cursor-pointer hidden md:block mt-3"
+                      className="hover:cursor-pointer hidden md:block"
                       size={40}
                       icon={<UserOutlined />}
                     />
@@ -235,7 +241,7 @@ const Navbar: React.FC = () => {
               </Dropdown>
             ) : (
               <Link to={paths.LOGIN}>
-                <UserOutlined className="text-gray-400 text-3xl cursor-pointer hidden md:block mb-[5px]" />
+                <UserOutlined className="text-gray-400 text-3xl cursor-pointer hidden md:block" />
               </Link>
             )}
           </>

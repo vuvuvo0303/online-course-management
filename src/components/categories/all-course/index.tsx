@@ -104,6 +104,12 @@ const AllCourses: React.FC = () => {
         setRatings(newRatings);
     };
 
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        const target = e.target as HTMLImageElement;
+        target.onerror = null; // Prevent infinite loop if fallback also fails
+        target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'; // Fallback image
+    };
+
     return (
         <div className="w-full">
             <div className="w-full text-left">
@@ -141,8 +147,9 @@ const AllCourses: React.FC = () => {
                                                 <Link to={`/course/all-courses/course/${course._id}`}>
                                                     <img
                                                         alt="course"
-                                                        src={course.image_url}
+                                                        src={course.image_url || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'} // Fallback image
                                                         className="w-full max-h-40 object-cover"
+                                                        onError={handleImageError}
                                                     />
                                                 </Link>
                                                 <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">Best Seller</div>
