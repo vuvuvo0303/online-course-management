@@ -8,6 +8,7 @@ const BecomeInstructorPage: React.FC = () => {
     const navigate = useNavigate();
 
     const handleStart = () => {
+        localStorage.clear();
         navigate(paths.REGISTER);
     };
 

@@ -1,5 +1,6 @@
+import { User } from "../../models/User";
 
-export function removePassword(user: any) {
+export function removePassword(user: User) {
   const { password, ...userWithoutPassword } = user;
   return userWithoutPassword;
 }

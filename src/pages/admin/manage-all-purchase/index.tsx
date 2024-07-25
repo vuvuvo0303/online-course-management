@@ -6,25 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
-interface Purchase {
-  _id: string;
-  purchase_no: string;
-  status: string;
-  price_paid: number;
-  price: number;
-  discount: number;
-  cart_id: string;
-  course_id: string;
-  student_id: string;
-  instructor_id: string;
-  created_at: string;
-  is_deleted: boolean;
-  cart_no: string;
-  course_name: string;
-  student_name: string;
-  instructor_name: string;
-}
-
+import { Purchase } from "../../../models/Purchase";
 
 
 const ManageAllPurchase = () => {
@@ -42,27 +24,14 @@ const ManageAllPurchase = () => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Instructor's Name",
+      title: "Instructors Name",
       dataIndex: "instructor_name",
       key: "instructor_name",
     },
     {
-      title: "Student's Name",
+      title: "Students Name",
       dataIndex: "student_name",
       key: "student__name",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) => <Tag color={getColorPurchase(status)}>{status}</Tag>,
-    },
-    {
-      title: "Created Date",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
-      width: "10%",
     },
     {
       title: "Price",
@@ -81,6 +50,20 @@ const ManageAllPurchase = () => {
         return price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
       },
     },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => <Tag color={getColorPurchase(status)}>{status}</Tag>,
+    },
+    {
+      title: "Created Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      width: "10%",
+    },
+
   ];
 
   const fetchPurchase = useCallback(async () => {
@@ -118,7 +101,7 @@ const ManageAllPurchase = () => {
 
   useEffect(() => {
     fetchPurchase();
-  },  [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
+  }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPagination((prev) => ({
@@ -136,7 +119,7 @@ const ManageAllPurchase = () => {
   };
   return (
     <div>
-      
+
       <Breadcrumb className="p-3">
         <Breadcrumb.Item>
           <HomeOutlined />
@@ -170,10 +153,10 @@ const ManageAllPurchase = () => {
       <Table
         columns={columns}
         dataSource={dataSource}
-        
+
         pagination={false}
         onChange={handleTableChange}
-        
+
         rowKey="_id"
       />
       <div className="flex justify-end py-8">

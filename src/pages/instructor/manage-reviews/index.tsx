@@ -4,13 +4,8 @@ import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import axiosInstance from '../../../services/axiosInstance.ts';
 import { useParams } from 'react-router-dom';
 import { API_GET_COURSE, API_GET_COURSES } from '../../../consts/index.ts';
+import { Review } from '../../../models/Review.ts';
 
-interface Review {
-    name: string;
-    time: string;
-    rating: number;
-    text: string;
-}
 
 interface ReviewFormValues {
     course_id: string;
@@ -40,7 +35,7 @@ const ReviewPage: React.FC = () => {
 
     useEffect(() => {
         fetchReviews();
-    }, [fetchReviews]);
+    }, []);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -77,10 +72,17 @@ const ReviewPage: React.FC = () => {
         try {
             setLoading(true);
             const newReview: Review = {
-                name: 'New User',
-                time: 'Just now',
+                reviewer_name: 'New User',
+                created_at: new Date(),
                 rating: values.rating,
-                text: values.comment,
+                comment: values.comment,
+                _id: '',
+                updated_at: new Date(),
+                user_id: '',
+                course_id: '',
+                is_deleted: false,
+                reviewer_id: '',
+                course_name: ''
             };
 
             const response = await axiosInstance.post('/api/review', {
@@ -148,11 +150,11 @@ const ReviewPage: React.FC = () => {
                         >
                             <div className="flex items-center mb-2">
                                 <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-lg mr-4">
-                                    {review.name[0]}
+                                    {review.reviewer_name[0]}
                                 </div>
                                 <div>
-                                    <div className="text-lg">{review.name}</div>
-                                    <div className="text-sm text-gray-400">{review.time}</div>
+                                    <div className="text-lg">{review.reviewer_name}</div>
+                                    <div className="text-sm text-gray-400">{review.created_at}</div>
                                 </div>
                             </div>
                             <Rate
@@ -161,14 +163,14 @@ const ReviewPage: React.FC = () => {
                                 disabled
                                 className="mb-2"
                             />
-                            <p>{review.text}</p>
+                            <p>{review.comment}</p>
                         </div>
                     ))}
                 </div>
             </div>
             <Modal
                 title="Add Your Review"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onCancel={handleCancel}
                 footer={null}
             >

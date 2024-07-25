@@ -53,10 +53,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     <div><strong>Instructor:</strong> {course.instructor_name}</div>
                     <div><span className="text-sm">Last update:</span> {new Date(course.updated_at).toLocaleDateString()}</div>
                     <div className="flex flex-row gap-4">
-                        <div className="text-4xl">₫{course.price_paid}</div>
+                        <div className="text-4xl">{course.price_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</div>
                         <div className="text-2xl mt-[0.2rem]">
                             <span className="line-through">
-                                ₫{course.price}
+                                {course.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}
                             </span>
                         </div>
                     </div>

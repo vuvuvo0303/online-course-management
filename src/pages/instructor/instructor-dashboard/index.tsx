@@ -6,10 +6,12 @@ import TopNews from "./topnew";
 import ProfileOverview from "./profile-overview";
 import axiosInstance from "../../../services/axiosInstance";
 import { useEffect, useState } from "react";
-import { API_GET_COURSES, paths } from "../../../consts/index";
+import { API_GET_COURSES, paths } from "../../../consts";
+import { getUserFromLocalStorrage } from "../../../services/auth";
 
 const InstructorDashboard: React.FC = () => {
   const [totalCourse, setTotalCourse] = useState<number>(0);
+  const user = getUserFromLocalStorrage();
   //fetch courses
   useEffect(() => {
     const fetchCourses = async () => {
@@ -30,7 +32,7 @@ const InstructorDashboard: React.FC = () => {
           setTotalCourse(response.data.pageInfo.totalItems);
         }
       } catch (error) {
-        console.log("Error: ", error);
+        //
       }
     };
     fetchCourses();
@@ -93,7 +95,7 @@ const InstructorDashboard: React.FC = () => {
           <Card title="Total Revenue" bordered={false} style={{ width: 300 }}>
             <div className="flex justify-between items-center px-1">
               <div className="flex justify-center gap-2">
-                <h1>1000</h1>
+                <h1>{user.balance_total}</h1>
                 {/* <DollarOutlined style={{ fontSize: "20px", color: "#E7A833" }} /> */}
                 <span className="flex flex-col justify-center mt-1 text-yellow-500">VND</span>
               </div>

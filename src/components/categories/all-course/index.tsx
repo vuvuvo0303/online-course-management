@@ -70,7 +70,7 @@ const AllCourses: React.FC = () => {
                                 <p className="text-black text-[1rem] mb-2 truncate">Description: {course.description}</p>
                             </div>
                             <div>
-                                <p className="text-black text-[1rem] mb-2 truncate">Price: {course.price} vnđ</p>
+                                <p className="text-black text-[1rem] mb-2 truncate">Price: {course.price.toLocaleString("vi-VN", {style:"currency", currency:"VND"})} </p>
                             </div>
                         </div>
                     }
@@ -172,8 +172,8 @@ const AllCourses: React.FC = () => {
                                                 <span className="ml-2 text-gray-500">({course.review_count})</span>
                                             </div>
                                             <div className="flex items-baseline mt-2">
-                                                <div className="text-2xl text-gray-500 font-bold">₫{course.price_paid}</div>
-                                                <div className="text-xl text-gray-500 ml-2 line-through">₫{course.price}</div>
+                                                <div className="text-2xl text-gray-500 font-bold">{course.price_paid.toLocaleString("vi-VN",{style:"currency" , currency:"VND"})}</div>
+                                                <div className="text-xl text-gray-500 ml-2 line-through">{course.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</div>
                                             </div>
                                         </div>
                                     </Card>

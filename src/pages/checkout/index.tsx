@@ -81,16 +81,13 @@ const Checkout: React.FC = () => {
         setLoading(true);
         try {
           for (const element of carts) {
-            console.log("element: ", element);
-            const res = await updateStatusCart("completed", element._id, element.cart_no);
-            console.log("handlePayment: ", res);
+            await updateStatusCart("completed", element._id, element.cart_no);
           }
           await new Promise((resolve) => setTimeout(resolve, 2000));
           setLoading(false);
           message.success("Payment successful!");
           navigate(paths.STUDENT_PURCHASE)
         } catch (error) {
-          console.error("Payment failed:", error);
           setLoading(false);
           message.error("Payment failed. Please try again later.");
         }
@@ -147,7 +144,7 @@ const Checkout: React.FC = () => {
                         <p className={styles.detailLabel}>
                           <strong>Total Price:</strong>
                         </p>
-                        <p className={styles.detailValue}>{totalPrice}</p>
+                        <p className={styles.detailValue}>{totalPrice.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
                       </div>
                     </>
 
@@ -173,7 +170,7 @@ const Checkout: React.FC = () => {
                         <img width={200} height={200} alt='empty-cart-display' src='https://s.udemycdn.com/browse_components/flyout/empty-shopping-cart-v2-2x.jpg' />
                         <p className='text-lg mb-4'>You must check in at least 1 course in the cart before click on checkout</p>
                         <Link to={paths.HOME}>
-                          <CustomButton handlePayment={handlePayment} title='Keep Shopping' containerStyles='bg-purple-500' />
+                          <CustomButton handleClick={handlePayment} title='Keep Shopping' containerStyles='bg-purple-500' />
                         </Link>
                       </div>
                     </>
@@ -195,7 +192,7 @@ const Checkout: React.FC = () => {
 
                         </Col>
                         <Col span={6}>
-                          <p className='pt-12'>{cart.price}</p>
+                          <p className='pt-12'>{cart.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
                           <p>Discount: {cart.discount}%</p>
                         </Col>
 
@@ -203,7 +200,7 @@ const Checkout: React.FC = () => {
                           <Row>
                             <Col span={12}>
                               <p className='pt-12'>Total:</p>
-                              <p >{cart.price_paid}</p>
+                              <p >{cart.price_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
                             </Col>
                           </Row>
                         </Col>
@@ -368,14 +365,14 @@ const Checkout: React.FC = () => {
         </h2>
         <div className={styles.summaryDescription}>
           <p>
-            <strong>Original Price:</strong> {totalCost}
+            <strong>Original Price:</strong> {totalCost.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}
           </p>
           <p>
             <strong>Discount:</strong> 0
           </p>
           <hr style={{ width: "250px" }} />
           <p>
-            <strong>Total:</strong> {totalPrice}
+            <strong>Total:</strong> {totalPrice.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}
           </p>
         </div>
         <div className={styles.confirm}>
@@ -398,7 +395,7 @@ const Checkout: React.FC = () => {
               (
                 <>
                   <div className="mt-10">
-                    <CustomButton handlePayment={handlePayment} title='Complete Checkout' containerStyles='bg-purple-500' />
+                    <CustomButton handleClick={handlePayment} title='Complete Checkout' containerStyles='bg-purple-500' />
                   </div>
                 </>
               ) :

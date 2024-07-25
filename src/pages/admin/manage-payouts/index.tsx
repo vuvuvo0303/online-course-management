@@ -25,7 +25,7 @@ const AdminManagePayouts: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
   const debouncedSearch = useDebounce(searchText, 500);
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("request_payout");
 
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -40,7 +40,7 @@ const AdminManagePayouts: React.FC = () => {
         searchCondition: {
           payout_no: debouncedSearch,
           instructor_id: "",
-          status: statusFilter,
+          status: statusFilter ? statusFilter : ["request_payout", "completed"],
           is_delete: false,
         },
         pageInfo: {
@@ -111,12 +111,6 @@ const AdminManagePayouts: React.FC = () => {
       render: (text) => <Button type="link">{text}</Button>,
     },
     {
-      title: "Instructor Name",
-      dataIndex: "instructor_name",
-      key: "instructor_name",
-      width: "20%",
-    },
-    {
       title: "Instructor Email",
       dataIndex: "instructor_email",
       key: "instructor_email",
@@ -126,11 +120,16 @@ const AdminManagePayouts: React.FC = () => {
       title: "Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
+      render: (balance_instructor_paid: number) => (
+        <>{balance_instructor_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
+      ),
     },
+
     {
       title: "Instructor Receive",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
+      render: (balance_instructor_received: number) => <>{balance_instructor_received.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
     },
     {
       title: "Status",
@@ -163,9 +162,7 @@ const AdminManagePayouts: React.FC = () => {
   ];
 
   // Check if there are any records with status "request_payout"
-  const hasRequestPayout = dataPayouts.some(
-    (payout) => payout.status === "request_payout"
-  );
+  const hasRequestPayout = dataPayouts.some((payout) => payout.status === "request_payout");
 
   if (hasRequestPayout) {
     columns.push({
@@ -214,7 +211,7 @@ const AdminManagePayouts: React.FC = () => {
           placeholder="Search By Payout No"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          className="w-full md:w-48"
+          className="w-full md:w-50"
           enterButton={<SearchOutlined className="text-white" />}
         />
         <Select
@@ -222,13 +219,10 @@ const AdminManagePayouts: React.FC = () => {
           optionFilterProp="children"
           onChange={handleStatus}
           value={statusFilter}
-          className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+          className="w-full md:w-34 mt-2 md:mt-0 md:ml-2"
         >
-          <Select.Option value="">All Status</Select.Option>
-          <Select.Option value="new">New</Select.Option>
           <Select.Option value="request_payout">Request Payout</Select.Option>
           <Select.Option value="completed">Completed</Select.Option>
-          <Select.Option value="rejected">Rejected</Select.Option>
         </Select>
       </Space>
 
