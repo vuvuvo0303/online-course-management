@@ -5,7 +5,8 @@ import { getItemsByInstructor } from "../../../services";
 import { format } from "date-fns";
 import { Button, Checkbox, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
 import { createPayout } from "../../../services/payout";
-import { getColorPurchase } from "../../../consts/index";
+import { getColorPurchase } from "../../../consts";
+import LoadingComponent from "../../../components/loading";
 
 const InstructorManagePurchase = () => {
     const [instructor_id, setInstructor_id] = useState<string>('')
@@ -27,16 +28,14 @@ const InstructorManagePurchase = () => {
     }, [statusPurchase]);
 
     if (loading) {
-        return (
-            <>
-                <p className="items-center text-center ">Loading ...</p>
-            </>
-        );
+        return (<>
+            <LoadingComponent />
+        </>)
     }
 
     const columns: TableProps<Purchase>["columns"] = [
-         {
-            
+        {
+
             render: (record: Purchase) => (
                 record.status === "new" ? (
                     <Checkbox onChange={() => onChangeCheckbox(record)}></Checkbox>
@@ -94,55 +93,55 @@ const InstructorManagePurchase = () => {
     ];
 
     const columnsNotCheckbox: TableProps<Purchase>["columns"] = [
-       {
-           title: 'Purchase No',
-           dataIndex: 'purchase_no',
-           key: 'purchase_no',
-           width: '20%',
-       },
-       {
-           title: 'Course Name',
-           dataIndex: 'course_name',
-           key: 'course_name',
-       },
-       {
-           title: 'Price',
-           dataIndex: 'price',
-           key: 'price',
-           render: (price: number) => <>{price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
-       },
-       {
-           title: 'Discount',
-           dataIndex: 'discount',
-           key: 'discount',
-           render: (discount: number) => `${discount}%`
-       },
-       {
-           title: 'Status',
-           dataIndex: 'status',
-           key: 'status',
-           render: (status: string) => (
-               <>
-                   <Tag color={getColorPurchase(status)}>
-                       {status === "request_paid" ? "request paid" : status}
-                   </Tag>
-               </>
-           )
-       },
-       {
-           title: 'Price paid',
-           dataIndex: 'price_paid',
-           key: 'price_paid',
-           render: (price_paid: number) => <>{price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
-       },
-       {
-           title: 'Created Date',
-           dataIndex: 'created_at',
-           key: 'created_at',
-           width: '10%',
-           render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
-       },
-   ];
+        {
+            title: 'Purchase No',
+            dataIndex: 'purchase_no',
+            key: 'purchase_no',
+            width: '20%',
+        },
+        {
+            title: 'Course Name',
+            dataIndex: 'course_name',
+            key: 'course_name',
+        },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+            render: (price: number) => <>{price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
+        },
+        {
+            title: 'Discount',
+            dataIndex: 'discount',
+            key: 'discount',
+            render: (discount: number) => `${discount}%`
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string) => (
+                <>
+                    <Tag color={getColorPurchase(status)}>
+                        {status === "request_paid" ? "request paid" : status}
+                    </Tag>
+                </>
+            )
+        },
+        {
+            title: 'Price paid',
+            dataIndex: 'price_paid',
+            key: 'price_paid',
+            render: (price_paid: number) => <>{price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
+        },
+        {
+            title: 'Created Date',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            width: '10%',
+            render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+        },
+    ];
 
     const handleCreatePayout = async () => {
         console.log("purchasesChecked: ", purchasesChecked);
@@ -212,11 +211,11 @@ const InstructorManagePurchase = () => {
                 <Button onClick={() => handleCreatePayout()} className="float-right " type="primary">Create Payout</Button>
             }
             <Tabs defaultActiveKey={statusPurchase} items={items} onChange={onChangeStatus} />
-           { statusPurchase === 'new' ?
-             <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} />
-             :
-             <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columnsNotCheckbox} />
-           }
+            {statusPurchase === 'new' ?
+                <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} />
+                :
+                <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columnsNotCheckbox} />
+            }
         </div>
     );
 };
