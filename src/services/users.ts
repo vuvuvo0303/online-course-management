@@ -1,8 +1,9 @@
 import ResponseData from "../models/ResponseData.ts";
 import axiosInstance from "../services/axiosInstance.ts";
-import {API_CHANGE_PASSWORD, API_DELETE_USER, API_GET_USER_DETAIL} from "../consts/index.ts";
+import {API_CHANGE_PASSWORD, API_CHANGE_ROLE, API_CHANGE_STATUS, API_DELETE_USER, API_GET_USER_DETAIL} from "../consts/index.ts";
 import {message} from "antd";
 import { getUserFromLocalStorrage } from "./auth.ts";
+import { UserRole } from "../models/User.ts";
 
 interface ValuesChangePassword {
     oldPassword: string,
@@ -27,6 +28,24 @@ export const deleteUser = async (_id: string, email: string, fetchUsers: () => P
     message.success(`Deleted user ${email} successfully`);
     await fetchUsers();
 };
+
+
+export const changeStatusUser = async (checked: boolean, userId: string, updateUserData: (userId: string, status: boolean) => void) => {
+      await axiosInstance.put(API_CHANGE_STATUS, {
+        user_id: userId,
+        status: checked,
+      });
+      updateUserData(userId, checked);
+      message.success(`User status updated successfully`);
+  };
+
+  export const changeUserRole = async (userId: string, role: UserRole) => {
+      await axiosInstance.put(API_CHANGE_ROLE, {
+        user_id: userId,
+        role,
+      });
+      message.success(`Role changed successfully`);
+  };
 
 //USER-06 Get Instructor Detail
 export const getInstructorDetailPublic = async (instructor_id: string) => {

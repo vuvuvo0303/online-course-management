@@ -34,15 +34,6 @@ const ManageAllPurchase = () => {
       key: "student__name",
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (price: number) => {
-        return price.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
-      },
-    },
-    { title: "Discount", dataIndex: "discount", key: "discount", render: (discount: number) => <>{discount}%</> },
-    {
       title: "Price Paid",
       dataIndex: "price_paid",
       key: "price_paid",

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Avatar,
-  Breadcrumb,
   Button,
   Space,
   Table,
@@ -13,12 +12,13 @@ import {
   TablePaginationConfig,
   Tag,
 } from "antd";
-import { API_GET_USERS } from "../../../consts";
+import { API_GET_USERS, paths } from "../../../consts";
 import { Instructor } from "models/User";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
-import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
+import CustomBreadcrumb from "../../../components/breadcrumb";
 
 const { TextArea } = Input;
 
@@ -40,20 +40,6 @@ const AdminInstructorRequest = () => {
     fetchInstructorRequest();
   }, [pagination.current, pagination.pageSize, debouncedSearch]);
 
-// Fetch data từ API hoặc từ localStorage
-// useEffect(() => {
-//   const savedData = localStorage.getItem("instructorData");
-//   if (savedData) {
-//     setDataSource(JSON.parse(savedData));
-//   } else {
-//     fetchInstructorRequest();
-//   }
-// }, [pagination.current, pagination.pageSize, debouncedSearch]);
-
-// // Lưu data vào localStorage
-// useEffect(() => {
-//   localStorage.setItem("instructorData", JSON.stringify(dataSource));
-// }, [dataSource]);
 
   const columns: TableProps<Instructor>["columns"] = [
     {
@@ -251,12 +237,7 @@ const AdminInstructorRequest = () => {
 
   return (
     <div>
-      <Breadcrumb className="p-3">
-        <Breadcrumb.Item>
-          <HomeOutlined />
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>Manage Instructor's Request</Breadcrumb.Item>
-      </Breadcrumb>
+      <CustomBreadcrumb currentTitle="Manage Instructor Request" currentHref={paths.ADMIN_HOME} />
       <Input.Search
         placeholder="Search By Name"
         value={searchText}

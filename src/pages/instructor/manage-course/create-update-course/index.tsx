@@ -31,6 +31,7 @@ const InstructorCreateCourse: React.FC = () => {
     // Fetch course
     useEffect(() => {
         const fetchCourse = async () => {
+            setLoading(true);
             try {
                 const response = await
                     axiosInstance.get(`${API_GET_COURSE}/${_id}`)
@@ -50,6 +51,8 @@ const InstructorCreateCourse: React.FC = () => {
                 }
             } catch (error) {
                 console.log("Error occurred: ", error);
+            } finally {
+                setLoading(false);
             }
         }
         if (_id) {

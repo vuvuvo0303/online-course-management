@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import {
-  Breadcrumb,
   Button,
   Image,
   Input,
@@ -21,7 +20,6 @@ import {
 import {
   DeleteOutlined,
   EditOutlined,
-  HomeOutlined,
   PlusOutlined,
   SearchOutlined,
   UserAddOutlined,
@@ -36,7 +34,6 @@ import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
 import {
   API_CHANGE_ROLE,
-  API_CHANGE_STATUS,
   API_CREATE_USER,
   API_GET_USERS,
   API_UPDATE_USER,
@@ -45,7 +42,8 @@ import {
 import axiosInstance from "../../../services/axiosInstance.ts";
 import ResponseData from "models/ResponseData.ts";
 import { useDebounce } from "../../../hooks/index.ts";
-import { deleteUser } from "../../../services/users.ts";
+import { changeStatusUser, changeUserRole, deleteUser } from "../../../services/users.ts";
+import CustomBreadcrumb from "../../../components/breadcrumb/index.tsx";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -157,19 +155,6 @@ const AdminManageUsers: React.FC = () => {
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
-  const handleStatusChange = async (checked: boolean, userId: string) => {
-    try {
-      await axiosInstance.put(API_CHANGE_STATUS, {
-        user_id: userId,
-        status: checked,
-      });
-      const updateData = dataUsers.map((user) => (user._id === userId ? { ...user, status: checked } : user));
-      setDataUsers(updateData);
-      message.success(`User status updated successfully`);
-    } catch (error) {
-      // Handle error silently
-    }
-  };
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -177,156 +162,18 @@ const AdminManageUsers: React.FC = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
-  const handleRoleChange = async (value: UserRole, recordId: string) => {
-    try {
-      await axiosInstance.put(API_CHANGE_ROLE, {
-        user_id: recordId,
-        role: value,
-      });
-      setDataUsers((prevData: User[]) =>
-        prevData.map((user) => (user._id === recordId ? { ...user, role: value } : user))
-      );
-      message.success(`Role changed successfully`);
-    } catch (error) {
-      // Handle error silently
-    }
+  const handleRoleChange = async (value: UserRole, userId: string) => {
+    await changeUserRole(userId, value);
+    setDataUsers((prevData: User[]) =>
+      prevData.map((user) => (user._id === userId ? { ...user, role: value } : user))
+    );
   };
 
-  const columns: TableColumnsType<User> = [
-    {
-      title: "Avatar",
-      dataIndex: "avatar",
-      key: "avatar",
-      render: (avatar: string) => (
-        <Avatar
-          size={50}
-          src={
-            avatar
-              ? avatar
-              : "https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-8/32/user--avatar--filled-256.png"
-          }
-        />
-      ),
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      width: "20%",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      width: "20%",
-    },
-    {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
-      width: "10%",
-      render: (role: UserRole, record: User) => (
-        <Select defaultValue={role} onChange={(value) => handleRoleChange(value, record._id)} style={{ width: "100%" }}>
-          <Select.Option classNAme="text-red-700" value="student">
-            {" "}
-            <span className="text-blue-800">Student</span>
-          </Select.Option>
-          <Select.Option value="instructor">
-            <span className="text-green-700">Instructor</span>
-          </Select.Option>
-          <Select.Option value="admin">
-            <span className="text-violet-500">Admin</span>
-          </Select.Option>
-        </Select>
-      ),
-    },
-    {
-      title: "Created Date",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
-      width: "10%",
-    },
-    {
-      title: "Updated Date",
-      dataIndex: "updated_at",
-      key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
-      width: "10%",
-    },
+  const handleUserStatus = (userId: string, status: boolean) => {
+    const updateData = dataUsers.map((user) => (user._id === userId ? { ...user, status: status } : user));
+    setDataUsers(updateData);
+  };
 
-    {
-      title: "Status",
-      key: "status",
-      dataIndex: "status",
-      width: "10%",
-      render: (status: boolean, record: User) => (
-        <Switch defaultChecked={status} onChange={(checked) => handleStatusChange(checked, record._id)} />
-      ),
-    },
-    {
-      title: "Verify",
-      dataIndex: "is_verified",
-      key: "is_verified",
-      render: (is_verified: boolean) => (
-        <span>
-          {is_verified ? (
-            <img src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png" alt="" />
-          ) : (
-            <img src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png" alt="" />
-          )}
-        </span>
-      ),
-    },
-
-    {
-      title: "Action",
-      key: "action",
-      width: "15%",
-      render: (record: User) => (
-        <div>
-          <EditOutlined
-            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
-            style={{ fontSize: "20px" }}
-            onClick={() => {
-              setModalMode("Edit");
-              setIsModalVisible(true);
-              form.setFieldsValue(record);
-              setFormData(record);
-
-              const avatarUrl = typeof record.avatar === "string" ? record.avatar : "";
-
-              setFileList(
-                avatarUrl
-                  ? [
-                    {
-                      uid: "-1",
-                      name: "avatar.png",
-                      status: "done",
-                      url: avatarUrl,
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    } as UploadFile<any>,
-                  ]
-                  : []
-              );
-            }}
-          />
-          <Popconfirm
-            title="Delete the User"
-            description="Are you sure to delete this User?"
-            onConfirm={() => deleteUser(record._id, record.email, getUsers)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <DeleteOutlined
-              className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
-              style={{ fontSize: "20px" }}
-            />
-          </Popconfirm>
-        </div>
-      ),
-    },
-  ];
 
   const handleTableChange = (pagination: PaginationProps) => {
     const newPagination: { current: number; pageSize: number; total: number } =
@@ -414,33 +261,152 @@ const AdminManageUsers: React.FC = () => {
     getUsers();
   };
 
+  const columns: TableColumnsType<User> = [
+    {
+      title: "Avatar",
+      dataIndex: "avatar",
+      key: "avatar",
+      render: (avatar: string) => (
+        <Avatar
+          size={50}
+          src={
+            avatar
+              ? avatar
+              : "https://cdn1.iconfinder.com/data/icons/carbon-design-system-vol-8/32/user--avatar--filled-256.png"
+          }
+        />
+      ),
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: "20%",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      width: "20%",
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+      width: "10%",
+      render: (role: UserRole, record: User) => (
+        <Select defaultValue={role} onChange={(value) => handleRoleChange(value, record._id)} style={{ width: "100%" }}>
+          <Select.Option classNAme="text-red-700" value="student">
+            {" "}
+            <span className="text-blue-800">Student</span>
+          </Select.Option>
+          <Select.Option value="instructor">
+            <span className="text-green-700">Instructor</span>
+          </Select.Option>
+          <Select.Option value="admin">
+            <span className="text-violet-500">Admin</span>
+          </Select.Option>
+        </Select>
+      ),
+    },
+    {
+      title: "Created Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      width: "10%",
+    },
+    {
+      title: "Updated Date",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      width: "10%",
+    },
+
+    {
+      title: "Status",
+      key: "status",
+      dataIndex: "status",
+      width: "10%",
+      render: (status: boolean, record: User) => (
+        <Switch defaultChecked={status} onChange={(checked) => changeStatusUser(checked, record._id, handleUserStatus)} />
+      ),
+    },
+    {
+      title: "Verify",
+      dataIndex: "is_verified",
+      key: "is_verified",
+      render: (is_verified: boolean) => (
+        <span>
+          {is_verified ? (
+            <img src="https://cdn-icons-png.flaticon.com/512/7595/7595571.png" alt="" />
+          ) : (
+            <img src="https://cdn-icons-png.flaticon.com/128/4847/4847128.png" alt="" />
+          )}
+        </span>
+      ),
+    },
+
+    {
+      title: "Action",
+      key: "action",
+      width: "15%",
+      render: (record: User) => (
+        <div>
+          <EditOutlined
+            className="hover:cursor-pointer text-blue-400 hover:opacity-60"
+            style={{ fontSize: "20px" }}
+            onClick={() => {
+              setModalMode("Edit");
+              setIsModalVisible(true);
+              form.setFieldsValue(record);
+              setFormData(record);
+
+              const avatarUrl = typeof record.avatar === "string" ? record.avatar : "";
+
+              setFileList(
+                avatarUrl
+                  ? [
+                    {
+                      uid: "-1",
+                      name: "avatar.png",
+                      status: "done",
+                      url: avatarUrl,
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    } as UploadFile<any>,
+                  ]
+                  : []
+              );
+            }}
+          />
+          <Popconfirm
+            title="Delete the User"
+            description="Are you sure to delete this User?"
+            onConfirm={() => deleteUser(record._id, record.email, getUsers)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <DeleteOutlined
+              className="ml-5 text-red-500 hover:cursor-pointer hover:opacity-60"
+              style={{ fontSize: "20px" }}
+            />
+          </Popconfirm>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div>
       <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              title: <HomeOutlined />,
-              href: paths.ADMIN_HOME,
-            },
-            {
-              title: "Manage Users",
-            },
-          ]}
-        />
+        <CustomBreadcrumb currentTitle="Manage User" currentHref={paths.ADMIN_HOME} />
 
         <div className="mt-3 md:mt-0">
-          <Button
-            type="primary"
-            onClick={() => {
-              handleAddClick();
-              form.resetFields();
-            }}
-            className="py-2"
-          >
-            <UserAddOutlined /> Add New User
-          </Button>
+          <Button type="primary" className="py-2" onClick={() => {
+            handleAddClick();
+            form.resetFields();
+          }}><UserAddOutlined /> Add New User</Button>
         </div>
       </div>
 
@@ -536,7 +502,7 @@ const AdminManageUsers: React.FC = () => {
               </Radio.Group>
             </Form.Item>
           )}
-        
+
           {roleForModal === "instructor" && (
             <>
               <Form.Item name="video" label="Video" rules={[{ required: true, message: "Please upload a video" }]}>
@@ -558,7 +524,7 @@ const AdminManageUsers: React.FC = () => {
               </Form.Item>
             </>
           )}
-            <Form.Item label="Avatar" name="avatar">
+          <Form.Item label="Avatar" name="avatar">
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
               listType="picture-card"
@@ -574,7 +540,7 @@ const AdminManageUsers: React.FC = () => {
               {modalMode === "Add" ? "Submit" : "Edit"}
             </Button>
           </Form.Item>
-          
+
         </Form>
       </Modal>
 

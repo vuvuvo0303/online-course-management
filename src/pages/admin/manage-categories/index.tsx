@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import {
-  Breadcrumb,
   Button,
   Input,
   Space,
@@ -13,7 +12,7 @@ import {
   Select,
   message,
 } from "antd";
-import { DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Category } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
@@ -27,6 +26,7 @@ import {
   paths,
 } from "../../../consts";
 import { useDebounce } from "../../../hooks";
+import CustomBreadcrumb from "../../../components/breadcrumb";
 const AdminManageCategories: React.FC = () => {
   const [dataCategories, setDataCategories] = useState<Category[]>([]);
   const [searchText, setSearchText] = useState<string>("");
@@ -366,18 +366,7 @@ const AdminManageCategories: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center ">
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              title: <HomeOutlined />,
-              href: paths.ADMIN_HOME,
-            },
-            {
-              title: "Manage Categories",
-            },
-          ]}
-        />
+        <CustomBreadcrumb currentTitle="Manage Categories" currentHref={paths.ADMIN_HOME} />
 
         <Button type="primary" onClick={handleOpenModal}>
           Add New Category

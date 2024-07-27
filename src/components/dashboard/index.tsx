@@ -10,7 +10,6 @@ import {
   ToolOutlined,
   UnorderedListOutlined,
   UserOutlined,
-  WalletOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
@@ -48,7 +47,7 @@ const Dashboard: React.FC = () => {
         email: user.email,
       });
     }
-  }, [navigate, userRole]);
+  }, [userRole]);
 
   function getItem(
     label: React.ReactNode,
@@ -102,17 +101,6 @@ const Dashboard: React.FC = () => {
             "Manage Payouts",
             "/instructor/manage-payouts",
             <DesktopOutlined />
-          ),
-          getItem(
-            "Manage Students",
-            "/instructor/manage-students",
-            <TeamOutlined />
-          ),
-          // getItem("My Profile", "/instructor/profile", <UserOutlined />),
-          getItem(
-            "Payment History",
-            "/instructor/payment-history",
-            <WalletOutlined />
           ),
           getItem("Tools", "/instructor/tools", <ToolOutlined />),
           getItem(

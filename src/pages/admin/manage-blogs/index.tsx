@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Form,
   Input,
@@ -11,7 +11,7 @@ import {
   TableColumnsType,
   TablePaginationConfig,
 } from "antd";
-import { Breadcrumb, Button, Image, Table } from "antd";
+import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import {
@@ -25,6 +25,7 @@ import {
 import { format } from "date-fns";
 import { getCategories } from "../../../services/category.ts";
 import { getUserFromLocalStorrage } from "../../../services/auth.ts";
+import CustomBreadcrumb from "components/breadcrumb";
 // import useDebounce from "../../../hooks/useDebounce.ts";
 
 const AdminManageBlogs: React.FC = () => {
@@ -214,26 +215,7 @@ const AdminManageBlogs: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between">
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              title: <HomeOutlined />,
-            },
-            {
-              href: paths.ADMIN_HOME,
-              title: (
-                <>
-                  <UserOutlined />
-                  <span>Admin</span>
-                </>
-              ),
-            },
-            {
-              title: "Manage Blogs",
-            },
-          ]}
-        />
+        <CustomBreadcrumb currentTitle="Manage Blogs" currentHref={paths.ADMIN_HOME} />
         <div className="py-2">
           <Button
             type="primary"

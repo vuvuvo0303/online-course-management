@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { API_GET_PAYOUTS, API_UPDATE_STATUS_PAYOUT, paths } from "../../../consts/index.ts";
 import {
-  Breadcrumb,
   Button,
   Input,
   Pagination,
@@ -16,9 +15,10 @@ import {
   message,
 } from "antd";
 import { format } from "date-fns";
-import { HomeOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { Payout } from "models/Payout.ts";
-import useDebounce from "../../../hooks/useDebounce.ts";
+import { useDebounce } from "../../../hooks";
+import CustomBreadcrumb from "../../../components/breadcrumb";
 
 const AdminManagePayouts: React.FC = () => {
   const [dataPayouts, setDataPayouts] = useState<Payout[]>([]);
@@ -32,7 +32,6 @@ const AdminManagePayouts: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
-
   const getPayouts = useCallback(async () => {
     setLoading(true);
     try {
@@ -57,7 +56,7 @@ const AdminManagePayouts: React.FC = () => {
         pageSize: response.data.pageInfo.pageSize,
       });
     } catch (error) {
-      console.error("Error fetching payouts:", error);
+      //
     } finally {
       setLoading(false);
     }
@@ -75,26 +74,27 @@ const AdminManagePayouts: React.FC = () => {
     try {
       await axiosInstance.put(`${API_UPDATE_STATUS_PAYOUT}/${id}`, { status });
       message.success(`Payout status updated to ${status}`);
-      getPayouts();
+      await getPayouts();
     } catch (error) {
-      message.error("Failed to update payout status");
+      //
     }
   };
 
-  const handleTableChange = (pagination: PaginationProps) => {
+  const handleTableChange = async (pagination: PaginationProps) => {
     setPagination({
       ...pagination,
       current: pagination.current ?? 1,
       pageSize: pagination.pageSize ?? 10,
       total: pagination.total ?? 0,
     });
+    await getPayouts();
   };
 
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPagination({ ...pagination, current: page, pageSize });
   };
 
-  const handleStatus = (value: string) => {
+  const handleStatus = async (value: string) => {
     setStatusFilter(value);
     setPagination((prev) => ({
       ...prev,
@@ -185,26 +185,7 @@ const AdminManagePayouts: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between">
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              title: <HomeOutlined />,
-            },
-            {
-              href: paths.ADMIN_HOME,
-              title: (
-                <>
-                  <UserOutlined />
-                  <span>Admin</span>
-                </>
-              ),
-            },
-            {
-              title: "Manage Payouts",
-            },
-          ]}
-        />
+        <CustomBreadcrumb currentTitle="Manage Payouts" currentHref={paths.ADMIN_HOME} />
       </div>
       <Space className="flex flex-wrap mb-4">
         <Input.Search

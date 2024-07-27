@@ -1,8 +1,7 @@
-import { ArrowRightOutlined, EditOutlined, HomeOutlined, PlayCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, EditOutlined, PlayCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Breadcrumb,
   Button,
   Empty,
   Form,
@@ -19,12 +18,13 @@ import {
   TableProps,
   Tag,
 } from "antd";
-import { API_COURSE_LOGS, API_COURSE_STATUS, API_GET_COURSES, getColor } from "../../../consts";
+import { API_COURSE_LOGS, API_COURSE_STATUS, API_GET_COURSES, getColor, paths } from "../../../consts";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { Course, Log } from "../../../models";
 import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
+import CustomBreadcrumb from "components/breadcrumb/index.tsx";
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [changeStatus, setChangeStatus] = useState<string>("");
@@ -274,18 +274,6 @@ const AdminManageCourses: React.FC = () => {
       key: "updated_at",
       render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
     },
-    // {
-    //   title: "Action",
-    //   key: "action",
-    //   width: "15",
-    //   render: (record: Course) => (
-    //     <>
-    //       <Link to={`/admin/manage-course/${record._id}/manage-session`}>
-    //         <EyeOutlined className="text-purple-500 m-2" />
-    //       </Link>
-    //     </>
-    //   ),
-    // },
   ];
 
   if (loading) {
@@ -535,20 +523,7 @@ const AdminManageCourses: React.FC = () => {
           </Button>
         </div>
       </Modal>
-
-      {/* Breadcrumb */}
-      <Breadcrumb
-        className="py-3"
-        items={[
-          {
-            href: "/",
-            title: <HomeOutlined />,
-          },
-          {
-            title: "Manage Course",
-          },
-        ]}
-      />
+      <CustomBreadcrumb currentTitle="Manage Course" currentHref={paths.ADMIN_HOME} />
 
       {/* Filters and Search */}
       <Space className="flex flex-wrap  mb-4">

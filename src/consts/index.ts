@@ -73,6 +73,8 @@ export const API_UPDATE_STATUS_PAYOUT = "/api/payout/update-status";
 //Client
 export const API_CLIENT_GET_COURSES = "/api/client/course/search";
 export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course";
+export const API_CLIENT_GET_BLOGS = "/api/client/blog/search";
+export const API_CLIENT_GET_BLOG = "/api/client/blog";
 //Blog
 export const API_CREATE_BLOG = "/api/blog";
 export const API_GET_BLOGS = "/api/blog/search";
