@@ -163,17 +163,22 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="flex navbar justify-between w-full md:flex-row">
-      <div className="flex gap-10 w-full">
+      <div className="flex items-center gap-10 w-full">
         <div>
-          {!isLoginPage && !isRegisterPage && !isForgotPassword && <Drawer />}
+          {!isLoginPage && !isRegisterPage && !isForgotPassword && (
+            <div className="md:hidden mt-1">
+              <Drawer />
+            </div>
+          )}
         </div>
-        <Link to={paths.HOME}>
+        <Link to={paths.HOME} className="flex items-center">
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
-            className={` ${isLoginOrRegister ? 'place-items-center ' : ''} w-[5rem] ml-[50px]`}
+            className={`w-32   ml-[40px] lg:mr-2 ${isLoginOrRegister ? 'place-items-center' : ''}`}
           />
         </Link>
+        {/* <div className="left-0 top-0 w-[0.1rem] h-10 bg-slate-400 hidden md:block"></div> */}
       </div>
       {!isLoginOrRegister && !isForgotPassword && (
         <div className="flexCenter lg:gap-[60px] lg:mr-10">
@@ -218,7 +223,7 @@ const Navbar: React.FC = () => {
                   placement="bottom"
                 >
                   <Link to={paths.STUDENT_CART}>
-                    <Badge count={totalCarts} className=''>
+                    <Badge count={totalCarts} className='hidden md:block'>
                       <ShoppingCartOutlined className="text-gray-400 text-3xl" />
                     </Badge>
                   </Link>
