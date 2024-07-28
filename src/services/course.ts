@@ -35,7 +35,6 @@ export const createCourseByInstructor =
 // COURSE-02 Get Courses (Admin, Instructor)
 export const getCourses =
     async (keyword: string, category_id: string, status: string, pageNum: number, pageSize: number) => {
-        try {
             const response = await axiosInstance.post(API_GET_COURSES, {
                 "searchCondition": {
                     "keyword": keyword,
@@ -49,13 +48,7 @@ export const getCourses =
                 }
             }
             )
-            if (response) {
-                return response.data.pageData;
-            }
-        } catch (error) {
-            console.log("getCourses - Error occurred: ", error)
-            return error;
-        }
+                return response;
     }
 // COURSE-03 Get Course (Instructor)
 export const getCourse = async (course_id: string) => {

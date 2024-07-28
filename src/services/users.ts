@@ -1,8 +1,7 @@
 import ResponseData from "../models/ResponseData.ts";
-import axiosInstance from "../services/axiosInstance.ts";
-import {API_CHANGE_PASSWORD, API_CHANGE_ROLE, API_CHANGE_STATUS, API_DELETE_USER, API_GET_USER_DETAIL} from "../consts/index.ts";
+import {API_CHANGE_PASSWORD, API_CHANGE_ROLE, API_CHANGE_STATUS, API_DELETE_USER, API_GET_USER_DETAIL, API_GET_USERS} from "../consts/index.ts";
 import {message} from "antd";
-import { getUserFromLocalStorrage } from "./auth.ts";
+import { getUserFromLocalStorrage, axiosInstance } from "./index.ts";
 import { UserRole } from "../models/User.ts";
 
 interface ValuesChangePassword {
@@ -11,6 +10,33 @@ interface ValuesChangePassword {
 }
 
 const user = getUserFromLocalStorrage();
+
+export const getUsers = async (
+    keyword: string = "",
+    role: string = "all",
+    status: boolean = true,
+    is_verified: string = "",
+    is_delete: boolean = false,
+    pageNum: number = 1,
+    pageSize: number = 10
+) => {
+    const response = await axiosInstance.post(API_GET_USERS,
+        {
+            "searchCondition": {
+                "keyword": keyword || "",
+                "role": role || "all",
+                "status": status !== undefined ? status : true,
+                "is_verified": is_verified || "",
+                "is_delete": is_delete !== undefined ? is_delete : false
+            },
+            "pageInfo": {
+                "pageNum": pageNum || 1,
+                "pageSize": pageSize || 10
+            }
+        }
+    );
+    return response;
+};
 
 export const changePassword = async (values: ValuesChangePassword) => {
     const response: ResponseData = await axiosInstance.put(API_CHANGE_PASSWORD, {

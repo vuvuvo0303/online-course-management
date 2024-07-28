@@ -1,46 +1,51 @@
 import { FileDoneOutlined, PlaySquareOutlined, TeamOutlined } from "@ant-design/icons";
 import { Badge, Card, Col, Image, Rate, Row } from "antd";
-import { Link } from "react-router-dom";
 import { UserChart } from "../chart/userchart";
 import { RevenueChart } from "../chart/revenuechart";
 import top1 from "../../../assets/top1.png";
 import top2 from "../../../assets/top2.png";
 import top3 from "../../../assets/top3.png";
 import { useEffect, useState } from "react";
-import axiosInstance from "../../../services/axiosInstance";
-import { API_CLIENT_GET_COURSES, paths } from "../../../consts/index";
-import { Course } from "../../../models/Course";
+import { paths } from "../../../consts";
+import { Course } from "../../../models";
 import CustomBreadcrumb from "../../../components/breadcrumb";
+import { getBlogs, getCourses } from "../../../services";
+import { getUsers } from "../../../services/users";
 
 const AdminDashboard: React.FC = () => {
   const [topCourses, setTopCourses] = useState([]);
+  const [numBlogs, setNumBlogs] = useState(0);
+  const [numCourses, setNumCourses] = useState(0);
+  const [numStudents, setNumStudents] = useState(0);
+  const [numInstructors, setNumInstructors] = useState(0);
 
-  const fetchTop3Course = async () => {
-    const res = await axiosInstance.post(API_CLIENT_GET_COURSES, {
-      searchCondition: {
-        keyword: "",
-        category_id: "",
-        is_deleted: false,
-      },
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 1000, // Increase the page size to fetch all courses
-      },
-    });
+  const fetchData = async () => {
+    const blogs = await getBlogs();
+    const courses = await getCourses("", "", "", 1, 100);
+    const students = await getUsers("", "student");
+    const instructors = await getUsers("", "instructor");
+    const totalBlogs = blogs.data.pageInfo.totalItems
+    const totalCourses = courses.data.pageInfo.totalItems
+    const totalStudents = students.data.pageInfo.totalItems
+    const totalInstructors = instructors.data.pageInfo.totalItems
 
-    const courses = res.data.pageData || [];
+
 
     // Sort courses by number of sales in descending order
-    const sortedCourses = courses.sort();
+    // const sortedCourses = courses.sort();
 
     // Take the top 3 courses
-    const top3Courses = sortedCourses.slice(0, 3);
+    // const top3Courses = sortedCourses.slice(0, 3);
 
-    setTopCourses(top3Courses);
+    // setTopCourses(top3Courses);
+    setNumBlogs(totalBlogs);
+    setNumCourses(totalCourses);
+    setNumStudents(totalStudents);
+    setNumInstructors(totalInstructors);
   };
 
   useEffect(() => {
-    fetchTop3Course();
+    fetchData();
   }, []);
 
   return (
@@ -50,27 +55,25 @@ const AdminDashboard: React.FC = () => {
         <Badge.Ribbon text="FLearn" color="blue">
           <Card title="Total courses in the system" bordered={false} style={{ width: 300 }}>
             <div className="flex justify-center gap-2">
-              <h1>50</h1>
+              <h1>{numCourses}</h1>
               <PlaySquareOutlined style={{ fontSize: "20px", color: "red" }} />
             </div>
           </Card>
         </Badge.Ribbon>
 
         <Badge.Ribbon text="FLearn" color="orange">
-          <Link to={"manage-students"}>
-            <Card title="Total Student in the system" bordered={false} style={{ width: 300 }}>
-              <div className="flex justify-center gap-2">
-                <h1>500</h1>
-                <TeamOutlined style={{ fontSize: "20px", color: "gray" }} />
-              </div>
-            </Card>
-          </Link>
+          <Card title="Total Student in the system" bordered={false} style={{ width: 300 }}>
+            <div className="flex justify-center gap-2">
+              <h1>{numStudents}</h1>
+              <TeamOutlined style={{ fontSize: "20px", color: "gray" }} />
+            </div>
+          </Card>
         </Badge.Ribbon>
 
         <Badge.Ribbon text="FLearn" color="green">
           <Card title="Total Instructor in the system" bordered={false} style={{ width: 300 }}>
             <div className="flex justify-center gap-2">
-              <h1>100</h1>
+              <h1>{numInstructors}</h1>
               <TeamOutlined style={{ fontSize: "20px", color: "gray" }} />
             </div>
           </Card>
@@ -79,7 +82,7 @@ const AdminDashboard: React.FC = () => {
         <Badge.Ribbon text="FLearn" color="red">
           <Card title="Total Blogs in the system" bordered={false} style={{ width: 300 }}>
             <div className="flex justify-center gap-2">
-              <h1>100</h1>
+              <h1>{numBlogs}</h1>
               <FileDoneOutlined style={{ fontSize: "20px", color: "blue" }} />
             </div>
           </Card>
@@ -110,7 +113,7 @@ const AdminDashboard: React.FC = () => {
                   <img src={index === 0 ? top1 : index === 1 ? top2 : top3} alt={`${course.name} course`} width={50} />
                 </div>
 
-                <div className="flex gap-5 items-center">
+                {/* <div className="flex gap-5 items-center">
                   <Image src={course.image_url} width={150} height={100} />
                   <div className="gap-7">
                     <p className="text-gray-700 ">
@@ -133,14 +136,14 @@ const AdminDashboard: React.FC = () => {
                       Price Paid: {course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                     </p>
                   </div>
-                </div>
+                </div> */}
                 <div className="flex flex-col mt-auto">
                   <div className="flex items-center gap-2">
-                    <div>
+                    {/* <div>
                       <Rate allowHalf defaultValue={course.average_rating} className="mt-3 ml-3" />
                     </div>
 
-                    <span className="mt-2 text-sm">({course.review_count})</span>
+                    <span className="mt-2 text-sm">({course.review_count})</span> */}
                   </div>
 
                   <div className="py-2 flex justify-end">
