@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Skeleton, Tabs } from "antd";
 import axiosInstance from "../../services/axiosInstance";
@@ -33,7 +33,7 @@ const CourseDetails: React.FC = () => {
                 }
             } catch (error) {
                 // Handle fetch error
-                console.error("Error fetching course details:", error);
+                // console.error("Error fetching course details:", error);
             } finally {
                 setLoading(false);
             }

@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { paths, roles } from "../consts";
 import { useRoleRedirect } from "../hooks";
 import { Suspense, lazy } from "react";
-import {Skeleton} from "antd";
+import { Skeleton } from "antd";
 
 // Guest Page
 const Home = lazy(() => import("../pages/home"));
@@ -18,7 +18,6 @@ const NameCategory = lazy(() => import("../pages/category"));
 const Course = lazy(() => import("../pages/course"));
 const AllCourses = lazy(() => import("../pages/course/all-courses"));
 const CourseDetails = lazy(() => import("../pages/course-detail"));
-//const Lesson = lazy(() => import("../pages/course/lesson"));
 const BlogDetail = lazy(() => import("../pages/blog/blog-detail"));
 const BlogList = lazy(() => import("../pages/blog"));
 const Enrollment = lazy(() => import("../pages/enrollment"));
@@ -37,6 +36,7 @@ const Profile = lazy(() => import("../pages/profile"));
 const Cart = lazy(() => import("../pages/cart"));
 const StudentSubscription = lazy(() => import("../pages/student/subscription"));
 const StudenManagePurchase = lazy(() => import("../pages/purchase"));
+const Lesson = lazy(() => import("../pages/course/lesson"));
 
 // Instructor Page
 const InstructorManagePayout = lazy(() => import("../pages/instructor/manage-payout"));
@@ -79,7 +79,7 @@ const Dashboard = lazy(() => import("../components/dashboard/index"));
 const AppRouter: React.FC = () => {
   const { canAccess } = useRoleRedirect();
   return (
-    <Suspense fallback={<Skeleton active/>}>
+    <Suspense fallback={<Skeleton active />}>
       <Routes>
         {/* Route for Guest */}
         <Route path={paths.HOME} element={<Home />} />
@@ -113,6 +113,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
         <Route path={paths.STUDENT_PURCHASE} element={<StudenManagePurchase />} />
         <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
+        <Route path={paths.LESSON} element={<Lesson />} />
         {/* Route for Instructor */}
         <Route
           path="/instructor/*"

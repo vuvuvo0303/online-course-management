@@ -1,3 +1,9 @@
+export enum LessonType {
+    video = "video",
+    text = "text",
+    image = "image"
+}
+
 export class Lessons {
     _id: string;
     name: string;
@@ -10,8 +16,8 @@ export class Lessons {
     image_url: string;
     full_time: number;
     position_order: number;
-    created_at: Date;
-    updated_at: Date;
+    created_at: string;
+    updated_at: string;
     is_deleted: boolean;
 
     constructor(
@@ -26,8 +32,8 @@ export class Lessons {
         image_url: string = "",
         full_time: number = 0,
         position_order: number = 0,
-        created_at: Date = new Date(),
-        updated_at: Date = new Date(),
+        created_at: string = new Date().toISOString(),
+        updated_at: string = new Date().toISOString(),
         is_deleted: boolean = false
     ) {
         this._id = _id;
@@ -45,10 +51,4 @@ export class Lessons {
         this.updated_at = updated_at;
         this.is_deleted = is_deleted;
     }
-}
-
-export enum LessonType {
-    video = "video",
-    text = "text",
-    image = "image"
 }
