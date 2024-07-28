@@ -3,6 +3,7 @@ import styles from './cartComponents.module.css';
 import { Checkbox, Col, Form, Row, Tag } from "antd";
 import { getColorCart, imgCourse } from "../../consts/index.ts";
 import { Cart } from '../../models';
+import { formItemLayout } from '../../layout/form';
 
 interface CartComponentsProps {
     cartsNew?: Cart;
@@ -16,16 +17,6 @@ interface CartComponentsProps {
 
 const CartComponents: React.FC<CartComponentsProps>
     = ({ cartsNew, cartsCancel, onChangeCheckBox, handleDeleteCart }) => {
-        const formItemLayout = {
-            labelCol: {
-                xs: { span: 24 },
-                sm: { span: 6 },
-            },
-            wrapperCol: {
-                xs: { span: 24 },
-                sm: { span: 14, offset: 5 },
-            },
-        };
         return (
             <div className={`${styles.shopping_wrapper}`} style={{ minWidth: "768px" }}>
                 <Form {...formItemLayout} initialValues={{}}>
@@ -57,14 +48,14 @@ const CartComponents: React.FC<CartComponentsProps>
                                         <Col span={6}>
                                             <div className='mt-12'>
                                                 <p>Discount: {cartsNew.discount}%</p>
-                                                <p>Cost: {cartsNew.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
+                                                <p>Cost: {cartsNew.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                                             </div>
                                         </Col>
                                         <Col span={6}>
                                             <Row className='mt-12'>
                                                 <Col span={12}>
                                                     <p>Price:</p>
-                                                    <p>{cartsNew.price_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
+                                                    <p>{cartsNew.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                                                 </Col>
                                                 <Col span={12}>
                                                     <p onClick={() => handleDeleteCart(cartsNew._id)} className=' text-red-500 cursor-pointer'>Delete</p>
@@ -88,13 +79,13 @@ const CartComponents: React.FC<CartComponentsProps>
                                         </Col>
                                         <Col span={6}>
                                             <p className='pt-12'>Discount: {cartsCancel.discount}%</p>
-                                            <p>{cartsCancel.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
+                                            <p>{cartsCancel.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                                         </Col>
                                         <Col span={6}>
                                             <Row>
                                                 <Col span={12}>
                                                     <p className='pt-12'>Total:</p>
-                                                    <p>{cartsCancel.price_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</p>
+                                                    <p>{cartsCancel.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                                                 </Col>
                                                 <Col span={12}>
                                                     <p onClick={() => handleDeleteCart(cartsCancel._id)} className='pt-12 text-red-500 cursor-pointer'>Delete</p>

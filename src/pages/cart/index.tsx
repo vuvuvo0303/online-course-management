@@ -8,7 +8,7 @@ import { Col, message, Row } from "antd";
 import { paths } from "../../consts";
 import { Link } from 'react-router-dom';
 import CustomButton from '../../components/CustomButton.tsx';
-
+import LoadingComponent from "../../components/loading";
 const CartPage: React.FC = () => {
   const [cartsNew, setCartsNew] = useState<Cart[]>([]);
   const [cartsCancel, setCartsCancel] = useState<Cart[]>([]);
@@ -57,7 +57,9 @@ const CartPage: React.FC = () => {
   }, [token]);
 
   if (loading) {
-    return <p className='text-center'>Loading ...</p>;
+    return (<>
+      <LoadingComponent />
+    </>)
   }
 
   const handleDeleteCart = async (cart_id: string) => {
@@ -133,7 +135,9 @@ const CartPage: React.FC = () => {
       <h1 className="mt-10 main_h1">Course Cart</h1>
       <h3 className={`${styles.h3_cart_title} mt-10`}>{totalCourse} Courses in Cart</h3>
       <div className="mt-8">
-        <Row className='border p-5 mt-10' gutter={10}>
+        {
+          (cartsCancel.length > 0 || cartsNew.length >0) &&
+          <Row className='border p-5 mt-10' gutter={10}>
           <Col className='font-bold text-center' span={6}>Course</Col>
           <Col span={6}></Col>
           <Col className='font-bold' span={6}>Discount</Col>
@@ -144,6 +148,7 @@ const CartPage: React.FC = () => {
             </Row>
           </Col>
         </Row>
+        }
         <div className=" mt-0">
           <div>
             <ul className="min-w-full m-0 p-0">

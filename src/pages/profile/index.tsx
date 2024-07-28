@@ -14,8 +14,6 @@ import Sub from './subscription/index';
 import ChangePassword from './change-password';
 import { getUserFromLocalStorrage } from '../../services/auth';
 
-const { TabPane } = Tabs;
-
 const Profile: React.FC = () => {
   const [activeTabKey, setActiveTabKey] = useState('1');
 
@@ -35,6 +33,29 @@ const Profile: React.FC = () => {
   const onChange = (key: string) => {
     setActiveTabKey(key);
   };
+
+  const tabItems = [
+    {
+      key: '1',
+      label: 'About',
+      children: <About />,
+    },
+    {
+      key: '2',
+      label: 'Purchased',
+      children: <Cart />,
+    },
+    {
+      key: '3',
+      label: 'Subscriptions',
+      children: <Sub />,
+    },
+    ...(googleID ? [] : [{
+      key: '4',
+      label: 'Change Password',
+      children: <ChangePassword />,
+    }]),
+  ];
 
   return (
     <div className="bg-white-transparent p-8 text-black">
@@ -88,18 +109,7 @@ const Profile: React.FC = () => {
         </div>
       </div>
       <div className="profile-tabs mt-8">
-        <Tabs defaultActiveKey="1" centered onChange={onChange}>
-          <TabPane tab="About" key="1" />
-          <TabPane tab="Purchased" key="2" />
-          <TabPane tab="Subscriptions" key="3" />
-          {!googleID && <TabPane tab="Change Password" key="4" />}
-        </Tabs>
-        <div className="course-content">
-          {activeTabKey === '1' && <About />}
-          {activeTabKey === '2' && <Cart />}
-          {activeTabKey === '3' && <Sub />}
-          {!googleID && activeTabKey === '4' && <ChangePassword />}
-        </div>
+        <Tabs activeKey={activeTabKey} onChange={onChange} items={tabItems} centered />
       </div>
     </div>
   );

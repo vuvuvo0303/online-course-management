@@ -17,7 +17,6 @@ export { default as BlogList } from "./blog";
 export { default as Enrollment } from "./enrollment/index";
 export { default as SiteMap } from "./sitemap";
 export { default as NotFound } from "./notfound";
-export { default as Lesson } from "./course/lesson";
 export { default as BecomeInstructorPage } from "./teaching";
 export { default as CoursesCategory } from "./courses";
 export { default as ForgotPassword } from "./forgot-password";
@@ -29,6 +28,7 @@ export { default as Checkout } from "./checkout";
 export { default as Profile } from "./profile";
 export { default as EditProfile } from "./profile/editProfile";
 export { default as Cart } from "./cart";
+export { default as Lesson } from "./course/lesson";
 
 /* Instructor Page */
 export { default as InstructorDashboard } from "./instructor/instructor-dashboard/index";
@@ -49,9 +49,8 @@ export { default as AdminDashboard } from "./admin/dashboard";
 export { default as AdminManageUsers } from "./admin/manage-users";
 export { default as AdminManageBlogs } from "./admin/manage-blogs";
 export { default as AdminManageCategories } from "./admin/manage-categories";
-export { default as AdminCategoryDetail } from "./admin/manage-categories/detail";
 export { default as AdminManageCourses } from "./admin/manage-course";
 export { default as AdminManageFeedbacks } from "./admin/manage-reviews";
 export { default as Dashboard } from "../components/dashboard/index";
-export { default as AdminPayouts } from "./admin/manage_payouts"
+export { default as AdminPayouts } from "./admin/manage-payouts";
 

@@ -2,9 +2,10 @@ import { Payout, Transaction } from "../../../models";
 import { useEffect, useState } from "react";
 import { getPayouts, updateStatusPayout } from "../../../services";
 import { format } from "date-fns";
-import { Table, TableProps, Tag, Button, Modal, TabsProps, Tabs } from "antd";
+import { Table, TableProps, Tag, Button, Modal, TabsProps, Tabs, message } from "antd";
 import { getColorPayout } from "../../../consts/index";
 import { createStyles } from "antd-style";
+import LoadingComponent from "../../../components/loading";
 const useStyle = createStyles(({ token }) => ({
     "my-modal-body": {
         background: token.blue1,
@@ -49,23 +50,6 @@ const InstructorManagePayout = () => {
         footer: styles["my-modal-footer"],
         content: styles["my-modal-content"],
     };
-    const modalStyles = {
-        // header: {
-        //     borderLeft: `5px solid ${token.colorPrimary}`,
-        //     borderRadius: 0,
-        //     paddingInlineStart: 5,
-        // },
-        // body: {
-        //     boxShadow: 'inset 0 0 5px #999',
-        //     borderRadius: 5,
-        // },
-        // mask: {
-        //     backdropFilter: 'blur(10px)',
-        // },
-        // content: {
-        //     boxShadow: '0 0 30px #999',
-        // },
-    };
 
     const getPayoutsByInstructor = async () => {
         setLoading(true);
@@ -80,15 +64,14 @@ const InstructorManagePayout = () => {
     }, [statusPayout]);
 
     if (loading) {
-        return (
-            <>
-                <p className="items-center text-center">Loading ...</p>
-            </>
-        );
+        return (<>
+            <LoadingComponent />
+        </>)
     }
-    const handleRequestPayout = async (payout_id: string, status: string, comment?: string) => {
+    const handleRequestPayout = async (payout_id: string, status: string, comment: string) => {
         const res = await updateStatusPayout(payout_id, status, comment)
         console.log("handleRequestPayout: ", res)
+        message.success(`Send Request Successfully!`)
         getPayoutsByInstructor();
     }
 
@@ -163,13 +146,61 @@ const InstructorManagePayout = () => {
         },
         {
             key: 'completed',
-            label: 'completed',
+            label: 'Completed',
         },
         {
             key: 'rejected',
             label: 'Rejected',
         },
     ];
+    const columnsNotAction: TableProps<Payout>["columns"] = [
+        {
+            title: 'Payout No',
+            dataIndex: 'transactions',
+            key: 'transactions',
+            width: '20%',
+            render: (transactions: Transaction[], record: Payout) => (
+                <div onClick={() => toggleModal(0, true, transactions)} className="text-blue-500 cursor-pointer">
+                    {record.payout_no}
+                </div>
+            )
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string) => (
+                <>
+                    <Tag color={getColorPayout(status)}>
+                        {status === "request_payout" ? "request payout" : status}
+                    </Tag>
+                </>
+            )
+        },
+        {
+            title: 'Balance Origin',
+            dataIndex: 'balance_origin',
+            key: 'balance_origin',
+        },
+        {
+            title: 'Balance Instructor Paid',
+            dataIndex: 'balance_instructor_paid',
+            key: 'balance_instructor_paid',
+        },
+        {
+            title: 'Balance Instructor Received',
+            dataIndex: 'balance_instructor_received',
+            key: 'balance_instructor_received',
+        },
+        {
+            title: 'Created Date',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            width: '10%',
+            render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+        },
+    ];
+
     const onChange = (key: string) => {
         setStatusPayout(key);
     };
@@ -183,21 +214,23 @@ const InstructorManagePayout = () => {
                 onCancel={() => toggleModal(0, false)}
                 footer=""
                 classNames={classNames}
-                styles={modalStyles}
             >
                 {transactions.map((transaction) => (
                     <div className="bg-white" key={transaction._id}>
                         <p>Price: {transaction.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                         <p>Discount: {transaction.discount}%</p>
                         <p>Price Paid: {transaction.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
-                        <p>Created At: {format(new Date(transaction.created_at), "dd/MM/yyyy")}</p>
+                        <p>Created Date: {format(new Date(transaction.created_at), "dd/MM/yyyy")}</p>
                     </div>
                 ))}
             </Modal>
             <div className="container mx-auto px-10">
                 <h1 className="text-center my-10">Manage Payout</h1>
                 <Tabs defaultActiveKey={statusPayout} items={items} onChange={onChange} />
-                <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
+                {
+                    statusPayout === "new" ? <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
+                        : <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columnsNotAction} />
+                }
             </div>
         </>
     );

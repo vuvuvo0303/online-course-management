@@ -1,4 +1,4 @@
-import { Rate, message } from "antd";
+import { Rate } from "antd";
 import { Link } from 'react-router-dom';
 import { Course } from "../../../models/Course";
 import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, EyeOutlined, DislikeOutlined, LikeOutlined, ShareAltOutlined } from '@ant-design/icons';
@@ -9,17 +9,8 @@ interface CourseCardProps {
     detailedView?: boolean;
 }
 
-
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
 
-    const handleAddToCart = async () => {
-        try {
-            await addCourseToCart(course._id); // Call the API to add the course to the cart
-            message.success('Course added to cart successfully!');
-        } catch (error) {
-            message.error('Failed to add course to cart.');
-        }
-    };
 
     return (
         <div className="flex flex-col lg:flex-row w-full lg:h-[24rem] bg-gray shadow-md rounded-lg p-5">
@@ -53,23 +44,33 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     <div><strong>Instructor:</strong> {course.instructor_name}</div>
                     <div><span className="text-sm">Last update:</span> {new Date(course.updated_at).toLocaleDateString()}</div>
                     <div className="flex flex-row gap-4">
-                        <div className="text-4xl">{course.price_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</div>
+                        <div className="text-4xl">{course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
                         <div className="text-2xl mt-[0.2rem]">
                             <span className="line-through">
-                                {course.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}
+                                {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                             </span>
                         </div>
                     </div>
                     <div className="text-xs">{course.discount}% off</div>
                     <div className="flex gap-4 mt-auto">
-                        <Link to='/cart'>
-                            <button onClick={handleAddToCart} className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
-                                <ShoppingCartOutlined className="mr-2" /> Add to Cart
-                            </button>
-                        </Link>
-                        <button className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
-                            Buy now
-                        </button>
+                        {course.is_purchased ? (
+                            <Link to={`/course/lesson/${course._id}`}>
+                                <button className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
+                                    Study now
+                                </button>
+                            </Link>
+                        ) : (
+                            <>
+                                <Link to='/cart'>
+                                    <button onClick={() => addCourseToCart(course._id)} className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
+                                        <ShoppingCartOutlined className="mr-2" /> Add to Cart
+                                    </button>
+                                </Link>
+                                <button className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
+                                    Buy now
+                                </button>
+                            </>
+                        )}
                     </div>
                     <div className="text-xs mt-2">30-Day Money-Back Guarantee</div>
                 </div>

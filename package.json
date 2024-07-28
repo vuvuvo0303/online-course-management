@@ -13,7 +13,6 @@
     "@ant-design/icons": "^5.3.7",
     "@faker-js/faker": "^8.4.1",
     "@react-oauth/google": "^0.12.1",
-    "@reduxjs/toolkit": "^2.2.5",
     "@tinymce/tinymce-react": "^5.1.1",
     "@types/antd": "^1.0.0",
     "antd": "^5.19.0",
@@ -25,8 +24,8 @@
     "dotenv": "^16.4.5",
     "faker": "^6.6.6",
     "firebase": "^10.12.2",
+    "html-react-parser": "^5.1.12",
     "jwt-decode": "^4.0.0",
-    "lottie-react": "^2.4.0",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
@@ -41,6 +40,7 @@
     "tinymce": "^7.2.1"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@types/react-google-recaptcha": "^2.1.9",

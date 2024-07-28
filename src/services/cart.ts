@@ -3,7 +3,7 @@ import { API_CREATE_CART, API_DELETE_CART, API_GET_CARTS, API_UPDATE_STATUS_CART
 import axiosInstance from "./axiosInstance"
 
 
-// display cart
+// get carts (All)
 export const getCarts = async (status: string) => {
     try {
         const response = await axiosInstance.post(API_GET_CARTS, {
@@ -20,11 +20,12 @@ export const getCarts = async (status: string) => {
             return response.data.pageData;
         }
     } catch (error) {
-        return [];
+        console.log("getCarts -error", error)
+        return error;
     }
 }
 
-// add course to cart
+//CART-01 - Create Cart (All)
 export const addCourseToCart = async (course_id: string) => {
     try {
         const response = await axiosInstance.post(API_CREATE_CART, {
@@ -35,25 +36,12 @@ export const addCourseToCart = async (course_id: string) => {
             return response.data.pageData
         }
     } catch (error) {
-        return [];
+        console.log("addCourseToCart -error", error)
+        return error;
     }
 }
 
-// delete cart
-export const deleteCart = async (cart_id: string) => {
-
-    try {
-        const response = await axiosInstance.delete(`${API_DELETE_CART}/${cart_id}`)
-        if (response) {
-            message.success("Delete Cart Successfully!")
-            return response;
-        }
-    } catch (error) {
-        return [];
-    }
-}
-
-// update status cart
+// CART-03 update status cart (All)
 export const updateStatusCart = async (status: string, cart_id: string, cart_no: string) => {
     try {
         const response = await axiosInstance.put(`${API_UPDATE_STATUS_CART}`,
@@ -70,6 +58,21 @@ export const updateStatusCart = async (status: string, cart_id: string, cart_no:
             return response;
         }
     } catch (error) {
-        return [];
+        console.log("updateStatusCart -error", error)
+        return error;
+    }
+}
+
+// CART-04 Delete Cart (All)
+export const deleteCart = async (cart_id: string) => {
+    try {
+        const response = await axiosInstance.delete(`${API_DELETE_CART}/${cart_id}`)
+        if (response) {
+            message.success("Delete Cart Successfully!")
+            return response;
+        }
+    } catch (error) {
+        console.log("deleteCart -error", error)
+        return error;
     }
 }

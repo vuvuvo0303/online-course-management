@@ -20,15 +20,18 @@ import {
   API_COURSE_LOGS,
   API_COURSE_STATUS,
   API_DELETE_COURSE,
-  API_GET_CATEGORIES,
   API_GET_COURSES,
   getColor,
+  paths,
 } from "../../../consts";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
 import { format } from "date-fns";
+import { getCategories } from "../../../services/category.ts";
+import LoadingComponent from "../../../components/loading";
+
 const InstructorManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -107,6 +110,8 @@ const InstructorManageCourses: React.FC = () => {
       //
     }
   };
+
+
   useEffect(() => {
     //fetch logs
     if (courseId) {
@@ -186,33 +191,16 @@ const InstructorManageCourses: React.FC = () => {
   };
   //fetch categories
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axiosInstance.post(API_GET_CATEGORIES, {
-          searchCondition: {
-            keyword: "",
-            is_delete: false,
-          },
-          pageInfo: {
-            pageNum: 1,
-            pageSize: 100,
-          },
-        });
-        if (response) {
-          setCategories(response.data.pageData);
-        }
-      } catch (error) {
-        //
-      }
-    };
-    fetchCategories();
+    const fetchData = async () => {
+      const dataCategories = await getCategories();
+      setCategories(dataCategories);
+    }
+    fetchData();
   }, []);
   //fetch courses
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        console.log("check cate");
-
         const response = await axiosInstance.post(API_GET_COURSES, {
           searchCondition: {
             keyword: debouncedSearchTerm,
@@ -244,8 +232,10 @@ const InstructorManageCourses: React.FC = () => {
   }, [status, cateId, debouncedSearchTerm, isDelete, pagination.current, pagination.pageSize]);
 
   if (loading) {
-    return <p className="flex justify-center items-center">Loading ...</p>;
-  }
+    return (<>
+        <LoadingComponent />
+    </>)
+}
   //setStatus for filter log by status
   const handleAllLog = () => {
     setOldStatus("");
@@ -267,7 +257,9 @@ const InstructorManageCourses: React.FC = () => {
   };
   //setStatus for filter course by status
   const handleChangeIsDelete = (value: boolean) => {
+    setLoading(true)
     setIsDelete(value);
+    setLoading(false)
   };
   // set status for chang status
   const handleChangeStatus = async (value: string) => {
@@ -569,7 +561,7 @@ const InstructorManageCourses: React.FC = () => {
           className="py-2"
           items={[
             {
-              href: "/",
+              href: paths.INSTRUCTOR_HOME,
               title: <HomeOutlined />,
             },
             {
@@ -593,20 +585,20 @@ const InstructorManageCourses: React.FC = () => {
           />
           {/* filter course by status */}
           <Select
-            defaultValue="all"
-          
+            defaultValue="All Status"
+
             className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
             onChange={handleChange}
             options={[
               {
                 options: [
-                  { label: <span>all</span>, value: "" },
-                  { label: <span>new</span>, value: "new" },
-                  { label: <span>waiting approve</span>, value: "waiting_approve" },
-                  { label: <span>approve</span>, value: "approve" },
-                  { label: <span>reject</span>, value: "reject" },
-                  { label: <span>active</span>, value: "active" },
-                  { label: <span>inactive</span>, value: "inactive" },
+                  { label: <span>All Status</span>, value: "" },
+                  { label: <span>New</span>, value: "new" },
+                  { label: <span>Waiting Approve</span>, value: "waiting_approve" },
+                  { label: <span>Approve</span>, value: "approve" },
+                  { label: <span>Reject</span>, value: "reject" },
+                  { label: <span>Active</span>, value: "active" },
+                  { label: <span>Inactive</span>, value: "inactive" },
                 ],
               },
             ]}
@@ -614,13 +606,13 @@ const InstructorManageCourses: React.FC = () => {
           {/* filter course by isDelete */}
           <Select
             defaultValue={false}
-          className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+            className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
             onChange={handleChangeIsDelete}
             options={[
               {
                 options: [
-                  { label: <span>true</span>, value: true },
-                  { label: <span>false</span>, value: false },
+                  { label: <span>Existing</span>, value: false },
+                  { label: <span>Deleted</span>, value: true },
                 ],
               },
             ]}
@@ -640,7 +632,7 @@ const InstructorManageCourses: React.FC = () => {
           />
         </div>
       </div>
-      <Table columns={columnsCourses} dataSource={courses} pagination={false} onChange={handleTableChange} />
+      <Table rowKey={(record: Course) => record._id} columns={columnsCourses} dataSource={courses} pagination={false} onChange={handleTableChange} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

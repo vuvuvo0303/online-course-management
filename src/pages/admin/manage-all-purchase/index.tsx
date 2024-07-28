@@ -1,124 +1,61 @@
 import { Breadcrumb, Input, Pagination, Select, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
-
-import { API_GET_PURCHASE_BY_ADMIN, getColorPurchase } from "../../../consts/index";
+import { API_GET_PURCHASE_BY_ADMIN, getColorPurchase } from "../../../consts";
 import { format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
-import axiosInstance from "../../../services/axiosInstance";
+import { axiosInstance } from "../../../services";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
-interface Purchase {
-  _id: string;
-  purchase_no: string;
-  status: string;
-  price_paid: number;
-  price: number;
-  discount: number;
-  cart_id: string;
-  course_id: string;
-  student_id: string;
-  instructor_id: string;
-  created_at: string;
-  is_deleted: boolean;
-  cart_no: string;
-  course_name: string;
-  student_name: string;
-  instructor_name: string;
-}
-
-
+import { Purchase } from "../../../models/Purchase";
+import LoadingComponent from "../../../components/loading";
 
 const ManageAllPurchase = () => {
+  const [loading, setLoading] = useState(true);
   const [dataSource, setDataSource] = useState<Purchase[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0 });
   const [searchPurchase, setSearchPurchase] = useState<string>("");
   const purchaseNoSearch = useDebounce(searchPurchase, 500);
   const [status, setStatus] = useState<string>("");
-  const columns: TableProps<Purchase>["columns"] = [
-    { title: "Purchase No", dataIndex: "purchase_no", key: "purchase_no" },
-    {
-      title: "Course Name",
-      dataIndex: "course_name",
-      key: "course_name",
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: "Instructor's Name",
-      dataIndex: "instructor_name",
-      key: "instructor_name",
-    },
-    {
-      title: "Student's Name",
-      dataIndex: "student_name",
-      key: "student__name",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) => <Tag color={getColorPurchase(status)}>{status}</Tag>,
-    },
-    {
-      title: "Created Date",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
-      width: "10%",
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (price: number) => {
-        return price.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
-      },
-    },
-    { title: "Discount", dataIndex: "discount", key: "discount", render: (discount: number) => <>{discount}%</> },
-    {
-      title: "Price Paid",
-      dataIndex: "price_paid",
-      key: "price_paid",
-      render: (price_paid: number) => {
-        return price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
-      },
-    },
-  ];
-
-  const fetchPurchase = useCallback(async () => {
-    try {
-      const response = await axiosInstance.post(API_GET_PURCHASE_BY_ADMIN, {
-        searchCondition: {
-          purchase_no: purchaseNoSearch,
-          cart_no: "",
-          course_id: "",
-          status: status,
-          is_delete: false,
-        },
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
-        },
-      });
-
-      if (response.data && response.data.pageData) {
-        const { pageData, pageInfo } = response.data;
-        setDataSource(pageData);
-        setPagination((prev) => ({
-          ...prev,
-          total: pageInfo?.totalItems || response.data.length,
-          current: pageInfo?.pageNum || 1,
-          pageSize: pageInfo?.pageSize || response.data.length,
-        }));
-      } else {
-        setDataSource([]);
-      }
-    } catch (error) {
-      console.error("Failed to fetch purchase data:", error);
-    }
-  }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
 
   useEffect(() => {
-    fetchPurchase();
-  },  [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
+    getPurchases();
+  }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
+
+  const getPurchases = useCallback(async () => {
+    setLoading(true)
+    const response = await axiosInstance.post(API_GET_PURCHASE_BY_ADMIN, {
+      searchCondition: {
+        purchase_no: purchaseNoSearch,
+        cart_no: "",
+        course_id: "",
+        status: status,
+        is_delete: false,
+      },
+      pageInfo: {
+        pageNum: pagination.current,
+        pageSize: pagination.pageSize,
+      },
+    });
+
+    if (response.data && response.data.pageData) {
+      const { pageData, pageInfo } = response.data;
+      setDataSource(pageData);
+      setPagination((prev) => ({
+        ...prev,
+        total: pageInfo?.totalItems || response.data.length,
+        current: pageInfo?.pageNum || 1,
+        pageSize: pageInfo?.pageSize || response.data.length,
+      }));
+    } else {
+      setDataSource([]);
+    }
+    setLoading(false)
+  }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
+
+  if (loading) {
+    return (<>
+      <LoadingComponent />
+    </>)
+  }
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPagination((prev) => ({
@@ -134,9 +71,52 @@ const ManageAllPurchase = () => {
   const handleChangeStatus = async (value: string) => {
     setStatus(value);
   };
+
+  const columns: TableProps<Purchase>["columns"] = [
+    { title: "Purchase No", dataIndex: "purchase_no", key: "purchase_no" },
+    {
+      title: "Course Name",
+      dataIndex: "course_name",
+      key: "course_name",
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Instructors Name",
+      dataIndex: "instructor_name",
+      key: "instructor_name",
+    },
+    {
+      title: "Students Name",
+      dataIndex: "student_name",
+      key: "student__name",
+    },
+    {
+      title: "Price Paid",
+      dataIndex: "price_paid",
+      key: "price_paid",
+      render: (price_paid: number) => {
+        return price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => <Tag color={getColorPurchase(status)}>{status}</Tag>,
+    },
+    {
+      title: "Created Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      width: "10%",
+    },
+
+  ];
+
   return (
     <div>
-      
+
       <Breadcrumb className="p-3">
         <Breadcrumb.Item>
           <HomeOutlined />
@@ -170,10 +150,10 @@ const ManageAllPurchase = () => {
       <Table
         columns={columns}
         dataSource={dataSource}
-        
+
         pagination={false}
         onChange={handleTableChange}
-        
+
         rowKey="_id"
       />
       <div className="flex justify-end py-8">

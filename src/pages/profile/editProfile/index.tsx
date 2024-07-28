@@ -5,7 +5,6 @@ import { EyeInvisibleOutlined, EyeTwoTone, RollbackOutlined } from '@ant-design/
 import styles from "./profile.module.css";
 import { User } from "../../../models/User";
 
-const { TabPane } = Tabs;
 const { TextArea } = Input;
 
 const EditProfile: React.FC = () => {
@@ -56,6 +55,85 @@ const EditProfile: React.FC = () => {
 
     const { role } = user;
 
+    const tabItems = [
+        {
+            key: "1",
+            label: "F-learn Profile",
+            children: (
+                <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <div className="mb-4 max-w-[30rem]">
+                                <strong className="block mb-2">Full Name:</strong>
+                                <input
+                                    type="text"
+                                    className="p-4 border border-gray-300 h-[3.5rem] text-base w-full"
+                                    value={user.name}
+                                    onChange={(e) => handleInputChange('name', e.target.value)}
+                                />
+                            </div>
+                            <div className="mb-4 max-w-[30rem]">
+                                <strong className="block mb-2">Email:</strong>
+                                <div className="p-4 border border-gray-300 h-[3.5rem] text-base">
+                                    {user.email}
+                                </div>
+                            </div>
+                            {role === "student" && (
+                                <>
+                                    <div className="mb-4 max-w-[30rem]">
+                                        <strong className="block mb-2">Biography:</strong>
+                                        <TextArea
+                                            showCount
+                                            maxLength={100}
+                                            value={user.description || ''}
+                                            onChange={(e) => handleInputChange('biography', e.target.value)}
+                                            placeholder="Description"
+                                            style={{ height: 120, resize: 'none' }}
+                                        />
+                                    </div>
+                                    <Button className="mt-3" onClick={handleSave}>
+                                        Save
+                                    </Button>
+                                </>
+                            )}
+                        </div>
+                        {role === "student" && (
+                            <div>
+                                <SocialLinks user={user} handleInputChange={handleInputChange} />
+                            </div>
+                        )}
+                    </div>
+                    {role === "instructor" && (
+                        <div>
+                            <p className={styles.profileDetailItem}>
+                                <strong>Description:</strong> {user.description}
+                            </p>
+                            <p className={styles.profileDetailItem}>
+                                <strong>Degree:</strong>
+                                <br />
+                                <img
+                                    // src={user.degreeCertificate}
+                                    alt="Degree Certificate"
+                                    className={styles.degreeImage}
+                                />
+                            </p>
+                        </div>
+                    )}
+                </div>
+            ),
+        },
+        {
+            key: "2",
+            label: "Profile Picture",
+            children: <ProfilePicture />,
+        },
+        {
+            key: "3",
+            label: "Change Password",
+            children: <ChangePasswordForm />,
+        },
+    ];
+
     return (
         <div className="w-full bg-dark">
             <div className="container mx-auto px-4 py-8">
@@ -68,76 +146,7 @@ const EditProfile: React.FC = () => {
                     </Link>
                 </div>
                 <div>
-                    <Tabs defaultActiveKey="1">
-                        <TabPane tab="F-learn Profile" key="1">
-                            <div className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <div className="mb-4 max-w-[30rem]">
-                                            <strong className="block mb-2">Full Name:</strong>
-                                            <input
-                                                type="text"
-                                                className="p-4 border border-gray-300 h-[3.5rem] text-base w-full"
-                                                value={user.name}
-                                                onChange={(e) => handleInputChange('name', e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="mb-4 max-w-[30rem]">
-                                            <strong className="block mb-2">Email:</strong>
-                                            <div className="p-4 border border-gray-300 h-[3.5rem] text-base">
-                                                {user.email}
-                                            </div>
-                                        </div>
-                                        {role === "student" && (
-                                            <>
-                                                <div className="mb-4 max-w-[30rem]">
-                                                    <strong className="block mb-2">Biography:</strong>
-                                                    <TextArea
-                                                        showCount
-                                                        maxLength={100}
-                                                        value={user.description || ''}
-                                                        onChange={(e) => handleInputChange('biography', e.target.value)}
-                                                        placeholder="Description"
-                                                        style={{ height: 120, resize: 'none' }}
-                                                    />
-                                                </div>
-                                                <Button className="mt-3" onClick={handleSave}>
-                                                    Save
-                                                </Button>
-                                            </>
-                                        )}
-                                    </div>
-                                    {role === "student" && (
-                                        <div>
-                                            <SocialLinks user={user} handleInputChange={handleInputChange} />
-                                        </div>
-                                    )}
-                                </div>
-                                {role === "instructor" && (
-                                    <div>
-                                        <p className={styles.profileDetailItem}>
-                                            <strong>Description:</strong> {user.description}
-                                        </p>
-                                        <p className={styles.profileDetailItem}>
-                                            <strong>Degree:</strong>
-                                            <br />
-                                            <img
-                                                // src={user.degreeCertificate}
-                                                alt="Degree Certificate"
-                                                className={styles.degreeImage}
-                                            />
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        </TabPane>
-                        <TabPane tab="Profile Picture" key="2">
-                            <ProfilePicture />
-                        </TabPane>
-                        <TabPane tab="Change Password" key="3">
-                            <ChangePasswordForm />
-                        </TabPane>
-                    </Tabs>
+                    <Tabs defaultActiveKey="1" items={tabItems} />
                 </div>
             </div>
 
@@ -238,45 +247,56 @@ const ProfilePicture: React.FC = () => (
             </p>
             <div className="p-4 border border-gray-300 mb-4 h-[20rem] max-w-[40rem] text-base flex items-center justify-center">
                 <img
-                    src="../public/x1.jpg"
+                    src="../public/avatar-default.png"
                     alt="Avatar"
-                    className="h-full object-contain"
+                    className="rounded-full w-[8rem] h-[8rem] object-cover"
                 />
             </div>
         </div>
-        <Button>
-            Save
-        </Button>
+        <div>
+            <Form.Item label="Avatar URL" name="avatarUrl">
+                <Input />
+            </Form.Item>
+        </div>
     </div>
 );
 
 const ChangePasswordForm: React.FC = () => (
-    <div className="space-y-6">
-        <div className="mb-4 max-w-[30rem]">
-            <strong className="block mb-2">Current Password:</strong>
+    <Form name="changePassword" className="w-full">
+        <Form.Item
+            name="currentPassword"
+            label="Current Password"
+            rules={[{ required: true, message: "Please enter your current password!" }]}
+        >
             <Input.Password
-                placeholder="Input password"
+                placeholder="Enter current password"
                 iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
             />
-        </div>
-        <div className="mb-4 max-w-[30rem]">
-            <strong className="block mb-2">New Password:</strong>
+        </Form.Item>
+        <Form.Item
+            name="newPassword"
+            label="New Password"
+            rules={[{ required: true, message: "Please enter a new password!" }]}
+        >
             <Input.Password
-                placeholder="Input password"
+                placeholder="Enter new password"
                 iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
             />
-        </div>
-        <div className="mb-4 max-w-[30rem]">
-            <strong className="block mb-2">Re-enter Password:</strong>
+        </Form.Item>
+        <Form.Item
+            name="confirmNewPassword"
+            label="Confirm New Password"
+            rules={[{ required: true, message: "Please confirm your new password!" }]}
+        >
             <Input.Password
-                placeholder="Input password"
+                placeholder="Confirm new password"
                 iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
             />
-        </div>
-        <Button className="mt-5">
-            Save
+        </Form.Item>
+        <Button type="primary" htmlType="submit" className="mt-4">
+            Change Password
         </Button>
-    </div>
+    </Form>
 );
 
 export default EditProfile;
