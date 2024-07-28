@@ -6,7 +6,7 @@ import { Course, Session } from "../../../../../models";
 import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
 import { axiosInstance, getUserFromLocalStorrage } from "../../../../../services";
 import TinyMCEEditorComponent from "../../../../../components/tinyMCE";
-
+import LoadingComponent from "../../../../../components/loading";
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -152,7 +152,7 @@ const CreateUpdateSession = () => {
   return (
     <div className="flex justify-center items-center h-full mt-10">
       {loading ? (
-        <div>Loading ...</div>
+        <LoadingComponent />
       ) : (
         <div className="w-full max-w-6xl bg-white p-8 rounded shadow">
           {

@@ -11,10 +11,10 @@ export const createPayout = async (instructor_id: string, transactions: Transact
             "instructor_id": instructor_id,
             "transactions": transactions
         })
-        if (response.data.length > 0) {
+        if (transactions.length > 0) {
             message.success("Create Payout Successfully!")
             return response.data;
-        }else{
+        } else {
             message.error("Please select at least 1 purchase to create payout!");
         }
     } catch (error) {
@@ -50,12 +50,12 @@ export const getPayouts = async (payout_no: string, instructor_id: string, statu
 
 //PAYOUT-03 Update Status Payout (Admin, Instructor)
 export const updateStatusPayout = async (payout_id: string, status: string,
-            getPayouts: () => Promise<void>,
-            comment?: string) => {  
-        await axiosInstance.put(`${API_UPDATE_STATUS_PAYOUT}/${payout_id}`, {
-            "status": status,
-            "comment": comment
-        })
-            message.success("Change Payout Status successfully")
-            await getPayouts();
+    getPayouts: () => Promise<void>,
+    comment: string) => {
+    await axiosInstance.put(`${API_UPDATE_STATUS_PAYOUT}/${payout_id}`, {
+        "status": status,
+        "comment": comment
+    })
+    message.success("Change Payout Status successfully")
+    await getPayouts();
 }

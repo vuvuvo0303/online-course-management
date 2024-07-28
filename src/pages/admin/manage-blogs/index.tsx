@@ -21,6 +21,7 @@ import {
   paths,
   API_GET_BLOG,
 } from "../../../consts";
+import LoadingComponent from "../../../components/loading";
 import { format } from "date-fns";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 
@@ -172,8 +173,11 @@ const AdminManageBlogs: React.FC = () => {
   ];
 
   if (loading) {
-    return <p className="text-center">Loading...</p>;
+    return (<>
+      <LoadingComponent />
+    </>)
   }
+
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPagination((prev) => ({
       ...prev,

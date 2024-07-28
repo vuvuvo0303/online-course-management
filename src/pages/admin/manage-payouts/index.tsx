@@ -18,7 +18,7 @@ import { Payout } from "models/Payout.ts";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import { axiosInstance, updateStatusPayout } from "../../../services";
-
+import LoadingComponent from "../../../components/loading";
 const AdminManagePayouts: React.FC = () => {
   const [dataPayouts, setDataPayouts] = useState<Payout[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -66,9 +66,10 @@ const AdminManagePayouts: React.FC = () => {
   }, [getPayouts]);
 
   if (loading) {
-    return <p className="text-center">Loading...</p>;
+    return (<>
+      <LoadingComponent />
+    </>)
   }
-
 
   const handleTableChange = async (pagination: PaginationProps) => {
     setPagination({
@@ -161,10 +162,10 @@ const AdminManagePayouts: React.FC = () => {
       width: "20%",
       render: (record: Payout) => (
         <div className="flex gap-2">
-          <Button type="primary" onClick={() => updateStatusPayout(record._id, "completed", getPayouts)}>
+          <Button type="primary" onClick={() => updateStatusPayout(record._id, "completed", getPayouts, "")}>
             Completed
           </Button>
-          <Button type="primary" danger onClick={() => updateStatusPayout(record._id, "rejected", getPayouts)}>
+          <Button type="primary" danger onClick={() => updateStatusPayout(record._id, "rejected", getPayouts, "")}>
             Rejected
           </Button>
         </div>

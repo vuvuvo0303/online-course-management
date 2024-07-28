@@ -5,7 +5,7 @@ import { Subscription } from '../../../models';
 import { getItemsBySubscriber } from '../../../services';
 import "./sub.css";
 import SubscribeButtonComponent from '../../../components/subscribe-button';
-
+import LoadingComponent from "../../../components/loading";
 interface ProfileCardProps {
     instructor_id: string;
     name: string;
@@ -18,6 +18,7 @@ const Subscriptions: FC = () => {
     const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
     const getSubscriber = async () => {
+        setLoading(true)
         const res = await getItemsBySubscriber("", 1, 100);
         setSubscriptions(res);
         setLoading(false);
@@ -27,9 +28,12 @@ const Subscriptions: FC = () => {
         getSubscriber();
     }, []);
 
+ 
     if (loading) {
-        return <p className='items-center text-center'>Loading ...</p>
-    }
+        return (<>
+          <LoadingComponent />
+        </>)
+      }
 
     const handleSubscriptionChange = () => {
         getSubscriber();

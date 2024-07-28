@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
 import { Link } from "react-router-dom";
 import CustomButton from "../../components/CustomButton";
-
+import LoadingComponent from "../../components/loading";
 const Checkout: React.FC = () => {
   // const [payment, setPayment] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -98,10 +98,11 @@ const Checkout: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <p>Loading ...</p>
-    );
+    return (<>
+      <LoadingComponent />
+    </>)
   }
+
 
   return (
     <div className={styles.checkoutContainer}>

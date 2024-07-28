@@ -17,6 +17,7 @@ import { Link, useParams } from "react-router-dom";
 import { API_GET_COURSE, API_GET_SESSIONS } from "../../../../consts";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../hooks/useDebounce";
+import LoadingComponent from "../../../../components/loading";
 import { format } from "date-fns";
 const ManageSession: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -173,9 +174,10 @@ const ManageSession: React.FC = () => {
   ];
 
   if (loading) {
-    return <div className="text-center">Loading...</div>;
-  }
-
+    return (<>
+        <LoadingComponent />
+    </>)
+}
   if (error) {
     return <div>{error}</div>;
   }
@@ -217,9 +219,9 @@ const ManageSession: React.FC = () => {
             options={[
               {
                 options: [
-                  { label: <span>true</span>, value: true },
-                  { label: <span>false</span>, value: false },
-                ],
+                  { label: <span>Deleted</span>, value: true },
+                  { label: <span>Existing</span>, value: false },
+              ],
               },
             ]}
           />

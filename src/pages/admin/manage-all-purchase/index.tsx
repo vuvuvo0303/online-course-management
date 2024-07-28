@@ -6,9 +6,10 @@ import { axiosInstance } from "../../../services";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
 import { Purchase } from "../../../models/Purchase";
-
+import LoadingComponent from "../../../components/loading";
 
 const ManageAllPurchase = () => {
+  const [loading, setLoading] = useState(true);
   const [dataSource, setDataSource] = useState<Purchase[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0 });
   const [searchPurchase, setSearchPurchase] = useState<string>("");
@@ -20,6 +21,7 @@ const ManageAllPurchase = () => {
   }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
 
   const getPurchases = useCallback(async () => {
+    setLoading(true)
     const response = await axiosInstance.post(API_GET_PURCHASE_BY_ADMIN, {
       searchCondition: {
         purchase_no: purchaseNoSearch,
@@ -46,8 +48,14 @@ const ManageAllPurchase = () => {
     } else {
       setDataSource([]);
     }
+    setLoading(false)
   }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
 
+  if (loading) {
+    return (<>
+      <LoadingComponent />
+    </>)
+  }
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPagination((prev) => ({

@@ -9,6 +9,7 @@ import { ColumnType } from "antd/es/table";
 import { API_CREATE_CATEGORY, API_DELETE_CATEGORY, API_GET_CATEGORIES, API_UPDATE_CATEGORY, paths } from "../../../consts";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
+import LoadingComponent from "../../../components/loading";
 const AdminManageCategories: React.FC = () => {
   const [dataCategories, setDataCategories] = useState<Category[]>([]);
   const [searchText, setSearchText] = useState<string>("");
@@ -253,8 +254,10 @@ const AdminManageCategories: React.FC = () => {
     fetchCategories();
   }, [fetchCategories]);
 
-  if (loading === true) {
-    return <p className="text-center flex justify-center">Loading ...</p>;
+  if (loading) {
+    return (<>
+      <LoadingComponent />
+    </>)
   }
 
   const columns: ColumnType<Category>[] = [

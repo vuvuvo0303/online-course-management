@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import { getCategories } from "../../../../services/category.ts";
-import TinyMCEEditorComponent from "components/tinyMCE/index.tsx";
+import TinyMCEEditorComponent from "../../../../components/tinyMCE";
 import { formItemLayout } from "../../../../layout/form";
-
+import LoadingComponent from "../../../../components/loading";
 const InstructorCreateCourse: React.FC = () => {
     const [des, setDes] = useState<string>("");
     const navigate = useNavigate();
@@ -40,10 +40,10 @@ const InstructorCreateCourse: React.FC = () => {
                     })
                     setValue(data.description);
                 }
+
+                setLoading(false);
             } catch (error) {
                 console.log("Error occurred: ", error);
-            } finally {
-                setLoading(false);
             }
         }
         if (_id) {
@@ -55,16 +55,19 @@ const InstructorCreateCourse: React.FC = () => {
         const fetchData = async () => {
             const dataCategories = await getCategories();
             setCategories(dataCategories);
+            console.log("dataCategories: ", dataCategories)
+            setLoading(false);
         }
         fetchData();
     }, [token]);
 
     if (loading) {
-        return <p className="text-center">Loading ...</p>;
+        return (<>
+            <LoadingComponent />
+        </>)
     }
     function isValidHttpUrl(string: string) {
         let url;
-
         try {
             url = new URL(string);
         } catch (_) {

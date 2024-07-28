@@ -22,7 +22,7 @@ import {
 } from "../../../../../../consts";
 import TinyMCEEditorComponent from "../../../../../../components/tinyMCE";
 import { formItemLayout } from "../../../../../../layout/form";
-
+import LoadingComponent from "../../../../../../components/loading";
 const CreateUpdateLesson: React.FC = () => {
   const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
@@ -181,7 +181,7 @@ const CreateUpdateLesson: React.FC = () => {
   return (
     <div className="flex justify-center items-center  h-full mt-10">
       {loading ? (
-        <div>Loading ...</div>
+        <LoadingComponent />
       ) : (
         <div className="w-full max-w-7xl bg-white  p-8 rounded shadow">
           {courseId && sessionId != undefined ? (

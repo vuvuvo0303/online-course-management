@@ -1,7 +1,7 @@
 import { Purchase } from "../../models";
 import { useEffect, useState } from "react";
 import { getItemsByStudent } from "../../services";
-
+import LoadingComponent from "../../components/loading";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Table, TableProps } from "antd";
@@ -22,7 +22,9 @@ const StudenManagePurchase = () => {
   }, []);
 
   if (loading) {
-    return <p>Loading ...</p>;
+    return (<>
+      <LoadingComponent />
+    </>)
   }
 
   const columns: TableProps<Purchase>["columns"] = [

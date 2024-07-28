@@ -43,7 +43,7 @@ import ResponseData from "models/ResponseData.ts";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import { axiosInstance, changeStatusUser, changeUserRole, deleteUser } from "../../../services";
-
+import LoadingComponent from "../../../components/loading";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AdminManageUsers: React.FC = () => {
@@ -240,8 +240,10 @@ const AdminManageUsers: React.FC = () => {
   };
 
   if (loading) {
-    return <p className="text-center">Loading...</p>;
-  }
+    return (<>
+        <LoadingComponent />
+    </>)
+}
   const onFinish = (values: User) => {
     if (modalMode === "Edit") {
       if (formData._id) {

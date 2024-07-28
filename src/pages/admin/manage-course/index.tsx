@@ -25,6 +25,7 @@ import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import { axiosInstance } from "../../../services";
+import LoadingComponent from "../../../components/loading";
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [changeStatus, setChangeStatus] = useState<string>("");
@@ -268,8 +269,11 @@ const AdminManageCourses: React.FC = () => {
   ];
 
   if (loading) {
-    return <p className="flex justify-center items-center">Loading ...</p>;
+    return (<>
+      <LoadingComponent />
+    </>)
   }
+
 
   const showModal = (record: Course) => {
     setSelectedCourse(record);

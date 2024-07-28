@@ -19,7 +19,7 @@ import { format } from "date-fns";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
-
+import LoadingComponent from "../../../components/loading";
 const { TextArea } = Input;
 
 const AdminInstructorRequest = () => {
@@ -40,6 +40,11 @@ const AdminInstructorRequest = () => {
     getInstructorRequest();
   }, [pagination.current, pagination.pageSize, debouncedSearch]);
 
+  if (loading) {
+    return (<>
+      <LoadingComponent />
+    </>)
+  }
 
   const getInstructorRequest = async () => {
     setLoading(true);
@@ -231,7 +236,6 @@ const AdminInstructorRequest = () => {
         columns={columns}
         dataSource={dataSource}
         rowKey={(record: Instructor) => record._id}
-        loading={loading}
         pagination={false}
         onChange={handleTableChange}
         className="overflow-auto"

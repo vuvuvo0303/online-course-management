@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { Table, TableProps, Tag, Button, Modal, TabsProps, Tabs } from "antd";
 import { getColorPayout } from "../../../consts/index";
 import { createStyles } from "antd-style";
+import LoadingComponent from "../../../components/loading";
 const useStyle = createStyles(({ token }) => ({
     "my-modal-body": {
         background: token.blue1,
@@ -80,14 +81,12 @@ const InstructorManagePayout = () => {
     }, [statusPayout]);
 
     if (loading) {
-        return (
-            <>
-                <p className="items-center text-center">Loading ...</p>
-            </>
-        );
+        return (<>
+            <LoadingComponent />
+        </>)
     }
     const handleRequestPayout = async (payout_id: string, status: string, comment?: string) => {
-        const res = await updateStatusPayout(payout_id, status, comment, getPayouts)
+        const res = await updateStatusPayout(payout_id, status, getPayouts, comment)
         console.log("handleRequestPayout: ", res)
         getPayoutsByInstructor();
     }

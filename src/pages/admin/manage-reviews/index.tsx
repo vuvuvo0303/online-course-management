@@ -7,7 +7,7 @@ import { API_GET_REVIEWS, paths } from "../../../consts";
 import { format } from "date-fns";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import { axiosInstance, deleteReview } from "../../../services";
-
+import LoadingComponent from "../../../components/loading";
 const AdminManageFeedbacks: React.FC = () => {
   const [data, setData] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -121,8 +121,11 @@ const AdminManageFeedbacks: React.FC = () => {
   ];
 
   if (loading) {
-    return <p className="text-center">Loading...</p>;
+    return (<>
+      <LoadingComponent />
+    </>)
   }
+
   return (
     <div>
       <CustomBreadcrumb currentTitle="Manage Review" currentHref={paths.ADMIN_HOME} />
