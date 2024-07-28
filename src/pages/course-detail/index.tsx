@@ -13,7 +13,7 @@ import { API_CLIENT_GET_COURSE_DETAIL } from "../../consts";
 const CourseDetails: React.FC = () => {
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [activeTabKey, setActiveTabKey] = useState<string>("1"); // State for active tab
+    const [activeTabKey, setActiveTabKey] = useState<string>("1");
     const { _id } = useParams<{ _id: string }>();
 
     useEffect(() => {
@@ -27,11 +27,10 @@ const CourseDetails: React.FC = () => {
                     setCourse(courseData);
                 } else {
                     // Handle case where course data is incomplete or not found
-                    // setError('Course data is incomplete.');
+                    console.error('Course data is incomplete or not found.');
                 }
             } catch (error) {
-                // Handle fetch error
-                // console.error("Error fetching course details:", error);
+                console.error("Error fetching course details:", error);
             } finally {
                 setLoading(false);
             }
@@ -40,35 +39,27 @@ const CourseDetails: React.FC = () => {
         fetchCourseDetails();
     }, [_id]);
 
-    const onChange = (key: string) => {
-        setActiveTabKey(key); // Update active tab key
-    };
-
-
     const tabItems = [
         { key: "1", label: "About", children: <About /> },
-        { key: "2", label: "Course Content", children: course ? <Content course={course} /> : null },
+        { key: "2", label: "Course Content", children: course ? <Content course={course} /> : <Skeleton active /> },
         { key: "3", label: "Reviews", children: <ReviewPage /> },
         { key: "4", label: "Instructor", children: <Instructor /> }
     ];
 
     return (
         <div className="p-4">
-            {/* Skeleton for CourseCard */}
             <Skeleton loading={loading} active>
                 {!loading && course && <CourseCard course={course} />}
             </Skeleton>
 
-            {/* Tabs only visible when not loading */}
             {!loading && course && (
-                <div className="course-tabs">
-                    <Tabs centered onChange={onChange} activeKey={activeTabKey} items={tabItems} />
-                </div>
+                <Tabs
+                    centered
+                    activeKey={activeTabKey}
+                    onChange={setActiveTabKey}
+                    items={tabItems}
+                />
             )}
-
-            <div className="course-content">
-                {loading ? <Skeleton active /> : tabItems.find(item => item.key === activeTabKey)?.children}
-            </div>
         </div>
     );
 };

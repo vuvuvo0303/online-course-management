@@ -85,6 +85,7 @@ const Lesson: React.FC = () => {
         setOpen(false);
     };
 
+
     const headerStyle = { display: 'flex', alignItems: 'center' };
     const iconTextStyle = { marginLeft: '8px' };
     const contentStyle = { paddingLeft: '24px' };
