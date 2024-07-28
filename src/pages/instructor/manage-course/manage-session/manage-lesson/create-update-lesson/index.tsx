@@ -21,16 +21,7 @@ import {
   paths,
 } from "../../../../../../consts";
 import TinyMCEEditorComponent from "../../../../../../components/tinyMCE";
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 14, offset: 5 },
-  },
-};
+import { formItemLayout } from "../../../../../../layout/form";
 
 const CreateUpdateLesson: React.FC = () => {
   const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string; sessionId: string }>();
@@ -52,29 +43,24 @@ const CreateUpdateLesson: React.FC = () => {
   useEffect(() => {
     if (lectureId) {
       const fetchData = async () => {
-        try {
-          const response = await axiosInstance.get(`${API_GET_LESSON}/${lectureId}`);
-          const data = response.data;
-          form.setFieldsValue({
-            name: data.name,
-            course_id: data.course_id,
-            session_id: data.session_id,
-            user_id: data.user_id,
-            lesson_type: data.lesson_type,
-            description: data.description,
-            video_url: data.video_url,
-            image_url: data.image_url,
-            price: data.price,
-            full_time: data.full_time,
-            position_order: data.position_order,
-          });
-          setCourse_id(data.course_id);
-          setValue(data.description);
-        } catch (error) {
-          //
-        } finally {
-          setLoading(false);
-        }
+        const response = await axiosInstance.get(`${API_GET_LESSON}/${lectureId}`);
+        const data = response.data;
+        form.setFieldsValue({
+          name: data.name,
+          course_id: data.course_id,
+          session_id: data.session_id,
+          user_id: data.user_id,
+          lesson_type: data.lesson_type,
+          description: data.description,
+          video_url: data.video_url,
+          image_url: data.image_url,
+          price: data.price,
+          full_time: data.full_time,
+          position_order: data.position_order,
+        });
+        setCourse_id(data.course_id);
+        setValue(data.description);
+        setLoading(false);
       };
       fetchData();
     }
@@ -165,7 +151,6 @@ const CreateUpdateLesson: React.FC = () => {
     } else {
       values.description = des;
     }
-    console.log("check values: ", values);
     setLoading(true);
     try {
       //Update lesson

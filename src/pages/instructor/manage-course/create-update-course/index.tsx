@@ -8,16 +8,7 @@ import { useForm } from "antd/es/form/Form";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import { getCategories } from "../../../../services/category.ts";
 import TinyMCEEditorComponent from "components/tinyMCE/index.tsx";
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 14 },
-    },
-};
+import { formItemLayout } from "../../../../layout/form";
 
 const InstructorCreateCourse: React.FC = () => {
     const [des, setDes] = useState<string>("");
