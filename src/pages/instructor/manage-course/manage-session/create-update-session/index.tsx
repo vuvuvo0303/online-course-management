@@ -29,7 +29,7 @@ const CreateUpdateSession = () => {
   const [courseIdUpdate, setCourseIdUpdate] = useState<string>("");
   const [courses, setCourses] = useState<Course[]>([]);
   const [userId, setUserId] = useState<string>('');
-  const [value, setValue] = useState<string>('Enter something here');
+  const [content, setContent] = useState<string>('Enter something here');
   useEffect(() => {
     const user = getUserFromLocalStorrage();
     setUserId(user?._id);
@@ -50,7 +50,7 @@ const CreateUpdateSession = () => {
           },
           position_order: data.position_order
         });
-        setValue(data.description);
+        setContent(data.description);
         // if instructor don't update new course , program will use old data
         setCourseIdUpdate(data.course_id)
         setLoading(false);
@@ -86,7 +86,7 @@ const CreateUpdateSession = () => {
   }, [userId, role])
 
   const onFinish = async (values: Session) => {
-    values.description = value;
+    values.description = content;
     // setLoading(true);
     // update session component for manga sessions and manage all sessions
     if (sessionId) {
@@ -195,7 +195,7 @@ const CreateUpdateSession = () => {
               label="Description"
               name="description"
             >
-              <TinyMCEEditorComponent value={value} onEditorChange={handleEditorChange} />
+              <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
             </Form.Item>
 
             {

@@ -33,7 +33,7 @@ const CreateUpdateLesson: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [userId, setUserId] = useState<string>("");
   const [course_id, setCourse_id] = useState<string>("");
-  const [value, setValue] = useState<string>("Enter something here");
+  const [content, setContent] = useState<string>("Enter something here");
   const [des, setDes] = useState<string>("");
   useEffect(() => {
     const user = getUserFromLocalStorrage();
@@ -59,7 +59,7 @@ const CreateUpdateLesson: React.FC = () => {
           position_order: data.position_order,
         });
         setCourse_id(data.course_id);
-        setValue(data.description);
+        setContent(data.description);
         setLoading(false);
       };
       fetchData();
@@ -147,7 +147,7 @@ const CreateUpdateLesson: React.FC = () => {
     }
     if (!des) {
       //if instructor don't change description
-      values.description = value;
+      values.description = content;
     } else {
       values.description = des;
     }
@@ -287,7 +287,7 @@ const CreateUpdateLesson: React.FC = () => {
               label="Description"
               name="description"
             >
-              <TinyMCEEditorComponent value={value} onEditorChange={handleEditorChange} />
+              <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
             </Form.Item>
 
 

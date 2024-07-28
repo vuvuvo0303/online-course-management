@@ -18,7 +18,7 @@ const InstructorCreateCourse: React.FC = () => {
     const { id, _id } = useParams<{ _id: string, id: string }>();
     const [form] = useForm();
     const token = localStorage.getItem("token");
-    const [value, setValue] = useState<string>('Enter something here');
+    const [content, setContent] = useState<string>('Enter something here');
     // Fetch course
     useEffect(() => {
         const fetchCourse = async () => {
@@ -38,7 +38,7 @@ const InstructorCreateCourse: React.FC = () => {
                         price: data?.price,
                         discount: data?.discount
                     })
-                    setValue(data.description);
+                    setContent(data.description);
                 }
 
                 setLoading(false);
@@ -86,7 +86,7 @@ const InstructorCreateCourse: React.FC = () => {
         }
         if (!des) {
             //if instructor don't change description
-            values.description = value;
+            values.description = content;
         } else {
             values.description = des;
         }
@@ -207,7 +207,7 @@ const InstructorCreateCourse: React.FC = () => {
                         label="Description"
                         name="description"
                     >
-                        <TinyMCEEditorComponent value={value} onEditorChange={handleEditorChange} />
+                        <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
                     </Form.Item>
                     {
                         !_id && <Form.Item

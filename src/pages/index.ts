@@ -49,7 +49,6 @@ export { default as AdminDashboard } from "./admin/dashboard";
 export { default as AdminManageUsers } from "./admin/manage-users";
 export { default as AdminManageBlogs } from "./admin/manage-blogs";
 export { default as AdminManageCategories } from "./admin/manage-categories";
-export { default as AdminCategoryDetail } from "./admin/manage-categories/detail";
 export { default as AdminManageCourses } from "./admin/manage-course";
 export { default as AdminManageFeedbacks } from "./admin/manage-reviews";
 export { default as Dashboard } from "../components/dashboard/index";

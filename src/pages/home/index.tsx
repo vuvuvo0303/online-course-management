@@ -2,7 +2,7 @@ import Categories from "../../components/categories/main";
 import TeacherCategories from "../../components/categories/teacher";
 import Banner from "../../components/categories/banner";
 import LogoCategories from "../../components/categories/logo";
-import NewSection from "../../components/categories/news/NewSection";
+import HomeBlog from "../../components/categories/blog";
 import List from "../../components/categories/list";
 import AllCourses from "../../components/categories/all-course/index";
 
@@ -26,7 +26,7 @@ const Home: React.FC = () => {
             <section className='flex-start md:p-5'>
                 <TeacherCategories />
             </section>
-            <NewSection />
+            <HomeBlog />
             <section className='mb-10 md:mb-20 mt-5 md:mt-10'>
                 <List />
             </section>

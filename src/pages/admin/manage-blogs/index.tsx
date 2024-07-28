@@ -24,6 +24,7 @@ import {
 import LoadingComponent from "../../../components/loading";
 import { format } from "date-fns";
 import CustomBreadcrumb from "../../../components/breadcrumb";
+import TinyMCEEditorComponent from "../../../components/tinyMCE";
 
 const AdminManageBlogs: React.FC = () => {
   const [dataBlogs, setDataBlogs] = useState<Blog[]>([]);
@@ -34,15 +35,15 @@ const AdminManageBlogs: React.FC = () => {
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0 });
   const [categories, setCategories] = useState<Category[]>([]);
   const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
+  const [content, setContent] = useState<string>("");
 
   useEffect(() => {
     fetchCategories();
-  }, [])
+  }, []);
 
   useEffect(() => {
     getBlogs();
   }, [pagination.current, pagination.pageSize]);
-
 
   const fetchCategories = async () => {
     const categories = await getCategories();
@@ -62,7 +63,6 @@ const AdminManageBlogs: React.FC = () => {
       },
     });
     setDataBlogs(response.data.pageData);
-
     setPagination({
       ...pagination,
       total: response.data.pageInfo.totalItems,
@@ -70,6 +70,10 @@ const AdminManageBlogs: React.FC = () => {
       pageSize: response.data.pageInfo.pageSize,
     });
     setLoading(false);
+  };
+
+  const handleEditorChange = (value: string) => {
+    setContent(value);
   };
 
   const handleUpdateClick = async (id: string) => {
@@ -86,24 +90,54 @@ const AdminManageBlogs: React.FC = () => {
       description: blogData.description,
       content: blogData.content,
     });
+    setContent(blogData.content);
     setLoading(false);
   };
 
   const handleSubmit = async (values: Blog) => {
     if (isUpdateMode && currentBlog) {
       const user = getUserFromLocalStorrage();
-      const payload = { ...values, user_id: user._id }
+      const payload = { ...values, content, user_id: user._id };
       await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
       message.success("Blog updated successfully");
     } else {
-      await axiosInstance.post(API_CREATE_BLOG, values);
+      const user = getUserFromLocalStorrage();
+      const payload = { ...values, content, user_id: user._id };
+      await axiosInstance.post(API_CREATE_BLOG, payload);
       message.success("Blog added successfully");
     }
     setIsModalVisible(false);
     form.resetFields();
     setIsUpdateMode(false);
     setCurrentBlog(null);
+    setContent("");
     await getBlogs();
+  };
+
+  const handlePaginationChange = (page: number, pageSize?: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize || 10,
+    }));
+  };
+
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
+  };
+
+  const handleResetContent = () => {
+    setIsUpdateMode(false);
+    setIsModalVisible(true);
+    setContent("");
+    form.resetFields();
+  };
+
+  const handleCancelModal = () => {
+    setIsModalVisible(false);
+    setIsUpdateMode(false);
+    setCurrentBlog(null);
+    form.resetFields();
   };
 
   const columns: TableColumnsType<Blog> = [
@@ -119,9 +153,9 @@ const AdminManageBlogs: React.FC = () => {
       width: "15%",
     },
     {
-      title: "Content",
-      dataIndex: "content",
-      key: "content",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
     },
     {
       title: "Image",
@@ -178,145 +212,21 @@ const AdminManageBlogs: React.FC = () => {
     </>)
   }
 
-  const handlePaginationChange = (page: number, pageSize?: number) => {
-    setPagination((prev) => ({
-      ...prev,
-      current: page,
-      pageSize: pageSize || 10,
-    }));
-  };
+  // const handlePaginationChange = (page: number, pageSize?: number) => {
+  //   setPagination((prev) => ({
+  //     ...prev,
+  //     current: page,
+  //     pageSize: pageSize || 10,
+  //   }));
+  // };
 
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
-  };
   return (
     <div>
       <div className="flex justify-between">
         <CustomBreadcrumb currentTitle="Manage Blogs" currentHref={paths.ADMIN_HOME} />
         <div className="py-2">
-          <Button
-            type="primary"
-            onClick={() => {
-              setIsUpdateMode(false);
-              setIsModalVisible(true);
-              form.resetFields();
-            }}
-          >
-            Add New Blog
-          </Button>
+          <Button type="primary" onClick={handleResetContent}>Add New Blog</Button>
         </div>
-
-        <Modal
-          title={isUpdateMode ? "Update Blog" : "Add New Blog"}
-          open={isModalVisible}
-          onCancel={() => {
-            setIsModalVisible(false);
-            setIsUpdateMode(false);
-            setCurrentBlog(null);
-            form.resetFields();
-          }}
-          footer={null}
-        >
-          {isUpdateMode && currentBlog ? (
-            <Form form={form} layout="vertical" onFinish={handleSubmit}>
-              <Form.Item
-                name="name"
-                label="Title"
-                rules={[{ required: true, message: "Please input the blog title!" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="category_id"
-                label="Category"
-                rules={[{ required: true, message: "Please select a category!" }]}
-              >
-                <Select placeholder="Select a category">
-                  {categories.map((category) => (
-                    <Select.Option key={category._id} value={category._id}>
-                      {category.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item
-                name="image_url"
-                label="Image URL"
-                rules={[{ required: true, message: "Please input the image URL!" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="description"
-                label="Description"
-                rules={[{ required: true, message: "Please input the description!" }]}
-              >
-                <Input.TextArea maxLength={250} />
-              </Form.Item>
-              <Form.Item
-                name="content"
-                label="Content"
-                rules={[{ required: true, message: "Please input the content!" }]}
-              >
-                <Input.TextArea maxLength={250} />
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  Update
-                </Button>
-              </Form.Item>
-            </Form>
-          ) : (
-            <Form form={form} layout="vertical" onFinish={handleSubmit}>
-              <Form.Item
-                name="name"
-                label="Title"
-                rules={[{ required: true, message: "Please input the blog title!" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="category_id"
-                label="Category"
-                rules={[{ required: true, message: "Please select a category!" }]}
-              >
-                <Select placeholder="Select a category">
-                  {categories.map((category) => (
-                    <Select.Option key={category._id} value={category._id}>
-                      {category.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item
-                name="image_url"
-                label="Image URL"
-                rules={[{ required: true, message: "Please input the image URL!" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="description"
-                label="Description"
-                rules={[{ required: true, message: "Please input the description!" }]}
-              >
-                <Input.TextArea maxLength={250} />
-              </Form.Item>
-              <Form.Item
-                name="content"
-                label="Content"
-                rules={[{ required: true, message: "Please input the content!" }]}
-              >
-                <Input.TextArea maxLength={250} />
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  Submit
-                </Button>
-              </Form.Item>
-            </Form>
-          )}
-        </Modal>
       </div>
       <Table
         columns={columns}
@@ -335,6 +245,65 @@ const AdminManageBlogs: React.FC = () => {
           showSizeChanger
         />
       </div>
+
+      <Modal
+        title={isUpdateMode ? "Update Blog" : "Add New Blog"}
+        open={isModalVisible}
+        onCancel={handleCancelModal}
+        footer={null}
+      >
+        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+          <Form.Item
+            name="name"
+            label="Title"
+            rules={[{ required: true, message: "Please input the blog title!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="category_id"
+            label="Category"
+            rules={[{ required: true, message: "Please select a category!" }]}
+          >
+            <Select placeholder="Select a category">
+              {categories.map((category) => (
+                <Select.Option key={category._id} value={category._id}>
+                  {category.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="image_url"
+            label="Image URL"
+            rules={[{ required: true, message: "Please input the image URL!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[{ required: true, message: "Please input the blog description!" }]}
+          >
+            <Input.TextArea maxLength={250} showCount />
+          </Form.Item>
+          <Form.Item
+            name="content"
+            label="Content"
+            rules={[{ required: true, message: "Please input the blog content!" }]}
+          >
+            <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
+          </Form.Item>
+          <Form.Item>
+            <div className="flex justify-end">
+              <Button onClick={handleCancelModal}>Cancel</Button>
+              <Button type="primary" htmlType="submit" className="ml-2">
+                {isUpdateMode ? "Update Blog" : "Add Blog"}
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
