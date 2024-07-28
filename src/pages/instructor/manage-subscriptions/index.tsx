@@ -6,15 +6,18 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance";
 import useDebounce from "../../../hooks/useDebounce";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import LoadingComponent from "../../../components/loading";
 const InstructorManageSubscriptions = () => {
     const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
     const [keyword, setKeyword] = useState<string>("");
     const debouncedSearchTerm = useDebounce(keyword, 500);
+    const [selectedTab, setSelectedTab] = useState<string>('subscription');
     const [loading, setLoading] = useState<boolean>(true);
     const [apiLink, setApiLink] = useState<string>(API_INSTRUCTOR_GET_SUBSCRIPTIONS);
     useEffect(() => {
         const fetchSubscriptions = async () => {
             try {
+                setLoading(true)
                 const res = await axiosInstance.post(apiLink, {
                     "searchCondition": {
                         "keyword": debouncedSearchTerm,
@@ -29,12 +32,13 @@ const InstructorManageSubscriptions = () => {
                     setSubscriptions(res.data.pageData)
                     setLoading(false)
                 }
+                setLoading(false)
             } catch (error) {
                 console.log("Error occurred: ", error);
             }
         }
         fetchSubscriptions();
-    }, [debouncedSearchTerm, apiLink])
+    }, [debouncedSearchTerm,selectedTab, apiLink, ])
 
     //search student by student name
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,18 +46,22 @@ const InstructorManageSubscriptions = () => {
     };
 
     if (loading) {
-        return <p className="text-center">Loading ...</p>
+        return (<>
+            <LoadingComponent />
+        </>)
     }
 
     const onChange = (key: string) => {
         if (key === "subscription") {
+            setSelectedTab(key)
             setApiLink(API_INSTRUCTOR_GET_SUBSCRIPTIONS)
         } else {
+            setSelectedTab(key)
             setApiLink(API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER)
-
         }
-
+        console.log("selectedTab", selectedTab)
     };
+    
     const items: TabsProps['items'] = [
         {
             key: 'subscription',
@@ -112,7 +120,7 @@ const InstructorManageSubscriptions = () => {
                 ]}
             />
             <h1 className="text-center my-10">Manage Subscriptions</h1>
-            <Tabs defaultActiveKey="subscription" items={items} onChange={onChange} />
+            <Tabs defaultActiveKey={selectedTab} items={items} onChange={onChange} />
             <Input.Search
                 placeholder="Search"
                 value={keyword}

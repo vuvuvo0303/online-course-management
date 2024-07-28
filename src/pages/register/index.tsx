@@ -1,13 +1,4 @@
-import {
-  Button,
-  Form,
-  FormProps,
-  Image,
-  Input,
-  message,
-  Radio,
-  Upload,
-} from "antd";
+import { Button, Form, FormProps, Image, Input, message, Radio, Upload } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState, useEffect } from "react";
@@ -18,18 +9,9 @@ import uploadFile from "../../utils/upload";
 import axiosInstance from "../../services/axiosInstance.ts";
 import Recaptcha from "../register/reCaptcha.tsx";
 import { API_REGISTER, paths, roles } from "../../consts";
+import { Instructor } from "../../models/User.ts";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-type FieldType = {
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-  avatar: string;
-  video?: string;
-  description?: string;
-  phone_number?: string;
-};
 
 const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,7 +28,7 @@ const RegisterPage: React.FC = () => {
     form.setFieldsValue({ role });
   }, [role, form]);
 
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+  const onFinish: FormProps<Instructor>["onFinish"] = async (values) => {
     if (!captchaVisible) {
       setCaptchaVisible(true);
       return;
@@ -78,11 +60,6 @@ const RegisterPage: React.FC = () => {
     }
   };
 
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
-    console.log("Failed:", errorInfo);
-  };
 
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -119,10 +96,6 @@ const RegisterPage: React.FC = () => {
             <h1 className="mb-2 text-2xl md:text-3xl font-bold text-center">
               Register
             </h1>
-            {/* <Lottie
-              animationData={register}
-              style={{ width: "100px", height: "100px" }}
-            /> */}
           </div>
 
           <span className="mb-4 text-center">
@@ -137,7 +110,6 @@ const RegisterPage: React.FC = () => {
                 style={{ maxWidth: 600 }}
                 initialValues={{ remember: true, role }}
                 onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
                 autoComplete="off"
               >
                 <Form.Item
@@ -284,7 +256,7 @@ const RegisterPage: React.FC = () => {
                   </>
                 )}
 
-              {captchaVisible && <Recaptcha onVerify={setCaptchaToken} />}
+                {captchaVisible && <Recaptcha onVerify={setCaptchaToken} />}
 
                 <Form.Item wrapperCol={{ span: 24 }}>
                   <Button

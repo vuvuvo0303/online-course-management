@@ -35,7 +35,6 @@ const InstructorManagePurchase = () => {
 
     const columns: TableProps<Purchase>["columns"] = [
         {
-
             render: (record: Purchase) => (
                 record.status === "new" ? (
                     <Checkbox onChange={() => onChangeCheckbox(record)}></Checkbox>
@@ -144,10 +143,9 @@ const InstructorManagePurchase = () => {
     ];
 
     const handleCreatePayout = async () => {
-        console.log("purchasesChecked: ", purchasesChecked);
         const res = await createPayout(instructor_id, purchasesChecked)
-
-        if (res.length > 0) {
+        console.log("res: ", res)
+        if (res) {
             getPurchasesByInstructor();
         }
     }
@@ -155,14 +153,18 @@ const InstructorManagePurchase = () => {
     const onChangeCheckbox = (purchase: Purchase) => {
         setInstructor_id(purchase.instructor_id);
         let index = indexPurchasesChecked;
+        // found purchase
         let foundPurchaseId = purchasesChecked.find(purchaseCurrentCheck => purchaseCurrentCheck.purchase_id === purchase._id);
         let newArray: TransactionsPurchase[] = [];
+        // if purchase exist 
         if (foundPurchaseId) {
             console.log("foundPurchaseId: ", foundPurchaseId);
             newArray = purchasesChecked.filter(item => item.purchase_id !== foundPurchaseId?.purchase_id);
             console.log("newArray found: ", newArray);
             index--;
             setIndexPurchasesChecked(index);
+            setPurchasesChecked([...newArray]);
+            foundPurchaseId = undefined;
         } else {
             const newTransaction = new TransactionsPurchase(purchase._id);
             if (indexPurchasesChecked === 0) {
@@ -176,17 +178,16 @@ const InstructorManagePurchase = () => {
                 index++;
                 setIndexPurchasesChecked(index);
             }
-        }
-        if (foundPurchaseId) {
-            setPurchasesChecked(newArray);
-            foundPurchaseId = undefined;
-        } else {
             setPurchasesChecked([...purchasesChecked]);
-            console.log("purchasesChecked: ", purchasesChecked);
         }
+        // if (foundPurchaseId) {
+          
+        // } else {
+            
+        // }
+        console.log("purchasesChecked: ", purchasesChecked);
     };
     const items: TabsProps['items'] = [
-
         {
             key: 'new',
             label: 'New',

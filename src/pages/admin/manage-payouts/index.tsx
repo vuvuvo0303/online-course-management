@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import axiosInstance from "../../../services/axiosInstance.ts";
-import { API_GET_PAYOUTS, API_UPDATE_STATUS_PAYOUT, paths } from "../../../consts/index.ts";
+import { API_GET_PAYOUTS, paths } from "../../../consts";
 import {
-  Breadcrumb,
   Button,
   Input,
   Pagination,
@@ -13,13 +11,14 @@ import {
   TableColumnsType,
   TablePaginationConfig,
   Tag,
-  message,
 } from "antd";
 import { format } from "date-fns";
-import { HomeOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { Payout } from "models/Payout.ts";
-import useDebounce from "../../../hooks/useDebounce.ts";
-
+import { useDebounce } from "../../../hooks";
+import CustomBreadcrumb from "../../../components/breadcrumb";
+import { axiosInstance, updateStatusPayout } from "../../../services";
+import LoadingComponent from "../../../components/loading";
 const AdminManagePayouts: React.FC = () => {
   const [dataPayouts, setDataPayouts] = useState<Payout[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -32,7 +31,6 @@ const AdminManagePayouts: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
-
   const getPayouts = useCallback(async () => {
     setLoading(true);
     try {
@@ -57,7 +55,7 @@ const AdminManagePayouts: React.FC = () => {
         pageSize: response.data.pageInfo.pageSize,
       });
     } catch (error) {
-      console.error("Error fetching payouts:", error);
+      //
     } finally {
       setLoading(false);
     }
@@ -68,33 +66,26 @@ const AdminManagePayouts: React.FC = () => {
   }, [getPayouts]);
 
   if (loading) {
-    return <p className="text-center">Loading...</p>;
+    return (<>
+      <LoadingComponent />
+    </>)
   }
 
-  const handleStatusChange = async (id: string, status: string) => {
-    try {
-      await axiosInstance.put(`${API_UPDATE_STATUS_PAYOUT}/${id}`, { status });
-      message.success(`Payout status updated to ${status}`);
-      getPayouts();
-    } catch (error) {
-      message.error("Failed to update payout status");
-    }
-  };
-
-  const handleTableChange = (pagination: PaginationProps) => {
+  const handleTableChange = async (pagination: PaginationProps) => {
     setPagination({
       ...pagination,
       current: pagination.current ?? 1,
       pageSize: pagination.pageSize ?? 10,
       total: pagination.total ?? 0,
     });
+    await getPayouts();
   };
 
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPagination({ ...pagination, current: page, pageSize });
   };
 
-  const handleStatus = (value: string) => {
+  const handleStatus = async (value: string) => {
     setStatusFilter(value);
     setPagination((prev) => ({
       ...prev,
@@ -171,10 +162,10 @@ const AdminManagePayouts: React.FC = () => {
       width: "20%",
       render: (record: Payout) => (
         <div className="flex gap-2">
-          <Button type="primary" onClick={() => handleStatusChange(record._id, "completed")}>
+          <Button type="primary" onClick={() => updateStatusPayout(record._id, "completed", getPayouts, "")}>
             Completed
           </Button>
-          <Button type="primary" danger onClick={() => handleStatusChange(record._id, "rejected")}>
+          <Button type="primary" danger onClick={() => updateStatusPayout(record._id, "rejected", getPayouts, "")}>
             Rejected
           </Button>
         </div>
@@ -185,26 +176,7 @@ const AdminManagePayouts: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between">
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              title: <HomeOutlined />,
-            },
-            {
-              href: paths.ADMIN_HOME,
-              title: (
-                <>
-                  <UserOutlined />
-                  <span>Admin</span>
-                </>
-              ),
-            },
-            {
-              title: "Manage Payouts",
-            },
-          ]}
-        />
+        <CustomBreadcrumb currentTitle="Manage Payouts" currentHref={paths.ADMIN_HOME} />
       </div>
       <Space className="flex flex-wrap mb-4">
         <Input.Search

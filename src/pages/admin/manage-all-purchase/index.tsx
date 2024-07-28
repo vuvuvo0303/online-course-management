@@ -1,20 +1,77 @@
 import { Breadcrumb, Input, Pagination, Select, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
-
-import { API_GET_PURCHASE_BY_ADMIN, getColorPurchase } from "../../../consts/index";
+import { API_GET_PURCHASE_BY_ADMIN, getColorPurchase } from "../../../consts";
 import { format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
-import axiosInstance from "../../../services/axiosInstance";
+import { axiosInstance } from "../../../services";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
 import { Purchase } from "../../../models/Purchase";
-
+import LoadingComponent from "../../../components/loading";
 
 const ManageAllPurchase = () => {
+  const [loading, setLoading] = useState(true);
   const [dataSource, setDataSource] = useState<Purchase[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0 });
   const [searchPurchase, setSearchPurchase] = useState<string>("");
   const purchaseNoSearch = useDebounce(searchPurchase, 500);
   const [status, setStatus] = useState<string>("");
+
+  useEffect(() => {
+    getPurchases();
+  }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
+
+  const getPurchases = useCallback(async () => {
+    setLoading(true)
+    const response = await axiosInstance.post(API_GET_PURCHASE_BY_ADMIN, {
+      searchCondition: {
+        purchase_no: purchaseNoSearch,
+        cart_no: "",
+        course_id: "",
+        status: status,
+        is_delete: false,
+      },
+      pageInfo: {
+        pageNum: pagination.current,
+        pageSize: pagination.pageSize,
+      },
+    });
+
+    if (response.data && response.data.pageData) {
+      const { pageData, pageInfo } = response.data;
+      setDataSource(pageData);
+      setPagination((prev) => ({
+        ...prev,
+        total: pageInfo?.totalItems || response.data.length,
+        current: pageInfo?.pageNum || 1,
+        pageSize: pageInfo?.pageSize || response.data.length,
+      }));
+    } else {
+      setDataSource([]);
+    }
+    setLoading(false)
+  }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
+
+  if (loading) {
+    return (<>
+      <LoadingComponent />
+    </>)
+  }
+
+  const handlePaginationChange = (page: number, pageSize?: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize || 10,
+    }));
+  };
+
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
+  };
+  const handleChangeStatus = async (value: string) => {
+    setStatus(value);
+  };
+
   const columns: TableProps<Purchase>["columns"] = [
     { title: "Purchase No", dataIndex: "purchase_no", key: "purchase_no" },
     {
@@ -33,15 +90,6 @@ const ManageAllPurchase = () => {
       dataIndex: "student_name",
       key: "student__name",
     },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (price: number) => {
-        return price.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
-      },
-    },
-    { title: "Discount", dataIndex: "discount", key: "discount", render: (discount: number) => <>{discount}%</> },
     {
       title: "Price Paid",
       dataIndex: "price_paid",
@@ -66,57 +114,6 @@ const ManageAllPurchase = () => {
 
   ];
 
-  const fetchPurchase = useCallback(async () => {
-    try {
-      const response = await axiosInstance.post(API_GET_PURCHASE_BY_ADMIN, {
-        searchCondition: {
-          purchase_no: purchaseNoSearch,
-          cart_no: "",
-          course_id: "",
-          status: status,
-          is_delete: false,
-        },
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
-        },
-      });
-
-      if (response.data && response.data.pageData) {
-        const { pageData, pageInfo } = response.data;
-        setDataSource(pageData);
-        setPagination((prev) => ({
-          ...prev,
-          total: pageInfo?.totalItems || response.data.length,
-          current: pageInfo?.pageNum || 1,
-          pageSize: pageInfo?.pageSize || response.data.length,
-        }));
-      } else {
-        setDataSource([]);
-      }
-    } catch (error) {
-      console.error("Failed to fetch purchase data:", error);
-    }
-  }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
-
-  useEffect(() => {
-    fetchPurchase();
-  }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
-
-  const handlePaginationChange = (page: number, pageSize?: number) => {
-    setPagination((prev) => ({
-      ...prev,
-      current: page,
-      pageSize: pageSize || 10,
-    }));
-  };
-
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
-  };
-  const handleChangeStatus = async (value: string) => {
-    setStatus(value);
-  };
   return (
     <div>
 

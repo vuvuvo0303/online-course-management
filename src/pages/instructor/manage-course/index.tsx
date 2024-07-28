@@ -30,6 +30,8 @@ import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
 import { format } from "date-fns";
 import { getCategories } from "../../../services/category.ts";
+import LoadingComponent from "../../../components/loading";
+
 const InstructorManageCourses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -108,6 +110,8 @@ const InstructorManageCourses: React.FC = () => {
       //
     }
   };
+
+
   useEffect(() => {
     //fetch logs
     if (courseId) {
@@ -228,8 +232,10 @@ const InstructorManageCourses: React.FC = () => {
   }, [status, cateId, debouncedSearchTerm, isDelete, pagination.current, pagination.pageSize]);
 
   if (loading) {
-    return <p className="flex justify-center items-center">Loading ...</p>;
-  }
+    return (<>
+        <LoadingComponent />
+    </>)
+}
   //setStatus for filter log by status
   const handleAllLog = () => {
     setOldStatus("");
@@ -251,7 +257,9 @@ const InstructorManageCourses: React.FC = () => {
   };
   //setStatus for filter course by status
   const handleChangeIsDelete = (value: boolean) => {
+    setLoading(true)
     setIsDelete(value);
+    setLoading(false)
   };
   // set status for chang status
   const handleChangeStatus = async (value: string) => {
@@ -577,20 +585,20 @@ const InstructorManageCourses: React.FC = () => {
           />
           {/* filter course by status */}
           <Select
-            defaultValue="all"
+            defaultValue="All Status"
 
             className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
             onChange={handleChange}
             options={[
               {
                 options: [
-                  { label: <span>all</span>, value: "" },
-                  { label: <span>new</span>, value: "new" },
-                  { label: <span>waiting approve</span>, value: "waiting_approve" },
-                  { label: <span>approve</span>, value: "approve" },
-                  { label: <span>reject</span>, value: "reject" },
-                  { label: <span>active</span>, value: "active" },
-                  { label: <span>inactive</span>, value: "inactive" },
+                  { label: <span>All Status</span>, value: "" },
+                  { label: <span>New</span>, value: "new" },
+                  { label: <span>Waiting Approve</span>, value: "waiting_approve" },
+                  { label: <span>Approve</span>, value: "approve" },
+                  { label: <span>Reject</span>, value: "reject" },
+                  { label: <span>Active</span>, value: "active" },
+                  { label: <span>Inactive</span>, value: "inactive" },
                 ],
               },
             ]}
@@ -603,8 +611,8 @@ const InstructorManageCourses: React.FC = () => {
             options={[
               {
                 options: [
-                  { label: <span>true</span>, value: true },
-                  { label: <span>false</span>, value: false },
+                  { label: <span>Existing</span>, value: false },
+                  { label: <span>Deleted</span>, value: true },
                 ],
               },
             ]}

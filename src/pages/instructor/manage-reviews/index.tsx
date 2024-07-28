@@ -154,7 +154,7 @@ const ReviewPage: React.FC = () => {
                                 </div>
                                 <div>
                                     <div className="text-lg">{review.reviewer_name}</div>
-                                    <div className="text-sm text-gray-400">{review.created_at}</div>
+                                    <div className="text-sm text-gray-400">{review.created_at.toLocaleDateString()}</div>
                                 </div>
                             </div>
                             <Rate

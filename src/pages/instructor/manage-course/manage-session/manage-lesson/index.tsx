@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, message, Modal, Select, Spin, Table, TableProps, Tag, } from "antd";
+import { Breadcrumb, Button, Input, message, Modal, Select, Table, TableProps, Tag, } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models/index.ts";
@@ -8,7 +8,7 @@ import { useDebounce } from "../../../../../hooks";
 import { API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS, getColorLessonType } from "../../../../../consts";
 import { format } from "date-fns";
 import { Lessons } from "models/Lesson.ts";
-
+import LoadingComponent from "../../../../../components/loading";
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lessons[]>([]);
     const { courseId, sessionId } = useParams<{ courseId: string, sessionId: string }>();
@@ -290,7 +290,7 @@ const LectureOfCourse: React.FC = () => {
             </Modal>
             {loading ? (
                 <div className="flex justify-center items-center h-full w-full">
-                    <Spin size="large" />
+                    <LoadingComponent />
                 </div>
             ) : (
                 <div className="">

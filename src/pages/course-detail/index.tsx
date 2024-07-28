@@ -10,8 +10,6 @@ import ReviewPage from "./reviews/review";
 import Instructor from "./instructor/info";
 import { API_CLIENT_GET_COURSE_DETAIL } from "../../consts";
 
-const { TabPane } = Tabs;
-
 const CourseDetails: React.FC = () => {
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -46,6 +44,14 @@ const CourseDetails: React.FC = () => {
         setActiveTabKey(key); // Update active tab key
     };
 
+
+    const tabItems = [
+        { key: "1", label: "About", children: <About /> },
+        { key: "2", label: "Course Content", children: course ? <Content course={course} /> : null },
+        { key: "3", label: "Reviews", children: <ReviewPage /> },
+        { key: "4", label: "Instructor", children: <Instructor /> }
+    ];
+
     return (
         <div className="p-4">
             {/* Skeleton for CourseCard */}
@@ -56,26 +62,12 @@ const CourseDetails: React.FC = () => {
             {/* Tabs only visible when not loading */}
             {!loading && course && (
                 <div className="course-tabs">
-                    <Tabs defaultActiveKey="1" centered onChange={onChange} activeKey={activeTabKey}>
-                        <TabPane tab="About" key="1" />
-                        <TabPane tab="Course Content" key="2" />
-                        <TabPane tab="Reviews" key="3" />
-                        <TabPane tab="Instructor" key="4" />
-                    </Tabs>
+                    <Tabs centered onChange={onChange} activeKey={activeTabKey} items={tabItems} />
                 </div>
             )}
 
             <div className="course-content">
-                {loading ? (
-                    <Skeleton active />
-                ) : (
-                    <>
-                        {activeTabKey === "1" && <About />}
-                        {activeTabKey === "2" && course && <Content course={course} />}
-                        {activeTabKey === "3" && <ReviewPage />}
-                        {activeTabKey === "4" && <Instructor />}
-                    </>
-                )}
+                {loading ? <Skeleton active /> : tabItems.find(item => item.key === activeTabKey)?.children}
             </div>
         </div>
     );

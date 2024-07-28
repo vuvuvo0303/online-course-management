@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { Table, TableProps, Tag, Button, Modal, TabsProps, Tabs } from "antd";
 import { getColorPayout } from "../../../consts/index";
 import { createStyles } from "antd-style";
+import LoadingComponent from "../../../components/loading";
 const useStyle = createStyles(({ token }) => ({
     "my-modal-body": {
         background: token.blue1,
@@ -49,23 +50,6 @@ const InstructorManagePayout = () => {
         footer: styles["my-modal-footer"],
         content: styles["my-modal-content"],
     };
-    const modalStyles = {
-        // header: {
-        //     borderLeft: `5px solid ${token.colorPrimary}`,
-        //     borderRadius: 0,
-        //     paddingInlineStart: 5,
-        // },
-        // body: {
-        //     boxShadow: 'inset 0 0 5px #999',
-        //     borderRadius: 5,
-        // },
-        // mask: {
-        //     backdropFilter: 'blur(10px)',
-        // },
-        // content: {
-        //     boxShadow: '0 0 30px #999',
-        // },
-    };
 
     const getPayoutsByInstructor = async () => {
         setLoading(true);
@@ -80,14 +64,12 @@ const InstructorManagePayout = () => {
     }, [statusPayout]);
 
     if (loading) {
-        return (
-            <>
-                <p className="items-center text-center">Loading ...</p>
-            </>
-        );
+        return (<>
+            <LoadingComponent />
+        </>)
     }
     const handleRequestPayout = async (payout_id: string, status: string, comment?: string) => {
-        const res = await updateStatusPayout(payout_id, status, comment)
+        const res = await updateStatusPayout(payout_id, status, getPayouts, comment)
         console.log("handleRequestPayout: ", res)
         getPayoutsByInstructor();
     }
@@ -231,14 +213,13 @@ const InstructorManagePayout = () => {
                 onCancel={() => toggleModal(0, false)}
                 footer=""
                 classNames={classNames}
-                styles={modalStyles}
             >
                 {transactions.map((transaction) => (
                     <div className="bg-white" key={transaction._id}>
                         <p>Price: {transaction.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                         <p>Discount: {transaction.discount}%</p>
                         <p>Price Paid: {transaction.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
-                        <p>Created At: {format(new Date(transaction.created_at), "dd/MM/yyyy")}</p>
+                        <p>Created Date: {format(new Date(transaction.created_at), "dd/MM/yyyy")}</p>
                     </div>
                 ))}
             </Modal>
@@ -247,7 +228,7 @@ const InstructorManagePayout = () => {
                 <Tabs defaultActiveKey={statusPayout} items={items} onChange={onChange} />
                 {
                     statusPayout === "new" ? <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
-                    : <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columnsNotAction} />
+                        : <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columnsNotAction} />
                 }
             </div>
         </>

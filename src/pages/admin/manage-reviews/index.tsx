@@ -1,12 +1,13 @@
-import { Breadcrumb, message, Pagination, Popconfirm, Rate, Table } from "antd";
+import { Pagination, Popconfirm, Rate, Table } from "antd";
 import type { PaginationProps, TablePaginationConfig, TableProps } from "antd";
 import { useCallback, useEffect, useState } from "react";
-import { DeleteOutlined, HomeOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 import { Review } from "../../../models";
-import axiosInstance from "../../../services/axiosInstance.ts";
-import { API_DELETE_REVIEW, API_GET_REVIEWS, paths } from "../../../consts";
+import { API_GET_REVIEWS, paths } from "../../../consts";
 import { format } from "date-fns";
-
+import CustomBreadcrumb from "../../../components/breadcrumb";
+import { axiosInstance, deleteReview } from "../../../services";
+import LoadingComponent from "../../../components/loading";
 const AdminManageFeedbacks: React.FC = () => {
   const [data, setData] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -18,52 +19,35 @@ const AdminManageFeedbacks: React.FC = () => {
   });
 
   useEffect(() => {
-    fetchReviews();
-  }, [pagination.current, pagination.pageSize]);
+    getReviews();
+  }, [pagination.pageSize, pagination.current]);
 
-  const fetchReviews = useCallback(async () => {
-    try {
-      const response = await axiosInstance.post(API_GET_REVIEWS, {
-        searchCondition: {
-          course_id: "",
-          rating: 0,
-          is_instructor: false,
-          is_rating_order: false,
-          is_deleted: false,
-        },
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
-        },
-      });
-      setData(response.data.pageData);
+  const getReviews = useCallback(async () => {
+    const response = await axiosInstance.post(API_GET_REVIEWS, {
+      searchCondition: {
+        course_id: "",
+        rating: 0,
+        is_instructor: false,
+        is_rating_order: false,
+        is_deleted: false,
+      },
+      pageInfo: {
+        pageNum: pagination.current,
+        pageSize: pagination.pageSize,
+      },
+    });
+    setData(response.data.pageData);
 
-      setPagination({
-        ...pagination,
-        total: response.data.pageInfo.totalItems,
-        current: response.data.pageInfo.pageNum,
-        pageSize: response.data.pageInfo.pageSize,
-      });
-    } catch (error) {
-      //
-    } finally {
-      setLoading(false);
-    }
+    setPagination({
+      ...pagination,
+      total: response.data.pageInfo.totalItems,
+      current: response.data.pageInfo.pageNum,
+      pageSize: response.data.pageInfo.pageSize,
+    });
+    setLoading(false);
   }, []);
 
-  const handleDeleteReview = useCallback(
-    async (_id: string, reviewer_name: string, course_name: string) => {
-      try {
-        await axiosInstance.delete(`${API_DELETE_REVIEW}/${_id}`);
-        setData((prevReview) => prevReview.filter((review) => review._id === _id));
-        message.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
-        fetchReviews();
-      } catch {
-        //
-      }
-    },
-    [fetchReviews]
-  );
+
   const handleTableChange = (pagination: PaginationProps) => {
     const newPagination: { current: number; pageSize: number; total: number } = {
       current: pagination.current ?? 1,
@@ -122,7 +106,7 @@ const AdminManageFeedbacks: React.FC = () => {
           <Popconfirm
             title="Delete the User"
             description="Are you sure to delete this User?"
-            onConfirm={() => handleDeleteReview(record._id, record.reviewer_name, record.course_name)}
+            onConfirm={() => deleteReview(record._id, record.reviewer_name, record.course_name, getReviews)}
             okText="Yes"
             cancelText="No"
           >
@@ -137,22 +121,14 @@ const AdminManageFeedbacks: React.FC = () => {
   ];
 
   if (loading) {
-    return <p className="text-center">Loading...</p>;
+    return (<>
+      <LoadingComponent />
+    </>)
   }
+
   return (
     <div>
-      <Breadcrumb
-        className="py-2"
-        items={[
-          {
-            title: <HomeOutlined />,
-            href: paths.ADMIN_HOME,
-          },
-          {
-            title: "Manage Feedbacks",
-          },
-        ]}
-      />
+      <CustomBreadcrumb currentTitle="Manage Review" currentHref={paths.ADMIN_HOME} />
       <Table
         rowKey={(record: Review) => record._id}
         columns={columns}

@@ -8,7 +8,7 @@ import { API_DELETE_SESSION, API_GET_COURSES, API_GET_SESSIONS } from "../../con
 import { useDebounce } from "../../hooks";
 import { format } from "date-fns";
 import { getUserFromLocalStorrage } from "../../services/auth.ts";
-
+import LoadingComponent from "../../components/loading";
 const ManageAllSession = () => {
     const [keyword, setKeyword] = useState<string>('');
     const [open, setOpen] = useState(false);
@@ -133,8 +133,10 @@ const ManageAllSession = () => {
     }, [userId, role, is_deleted, keyword, debouncedSearchTerm, course_id]);
 
 
-    if (loading === true) {
-        return <div className="text-center">Loading...</div>;
+    if (loading) {
+        return (<>
+            <LoadingComponent />
+        </>)
     }
 
     const columns: TableProps["columns"] = [
@@ -247,8 +249,8 @@ const ManageAllSession = () => {
                         options={[
                             {
                                 options: [
-                                    { label: <span>true</span>, value: true },
-                                    { label: <span>false</span>, value: false },
+                                    { label: <span>Deleted</span>, value: true },
+                                    { label: <span>Existing</span>, value: false },
                                 ],
                             },
                         ]}
