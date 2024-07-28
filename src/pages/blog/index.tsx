@@ -1,43 +1,28 @@
 import { useEffect, useState } from 'react';
 import { Blog } from '../../models';
 import styles from './blog.module.css';
-import axiosInstance from '../../services/axiosInstance';
-import { API_CLIENT_GET_BLOGS } from '../../consts';
 import { useNavigate } from 'react-router-dom';
+import { getBlogs, handleGetBlogDetail } from '../../services';
 
 const BlogList: React.FC = () => {
     const [dataBlogs, setDataBlogs] = useState<Blog[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
 
-    const getBlogs = async () => {
-        const response = await axiosInstance.post(API_CLIENT_GET_BLOGS,
-            {
-                "searchCondition": {
-                    "category_id": "",
-                    "is_deleted": false
-                },
-                "pageInfo": {
-                    "pageNum": 1,
-                    "pageSize": 100
-                }
-            }
-        );
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        const response = await getBlogs();
         setDataBlogs(response.data.pageData);
         setLoading(false);
-    };
+    }
 
-    useEffect(() => {
-        getBlogs();
-    }, []);
 
     if (loading) {
         return <p className={styles.loading}>Loading...</p>;
     }
-
-    const handleGetBlogDetail = (_id: string) => {
-        navigate(`/blog/${_id}`);
-    };
 
     return (
         <>
@@ -51,7 +36,7 @@ const BlogList: React.FC = () => {
                 {dataBlogs.map(blog => (
                     <div
                         key={blog._id}
-                        onClick={() => handleGetBlogDetail(blog._id)}
+                        onClick={() => handleGetBlogDetail(blog._id, navigate)}
                         className={styles.blog_card}
                     >
                         <div className={styles.blog_card_border}>

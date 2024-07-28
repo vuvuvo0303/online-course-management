@@ -1,5 +1,5 @@
-import { FileDoneOutlined, HomeOutlined, PlaySquareOutlined, TeamOutlined } from "@ant-design/icons";
-import { Badge, Breadcrumb, Card, Col, Image, Rate, Row } from "antd";
+import { FileDoneOutlined, PlaySquareOutlined, TeamOutlined } from "@ant-design/icons";
+import { Badge, Card, Col, Image, Rate, Row } from "antd";
 import { Link } from "react-router-dom";
 import { UserChart } from "../chart/userchart";
 import { RevenueChart } from "../chart/revenuechart";
@@ -8,38 +8,35 @@ import top2 from "../../../assets/top2.png";
 import top3 from "../../../assets/top3.png";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance";
-import { API_CLIENT_GET_COURSES } from "../../../consts/index";
-import { Course } from "models/Course";
+import { API_CLIENT_GET_COURSES, paths } from "../../../consts/index";
+import { Course } from "../../../models/Course";
+import CustomBreadcrumb from "../../../components/breadcrumb";
 
 const AdminDashboard: React.FC = () => {
   const [topCourses, setTopCourses] = useState([]);
 
   const fetchTop3Course = async () => {
-    try {
-      const res = await axiosInstance.post(API_CLIENT_GET_COURSES, {
-        searchCondition: {
-          keyword: "",
-          category_id: "",
-          is_deleted: false,
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 1000, // Increase the page size to fetch all courses
-        },
-      });
+    const res = await axiosInstance.post(API_CLIENT_GET_COURSES, {
+      searchCondition: {
+        keyword: "",
+        category_id: "",
+        is_deleted: false,
+      },
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 1000, // Increase the page size to fetch all courses
+      },
+    });
 
-      const courses = res.data.pageData || [];
+    const courses = res.data.pageData || [];
 
-      // Sort courses by number of sales in descending order
-      const sortedCourses = courses.sort((a, b) => b.total_sold - a.total_sold);
+    // Sort courses by number of sales in descending order
+    const sortedCourses = courses.sort();
 
-      // Take the top 3 courses
-      const top3Courses = sortedCourses.slice(0, 3);
+    // Take the top 3 courses
+    const top3Courses = sortedCourses.slice(0, 3);
 
-      setTopCourses(top3Courses);
-    } catch (err) {
-      console.error("Error fetching courses:", err);
-    }
+    setTopCourses(top3Courses);
   };
 
   useEffect(() => {
@@ -48,18 +45,7 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb
-        className="py-2"
-        items={[
-          {
-            href: "",
-            title: <HomeOutlined />,
-          },
-          {
-            title: "Dashboard",
-          },
-        ]}
-      />
+      <CustomBreadcrumb currentTitle="Dashboard" currentHref={paths.ADMIN_HOME} />
       <div className="flex justify-between drop-shadow-xl gap-4">
         <Badge.Ribbon text="FLearn" color="blue">
           <Card title="Total courses in the system" bordered={false} style={{ width: 300 }}>
