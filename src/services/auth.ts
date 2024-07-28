@@ -1,7 +1,7 @@
 import axiosInstance from "./axiosInstance.ts";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { API_LOGIN, paths, roles} from "../consts";
+import { API_CURRENT_LOGIN_USER, API_LOGIN, API_LOGIN_WITH_GOOGLE, API_REGISTER_WITH_GOOGLE, paths, roles} from "../consts";
 import {User} from "models/User.ts";
 import { message } from "antd";
 
@@ -20,7 +20,6 @@ export function getUserFromLocalStorrage(){
 
 export async function login(email: string, password: string){
 
-  try {
     const response = await axiosInstance.post(API_LOGIN, { email, password });
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
@@ -48,11 +47,47 @@ export async function login(email: string, password: string){
         message.error("Invalid user role");
       }
     }
-
-  } catch (error) {
-    //
-  }
 }
+
+export const loginWithGoogle = async (googleId: string, navigate: ReturnType<typeof useNavigate>, setIsModalVisible: (visible: boolean) => void) => {
+  try {
+    const responseLogin = await axiosInstance.post(API_LOGIN_WITH_GOOGLE, {
+      google_id: googleId,
+    });
+    localStorage.setItem("token", responseLogin.data.token);
+    const currentUser = await axiosInstance.get(API_CURRENT_LOGIN_USER);
+    localStorage.setItem("user", JSON.stringify(currentUser.data));
+    message.success("Login successfully");
+    navigate(paths.HOME);
+  } catch (error) {
+    setIsModalVisible(true);
+  }
+};
+
+export const registerWithGoogle = async (
+  googleId: string,
+  role: string,
+  additionalFields: {
+    description: string;
+    phone_number: string;
+    video: string;
+  },
+  navigate: ReturnType<typeof useNavigate>
+) => {
+  await axiosInstance.post(API_REGISTER_WITH_GOOGLE, {
+    google_id: googleId,
+    role: role,
+    ...additionalFields,
+  });
+  const responseLogin = await axiosInstance.post(API_LOGIN_WITH_GOOGLE, {
+    google_id: googleId,
+  });
+  localStorage.setItem("token", responseLogin.data.token);
+  const currentUser = await axiosInstance.get(API_CURRENT_LOGIN_USER);
+  localStorage.setItem("user", JSON.stringify(currentUser.data));
+  message.success("Registered and logged in successfully");
+  navigate(paths.HOME);
+};
 
 
 export const handleNavigateRole = async (token: string, navigate: ReturnType<typeof useNavigate>) => {

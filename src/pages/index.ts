@@ -53,5 +53,5 @@ export { default as AdminCategoryDetail } from "./admin/manage-categories/detail
 export { default as AdminManageCourses } from "./admin/manage-course";
 export { default as AdminManageFeedbacks } from "./admin/manage-reviews";
 export { default as Dashboard } from "../components/dashboard/index";
-export { default as AdminPayouts } from "./admin/manage_payouts"
+export { default as AdminPayouts } from "./admin/manage-payouts";
 

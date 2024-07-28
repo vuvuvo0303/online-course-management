@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Form,
   Input,
@@ -11,21 +11,18 @@ import {
   TableColumnsType,
   TablePaginationConfig,
 } from "antd";
-import { Breadcrumb, Button, Image, Table } from "antd";
+import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
-import axiosInstance from "../../../services/axiosInstance.ts";
+import { axiosInstance, getCategories, getUserFromLocalStorrage, deleteBlog } from "../../../services";
 import {
-  API_DELETE_BLOG,
   API_GET_BLOGS,
   API_CREATE_BLOG,
   API_UPDATE_BLOG,
   paths,
   API_GET_BLOG,
-} from "../../../consts/index.ts";
+} from "../../../consts";
 import { format } from "date-fns";
-import { getCategories } from "../../../services/category.ts";
-import { getUserFromLocalStorrage } from "../../../services/auth.ts";
-// import useDebounce from "../../../hooks/useDebounce.ts";
+import CustomBreadcrumb from "../../../components/breadcrumb";
 
 const AdminManageBlogs: React.FC = () => {
   const [dataBlogs, setDataBlogs] = useState<Blog[]>([]);
@@ -36,99 +33,76 @@ const AdminManageBlogs: React.FC = () => {
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0 });
   const [categories, setCategories] = useState<Category[]>([]);
   const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
-  // const debouncedSearch = useDebounce(searchText, 500);
-  // const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      await getBlogs();
-      const categoriesData = await getCategories();
-      setCategories(categoriesData);
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+    fetchCategories();
+  }, [])
+
   useEffect(() => {
     getBlogs();
   }, [pagination.current, pagination.pageSize]);
 
-  const handleDelete = async (id: string, title: string) => {
-    try {
-      await axiosInstance.delete(`${API_DELETE_BLOG}/${id}`);
-      message.success(`Deleted blog ${title} successfully`);
-      await getBlogs();
-    } catch (error) {
-      //
-    }
+
+  const fetchCategories = async () => {
+    const categories = await getCategories();
+    setCategories(categories);
   };
 
   const getBlogs = async () => {
-    try {
-      const response = await axiosInstance.post(API_GET_BLOGS, {
-        searchCondition: {
-          category_id: "",
-          is_deleted: false,
-        },
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
-        },
-      });
-      setDataBlogs(response.data.pageData);
+    setLoading(true);
+    const response = await axiosInstance.post(API_GET_BLOGS, {
+      searchCondition: {
+        category_id: "",
+        is_deleted: false,
+      },
+      pageInfo: {
+        pageNum: pagination.current,
+        pageSize: pagination.pageSize,
+      },
+    });
+    setDataBlogs(response.data.pageData);
 
-      setPagination({
-        ...pagination,
-        total: response.data.pageInfo.totalItems,
-        current: response.data.pageInfo.pageNum,
-        pageSize: response.data.pageInfo.pageSize,
-      });
-    } catch (error) {
-      message.error("Failed to fetch blogs");
-    }
+    setPagination({
+      ...pagination,
+      total: response.data.pageInfo.totalItems,
+      current: response.data.pageInfo.pageNum,
+      pageSize: response.data.pageInfo.pageSize,
+    });
+    setLoading(false);
   };
 
   const handleUpdateClick = async (id: string) => {
     setIsUpdateMode(true);
     setIsModalVisible(true);
     setLoading(true);
-    try {
-      const response = await axiosInstance.get(`${API_GET_BLOG}/${id}`);
-      const blogData = response.data;
-      setCurrentBlog(blogData);
-      form.setFieldsValue({
-        name: blogData.name,
-        category_id: blogData.category_id,
-        image_url: blogData.image_url,
-        description: blogData.description,
-        content: blogData.content,
-      });
-    } catch (error) {
-      //
-    }
-    finally {
-      setLoading(false);
-    }
+    const response = await axiosInstance.get(`${API_GET_BLOG}/${id}`);
+    const blogData = response.data;
+    setCurrentBlog(blogData);
+    form.setFieldsValue({
+      name: blogData.name,
+      category_id: blogData.category_id,
+      image_url: blogData.image_url,
+      description: blogData.description,
+      content: blogData.content,
+    });
+    setLoading(false);
   };
 
   const handleSubmit = async (values: Blog) => {
-    try {
-      if (isUpdateMode && currentBlog) {
-        const user = getUserFromLocalStorrage();
-        const payload = { ...values, user_id: user._id }
-        await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
-        message.success("Blog updated successfully");
-      } else {
-        await axiosInstance.post(API_CREATE_BLOG, values);
-        message.success("Blog added successfully");
-      }
-      setIsModalVisible(false);
-      form.resetFields();
-      setIsUpdateMode(false);
-      setCurrentBlog(null);
-      await getBlogs();
-    } catch (error) {
-      //
+    if (isUpdateMode && currentBlog) {
+      const user = getUserFromLocalStorrage();
+      const payload = { ...values, user_id: user._id }
+      await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
+      message.success("Blog updated successfully");
+    } else {
+      await axiosInstance.post(API_CREATE_BLOG, values);
+      message.success("Blog added successfully");
     }
+    setIsModalVisible(false);
+    form.resetFields();
+    setIsUpdateMode(false);
+    setCurrentBlog(null);
+    await getBlogs();
   };
 
   const columns: TableColumnsType<Blog> = [
@@ -183,7 +157,7 @@ const AdminManageBlogs: React.FC = () => {
           <Popconfirm
             title="Delete the Blog"
             description="Are you sure to delete this Blog?"
-            onConfirm={() => handleDelete(record._id, record.name)}
+            onConfirm={() => deleteBlog(record._id, record.name, getBlogs)}
             okText="Yes"
             cancelText="No"
           >
@@ -214,26 +188,7 @@ const AdminManageBlogs: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between">
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              title: <HomeOutlined />,
-            },
-            {
-              href: paths.ADMIN_HOME,
-              title: (
-                <>
-                  <UserOutlined />
-                  <span>Admin</span>
-                </>
-              ),
-            },
-            {
-              title: "Manage Blogs",
-            },
-          ]}
-        />
+        <CustomBreadcrumb currentTitle="Manage Blogs" currentHref={paths.ADMIN_HOME} />
         <div className="py-2">
           <Button
             type="primary"

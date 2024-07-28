@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Button, Form, FormProps, Input, message } from 'antd';
 import { useNavigate } from "react-router-dom";
 import Login from "../../../assets/Login.png";
-import { login } from "../../../services/auth.ts";
 import { API_CURRENT_LOGIN_USER, paths } from "../../../consts";
-import axiosInstance from "../../../services/axiosInstance.ts";
+import { axiosInstance, login } from "../../../services";
 
 type FieldType = {
   email: string;

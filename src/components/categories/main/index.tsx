@@ -16,6 +16,7 @@ const Categories = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(false);
     const [courses, setCourses] = useState<Course[]>([]);
+    const [ratings, setRatings] = useState<number[]>([3, 4, 5]);
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
@@ -98,6 +99,18 @@ const Categories = () => {
         setSelectedCategory(filter);
     };
 
+    const handleRatingChange = (index: number, value: number) => {
+        const newRatings = [...ratings];
+        newRatings[index] = value;
+        setRatings(newRatings);
+    };
+
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        const target = e.target as HTMLImageElement;
+        target.onerror = null; // Prevent infinite loop if fallback also fails
+        target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'; // Fallback image
+    };
+
     return (
         <div className="categories-container">
             <div className="categories-content">
@@ -137,7 +150,7 @@ const Categories = () => {
                         infinite={true}
                         className="categories-carousel"
                     >
-                        {courses.map((course) => (
+                        {courses.map((course, index) => (
                             <div key={course._id} className="flex justify-center">
                                 <Card
                                     className="w-[20rem] mx-auto shadow-lg rounded-lg overflow-hidden"
@@ -147,35 +160,33 @@ const Categories = () => {
                                             <Link to={`/course/all-courses/course/${course._id}`}>
                                                 <img
                                                     alt="course"
-                                                    src={course.image_url}
-                                                    className="object-cover w-full h-full p-2"
-                                                    onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                                                        const target = e.target as HTMLImageElement;
-                                                        target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s';
-                                                    }}
+                                                    src={course.image_url || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'} // Fallback image
+                                                    className="w-full max-h-40 object-cover"
+                                                    onError={handleImageError}
                                                 />
                                             </Link>
+                                            <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">Best Seller</div>
                                         </div>
                                     }
                                 >
                                     <Meta
                                         className="truncate"
-                                        title={
-                                            <Link to={`/course/all-courses/course/${course._id}`} className="hover:underline">
-                                                {course.name}
-                                            </Link>
-                                        }
+                                        title={<Link to={`/course/all-courses/course/${course._id}`} className="hover:underline">{course.name}</Link>}
                                         description={course.instructor_name}
                                     />
                                     <div className="mt-2">
                                         <div className="flexCenter items-center text-sm">
                                             <span className="mr-2">{course.average_rating}</span>
-                                            <Rate value={course.average_rating} disabled />
+                                            <Rate
+                                                value={course.average_rating}
+                                                onChange={(value) => handleRatingChange(index, value)}
+                                                disabled
+                                            />
                                             <span className="ml-2 text-gray-500">({course.review_count})</span>
                                         </div>
                                         <div className="flexCenter items-baseline mt-2">
-                                            <div className="text-2xl text-gray-500 font-bold">₫{course.price_paid}</div>
-                                            <div className="text-xl text-gray-500 ml-2 line-through">₫{course.price}</div>
+                                            <div className="text-2xl text-gray-500 font-bold">{course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
+                                            <div className="text-xl text-gray-500 ml-2 line-through">{course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
                                         </div>
                                     </div>
                                 </Card>

@@ -9,7 +9,6 @@ interface CourseCardProps {
     detailedView?: boolean;
 }
 
-
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
 
     const handleAddToCart = async () => {
@@ -53,23 +52,33 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     <div><strong>Instructor:</strong> {course.instructor_name}</div>
                     <div><span className="text-sm">Last update:</span> {new Date(course.updated_at).toLocaleDateString()}</div>
                     <div className="flex flex-row gap-4">
-                        <div className="text-4xl">{course.price_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</div>
+                        <div className="text-4xl">{course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
                         <div className="text-2xl mt-[0.2rem]">
                             <span className="line-through">
-                                {course.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}
+                                {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                             </span>
                         </div>
                     </div>
                     <div className="text-xs">{course.discount}% off</div>
                     <div className="flex gap-4 mt-auto">
-                        <Link to='/cart'>
-                            <button onClick={handleAddToCart} className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
-                                <ShoppingCartOutlined className="mr-2" /> Add to Cart
-                            </button>
-                        </Link>
-                        <button className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
-                            Buy now
-                        </button>
+                        {course.is_purchased ? (
+                            <Link to='/study'>
+                                <button className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
+                                    Study now
+                                </button>
+                            </Link>
+                        ) : (
+                            <>
+                                <Link to='/cart'>
+                                    <button onClick={handleAddToCart} className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
+                                        <ShoppingCartOutlined className="mr-2" /> Add to Cart
+                                    </button>
+                                </Link>
+                                <button className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
+                                    Buy now
+                                </button>
+                            </>
+                        )}
                     </div>
                     <div className="text-xs mt-2">30-Day Money-Back Guarantee</div>
                 </div>

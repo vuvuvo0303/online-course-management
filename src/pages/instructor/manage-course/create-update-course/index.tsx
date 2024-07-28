@@ -5,19 +5,10 @@ import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Form, Input, message, Select } from 'antd';
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
-import { Editor } from '@tinymce/tinymce-react';
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import { getCategories } from "../../../../services/category.ts";
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 14 },
-    },
-};
+import TinyMCEEditorComponent from "components/tinyMCE/index.tsx";
+import { formItemLayout } from "../../../../layout/form";
 
 const InstructorCreateCourse: React.FC = () => {
     const [des, setDes] = useState<string>("");
@@ -31,6 +22,7 @@ const InstructorCreateCourse: React.FC = () => {
     // Fetch course
     useEffect(() => {
         const fetchCourse = async () => {
+            setLoading(true);
             try {
                 const response = await
                     axiosInstance.get(`${API_GET_COURSE}/${_id}`)
@@ -50,6 +42,8 @@ const InstructorCreateCourse: React.FC = () => {
                 }
             } catch (error) {
                 console.log("Error occurred: ", error);
+            } finally {
+                setLoading(false);
             }
         }
         if (_id) {
@@ -210,25 +204,7 @@ const InstructorCreateCourse: React.FC = () => {
                         label="Description"
                         name="description"
                     >
-                        <Editor
-                            apiKey="oppz09dr2j6na1m8aw9ihopacggkqdg19jphtdksvl25ol4k"
-                            init={{
-                                placeholder: "Description",
-                                height: 200,
-                                menubar: true,
-                                plugins: [
-                                    "advlist autolink lists link image charmap print preview anchor",
-                                    "searchreplace visualblocks code fullscreen textcolor",
-                                    "insertdatetime media table paste code help wordcount",
-                                ],
-                                forced_root_block: '', // Thiết lập này vô hiệu hóa thẻ <p>
-                                textcolor_rows: "4",
-                                toolbar:
-                                    "undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent",
-                                // Bạn có thể thêm các cấu hình khác nếu cần
-                            }}
-                            onEditorChange={handleEditorChange}
-                        />
+                        <TinyMCEEditorComponent value={value} onEditorChange={handleEditorChange} />
                     </Form.Item>
                     {
                         !_id && <Form.Item

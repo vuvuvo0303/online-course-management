@@ -87,7 +87,7 @@ const InstructorManagePayout = () => {
         );
     }
     const handleRequestPayout = async (payout_id: string, status: string, comment?: string) => {
-        const res = await updateStatusPayout(payout_id, status, comment)
+        const res = await updateStatusPayout(payout_id, status, comment, getPayouts)
         console.log("handleRequestPayout: ", res)
         getPayoutsByInstructor();
     }

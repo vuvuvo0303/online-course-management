@@ -144,9 +144,7 @@ const InstructorManagePurchase = () => {
     ];
 
     const handleCreatePayout = async () => {
-        console.log("purchasesChecked: ", purchasesChecked);
         const res = await createPayout(instructor_id, purchasesChecked)
-
         if (res.length > 0) {
             getPurchasesByInstructor();
         }
