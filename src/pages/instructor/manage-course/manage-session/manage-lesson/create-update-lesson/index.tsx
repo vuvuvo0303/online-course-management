@@ -6,12 +6,11 @@ import {
   Breadcrumb,
   Select,
   message,
-  // SelectProps, Tag
 } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Lessons, Session } from "../../../../../../models/index.ts";
 import { HomeOutlined } from "@ant-design/icons";
-import axiosInstance from "../../../../../../services/axiosInstance.ts";
+import { axiosInstance, getUserFromLocalStorrage } from "../../../../../../services";
 import {
   API_CREATE_LESSON,
   API_GET_COURSES,
@@ -21,9 +20,7 @@ import {
   API_UPDATE_LESSON,
   paths,
 } from "../../../../../../consts";
-import { Editor } from "@tinymce/tinymce-react";
-import { getUserFromLocalStorrage } from "../../../../../../services/auth.ts";
-// import { Editor } from '@tinymce/tinymce-react';
+import TinyMCEEditorComponent from "../../../../../../components/tinyMCE";
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -193,7 +190,6 @@ const CreateUpdateLesson: React.FC = () => {
     }
   };
   const handleChangeCourseId = (value: string) => {
-    console.log("onchange value: ", value);
     setCourse_id(value);
   };
 
@@ -306,25 +302,7 @@ const CreateUpdateLesson: React.FC = () => {
               label="Description"
               name="description"
             >
-              <Editor
-                apiKey="oppz09dr2j6na1m8aw9ihopacggkqdg19jphtdksvl25ol4k"
-                init={{
-                  placeholder: "Description",
-
-                  height: 200,
-                  menubar: true,
-                  plugins: [
-                    "advlist autolink lists link image charmap print preview anchor",
-                    "searchreplace visualblocks code fullscreen textcolor ",
-                    "insertdatetime media table paste code help wordcount",
-                  ],
-                  textcolor_rows: "4",
-
-                  toolbar:
-                    "undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent ",
-                }}
-                onEditorChange={handleEditorChange}
-              ></Editor>
+              <TinyMCEEditorComponent value={value} onEditorChange={handleEditorChange} />
             </Form.Item>
 
 

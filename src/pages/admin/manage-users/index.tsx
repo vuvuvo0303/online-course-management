@@ -40,7 +40,7 @@ import {
   paths,
 } from "../../../consts";
 import ResponseData from "models/ResponseData.ts";
-import { useDebounce } from "../../../hooks/index.ts";
+import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import { axiosInstance, changeStatusUser, changeUserRole, deleteUser } from "../../../services";
 

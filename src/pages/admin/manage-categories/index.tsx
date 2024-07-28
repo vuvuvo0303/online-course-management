@@ -1,30 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
-import {
-  Button,
-  Input,
-  Space,
-  Table,
-  Modal,
-  Form,
-  Pagination,
-  Popconfirm,
-  Spin,
-  Select,
-  message,
-} from "antd";
+import { Button, Input, Space, Table, Modal, Form, Pagination, Popconfirm, Spin, Select, message, } from "antd";
 import { DeleteOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import { Category } from "../../../models";
 import { axiosInstance } from "../../../services";
 import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
-import {
-  API_CREATE_CATEGORY,
-  API_DELETE_CATEGORY,
-  API_GET_CATEGORIES,
-  API_UPDATE_CATEGORY,
-  paths,
-} from "../../../consts";
+import { API_CREATE_CATEGORY, API_DELETE_CATEGORY, API_GET_CATEGORIES, API_UPDATE_CATEGORY, paths } from "../../../consts";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 const AdminManageCategories: React.FC = () => {
@@ -161,7 +143,6 @@ const AdminManageCategories: React.FC = () => {
           <Form
             form={form}
             onFinish={(values) => {
-              console.log("Updating with values:", values);
               updateCategory(values, category.created_at);
             }}
             initialValues={{
@@ -222,38 +203,33 @@ const AdminManageCategories: React.FC = () => {
 
   const addNewCategory = useCallback(
     async (values: Omit<Category, "_id">) => {
-      try {
-        setLoading(true);
+      setLoading(true);
 
-        let parentCategoryId = null;
-        if (values.parent_category_id) {
-          const parentCategory = dataCategories.find(
-            (category) => category.name === values.parent_category_id
-          );
-          if (parentCategory) {
-            parentCategoryId = parentCategory._id;
-          }
+      let parentCategoryId = null;
+      if (values.parent_category_id) {
+        const parentCategory = dataCategories.find(
+          (category) => category.name === values.parent_category_id
+        );
+        if (parentCategory) {
+          parentCategoryId = parentCategory._id;
         }
-
-        const categoryData = {
-          ...values,
-          parent_category_id: parentCategoryId,
-        };
-
-        const response = await axiosInstance.post(API_CREATE_CATEGORY, categoryData);
-        if (response.data) {
-          const newCategory = response.data;
-          setDataCategories((prevData) => [...prevData, newCategory]);
-          form.resetFields();
-          fetchCategories();
-          message.success(`Category ${values.name} created successfully.`);
-          setIsModalVisible(false);
-        }
-      } catch (error) {
-        //handle error add new category
-      } finally {
-        setLoading(false);
       }
+
+      const categoryData = {
+        ...values,
+        parent_category_id: parentCategoryId,
+      };
+
+      const response = await axiosInstance.post(API_CREATE_CATEGORY, categoryData);
+      if (response.data) {
+        const newCategory = response.data;
+        setDataCategories((prevData) => [...prevData, newCategory]);
+        form.resetFields();
+        fetchCategories();
+        message.success(`Category ${values.name} created successfully.`);
+        setIsModalVisible(false);
+      }
+      setLoading(false);
     },
     [dataCategories, form, fetchCategories]
   );

@@ -58,31 +58,27 @@ const AdminManageCourses: React.FC = () => {
     setComment(e.target.value);
   };
   const fetchLog = async () => {
-    try {
-      setLogLoading(true);
-      const response = await axiosInstance.post(API_COURSE_LOGS, {
-        searchCondition: {
-          course_id: courseId,
-          keyword: keywordLogStatus,
-          old_status: oldStatus,
-          new_status: newStatus,
-          is_deleted: false,
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 100,
-        },
-      });
-      if (response) {
-        setLogs(
-          response.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
-            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-          })
-        );
-        setLogLoading(false);
-      }
-    } catch (error) {
-      //
+    setLogLoading(true);
+    const response = await axiosInstance.post(API_COURSE_LOGS, {
+      searchCondition: {
+        course_id: courseId,
+        keyword: keywordLogStatus,
+        old_status: oldStatus,
+        new_status: newStatus,
+        is_deleted: false,
+      },
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 100,
+      },
+    });
+    if (response) {
+      setLogs(
+        response.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        })
+      );
+      setLogLoading(false);
     }
   };
   useEffect(() => {
@@ -347,7 +343,7 @@ const AdminManageCourses: React.FC = () => {
     setNewStatus(value);
   };
 
-  const options = [
+  const statusOptions = [
     { label: <span>new</span>, value: "new" },
     { label: <span>waiting_approve</span>, value: "waiting_approve" },
     { label: <span>approve</span>, value: "approve" },
@@ -386,18 +382,7 @@ const AdminManageCourses: React.FC = () => {
             style={{ width: 200 }}
             className="m-5"
             onChange={handleChangeOldStatus}
-            options={[
-              {
-                options: [
-                  { label: <span>new</span>, value: "new" },
-                  { label: <span>waiting approve</span>, value: "waiting_approve" },
-                  { label: <span>approve</span>, value: "approve" },
-                  { label: <span>reject</span>, value: "reject" },
-                  { label: <span>active</span>, value: "active" },
-                  { label: <span>inactive</span>, value: "inactive" },
-                ],
-              },
-            ]}
+            options={[{ statusOptions }]}
           />
           {/* Filter log by new status */}
           <Select
@@ -405,18 +390,7 @@ const AdminManageCourses: React.FC = () => {
             style={{ width: 200 }}
             className="m-5"
             onChange={handleChangeNewStatus}
-            options={[
-              {
-                options: [
-                  { label: <span>new</span>, value: "new" },
-                  { label: <span>waiting_approve</span>, value: "waiting_approve" },
-                  { label: <span>approve</span>, value: "approve" },
-                  { label: <span>reject</span>, value: "reject" },
-                  { label: <span>active</span>, value: "active" },
-                  { label: <span>inactive</span>, value: "inactive" },
-                ],
-              },
-            ]}
+            options={[{ statusOptions }]}
           />
           <div>
             {logLoading === false ? (
