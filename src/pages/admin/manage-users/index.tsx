@@ -39,11 +39,10 @@ import {
   API_UPDATE_USER,
   paths,
 } from "../../../consts";
-import axiosInstance from "../../../services/axiosInstance.ts";
 import ResponseData from "models/ResponseData.ts";
 import { useDebounce } from "../../../hooks/index.ts";
-import { changeStatusUser, changeUserRole, deleteUser } from "../../../services/users.ts";
-import CustomBreadcrumb from "../../../components/breadcrumb/index.tsx";
+import CustomBreadcrumb from "../../../components/breadcrumb";
+import { axiosInstance, changeStatusUser, changeUserRole, deleteUser } from "../../../services";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -188,8 +187,9 @@ const AdminManageUsers: React.FC = () => {
   const handleRoleChangeModal = (value: string) => {
     setRoleForModal(value);
   };
-  const handlePaginationChange = (page: number, pageSize: number) => {
+  const handlePaginationChange = async (page: number, pageSize: number) => {
     setPagination({ ...pagination, current: page, pageSize });
+    await getUsers();
   };
   const handleAddClick = () => {
     setModalMode("Add");

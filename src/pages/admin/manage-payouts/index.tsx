@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import axiosInstance from "../../../services/axiosInstance.ts";
-import { API_GET_PAYOUTS, API_UPDATE_STATUS_PAYOUT, paths } from "../../../consts/index.ts";
+import { API_GET_PAYOUTS, paths } from "../../../consts";
 import {
   Button,
   Input,
@@ -12,13 +11,13 @@ import {
   TableColumnsType,
   TablePaginationConfig,
   Tag,
-  message,
 } from "antd";
 import { format } from "date-fns";
 import { SearchOutlined } from "@ant-design/icons";
 import { Payout } from "models/Payout.ts";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
+import { axiosInstance, updateStatusPayout } from "../../../services";
 
 const AdminManagePayouts: React.FC = () => {
   const [dataPayouts, setDataPayouts] = useState<Payout[]>([]);
@@ -70,15 +69,6 @@ const AdminManagePayouts: React.FC = () => {
     return <p className="text-center">Loading...</p>;
   }
 
-  const handleStatusChange = async (id: string, status: string) => {
-    try {
-      await axiosInstance.put(`${API_UPDATE_STATUS_PAYOUT}/${id}`, { status });
-      message.success(`Payout status updated to ${status}`);
-      await getPayouts();
-    } catch (error) {
-      //
-    }
-  };
 
   const handleTableChange = async (pagination: PaginationProps) => {
     setPagination({
@@ -171,10 +161,10 @@ const AdminManagePayouts: React.FC = () => {
       width: "20%",
       render: (record: Payout) => (
         <div className="flex gap-2">
-          <Button type="primary" onClick={() => handleStatusChange(record._id, "completed")}>
+          <Button type="primary" onClick={() => updateStatusPayout(record._id, "completed", getPayouts)}>
             Completed
           </Button>
-          <Button type="primary" danger onClick={() => handleStatusChange(record._id, "rejected")}>
+          <Button type="primary" danger onClick={() => updateStatusPayout(record._id, "rejected", getPayouts)}>
             Rejected
           </Button>
         </div>

@@ -19,12 +19,12 @@ import {
   Tag,
 } from "antd";
 import { API_COURSE_LOGS, API_COURSE_STATUS, API_GET_COURSES, getColor, paths } from "../../../consts";
-import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
 import { Course, Log } from "../../../models";
 import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
-import CustomBreadcrumb from "components/breadcrumb/index.tsx";
+import CustomBreadcrumb from "../../../components/breadcrumb";
+import { axiosInstance } from "../../../services";
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [changeStatus, setChangeStatus] = useState<string>("");
@@ -86,40 +86,35 @@ const AdminManageCourses: React.FC = () => {
     }
   };
   useEffect(() => {
-    //fetch logs
     if (courseId) {
       fetchLog();
     }
   }, [courseId, oldStatus, newStatus, keywordLogStatus, setLogLoading, setLogs]);
   const fetchCourses = useCallback(async () => {
-    try {
-      const params = {
-        searchCondition: {
-          keyword: debouncedSearchTerm,
-          category_id: categoryId,
-          status: status,
-          is_deleted: false,
-        },
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
-        },
-      };
-      const response = await axiosInstance.post(API_GET_COURSES, params);
-      if (response.data) {
-        setCourses(response.data.pageData || response.data);
-        setPagination((prev) => ({
-          ...prev,
-          total: response.data.pageInfo?.totalItems || response.data.length,
-          current: response.data.pageInfo?.pageNum || 1,
-          pageSize: response.data.pageInfo?.pageSize || response.data.length,
-        }));
-      }
-    } catch (error) {
-      //
-    } finally {
-      setLoading(false);
+    setLoading(true)
+    const params = {
+      searchCondition: {
+        keyword: debouncedSearchTerm,
+        category_id: categoryId,
+        status: status,
+        is_deleted: false,
+      },
+      pageInfo: {
+        pageNum: pagination.current,
+        pageSize: pagination.pageSize,
+      },
+    };
+    const response = await axiosInstance.post(API_GET_COURSES, params);
+    if (response.data) {
+      setCourses(response.data.pageData || response.data);
+      setPagination((prev) => ({
+        ...prev,
+        total: response.data.pageInfo?.totalItems || response.data.length,
+        current: response.data.pageInfo?.pageNum || 1,
+        pageSize: response.data.pageInfo?.pageSize || response.data.length,
+      }));
     }
+    setLoading(false);
   }, [categoryId, pagination.current, pagination.pageSize, searchText, status, debouncedSearchTerm]);
 
   useEffect(() => {
@@ -351,6 +346,16 @@ const AdminManageCourses: React.FC = () => {
     setOldStatus("");
     setNewStatus(value);
   };
+
+  const options = [
+    { label: <span>new</span>, value: "new" },
+    { label: <span>waiting_approve</span>, value: "waiting_approve" },
+    { label: <span>approve</span>, value: "approve" },
+    { label: <span>reject</span>, value: "reject" },
+    { label: <span>active</span>, value: "active" },
+    { label: <span>inactive</span>, value: "inactive" },
+  ];
+
   return (
     <div className="container mx-auto p-4">
       <Modal
@@ -523,7 +528,7 @@ const AdminManageCourses: React.FC = () => {
           </Button>
         </div>
       </Modal>
-      <CustomBreadcrumb currentTitle="Manage Course" currentHref={paths.ADMIN_HOME} />
+      <CustomBreadcrumb currentTitle="Manage Courses" currentHref={paths.ADMIN_HOME} />
 
       {/* Filters and Search */}
       <Space className="flex flex-wrap  mb-4">

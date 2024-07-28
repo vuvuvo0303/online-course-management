@@ -4,7 +4,7 @@ import {paths, roles} from "../consts";
 import { message } from "antd";
 import { getUserFromLocalStorrage } from "./auth.ts";
 
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
     baseURL: config.BASE_URL,
     headers: {
         'Content-Type': 'application/json',
