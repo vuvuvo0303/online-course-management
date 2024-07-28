@@ -2,7 +2,7 @@ import { Payout, Transaction } from "../../../models";
 import { useEffect, useState } from "react";
 import { getPayouts, updateStatusPayout } from "../../../services";
 import { format } from "date-fns";
-import { Table, TableProps, Tag, Button, Modal, TabsProps, Tabs } from "antd";
+import { Table, TableProps, Tag, Button, Modal, TabsProps, Tabs, message } from "antd";
 import { getColorPayout } from "../../../consts/index";
 import { createStyles } from "antd-style";
 import LoadingComponent from "../../../components/loading";
@@ -68,9 +68,10 @@ const InstructorManagePayout = () => {
             <LoadingComponent />
         </>)
     }
-    const handleRequestPayout = async (payout_id: string, status: string, comment?: string) => {
-        const res = await updateStatusPayout(payout_id, status, getPayouts, comment)
+    const handleRequestPayout = async (payout_id: string, status: string, comment: string) => {
+        const res = await updateStatusPayout(payout_id, status, comment)
         console.log("handleRequestPayout: ", res)
+        message.success(`Send Request Successfully!`)
         getPayoutsByInstructor();
     }
 
@@ -145,7 +146,7 @@ const InstructorManagePayout = () => {
         },
         {
             key: 'completed',
-            label: 'completed',
+            label: 'Completed',
         },
         {
             key: 'rejected',

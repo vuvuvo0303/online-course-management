@@ -49,13 +49,15 @@ export const getPayouts = async (payout_no: string, instructor_id: string, statu
 }
 
 //PAYOUT-03 Update Status Payout (Admin, Instructor)
-export const updateStatusPayout = async (payout_id: string, status: string,
-    getPayouts: () => Promise<void>,
-    comment: string) => {
-    await axiosInstance.put(`${API_UPDATE_STATUS_PAYOUT}/${payout_id}`, {
-        "status": status,
-        "comment": comment
-    })
-    message.success("Change Payout Status successfully")
-    await getPayouts();
+export const updateStatusPayout = async (payout_id: string, status: string, comment: string) => {
+    try {
+        const response = await axiosInstance.put(`${API_UPDATE_STATUS_PAYOUT}/${payout_id}`, {
+            "status": status,
+            "comment": comment
+        })
+        return response
+    } catch (error) {
+        console.log("updateStatusPayout- Error occurred: ", error)
+        return;
+    }
 }

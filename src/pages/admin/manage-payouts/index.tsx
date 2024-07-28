@@ -2,7 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { API_GET_PAYOUTS, paths } from "../../../consts";
 import {
   Button,
+  Form,
   Input,
+  message,
+  Modal,
   Pagination,
   PaginationProps,
   Select,
@@ -19,13 +22,43 @@ import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import { axiosInstance, updateStatusPayout } from "../../../services";
 import LoadingComponent from "../../../components/loading";
+import TextArea from "antd/es/input/TextArea";
+
 const AdminManagePayouts: React.FC = () => {
   const [dataPayouts, setDataPayouts] = useState<Payout[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
   const debouncedSearch = useDebounce(searchText, 500);
   const [statusFilter, setStatusFilter] = useState<string>("request_payout");
+  const [dataRejectPayout, setDataRejectPayout] = useState<{ id: string, status: string }>({ id: "", status: "" });
+  const [comment, setComment] = useState<string>("");
+  // modal to show reject's comment request payout
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const showModal = (id: string, status: string) => {
+    setOpen(true);
+    setDataRejectPayout({ id, status })
+  };
 
+  const handleOk = async () => {
+    if (comment != "") {
+      setLoading(true)
+      await handleUpdateStatus(dataRejectPayout.id, dataRejectPayout.status, comment)
+      setComment("")
+    }
+    else {
+      message.error("Please Enter Comment!")
+    }
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+    }, 100);
+  };
+
+  const handleCancel = () => {
+    console.log('Clicked cancel button');
+    setOpen(false);
+  };
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -162,10 +195,10 @@ const AdminManagePayouts: React.FC = () => {
       width: "20%",
       render: (record: Payout) => (
         <div className="flex gap-2">
-          <Button type="primary" onClick={() => updateStatusPayout(record._id, "completed", getPayouts, "")}>
+          <Button type="primary" onClick={() => handleUpdateStatus(record._id, "completed", "")}>
             Completed
           </Button>
-          <Button type="primary" danger onClick={() => updateStatusPayout(record._id, "rejected", getPayouts, "")}>
+          <Button type="primary" danger onClick={() => showModal(record._id, "completed")}>
             Rejected
           </Button>
         </div>
@@ -173,8 +206,36 @@ const AdminManagePayouts: React.FC = () => {
     });
   }
 
+  const handleUpdateStatus = async (id: string, status: string, comment: string) => {
+    const res = await updateStatusPayout(id, status, comment);
+    console.log("payout res: ", res);
+    if (res) {
+      message.success(`Change Payout Status To ${status === "completed" ? "Completed" : "Rejected"} Successfully`)
+      getPayouts();
+    }
+  }
+
+  const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setComment(e.target.value);
+  };
+
   return (
     <div>
+      <Modal
+        title="Title"
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <Form>
+          <Form.Item label="Comment" name="Comment">
+            <TextArea value={comment} onChange={handleSaveComment} />
+          </Form.Item>
+
+        </Form>
+
+      </Modal>
       <div className="flex justify-between">
         <CustomBreadcrumb currentTitle="Manage Payouts" currentHref={paths.ADMIN_HOME} />
       </div>
