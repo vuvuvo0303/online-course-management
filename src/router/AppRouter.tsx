@@ -46,7 +46,7 @@ const InstructorManagerReviews = lazy(() => import("../pages/instructor/manage-r
 const InstructorManageCourses = lazy(() => import("../pages/instructor/manage-course/index"));
 const InstructorResources = lazy(() => import("../pages/instructor/resources"));
 const InstructorTools = lazy(() => import("../pages/instructor/tools"));
-const LectureOfCourse = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
+const ManageLesson = lazy(() => import("../pages/instructor/manage-course/manage-session/manage-lesson"));
 const CreateUpdateLesson = lazy(
   () => import("../pages/instructor/manage-course/manage-session/manage-lesson/create-update-lesson")
 );
@@ -173,7 +173,7 @@ const AppRouter: React.FC = () => {
           />
           <Route
             path={paths.INSTRUCTOR_LECTURES_OF_COURSE}
-            element={canAccess([roles.INSTRUCTOR]) ? <LectureOfCourse /> : <Navigate to={paths.HOME} />}
+            element={canAccess([roles.INSTRUCTOR]) ? <ManageLesson /> : <Navigate to={paths.HOME} />}
           />
           <Route
             path={paths.INSTRUCTOR_MANAGE_SESSION_OF_COURSE}
