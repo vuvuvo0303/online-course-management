@@ -19,7 +19,6 @@ export const getItemsByStudent = async (purchase_no: string, cart_no: string, co
         }
         )
         if (response) {    
-            console.log("response api: ", response)     
             return response.data.pageData;
          
         }

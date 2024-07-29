@@ -21,7 +21,7 @@ const AdminDashboard: React.FC = () => {
 
   const fetchData = useCallback(async () => {
     const blogs = await getBlogs();
-    const courses = await getCourses("", "", "", 1, 100);
+    const courses = await getCourses("", "", "", false, 1, 100);
     const students = await getUsers("", "student");
     const instructors = await getUsers("", "instructor");
     const totalBlogs = blogs.data.pageInfo.totalItems
@@ -42,7 +42,7 @@ const AdminDashboard: React.FC = () => {
     setNumCourses(totalCourses);
     setNumStudents(totalStudents);
     setNumInstructors(totalInstructors);
-  }, [])
+  }, [numBlogs, numCourses, numInstructors, numStudents])
 
   useEffect(() => {
     fetchData();

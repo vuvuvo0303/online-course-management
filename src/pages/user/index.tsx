@@ -1,27 +1,59 @@
-import { API_GET_USER_DETAIL } from "../../consts/index";
+import { API_GET_USER_DETAIL, API_INSTRUCTOR_OR_STUDENT_SUBSCRIPTIONS } from "../../consts";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../services/axiosInstance";
+import { axiosInstance, getItemsBySubscriber } from "../../services";
 import { useCallback, useEffect, useState } from "react";
 import { Instructor } from "../../models";
 import styles from "./user.module.css";
+import { Button, message } from "antd";
 
 const User = () => {
     const { id } = useParams<{ id: string }>();
     const [dataUser, setDataUser] = useState<Instructor>();
     const [showFullDescription, setShowFullDescription] = useState<boolean>(false);
+    const [subcribe, setSubcribe] = useState("Subcribe");
+
 
     const getUserDetail = useCallback(async () => {
         const response = await axiosInstance.get(`${API_GET_USER_DETAIL}/${id}`);
         setDataUser(response.data);
+        return response.data;
     }, [id]);
 
     useEffect(() => {
-        getUserDetail();
+        const fetchData = async () => {
+            const userData = await getUserDetail();
+            if (userData?.name) {
+                await checkSubcribeOrNot(userData.name);
+            }
+        }
+        fetchData();
     }, []);
 
     const handleShowMore = () => {
         setShowFullDescription(!showFullDescription);
     };
+
+    const handleSubcribe = async () => {
+        const response = await axiosInstance.post(API_INSTRUCTOR_OR_STUDENT_SUBSCRIPTIONS, {
+            "instructor_id": id
+        })
+
+        if (response.data.is_subscribed) {
+            message.success(`Subcribed to ${dataUser?.name}`);
+            setSubcribe("Unsubcribe");
+        } else {
+            message.success(`Unsubcribed to ${dataUser?.name}`);
+            setSubcribe("Subcribe");
+        }
+    }
+
+    const checkSubcribeOrNot = async (name: string) => {
+        const response = await getItemsBySubscriber(name, 1, 100);
+        const subcribtion = response[0];
+        if (subcribtion.is_subscribed) {
+            setSubcribe("Unsubcribe");
+        }
+    }
 
     const getAvatarSrc = (avatar: string | { file?: { originFileObj?: File } } | undefined): string | undefined => {
         if (typeof avatar === 'string') {
@@ -47,9 +79,12 @@ const User = () => {
     return (
         <div>
             <div className="relative mt-10 max-w-[65.2rem] w-full mx-auto px-[2.4rem]">
-                <img width={150} height={150} alt={dataUser?.name}
-                     className="rounded-full object-cover w-60 h-60 absolute top-0 right-9 max-w-full"
-                     src={getAvatarSrc(dataUser?.avatar)}/>
+                <div className="relative">
+                    <img width={150} height={150} alt={dataUser?.name}
+                        className="rounded-full object-cover w-60 h-60 absolute top-0 right-9 max-w-full"
+                        src={getAvatarSrc(dataUser?.avatar)} />
+                    <Button className="top-60 right-[108px] absolute subcribe_custom_button" onClick={handleSubcribe}>{subcribe}</Button>
+                </div>
                 <div className={styles.instructor_profile_left_column}>
                     <div className="pt-0 font-bold text-lg text-[#6a6f73]">
                         {dataUser?.role.toUpperCase()}

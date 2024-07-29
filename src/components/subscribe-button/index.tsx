@@ -46,7 +46,6 @@ const SubscribeButtonComponent: React.FC<SubscribeButtonProps> = ({
     };
 
     const handleCancel = () => {
-        console.log('Clicked cancel button');
         setOpen(false);
     };
 
@@ -113,9 +112,7 @@ const SubscribeButtonComponent: React.FC<SubscribeButtonProps> = ({
                                 <Dropdown menu={menuProps}>
                                     <Button
                                         onClick={() => handSetInstructorId(instructor_id, name, subscribed)}
-                                        type={subscribed ? "default" : "primary"}
-                                        className={subscribed ? " bg-red-500 text-white" : "bg-red-500 text-white"}
-                                        style={{ borderColor: subscribed ? "gray" : "red" }}
+                                        className="subcribe_custom_button"
                                     >
                                         <BellOutlined />
                                         {subscribed ? "Subscribed" : "Subscribe"}
@@ -130,9 +127,7 @@ const SubscribeButtonComponent: React.FC<SubscribeButtonProps> = ({
                             <Button
                                 loading={loadingButton}
                                 onClick={() => handleSubscribe(instructor_id)}
-                                type={subscribed ? "default" : "primary"}
-                                className={subscribed ? "bg-red-500 text-white" : "bg-red-500 text-white"}
-                                style={{ borderColor: subscribed ? "gray" : "red" }}
+                                className="subcribe_custom_button"
                             >
                                 {subscribed ? "Subscribed" : "Subscribe"}
                             </Button>

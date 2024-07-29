@@ -60,55 +60,56 @@ const Dashboard: React.FC = () => {
     } as MenuItem;
   }
   useEffect(() => {
-    function loadItems() {
-      if (dataUser.role === roles.INSTRUCTOR) {
-        setItems([
-          getItem("Dashboard", paths.INSTRUCTOR_DASHBOARD, <FundOutlined />),
-          getItem("Manage Reviews", "/instructor/manage-reviews", <CommentOutlined />),
-          getItem(
-            "Manage Courses",
-            "/instructor/manage-courses",
-            <img
-              src="https://cdn2.iconfinder.com/data/icons/learning-1/64/video-tutorial-clip-online-course-256.png"
-              width={18}
-            />,
-            [
-              getItem("Manage All Sessions", "/instructor/manage-all-sessions", <DesktopOutlined />),
-              getItem("Manage All Lessons", "/instructor/manage-all-lessons", <DesktopOutlined />),
-            ]
-          ),
-
-          getItem("Manage Subscriptions", "/instructor/manage-subscriptions", <PlusCircleOutlined />),
-          getItem("Manage Purchases", "/instructor/manage-purchases", <ShoppingCartOutlined />),
-          getItem("Manage Payouts", "/instructor/manage-payouts", <OrderedListOutlined />),
-          getItem("Tools", "/instructor/tools", <ToolOutlined />),
-          getItem("Resources", "/instructor/resources", <QuestionCircleOutlined />),
-        ]);
-      } else if (dataUser.role === roles.ADMIN) {
-        setItems([
-          getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
-          getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
-          getItem("Instructor's Request", "/admin/instructor-requests", <TeamOutlined />),
-          getItem("Manage Purchases", "/admin/manage-all-purchase", <ShoppingCartOutlined />),
-
-          getItem("Manage Categories", "/admin/manage-categories", <UnorderedListOutlined />),
-          getItem(
-            "Manage Courses",
-            "/admin/manage-courses",
-            <img
-              src="https://cdn2.iconfinder.com/data/icons/learning-1/64/video-tutorial-clip-online-course-256.png"
-              width={18}
-            />
-          ),
-          getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
-          getItem("Manage Reviews", "/admin/manage-reviews", <CommentOutlined />),
-          getItem("Manage Payouts", "/admin/manage-payouts", <OrderedListOutlined />),
-        ]);
-      }
-    }
 
     loadItems();
   }, [dataUser.role]);
+
+  const loadItems = async () => {
+    if (dataUser.role === roles.INSTRUCTOR) {
+      setItems([
+        getItem("Dashboard", paths.INSTRUCTOR_DASHBOARD, <FundOutlined />),
+        getItem("Manage Reviews", "/instructor/manage-reviews", <CommentOutlined />),
+        getItem(
+          "Manage Courses",
+          "/instructor/manage-courses",
+          <img
+            src="https://cdn2.iconfinder.com/data/icons/learning-1/64/video-tutorial-clip-online-course-256.png"
+            width={18}
+          />,
+          [
+            getItem("Manage All Sessions", "/instructor/manage-all-sessions", <DesktopOutlined />),
+            getItem("Manage All Lessons", "/instructor/manage-all-lessons", <DesktopOutlined />),
+          ]
+        ),
+
+        getItem("Manage Subscriptions", "/instructor/manage-subscriptions", <PlusCircleOutlined />),
+        getItem("Manage Purchases", "/instructor/manage-purchases", <ShoppingCartOutlined />),
+        getItem("Manage Payouts", "/instructor/manage-payouts", <OrderedListOutlined />),
+        getItem("Tools", "/instructor/tools", <ToolOutlined />),
+        getItem("Resources", "/instructor/resources", <QuestionCircleOutlined />),
+      ]);
+    } else if (dataUser.role === roles.ADMIN) {
+      setItems([
+        getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
+        getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
+        getItem("Instructor's Request", "/admin/instructor-requests", <TeamOutlined />),
+        getItem(
+          "Manage Courses",
+          "/admin/manage-courses",
+          <img
+            src="https://cdn2.iconfinder.com/data/icons/learning-1/64/video-tutorial-clip-online-course-256.png"
+            width={18}
+          />
+        ),
+        getItem("Manage Purchases", "/admin/manage-all-purchase", <ShoppingCartOutlined />),
+        getItem("Manage Payouts", "/admin/manage-payouts", <OrderedListOutlined />),
+        getItem("Manage Categories", "/admin/manage-categories", <UnorderedListOutlined />),
+        getItem("Manage Reviews", "/admin/manage-reviews", <CommentOutlined />),
+        getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
+
+      ]);
+    }
+  }
 
   const [collapsed, setCollapsed] = useState(false);
   const {
@@ -143,8 +144,8 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={"/profile"}>
-          View {dataUser.role} Profile
+        <Link className="text-lg" to={paths.INSTRUCTOR_PROFILE}>
+          View Profile
         </Link>
       ),
       key: "2",

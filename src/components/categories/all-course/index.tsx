@@ -11,7 +11,7 @@ import { user } from "../../../services/users";
 
 const { Meta } = Card;
 
-const AllCourses: React.FC = () => {
+const AllCourses = () => {
   const [ratings, setRatings] = useState<number[]>([3, 4, 5]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -59,19 +59,19 @@ const AllCourses: React.FC = () => {
         navigate("/login");
       } else {
         try {
-          if(course.is_purchased ===false && course.is_in_cart === false ){
+          if(course.is_purchased ===false && course.is_in_cart === false) {
             await addCourseToCart(course._id);
-          }else if(course.is_in_cart === true && course.is_purchased === false){
-            navigate(paths.STUDENT_CART)
-          }else if(course.is_in_cart === true && course.is_purchased === true){
-            navigate(`${paths.STUDENT_STUDY_COURSE}/${course._id}`)
+          } else if(course.is_in_cart === true && course.is_purchased === false) {
+            navigate(paths.STUDENT_CART);
+          } else if(course.is_in_cart === true && course.is_purchased === true) {
+            navigate(`${paths.STUDENT_STUDY_COURSE}/${course._id}`);
           }
-        
         } catch (error) {
-          //
+          console.error("Failed to handle course action:", error);
         }
       }
     };
+
     const lastUpdated = format(new Date(course.updated_at), "dd/MM/yyyy");
     return (
       <div className="popover-content w-full">
@@ -87,7 +87,7 @@ const AllCourses: React.FC = () => {
               </div>
               <div>
                 <p className="text-black text-[1rem] mb-2 truncate">
-                  Price: {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}{" "}
+                  Price: {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                 </p>
               </div>
             </div>
@@ -96,7 +96,7 @@ const AllCourses: React.FC = () => {
         <div className="flex items-center ml-[4rem]">
           <Button
             type="default"
-            onClick={()=>handleGoToCourse(course)}
+            onClick={() => handleGoToCourse(course)}
             style={{
               backgroundColor: "#A020F0",
               borderColor: "#A020F0",
@@ -106,7 +106,7 @@ const AllCourses: React.FC = () => {
               lineHeight: "normal", // Reset line height if necessary
             }}
           >
-             {course.is_purchased ===false && course.is_in_cart === false && "Add to cart"}
+            {course.is_purchased === false && course.is_in_cart === false && "Add to cart"}
             {course.is_in_cart === true && course.is_purchased === false && "Go to cart"}
             {course.is_purchased === true && course.is_in_cart === true && "Learn now"}
           </Button>

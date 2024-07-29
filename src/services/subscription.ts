@@ -16,7 +16,6 @@ export const handleSubscriptionByInstructorOrStudent = async (instructor_id: str
             return response;
         }
     } catch (error) {
-        console.log("handleSubscriptionByInstructorOrStudent - Error occurred: ", error)
         return [];
     }
 }
@@ -40,7 +39,6 @@ export const getItemsBySubscriber = async (keyword: string, pageNum: number, pag
             return response.data.pageData;
         }
     } catch (error) {
-        console.log("getItemsBySubscriber - Error occurred: ", error)
         return [];
     }
 }

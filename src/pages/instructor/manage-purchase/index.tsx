@@ -3,12 +3,17 @@ import { useEffect, useState } from "react";
 import { getItemsByInstructor } from "../../../services";
 
 import { format } from "date-fns";
-import { Button, Checkbox, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
+import { Button, Checkbox, Input, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
 import { createPayout } from "../../../services/payout";
 import { getColorPurchase } from "../../../consts";
 import LoadingComponent from "../../../components/loading";
+import { useDebounce } from "../../../hooks";
+import { SearchOutlined } from "@ant-design/icons";
 
 const InstructorManagePurchase = () => {
+  const [searchPurchase, setSearchPurchase] = useState<string>("");
+  const purchaseNoSearch = useDebounce(searchPurchase, 500);
+
   const [instructor_id, setInstructor_id] = useState<string>("");
   const [purchasesChecked, setPurchasesChecked] = useState<TransactionsPurchase[]>([]);
   const [indexPurchasesChecked, setIndexPurchasesChecked] = useState<number>(0);
@@ -17,7 +22,7 @@ const InstructorManagePurchase = () => {
   const [statusPurchase, setStatusPurchase] = useState<string>("new");
   const getPurchasesByInstructor = async () => {
     setLoading(true);
-    const response = await getItemsByInstructor("", "", "", statusPurchase, 1, 100);
+    const response = await getItemsByInstructor(purchaseNoSearch, "", "", statusPurchase, 1, 100);
     console.log("response: ", response);
     setPurchases(response);
     setLoading(false);
@@ -25,7 +30,7 @@ const InstructorManagePurchase = () => {
 
   useEffect(() => {
     getPurchasesByInstructor();
-  }, [statusPurchase]);
+  }, [statusPurchase,purchaseNoSearch]);
 
   if (loading) {
     return (
@@ -209,6 +214,14 @@ const InstructorManagePurchase = () => {
           Create Payout
         </Button>
       )}
+      <Input.Search
+        placeholder="Search By Purchase No"
+        value={searchPurchase}
+        onChange={(e) => setSearchPurchase(e.target.value)}
+        className="p-2 "
+        style={{ width: 250 }}
+        enterButton={<SearchOutlined className="text-white" />}
+      />
       <Tabs defaultActiveKey={statusPurchase} items={items} onChange={onChangeStatus} />
       {statusPurchase === "new" ? (
         <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} />

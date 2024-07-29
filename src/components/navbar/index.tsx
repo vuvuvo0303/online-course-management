@@ -103,8 +103,8 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={"/profile"}>
-          View {dataUser.role} Profile
+        <Link className="text-lg" to={paths.STUDENT_PROFILE}>
+          View Profile
         </Link>
       ),
       key: "2",
@@ -140,6 +140,13 @@ const Navbar: React.FC = () => {
         </Link>
       ),
       key: "6",
+    },{
+      label: (
+        <Link className="text-lg" to={"/change-password"}>
+          Change Password
+        </Link>
+      ),
+      key: "7",
     },
     {
       label: (

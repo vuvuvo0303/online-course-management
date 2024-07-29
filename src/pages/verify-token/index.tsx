@@ -3,7 +3,7 @@ import { Button, Form, Input, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance.ts";
 import { API_RESEND_TOKEN, API_VERIFY_TOKEN, paths } from "../../consts";
-import ResponseData from 'models/ResponseData.ts';
+import ResponseData from '../../models/ResponseData.ts';
 
 const VerifyToken: React.FC = () => {
     const params = useParams();
@@ -28,8 +28,6 @@ const VerifyToken: React.FC = () => {
                 // @ts-expect-error
                 if (error.message && !error.success) {
                     setTokenExpired(true);
-                } else {
-                    //
                 }
             }
         };
@@ -38,25 +36,18 @@ const VerifyToken: React.FC = () => {
 
     const handleResendToken = async () => {
         setIsLoadingResend(true);
-        try {
-            const response = await axiosInstance.post(API_RESEND_TOKEN, {
-                email: email,
-            });
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            if (response.success) {
-                message.success("New token sent to your email.");
-                setTokenExpired(false);
-                setResendSuccess(true);
-                setTimeout(() => {
-                    navigate(paths.HOME);
-                }, 2000)
-            }
-        } catch (error) {
-            //
-        } finally {
-            setIsLoadingResend(false);
+        const response: ResponseData = await axiosInstance.post(API_RESEND_TOKEN, {
+            email: email,
+        });
+        if (response.success) {
+            message.success("New token sent to your email.");
+            setTokenExpired(false);
+            setResendSuccess(true);
+            setTimeout(() => {
+                navigate(paths.HOME);
+            }, 2000)
         }
+        setIsLoadingResend(false);
     };
 
     return (
