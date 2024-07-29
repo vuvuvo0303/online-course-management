@@ -34,11 +34,6 @@ const AdminLoginPage: React.FC = () => {
     setLoading(false);
   };
 
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
-    console.log("Failed:", errorInfo);
-  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-[#a7e05f] to-[#12ab97]">
@@ -57,7 +52,6 @@ const AdminLoginPage: React.FC = () => {
             className="space-y-4 w-full"
             initialValues={{ remember: true }}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
             autoComplete="off"
           >
             <Form.Item

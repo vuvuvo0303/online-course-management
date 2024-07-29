@@ -9,7 +9,7 @@ import uploadFile from "../../utils/upload";
 import axiosInstance from "../../services/axiosInstance.ts";
 import Recaptcha from "../register/reCaptcha.tsx";
 import { API_REGISTER, paths, roles } from "../../consts";
-import { Instructor } from "../../models/User.ts";
+import { Instructor } from "../../models";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -41,23 +41,18 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
-    try {
-      if (values.role === "instructor" && fileList.length > 0) {
-        const file = fileList[0].originFileObj as FileType;
-        const url = await uploadFile(file);
-        values.avatar = url;
-      }
-
-      await axiosInstance.post(API_REGISTER, { ...values, captchaToken });
-      message.success("Successfully registered. Navigate in 2s");
-      setTimeout(() => {
-        navigate(paths.LOGIN);
-      }, 2000);
-    } catch (error) {
-      //
-    } finally {
-      setLoading(false);
+    if (values.role === "instructor" && fileList.length > 0) {
+      const file = fileList[0].originFileObj as FileType;
+      const url = await uploadFile(file);
+      values.avatar = url;
     }
+
+    await axiosInstance.post(API_REGISTER, { ...values, captchaToken });
+    message.success("Successfully registered. Navigate in 2s");
+    setTimeout(() => {
+      navigate(paths.LOGIN);
+    }, 2000);
+    setLoading(false);
   };
 
 

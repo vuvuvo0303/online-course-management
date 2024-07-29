@@ -95,6 +95,20 @@ h1 {
   margin: 1.5rem 0;
 }
 
+.subcribe_custom_button {
+  background-color: rgb(218, 29, 29) !important;
+  color: white !important;
+  border-color: rgb(220 38 38) !important;
+}
+
+.subcribe_custom_button:hover,
+.subcribe_custom_button:focus {
+  opacity: 0.8 !important;
+  background-color: rgb(220 38 38) !important;
+  color: white !important;
+  border-color: rgb(220 38 38) !important;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
@@ -135,7 +149,7 @@ h1 {
   @apply lg:px-20 py-6 px-5;
 }
 
-/* Navbar */
+/* Index */
 .navbar {
   @apply py-5 px-8 border-b border-nav-border gap-4;
 }

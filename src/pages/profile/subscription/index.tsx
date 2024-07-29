@@ -28,12 +28,12 @@ const Subscriptions: FC = () => {
         getSubscriber();
     }, []);
 
- 
+
     if (loading) {
         return (<>
-          <LoadingComponent />
+            <LoadingComponent />
         </>)
-      }
+    }
 
     const handleSubscriptionChange = () => {
         getSubscriber();
@@ -90,7 +90,7 @@ const Subscriptions: FC = () => {
                         </div>
                     ) : (
                         <h1 className='text-center items-center my-10 font-bold'>
-                            You have not subscribed to any channel yet
+                            You have not subscribed to any instructor yet
                         </h1>
                     )
             }

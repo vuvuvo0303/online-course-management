@@ -12,7 +12,7 @@ type JwtPayload = {
   iat: number,
 }
 
-export function getUserFromLocalStorrage(){
+export function getUserFromLocalStorage(){
   const userString = localStorage.getItem("user");
   const user: User = userString ? JSON.parse(userString) : "";
   return user
@@ -118,7 +118,7 @@ export const handleNavigateRole = async (token: string, navigate: ReturnType<typ
 };
 
 export const logout = ( navigate: ReturnType<typeof useNavigate>) => {
-  const user: User = getUserFromLocalStorrage();
+  const user: User = getUserFromLocalStorage();
   if (user.role === roles.ADMIN) {
     navigate(paths.ADMIN_LOGIN);
   }

@@ -3,11 +3,10 @@ import { Breadcrumb, Button, Input, message, Modal, Select, Table, TableProps } 
 import { useEffect, useState } from "react";
 import { Course, Session } from "../../models";
 import { Link } from "react-router-dom";
-import axiosInstance from "../../services/axiosInstance.ts";
+import { axiosInstance, getUserFromLocalStorage } from "../../services";
 import { API_DELETE_SESSION, API_GET_COURSES, API_GET_SESSIONS } from "../../consts";
 import { useDebounce } from "../../hooks";
 import { format } from "date-fns";
-import { getUserFromLocalStorrage } from "../../services/auth.ts";
 import LoadingComponent from "../../components/loading";
 const ManageAllSession = () => {
     const [keyword, setKeyword] = useState<string>('');
@@ -60,7 +59,7 @@ const ManageAllSession = () => {
 
 
     useEffect(() => {
-        const user = getUserFromLocalStorrage();
+        const user = getUserFromLocalStorage();
         setRole(user?.role);
         setUserId(user?._id)
     }, []);
@@ -211,7 +210,7 @@ const ManageAllSession = () => {
         <div>
             <Modal
                 title="Confirm Delete"
-                visible={open}
+                open={open}
                 onOk={handleOk}
                 confirmLoading={confirmLoading}
                 onCancel={handleCancel}

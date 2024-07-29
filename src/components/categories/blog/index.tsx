@@ -1,7 +1,7 @@
 import { Card } from 'antd';
 import "react-multi-carousel/lib/styles.css";
 import Carousel from 'react-multi-carousel';
-import './New.css';
+import './blog.css';
 import { useEffect, useState } from 'react';
 import { Blog } from '../../../models';
 import { getBlogs, handleGetBlogDetail } from '../../../services';

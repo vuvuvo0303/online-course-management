@@ -281,7 +281,7 @@ const LectureOfCourse: React.FC = () => {
 
             <Modal
                 title="Confirm Delete"
-                visible={open}
+                open={open}
                 onOk={handleOk}
                 confirmLoading={confirmLoading}
                 onCancel={handleCancel}

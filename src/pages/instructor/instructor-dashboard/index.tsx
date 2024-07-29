@@ -1,65 +1,34 @@
-import { HomeOutlined, PlaySquareOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
-import { Badge, Breadcrumb, Card, Col, Row } from "antd";
+import { PlaySquareOutlined, TeamOutlined } from "@ant-design/icons";
+import { Badge, Card, Col, Row } from "antd";
 import { Link } from "react-router-dom";
 import TopSelling from "./top3selling";
 import TopNews from "./topnew";
 import ProfileOverview from "./profile-overview";
-import axiosInstance from "../../../services/axiosInstance";
-import { useEffect, useState } from "react";
-import { API_GET_COURSES, paths } from "../../../consts";
-import { getUserFromLocalStorrage } from "../../../services/auth";
+import { useEffect, useState, useCallback } from "react";
+import { paths } from "../../../consts";
+import { getUserFromLocalStorage, getCourses, getUserDetail } from "../../../services";
+import CustomBreadcrumb from "../../../components/breadcrumb";
 
 const InstructorDashboard: React.FC = () => {
-  const [totalCourse, setTotalCourse] = useState<number>(0);
-  const user = getUserFromLocalStorrage();
-  //fetch courses
+  const [numCourses, setNumCourses] = useState(0);
+  const [numBalance, setNumBalance] = useState(0);
+  const user = getUserFromLocalStorage();
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axiosInstance.post(API_GET_COURSES, {
-          "searchCondition": {
-            "keyword": "",
-            "category": "",
-            "status": "",
-            "is_deleted": false
-          },
-          "pageInfo": {
-            "pageNum": 1,
-            "pageSize": 100
-          }
-        });
-        if (response.data.pageData) {
-          setTotalCourse(response.data.pageInfo.totalItems);
-        }
-      } catch (error) {
-        //
-      }
-    };
-    fetchCourses();
+
+    fetchData();
   }, [])
+
+  const fetchData = useCallback(async () => {
+    const courses = await getCourses();
+    const userInfo = await getUserDetail(user._id);
+    const totalCourses = courses.data.pageInfo.totalItems
+    const balanceTotal = userInfo.data.balance_total;
+    setNumCourses(totalCourses);
+    setNumBalance(balanceTotal);
+  }, [numBalance, numCourses])
   return (
     <div>
-      <Breadcrumb
-        className="py-2"
-        items={[
-          {
-            href: paths.INSTRUCTOR_HOME,
-            title: <HomeOutlined />,
-          },
-          {
-            href: "",
-            title: (
-              <>
-                <UserOutlined />
-                <span>Instructor</span>
-              </>
-            ),
-          },
-          {
-            title: "Dashboard",
-          },
-        ]}
-      />
+      <CustomBreadcrumb currentTitle="Dashboard" currentHref={paths.INSTRUCTOR_HOME} />
       <div className="flex justify-between drop-shadow-xl gap-3">
         <Badge.Ribbon text="Flearn" color="blue">
           <Link to={paths.INSTRUCTOR_MANAGE_COURSES}>
@@ -68,7 +37,7 @@ const InstructorDashboard: React.FC = () => {
               <div className="flex justify-between items-center px-5">
                 {" "}
                 <div className="flex justify-center gap-2">
-                  <h1>{totalCourse}</h1>
+                  <h1>{numCourses}</h1>
                   <PlaySquareOutlined style={{ fontSize: "20px", color: "red" }} />
                 </div>
                 <img src="https://cdn-icons-png.freepik.com/512/4762/4762311.png" width={50} />
@@ -95,9 +64,7 @@ const InstructorDashboard: React.FC = () => {
           <Card title="Total Revenue" bordered={false} style={{ width: 300 }}>
             <div className="flex justify-between items-center px-1">
               <div className="flex justify-center gap-2">
-                <h1>{user.balance_total.toLocaleString("vi-VN",{style:"currency", currency:"VND"})}</h1>
-                {/* <DollarOutlined style={{ fontSize: "20px", color: "#E7A833" }} /> */}
-                {/* <span className="flex flex-col justify-center mt-1 text-yellow-500"></span> */}
+                <h1>{numBalance.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</h1>
               </div>
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoA2JPklNgATSUB4vGt1RofKes7gQsE5zw7Q&s"

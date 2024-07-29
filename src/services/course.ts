@@ -33,22 +33,28 @@ export const createCourseByInstructor =
     }
 
 // COURSE-02 Get Courses (Admin, Instructor)
-export const getCourses =
-    async (keyword: string, category_id: string, status: string, pageNum: number, pageSize: number) => {
-            const response = await axiosInstance.post(API_GET_COURSES, {
-                "searchCondition": {
-                    "keyword": keyword,
-                    "category_id": category_id,
-                    "status": status,
-                    "is_deleted": false
-                },
-                "pageInfo": {
-                    "pageNum": pageNum,
-                    "pageSize": pageSize
-                }
+export const getCourses = async (
+    keyword: string = "",
+    category_id: string = "",
+    status: string = "",
+    is_deleted: boolean = false ,
+    pageNum: number = 1,
+    pageSize: number = 100
+    ) => {
+        const response = await axiosInstance.post(API_GET_COURSES, {
+            "searchCondition": {
+                "keyword": keyword || "",
+                "category_id": category_id || "",
+                "status": status || "",
+                "is_deleted": is_deleted || false
+            },
+            "pageInfo": {
+                "pageNum": pageNum || 1,
+                "pageSize": pageSize || 10
             }
+        }
             )
-                return response;
+        return response;
     }
 // COURSE-03 Get Course (Instructor)
 export const getCourse = async (course_id: string) => {

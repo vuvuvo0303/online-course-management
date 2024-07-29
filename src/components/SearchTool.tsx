@@ -30,14 +30,9 @@ const SearchTool: React.FC = () => {
         if (term.trim() === '') return; // Avoid API call if search term is empty
 
         setLoading(true);
-        try {
-            const res = await fetchCoursesByClient(term, "");
-            setCourses(res);
-        } catch (error) {
-            console.error("Failed to fetch courses:", error);
-        } finally {
-            setLoading(false);
-        }
+        const res = await fetchCoursesByClient(term, "");
+        setCourses(res);
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -107,8 +102,8 @@ const SearchTool: React.FC = () => {
                 title="Search Results"
                 placement="bottom"
                 trigger="click"
-                visible={visible}
-                onVisibleChange={handleVisibleChange}
+                open={visible}
+                onOpenChange={handleVisibleChange}
             >
                 <Input
                     placeholder="Search courses..."

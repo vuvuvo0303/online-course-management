@@ -12,12 +12,12 @@ import About from './about/about';
 import Cart from './cart/CartComponents';
 import Sub from './subscription/index';
 import ChangePassword from './change-password';
-import { getUserFromLocalStorrage } from '../../services/auth';
+import { getUserFromLocalStorage } from '../../services/auth';
 
 const Profile: React.FC = () => {
   const [activeTabKey, setActiveTabKey] = useState('1');
 
-  const user = getUserFromLocalStorrage();
+  const user = getUserFromLocalStorage();
   const googleID = user.google_id;
 
   let avatarSrc;

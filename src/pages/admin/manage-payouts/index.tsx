@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { API_GET_PAYOUTS, paths } from "../../../consts";
+import { API_GET_PAYOUTS, getColorPayout, paths } from "../../../consts";
 import {
   Button,
   Form,
@@ -144,12 +144,13 @@ const AdminManagePayouts: React.FC = () => {
       title: "Instructor Email",
       dataIndex: "instructor_email",
       key: "instructor_email",
-      width: "10%",
+      width: "15%",
     },
     {
       title: "Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
+      width: "15%",
       render: (balance_instructor_paid: number) => (
         <>{balance_instructor_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
       ),
@@ -159,6 +160,7 @@ const AdminManagePayouts: React.FC = () => {
       title: "Instructor Receive",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
+      width: "15%",
       render: (balance_instructor_received: number) => <>{balance_instructor_received.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
     },
     {
@@ -169,16 +171,10 @@ const AdminManagePayouts: React.FC = () => {
       render: (status: string) => (
         <Tag
           color={
-            status === "new"
-              ? "blue"
-              : status === "request_payout"
-                ? "orange"
-                : status === "completed"
-                  ? "green"
-                  : "red"
+            getColorPayout(status)
           }
         >
-          {status}
+          {status === "request_payout" ? "request payout" : status}
         </Tag>
       ),
     },
@@ -204,7 +200,7 @@ const AdminManagePayouts: React.FC = () => {
           {
             (record.status === "request_payout") &&
             <div className="flex gap-2">
-              <Button type="primary" onClick={() => showModal(record._id, "completed")}>
+              <Button type="primary" onClick={() => handleUpdateStatus(record._id, "completed", "")}>
                 Completed
               </Button>
               <Button type="primary" danger onClick={() => showModal(record._id, "rejected")}>
