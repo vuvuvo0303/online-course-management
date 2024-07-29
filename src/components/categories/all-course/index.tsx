@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, Popover, Button, Rate, Skeleton } from "antd";
+import { Card, Popover, Button, Rate, Skeleton, message } from "antd";
 import Carousel from "react-multi-carousel";
 import { Link, useNavigate } from "react-router-dom";
 import { paths } from "../../../consts/index";
@@ -56,6 +56,7 @@ const AllCourses: React.FC = () => {
     // Add course and go to cart
     const handleGoToCourse = async () => {
         if (!user || user.role !== 'student') {
+            message.info("Please log in to add the course to your cart")
           navigate("/login");
         } else {
           try {

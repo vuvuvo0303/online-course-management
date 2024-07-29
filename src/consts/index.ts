@@ -208,6 +208,7 @@ export const paths = {
   STUDENT_PAYMENT_HISTORY: "/payment-history",
   STUDENT_ENROLLMENT: "/enrollment",
   STUDENT_CHECKOUT: "/checkout",
+  STUDENT_CHANGEPASSWORD: "/change-password",
   LESSON: "/course/lesson/:_id",
   STUDENT_CART: "/cart",
   STUDENT_PURCHASE: "/purchase",

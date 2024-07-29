@@ -21,6 +21,7 @@ const CourseDetails = lazy(() => import("../pages/course-detail"));
 const BlogDetail = lazy(() => import("../pages/blog/blog-detail"));
 const BlogList = lazy(() => import("../pages/blog"));
 const Enrollment = lazy(() => import("../pages/enrollment"));
+const ChangePassword = lazy(() => import("../pages/profile/change-password/index"));
 const SiteMap = lazy(() => import("../pages/sitemap"));
 const NotFound = lazy(() => import("../pages/notfound"));
 const BecomeInstructorPage = lazy(() => import("../pages/teaching"));
@@ -110,6 +111,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.STUDENT_CART} element={<Cart />} />
         <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
+        <Route path={paths.STUDENT_CHANGEPASSWORD} element={<ChangePassword />} />
         <Route path={paths.STUDENT_PURCHASE} element={<StudenManagePurchase />} />
         <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
         <Route path={paths.LESSON} element={<Lesson />} />

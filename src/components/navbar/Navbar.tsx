@@ -149,6 +149,13 @@ const Navbar: React.FC = () => {
         </Link>
       ),
       key: "6",
+    },{
+      label: (
+        <Link className="text-lg" to={"/change-password"}>
+          Change Password
+        </Link>
+      ),
+      key: "7",
     },
     {
       label: (
