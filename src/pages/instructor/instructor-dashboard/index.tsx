@@ -7,11 +7,11 @@ import ProfileOverview from "./profile-overview";
 import axiosInstance from "../../../services/axiosInstance";
 import { useEffect, useState } from "react";
 import { API_GET_COURSES, paths } from "../../../consts";
-import { getUserFromLocalStorrage } from "../../../services/auth";
+import { getUserFromLocalStorage } from "../../../services/auth";
 
 const InstructorDashboard: React.FC = () => {
   const [totalCourse, setTotalCourse] = useState<number>(0);
-  const user = getUserFromLocalStorrage();
+  const user = getUserFromLocalStorage();
   //fetch courses
   useEffect(() => {
     const fetchCourses = async () => {

@@ -2,7 +2,7 @@ import axios from "axios";
 import config from "../secret/config.ts";
 import { paths, roles } from "../consts";
 import { message } from "antd";
-import { getUserFromLocalStorrage } from "./auth.ts";
+import { getUserFromLocalStorage } from "./auth.ts";
 
 export const axiosInstance = axios.create({
   baseURL: config.BASE_URL,
@@ -42,11 +42,11 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       const { data } = error.response;
       console.log(error.response);
-
+      if(data.message && !data.errors)
       switch (error.response.status) {
         case 403: {
           message.error(data.message);
-          const user = getUserFromLocalStorrage();
+          const user = getUserFromLocalStorage();
           setTimeout(() => {
             if (user.role === roles.ADMIN) {
               window.location.href = paths.ADMIN_LOGIN;
@@ -73,7 +73,7 @@ axiosInstance.interceptors.response.use(
           break;
       }
 
-      if (!data.message && data.errors) {
+      else{
         data.errors.forEach((error: { field: string, message: string }) => {
           message.error(`${error.field}: ${error.message}`);
         });

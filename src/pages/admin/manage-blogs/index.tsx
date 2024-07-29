@@ -13,7 +13,7 @@ import {
 } from "antd";
 import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
-import { axiosInstance, getCategories, getUserFromLocalStorrage, deleteBlog } from "../../../services";
+import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog } from "../../../services";
 import {
   API_GET_BLOGS,
   API_CREATE_BLOG,
@@ -96,12 +96,12 @@ const AdminManageBlogs: React.FC = () => {
 
   const handleSubmit = async (values: Blog) => {
     if (isUpdateMode && currentBlog) {
-      const user = getUserFromLocalStorrage();
+      const user = getUserFromLocalStorage();
       const payload = { ...values, content, user_id: user._id };
       await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
       message.success("Blog updated successfully");
     } else {
-      const user = getUserFromLocalStorrage();
+      const user = getUserFromLocalStorage();
       const payload = { ...values, content, user_id: user._id };
       await axiosInstance.post(API_CREATE_BLOG, payload);
       message.success("Blog added successfully");

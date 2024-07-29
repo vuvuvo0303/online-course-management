@@ -12,7 +12,6 @@ import { Cart } from '../../models/Cart.ts';
 
 
 const Navbar: React.FC = () => {
-  // const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const location = useLocation();
   const [totalCarts, setTotalCarts] = useState<number>(0)
   const [dataUser, setDataUser] = useState<{ role: string | null; fullName: string | null; email: string | null; avatarUrl: string | null }>({
@@ -63,7 +62,11 @@ const Navbar: React.FC = () => {
       getCart();
       countCart();
     }
-  }, [token])
+    if (user) {
+      const userData = JSON.parse(user);
+      setDataUser({ role: userData.role, fullName: userData.name, email: userData.email, avatarUrl: userData.avatar });
+    }
+  }, [])
 
   const countCart = async () => {
     const res = await getCarts("new");
@@ -71,18 +74,6 @@ const Navbar: React.FC = () => {
       setTotalCarts(res.length);
     }
   }
-
-  useEffect(() => {
-    if (user) {
-      try {
-        const userData = JSON.parse(user);
-        setDataUser({ role: userData.role, fullName: userData.name, email: userData.email, avatarUrl: userData.avatar });
-      } catch (error) {
-        //
-      }
-    }
-  }, [navigate, user]);
-
 
   const dropdownItems: MenuProps["items"] = [
     {

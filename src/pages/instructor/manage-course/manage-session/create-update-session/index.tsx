@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { HomeOutlined } from "@ant-design/icons";
 import { Course, Session } from "../../../../../models";
 import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
-import { axiosInstance, getUserFromLocalStorrage } from "../../../../../services";
+import { axiosInstance, getUserFromLocalStorage } from "../../../../../services";
 import TinyMCEEditorComponent from "../../../../../components/tinyMCE";
 import LoadingComponent from "../../../../../components/loading";
 const formItemLayout = {
@@ -31,7 +31,7 @@ const CreateUpdateSession = () => {
   const [userId, setUserId] = useState<string>('');
   const [content, setContent] = useState<string>('Enter something here');
   useEffect(() => {
-    const user = getUserFromLocalStorrage();
+    const user = getUserFromLocalStorage();
     setUserId(user?._id);
     setRole(user?.role);
   }, []);

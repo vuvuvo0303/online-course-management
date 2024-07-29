@@ -1,5 +1,5 @@
 import FooterColumn from './FooterColumn';
-import { footerLinks } from '../../consts/index';
+import { footerLinks } from '../../consts';
 
 const Footer: React.FC = () => (
   <div >

@@ -10,7 +10,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Lessons, Session } from "../../../../../../models/index.ts";
 import { HomeOutlined } from "@ant-design/icons";
-import { axiosInstance, getUserFromLocalStorrage } from "../../../../../../services";
+import { axiosInstance, getUserFromLocalStorage } from "../../../../../../services";
 import {
   API_CREATE_LESSON,
   API_GET_COURSES,
@@ -36,7 +36,7 @@ const CreateUpdateLesson: React.FC = () => {
   const [content, setContent] = useState<string>("Enter something here");
   const [des, setDes] = useState<string>("");
   useEffect(() => {
-    const user = getUserFromLocalStorrage();
+    const user = getUserFromLocalStorage();
     setUserId(user?._id);
   }, []);
 
