@@ -151,7 +151,7 @@ export const getColorPayout = (status: string) => {
     case "request_payout":
       return "blue";
     case "completed":
-      return "yellow";
+      return "green";
     case "rejected":
       return "purple";
   }
@@ -209,6 +209,7 @@ export const paths = {
   STUDENT_ENROLLMENT: "/enrollment",
   STUDENT_CHECKOUT: "/checkout",
   LESSON: "/course/lesson/:_id",
+  STUDENT_STUDY_COURSE: "/course/lesson",
   STUDENT_CART: "/cart",
   STUDENT_PURCHASE: "/purchase",
   STUDENT_SUBSCRIPTION: "/subscription",

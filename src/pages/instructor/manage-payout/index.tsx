@@ -74,7 +74,7 @@ const InstructorManagePayout = () => {
         message.success(`Send Request Successfully!`)
         getPayoutsByInstructor();
     }
-
+    const hasActionColumn = payouts.some(payout => payout.status === "new" || payout.status === "rejected");
     const columns: TableProps<Payout>["columns"] = [
         {
             title: 'Payout No',
@@ -121,19 +121,18 @@ const InstructorManagePayout = () => {
             width: '10%',
             render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
         },
-        {
+        ...(hasActionColumn ? [{
             title: 'Action',
             dataIndex: 'status',
-            key: 'status',
-            render: (status: string, record) => (
-               ( status === "new" ) &&
-                <>
+            key: 'action',
+            render: (status: string, record: Payout) => (
+                (status === "new" || status === "rejected") && (
                     <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
                         Request Payout
                     </Button>
-                </>
+                )
             )
-        },
+        }] : []),
        
     ];
     const items: TabsProps['items'] = [
@@ -154,71 +153,36 @@ const InstructorManagePayout = () => {
             label: 'Rejected',
         },
     ];
-    const columnsNotAction: TableProps<Payout>["columns"] = [
-        {
-            title: 'Payout No',
-            dataIndex: 'transactions',
-            key: 'transactions',
-            width: '20%',
-            render: (transactions: Transaction[], record: Payout) => (
-                <div onClick={() => toggleModal(0, true, transactions)} className="text-blue-500 cursor-pointer">
-                    {record.payout_no}
-                </div>
-            )
-        },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: string) => (
-                <>
-                    <Tag color={getColorPayout(status)}>
-                        {status === "request_payout" ? "request payout" : status}
-                    </Tag>
-                </>
-            )
-        },
-        {
-            title: 'Balance Origin',
-            dataIndex: 'balance_origin',
-            key: 'balance_origin',
-        },
-        {
-            title: 'Balance Instructor Paid',
-            dataIndex: 'balance_instructor_paid',
-            key: 'balance_instructor_paid',
-        },
-        {
-            title: 'Balance Instructor Received',
-            dataIndex: 'balance_instructor_received',
-            key: 'balance_instructor_received',
-        },
-        {
-            title: 'Created Date',
-            dataIndex: 'created_at',
-            key: 'created_at',
-            width: '10%',
-            render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
-        },
-        {
-            title: 'Action',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: string, record) => (
-               ( status === "rejected" ) &&
-                <>
-                    <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
-                        Request Payout
-                    </Button>
-                </>
-            )
-        },
-    ];
-
+  
     const onChange = (key: string) => {
         setStatusPayout(key);
     };
 
+    const columnsTransactions :TableProps['columns']= [
+        {
+          title: 'Price',
+          dataIndex: 'price',
+          key: 'price',
+        },
+        {
+          title: 'Discount',
+          dataIndex: 'discount',
+          key: 'discount',
+        },
+        {
+          title: 'Price Paid',
+          dataIndex: 'price_paid',
+          key: 'price_paid',
+        },
+        {
+            title: 'Created Date',
+            dataIndex: 'created_at',
+            key: 'craeted_at',
+            render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+          },
+      ];
+
+      
     return (
         <>
             <Modal
@@ -226,24 +190,16 @@ const InstructorManagePayout = () => {
                 open={isModalOpen[0]}
                 onOk={() => toggleModal(0, false)}
                 onCancel={() => toggleModal(0, false)}
-                footer=""
                 classNames={classNames}
+                footer={null}
             >
-                {transactions.map((transaction) => (
-                    <div className="bg-white" key={transaction._id}>
-                        <p>Price: {transaction.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
-                        <p>Discount: {transaction.discount}%</p>
-                        <p>Price Paid: {transaction.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
-                        <p>Created Date: {format(new Date(transaction.created_at), "dd/MM/yyyy")}</p>
-                    </div>
-                ))}
+                <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
             </Modal>
             <div className="container mx-auto px-10">
                 <h1 className="text-center my-10">Manage Payout</h1>
                 <Tabs defaultActiveKey={statusPayout} items={items} onChange={onChange} />
                 {
-                    statusPayout === "new" ? <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
-                        : <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columnsNotAction} />
+                    <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
                 }
             </div>
         </>

@@ -54,12 +54,19 @@ const AllCourses: React.FC = () => {
 
   const renderPopoverContent = (course: Course) => {
     // Add course and go to cart
-    const handleGoToCourse = async () => {
+    const handleGoToCourse = async (course: Course) => {
       if (!user || user.role !== 'student') {
         navigate("/login");
       } else {
         try {
-          await addCourseToCart(course._id);
+          if(course.is_purchased ===false && course.is_in_cart === false ){
+            await addCourseToCart(course._id);
+          }else if(course.is_in_cart === true && course.is_purchased === false){
+            navigate(paths.STUDENT_CART)
+          }else if(course.is_in_cart === true && course.is_purchased === true){
+            navigate(`${paths.STUDENT_STUDY_COURSE}/${course._id}`)
+          }
+        
         } catch (error) {
           //
         }
@@ -89,7 +96,7 @@ const AllCourses: React.FC = () => {
         <div className="flex items-center ml-[4rem]">
           <Button
             type="default"
-            onClick={handleGoToCourse}
+            onClick={()=>handleGoToCourse(course)}
             style={{
               backgroundColor: "#A020F0",
               borderColor: "#A020F0",
@@ -99,7 +106,9 @@ const AllCourses: React.FC = () => {
               lineHeight: "normal", // Reset line height if necessary
             }}
           >
-            Add to cart
+             {course.is_purchased ===false && course.is_in_cart === false && "Add to cart"}
+            {course.is_in_cart === true && course.is_purchased === false && "Go to cart"}
+            {course.is_purchased === true && course.is_in_cart === true && "Learn now"}
           </Button>
           <Link to={paths.STUDENT_ENROLLMENT} className="ml-4 mt-[0.4rem]">
             <HeartOutlined className="text-black text-2xl" />

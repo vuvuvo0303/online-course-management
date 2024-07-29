@@ -194,7 +194,7 @@ const CreateUpdateLesson: React.FC = () => {
                 Manage Sessions
               </Breadcrumb.Item>
               <Breadcrumb.Item
-                href={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}
+                href={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lessons`}
               >
                 Manage Lectures
               </Breadcrumb.Item>
