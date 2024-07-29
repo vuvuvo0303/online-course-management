@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Rate, Tabs } from 'antd';
 import { HeartOutlined, FlagOutlined, EyeOutlined, LikeOutlined, DislikeOutlined, ShareAltOutlined, CopyrightOutlined, MessageOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import About from './about/about';
+import About from '../about';
 import Content from './content/content';
 import ReviewPage from './reviews/review';
 import { Link } from 'react-router-dom';
