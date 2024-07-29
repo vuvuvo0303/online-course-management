@@ -126,7 +126,7 @@ const InstructorManagePayout = () => {
             dataIndex: 'status',
             key: 'status',
             render: (status: string, record) => (
-                status === "new" &&
+               ( status === "new" ) &&
                 <>
                     <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
                         Request Payout
@@ -134,6 +134,7 @@ const InstructorManagePayout = () => {
                 </>
             )
         },
+       
     ];
     const items: TabsProps['items'] = [
         {
@@ -198,6 +199,19 @@ const InstructorManagePayout = () => {
             key: 'created_at',
             width: '10%',
             render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+        },
+        {
+            title: 'Action',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status: string, record) => (
+               ( status === "rejected" ) &&
+                <>
+                    <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
+                        Request Payout
+                    </Button>
+                </>
+            )
         },
     ];
 
