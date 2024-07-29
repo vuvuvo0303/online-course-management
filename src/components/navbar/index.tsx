@@ -127,7 +127,7 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={"/subscription"}>
+        <Link className="text-lg" to={paths.STUDENT_SUBSCRIPTION}>
           Subscription
         </Link>
       ),
@@ -135,14 +135,14 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={"/purchase"}>
+        <Link className="text-lg" to={paths.STUDENT_PURCHASE}>
           Purchase
         </Link>
       ),
       key: "6",
-    },{
+    }, {
       label: (
-        <Link className="text-lg" to={"/change-password"}>
+        <Link className="text-lg" to={paths.STUDENT_CHANGEPASSWORD}>
           Change Password
         </Link>
       ),
@@ -154,7 +154,7 @@ const Navbar: React.FC = () => {
           Logout
         </p>
       ),
-      key: "7",
+      key: "8",
     },
   ];
 

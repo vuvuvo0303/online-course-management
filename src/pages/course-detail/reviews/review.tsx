@@ -1,48 +1,66 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Rate, Progress, Input, Button, Modal, Form, message } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { API_CREATE_REVIEW, API_GET_REVIEWS } from "../../../consts";
 import { Review } from "../../../models";
 import { useParams } from 'react-router-dom';
-
-
+import { calculateAverageRating, countRatings } from '../../../utils';
 
 const ReviewPage: React.FC = () => {
     const [dataReviews, setDataReviews] = useState<Review[]>([]);
-
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const [averageRating, setAverageRating] = useState<number>(0);
+    const [ratingCounts, setRatingCounts] = useState<number[]>([0, 0, 0, 0, 0]);
     const course_id = useParams()._id;
 
+    useEffect(() => {
+        fetchReviews();
+        setAverageRating(calculateAverageRating(dataReviews));
+        setRatingCounts(countRatings(dataReviews));
+    }, [])
+
+    useEffect(() => {
+        if (dataReviews.length > 0) {
+            setAverageRating(calculateAverageRating(dataReviews));
+            setRatingCounts(countRatings(dataReviews));
+        }
+    }, [dataReviews]);
+
     const fetchReviews = useCallback(async () => {
-        const response = await axiosInstance.get(API_GET_REVIEWS);
+        const response = await axiosInstance.post(API_GET_REVIEWS, {
+            "searchCondition": {
+                "course_id": "",
+                "rating": 0,
+                "is_instructor": false,
+                "is_rating_order": false,
+                "is_deleted": false
+            },
+            "pageInfo": {
+                "pageNum": 1,
+                "pageSize": 10
+            }
+        });
         if (response.data.pageData) {
             setDataReviews(response.data.pageData);
         }
     }, []);
 
-    const handleAddNewReview = useCallback(
-        async (values: Review) => {
-            const payload = { ...values, course_id }
-            try {
-                setLoading(true);
-                const response = await axiosInstance.post(API_CREATE_REVIEW, payload);
-                if (response.data) {
-                    setIsModalVisible(false);
-                    form.resetFields();
-                    fetchReviews();
-                    message.success('Review added successfully.');
-                }
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-            }
-        },
-        [form, fetchReviews]
-    );
+    const handleAddNewReview = async (values: Review) => {
+        const payload = { ...values, course_id }
+        setLoading(true);
+        const response = await axiosInstance.post(API_CREATE_REVIEW, payload);
+        if (response.data) {
+            setIsModalVisible(false);
+            form.resetFields();
+            fetchReviews();
+            message.success('Review added successfully.');
+        }
+        setLoading(false);
+    }
+
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -61,15 +79,15 @@ const ReviewPage: React.FC = () => {
             <div className="bg-white-transparent p-4 rounded-md w-full sm:w-1/2 lg:ml-[3rem] lg:mt-[1rem] lg:h-[20rem]">
                 <h2 className="text-xl mb-4">Student Feedback</h2>
                 <div className="flex items-center mb-4">
-                    <span className="text-3xl mr-2">4.6</span>
-                    <Rate allowHalf defaultValue={4.5} disabled />
+                    <span className="text-3xl mr-2">{averageRating}</span>
+                    <Rate allowHalf defaultValue={averageRating} disabled />
                     <span className="ml-4">Course Rating</span>
                 </div>
                 <div>
-                    {[70, 40, 5, 1, 1].map((percent, index) => (
+                    {ratingCounts.map((count, index) => (
                         <div className="flex items-center mb-2" key={index}>
                             <Progress
-                                percent={percent}
+                                percent={(count / dataReviews.length) * 100}
                                 showInfo={false}
                                 strokeColor="#ff4d4f"
                                 trailColor="lightgray"
@@ -81,7 +99,7 @@ const ReviewPage: React.FC = () => {
                                 defaultValue={5 - index}
                                 count={5}
                             />
-                            <span className="ml-2">{percent}%</span>
+                            <span className="ml-2">{((count / dataReviews.length) * 100).toFixed(1)}%</span>
                         </div>
                     ))}
                 </div>
