@@ -3,7 +3,7 @@ import { Card, Popover, Button, Rate, Skeleton } from "antd";
 import Carousel from "react-multi-carousel";
 import { Link, useNavigate } from "react-router-dom";
 import { paths } from "../../../consts/index";
-import { HeartOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, HeartOutlined } from "@ant-design/icons";
 import { fetchCoursesByClient, addCourseToCart } from "../../../services";
 import { Course } from "../../../models";
 import { format } from "date-fns";
@@ -134,7 +134,10 @@ const AllCourses = () => {
     <div className="w-full">
       <div className="w-full text-left">
         <Link to={`/course/all-courses`}>
-          <h2 className="text-2xl font-bold mb-2 p-2">All Courses</h2>
+          <div className="flex">
+            <h2 className="text-2xl font-bold mb-2 p-2">All Courses</h2>
+            <ArrowRightOutlined className="mt-[-6px]" />
+          </div>
         </Link>
 
         {loading ? (

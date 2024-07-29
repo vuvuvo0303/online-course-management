@@ -1,9 +1,10 @@
 import { Rate } from "antd";
 import { Link } from 'react-router-dom';
 import { Course } from "../../../models/Course";
-import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, EyeOutlined, DislikeOutlined, LikeOutlined, ShareAltOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { addCourseToCart } from '../../../services/cart';
 import { paths } from "../../../consts";
+import { formatMinute } from "../../../utils";
 
 interface CourseCardProps {
     course: Course;
@@ -41,7 +42,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                         </div>
                         <span className="text-xs mt-2">{`(15,254 ratings)`}</span>
                     </div>
-                    <div><strong>Method:</strong> {course.category_name}</div>
+                    <div><strong>Category:</strong> {course.category_name}</div>
                     <div><strong>Instructor:</strong> {course.instructor_name}</div>
                     <div><span className="text-sm">Last update:</span> {new Date(course.updated_at).toLocaleDateString()}</div>
                     <div className="flex flex-row gap-4">
@@ -76,28 +77,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             <div className="ml-4 flex flex-row text-white mt-4 lg:mt-0">
                 <div className="ml-[7rem] mb-[0.1rem] flex flex-row gap-4 items-end">
                     <div>
-                        <button className="ml-[-0.2rem] mt-[0.1rem]">
-                            <EyeOutlined className="mr-[0.2rem]" />
-                            <span>1452</span>
-                        </button>
-                    </div>
-                    <div>
-                        <button className="ml-[0.1rem] mt-[0.1rem]">
-                            <LikeOutlined className="mr-[0.3rem]" />
-                            <span>100</span>
-                        </button>
-                    </div>
-                    <div>
-                        <button className="ml-[0.1rem] mt-[0.1rem]">
-                            <DislikeOutlined className="mr-[0.3rem]" />
-                            <span>20</span>
-                        </button>
-                    </div>
-                    <div>
-                        <button className="ml-[0.1rem] mt-[0.1rem]">
-                            <ShareAltOutlined className="mr-[0.3rem]" />
-                            <span>9</span>
-                        </button>
+                        <div className="mr-3 mt-[0.1rem]">
+                            <ClockCircleOutlined className="mr-[0.2rem]" />
+                            <span>Full time to learn course: {formatMinute(course.full_time)}</span>
+                        </div>
                     </div>
                 </div>
             </div>

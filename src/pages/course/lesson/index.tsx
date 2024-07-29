@@ -22,20 +22,15 @@ const Lesson: React.FC = () => {
     useEffect(() => {
         const fetchCourseDetails = async () => {
             setLoading(true);
-            try {
-                const response = await axiosInstance.get(`${API_CLIENT_GET_COURSE_DETAIL}/${_id}`);
-                const courseData = response.data;
+            const response = await axiosInstance.get(`${API_CLIENT_GET_COURSE_DETAIL}/${_id}`);
+            const courseData = response.data;
 
-                if (courseData && courseData._id) {
-                    setCourse(courseData);
-                } else {
-                    setError('Course data is incomplete.');
-                }
-            } catch (error) {
-                // setError("Error fetching course details.");
-            } finally {
-                setLoading(false);
+            if (courseData && courseData._id) {
+                setCourse(courseData);
+            } else {
+                setError('Course data is incomplete.');
             }
+            setLoading(false);
         };
 
         fetchCourseDetails();
