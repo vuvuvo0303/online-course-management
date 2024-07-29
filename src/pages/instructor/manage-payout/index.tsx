@@ -51,10 +51,17 @@ const InstructorManagePayout = () => {
   }, [statusPayout, payoutNoSearch]);
 
   const getPayoutsByInstructor = async () => {
-    setLoading(true);
-    const response = await getPayouts(payoutNoSearch, "", statusPayout, 1, 100);
-    setPayouts(response);
-    setLoading(false);
+    // no loading for search
+    if (payoutNoSearch != "") {
+      const response = await getPayouts(payoutNoSearch, "", statusPayout, 1, 100);
+      setPayouts(response);
+      setLoading(false);
+    } else {
+      setLoading(true);
+      const response = await getPayouts(payoutNoSearch, "", statusPayout, 1, 100);
+      setPayouts(response);
+      setLoading(false);
+    }
   };
 
   const handleRequestPayout = async (payout_id: string, status: string, comment: string) => {

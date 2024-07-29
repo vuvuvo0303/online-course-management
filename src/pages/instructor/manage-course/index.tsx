@@ -1,4 +1,4 @@
-import { ArrowRightOutlined, DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import {
   Breadcrumb,
@@ -15,7 +15,7 @@ import {
   TableProps,
   Tag,
 } from "antd";
-import { Category, Course, Log } from "../../../models";
+import { Category, Course, Log, Review } from "../../../models";
 import {
   API_COURSE_LOGS,
   API_COURSE_STATUS,
@@ -31,12 +31,16 @@ import { useDebounce } from "../../../hooks";
 import { format } from "date-fns";
 import { getCategories } from "../../../services/category.ts";
 import LoadingComponent from "../../../components/loading";
+import { getAllReviews } from "../../../services/review.ts";
 
 const InstructorManageCourses: React.FC = () => {
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingTable, setLoadingTable] = useState<boolean>(true);
   const [courseId, setCourseId] = useState<string>("");
   const [open, setOpen] = useState(false);
+  const [openReviewModal, setOpenReviewModal] = useState(false);
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [course_name, setCourse_name] = useState<string>("");
   const [openLogStatus, setOpenLogStatus] = useState(false);
@@ -81,6 +85,20 @@ const InstructorManageCourses: React.FC = () => {
     setOpenChangeStatus(true);
     setCourse_name(name);
   };
+
+  const showModalReview = (courseId: string, rating: number) => {
+    setOpenReviewModal(true);
+    getReviewsByInstructor(courseId, rating)
+  };
+
+  const getReviewsByInstructor = async (course_id: string, rating: number) => {
+    setLoadingTable(true)
+    const res = await getAllReviews(course_id, rating, 1, 100);
+    console.log("get reviews: ", res);
+    setReviews(res);
+    setLoadingTable(false)
+  }
+
   //show log status modal
   const fetchLog = async () => {
     try {
@@ -233,9 +251,9 @@ const InstructorManageCourses: React.FC = () => {
 
   if (loading) {
     return (<>
-        <LoadingComponent />
+      <LoadingComponent />
     </>)
-}
+  }
   //setStatus for filter log by status
   const handleAllLog = () => {
     setOldStatus("");
@@ -365,7 +383,21 @@ const InstructorManageCourses: React.FC = () => {
         </>
       ),
     },
+    {
+      title: "Review",
+      dataIndex: "_id",
+      key: "_id",
+      render: (_id: string) => (
+        <>
+          <EyeOutlined onClick={() => showModalReview(_id, 0)} className="m-2 text-blue-500 cursor-pointer" />
+        </>
+      ),
+    },
   ];
+
+  const handleCancelReviewModal = () => {
+    setOpenReviewModal(false);
+  };
 
   const columnsLogs: TableProps["columns"] = [
     {
@@ -417,8 +449,54 @@ const InstructorManageCourses: React.FC = () => {
     },
   ];
 
+  const columnsReviews = [
+    {
+      title: 'Course Name',
+      dataIndex: 'course_name',
+      key: 'course_name',
+    },
+    {
+      title: 'Reviewer Name',
+      dataIndex: 'reviewer_name',
+      key: 'reviewer_name',
+    },
+    {
+      title: 'Rating',
+      dataIndex: 'rating',
+      key: 'rating',
+    },
+    {
+      title: 'Comment',
+      dataIndex: 'comment',
+      key: 'comment',
+    },
+    {
+      title: "Created Date ",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+    },
+    {
+      title: "Updated Date ",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+    },
+  ];
+
   return (
     <div>
+      {/* modal to show course's review */}
+      <Modal
+        width={800}
+        title="Review"
+        open={openReviewModal}
+        onCancel={handleCancelReviewModal}
+        footer={""}
+      // onCancel={handleCancel}
+      >
+      <Table loading={loadingTable} dataSource={reviews} columns={columnsReviews} />;
+      </Modal>
       {/* modal log status */}
       <Modal
         width={1200}

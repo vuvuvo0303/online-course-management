@@ -10,5 +10,5 @@ export { createPayout, getPayouts, updateStatusPayout } from './payout';
 export { createCourseByInstructor, getCourses, getCourse, updateCourseByInstructor, deleteCourse, changeStatusCourse, getCourseLogs } from './course';
 export { createSession, getSessions, getSession, updateSession, deleteSession } from './session';
 export { createLesson, getLessons, getLesson, updateLesson, deleteLesson } from './lesson';
-export { deleteReview } from './review'
+export { deleteReview, getAllReviews } from './review'
 export { getBlogs ,deleteBlog, handleGetBlogDetail } from './blog'

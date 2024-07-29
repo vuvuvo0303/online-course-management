@@ -54,7 +54,7 @@ export const getCourses = async (
             }
         }
             )
-        return response;
+        return response.data.pageData;
     }
 // COURSE-03 Get Course (Instructor)
 export const getCourse = async (course_id: string) => {

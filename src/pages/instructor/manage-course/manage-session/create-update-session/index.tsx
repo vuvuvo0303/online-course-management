@@ -19,7 +19,7 @@ const formItemLayout = {
 };
 
 const CreateUpdateSession = () => {
-
+  
   const { courseId, sessionId } = useParams<{ courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
@@ -63,6 +63,9 @@ const CreateUpdateSession = () => {
   }, [courseId, form, sessionId]);
   //Fetch course
   useEffect(() => {
+    if (courseId) {
+      setCourseIdUpdate(courseId)
+    } 
     const fetchCourses = async () => {
       const res = await axiosInstance.post(API_GET_COURSES,
         {
@@ -84,6 +87,7 @@ const CreateUpdateSession = () => {
     };
     fetchCourses();
   }, [userId, role])
+
 
   const onFinish = async (values: Session) => {
     values.description = content;
@@ -115,11 +119,9 @@ const CreateUpdateSession = () => {
       // create session component for manga sessions and manage all sessions
       try {
         // manage course -> manage session
-        if (courseId) {
-          setCourseIdUpdate(courseId);
-        } else {
+        if (!courseId) {
           setCourseIdUpdate(values.course_id)
-        }
+        } 
         await axiosInstance.post(`${API_CREATE_SESSION}`, {
           "name": values.name,
           "course_id": courseIdUpdate,

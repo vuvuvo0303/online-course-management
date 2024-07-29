@@ -52,7 +52,7 @@ export const API_DELETE_LESSON = "/api/lesson";
 //Review
 export const API_CREATE_REVIEW = "/api/review";
 export const API_GET_REVIEWS = "/api/review/search";
-//export const API_GET_REVIEW = "/api/review";
+export const API_GET_REVIEW = "/api/review";
 export const API_UPDATE_REVIEW = "/api/review";
 export const API_DELETE_REVIEW = "/api/review";
 //Course Logs
