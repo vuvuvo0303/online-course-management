@@ -2,9 +2,10 @@ import { Payout, Transaction } from "../../../models";
 import { useEffect, useState } from "react";
 import { getPayouts, updateStatusPayout } from "../../../services";
 import { format } from "date-fns";
-import { Table, TableProps, Tag, Button, ConfigProvider, Modal, Space } from "antd";
-import { getColorPurchase } from "../../../consts/index";
+import { Table, TableProps, Tag, Button , Modal, Breadcrumb,  } from "antd";
+import { getColorPayout } from "../../../consts/index";
 import { createStyles, useTheme } from "antd-style";
+import { HomeOutlined } from "@ant-design/icons";
 const useStyle = createStyles(({ token }) => ({
   "my-modal-body": {
     background: token.blue1,
@@ -155,6 +156,12 @@ const InstructorManagePayout = () => {
 
   return (
     <>
+    <Breadcrumb className="p-3">
+        <Breadcrumb.Item>
+          <HomeOutlined />
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>Manage All Payout</Breadcrumb.Item>
+      </Breadcrumb>
       <Modal
         title="Transactions"
         open={isModalOpen[0]}
@@ -174,7 +181,7 @@ const InstructorManagePayout = () => {
         ))}
       </Modal>
       <div className="container mx-auto px-10">
-        <h1 className="text-center my-10">Manage Payout</h1>
+        
         <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
       </div>
     </>

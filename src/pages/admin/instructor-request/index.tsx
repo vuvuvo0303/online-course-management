@@ -40,20 +40,6 @@ const AdminInstructorRequest = () => {
     fetchInstructorRequest();
   }, [pagination.current, pagination.pageSize, debouncedSearch]);
 
-// Fetch data từ API hoặc từ localStorage
-// useEffect(() => {
-//   const savedData = localStorage.getItem("instructorData");
-//   if (savedData) {
-//     setDataSource(JSON.parse(savedData));
-//   } else {
-//     fetchInstructorRequest();
-//   }
-// }, [pagination.current, pagination.pageSize, debouncedSearch]);
-
-// // Lưu data vào localStorage
-// useEffect(() => {
-//   localStorage.setItem("instructorData", JSON.stringify(dataSource));
-// }, [dataSource]);
 
   const columns: TableProps<Instructor>["columns"] = [
     {

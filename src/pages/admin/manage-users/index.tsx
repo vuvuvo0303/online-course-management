@@ -244,6 +244,7 @@ const AdminManageUsers: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
+      defaultSortOrder: "descend",
       render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
       width: "10%",
     },
@@ -299,14 +300,14 @@ const AdminManageUsers: React.FC = () => {
               setFileList(
                 avatarUrl
                   ? [
-                    {
-                      uid: "-1",
-                      name: "avatar.png",
-                      status: "done",
-                      url: avatarUrl,
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    } as UploadFile<any>,
-                  ]
+                      {
+                        uid: "-1",
+                        name: "avatar.png",
+                        status: "done",
+                        url: avatarUrl,
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      } as UploadFile<any>,
+                    ]
                   : []
               );
             }}
@@ -329,8 +330,7 @@ const AdminManageUsers: React.FC = () => {
   ];
 
   const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } =
-    {
+    const newPagination: { current: number; pageSize: number; total: number } = {
       current: pagination.current ?? 1,
       pageSize: pagination.pageSize ?? 10,
       total: pagination.total ?? 0,
@@ -536,7 +536,7 @@ const AdminManageUsers: React.FC = () => {
               </Radio.Group>
             </Form.Item>
           )}
-        
+
           {roleForModal === "instructor" && (
             <>
               <Form.Item name="video" label="Video" rules={[{ required: true, message: "Please upload a video" }]}>
@@ -558,7 +558,7 @@ const AdminManageUsers: React.FC = () => {
               </Form.Item>
             </>
           )}
-            <Form.Item label="Avatar" name="avatar">
+          <Form.Item label="Avatar" name="avatar">
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
               listType="picture-card"
@@ -574,7 +574,6 @@ const AdminManageUsers: React.FC = () => {
               {modalMode === "Add" ? "Submit" : "Edit"}
             </Button>
           </Form.Item>
-          
         </Form>
       </Modal>
 

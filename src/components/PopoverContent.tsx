@@ -16,7 +16,7 @@ const CourseCard = ({ image, title, author, price }: { image: string; title: str
             <div className="ml-4">
                 <h4 className="text-base font-bold">{title}</h4>
                 <p className="text-xs text-gray-600">{author}</p>
-                <p className="text-lg font-semibold text-blue-500">{price} đ</p>
+                <p className="text-lg font-semibold text-blue-500">{price} </p>
             </div>
         </div>
     );
@@ -86,7 +86,7 @@ const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
                         </div>
                     ))}
                     <button className="mt-2 ml-[1rem] px-4 py-2 bg-black text-white w-[19rem] rounded">View cart</button>
-                    <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost.toLocaleString("vi-VN",{style:"currency",currency:"VND"})} đ</div>
+                    <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost.toLocaleString("vi-VN",{style:"currency",currency:"VND"})} </div>
                 </>
             )}
         </div>

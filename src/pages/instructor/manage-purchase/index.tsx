@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { getItemsByInstructor } from "../../../services";
 
 import { format } from "date-fns";
-import { Button, Table, TableProps, Tag } from "antd";
+import { Breadcrumb, Button, Table, TableProps, Tag } from "antd";
 import { createPayout } from "../../../services/payout";
 import { getColorPurchase } from "../../../consts/index";
+import { HomeOutlined } from "@ant-design/icons";
 
 const InstructorManagePurchase = () => {
     const [purchases, setPurchases] = useState<Purchase[]>([]);
@@ -100,7 +101,12 @@ const InstructorManagePurchase = () => {
 
     return (
         <div className="container mx-auto px-10">
-            <h1 className="text-center my-10">Manage Purchased</h1>
+            <Breadcrumb className="p-3">
+        <Breadcrumb.Item>
+          <HomeOutlined />
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>Manage All Purchase</Breadcrumb.Item>
+      </Breadcrumb>
             <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} />
         </div>
     );

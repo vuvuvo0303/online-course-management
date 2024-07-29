@@ -95,9 +95,9 @@ const InstructorDashboard: React.FC = () => {
           <Card title="Total Revenue" bordered={false} style={{ width: 300 }}>
             <div className="flex justify-between items-center px-1">
               <div className="flex justify-center gap-2">
-                <h1>{user.balance_total}</h1>
+                <h1>{user.balance_total.toLocaleString("vi-VN",{style:"currency", currency:"VND"})}</h1>
                 {/* <DollarOutlined style={{ fontSize: "20px", color: "#E7A833" }} /> */}
-                <span className="flex flex-col justify-center mt-1 text-yellow-500">VND</span>
+                {/* <span className="flex flex-col justify-center mt-1 text-yellow-500"></span> */}
               </div>
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoA2JPklNgATSUB4vGt1RofKes7gQsE5zw7Q&s"
@@ -127,10 +127,10 @@ const InstructorDashboard: React.FC = () => {
                 src="https://cdn.iconscout.com/icon/premium/png-256-thumb/online-course-1482806-1255394.png"
                 width={40}
               />
-              <span className="text-2xl">Jump Into Course Creation</span>
+              <span className="text-2xl">Jump Into Manage Course </span>
             </div>
-            <Link to="/instructor/create-course">
-              <button className="bg-red-500 px-8 py-3 text-white rounded-lg hover:bg-black">Create Your Course</button>
+            <Link to="/instructor/manage-courses">
+              <button className="bg-red-500 px-8 py-3 text-white rounded-lg hover:bg-black">Manage Course</button>
             </Link>
           </div>
         </Card>

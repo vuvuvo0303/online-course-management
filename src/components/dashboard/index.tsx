@@ -3,9 +3,11 @@ import {
   CommentOutlined,
   DesktopOutlined,
   FundOutlined,
-  FundProjectionScreenOutlined,
+  OrderedListOutlined,
+  PlusCircleOutlined,
   ProfileOutlined,
   QuestionCircleOutlined,
+  ShoppingCartOutlined,
   TeamOutlined,
   ToolOutlined,
   UnorderedListOutlined,
@@ -47,12 +49,7 @@ const Dashboard: React.FC = () => {
     }
   }, []);
 
-  function getItem(
-    label: React.ReactNode,
-    key: React.Key,
-    icon?: React.ReactNode,
-    children?: MenuItem[]
-  ): MenuItem {
+  function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
     return {
       key,
       icon,
@@ -65,84 +62,45 @@ const Dashboard: React.FC = () => {
       if (dataUser.role === roles.INSTRUCTOR) {
         setItems([
           getItem("Dashboard", paths.INSTRUCTOR_DASHBOARD, <FundOutlined />),
-          getItem(
-            "Manage Reviews",
-            "/instructor/manage-reviews",
-            <CommentOutlined />
-          ),
+          getItem("Manage Reviews", "/instructor/manage-reviews", <CommentOutlined />),
           getItem(
             "Manage Courses",
             "/instructor/manage-courses",
-            <FundProjectionScreenOutlined />
+            <img
+              src="https://cdn2.iconfinder.com/data/icons/learning-1/64/video-tutorial-clip-online-course-256.png"
+              width={18}
+            />,
+            [
+              getItem("Manage All Sessions", "/instructor/manage-all-sessions", <DesktopOutlined />),
+              getItem("Manage All Lessons", "/instructor/manage-all-lessons", <DesktopOutlined />),
+            ]
           ),
-          getItem(
-            "Manage All Sessions",
-            "/instructor/manage-all-sessions",
-            <DesktopOutlined />
-          ),
-          getItem(
-            "Manage All Lessons",
-            "/instructor/manage-all-lessons",
-            <DesktopOutlined />
-          ),
-          getItem(
-            "Manage Subscriptions",
-            "/instructor/manage-subscriptions",
-            <DesktopOutlined />
-          ),
-          getItem(
-            "Manage Purchases",
-            "/instructor/manage-purchases",
-            <DesktopOutlined />
-          ),
-          getItem(
-            "Manage Payouts",
-            "/instructor/manage-payouts",
-            <DesktopOutlined />
-          ),
+
+          getItem("Manage Subscriptions", "/instructor/manage-subscriptions", <PlusCircleOutlined />),
+          getItem("Manage Purchases", "/instructor/manage-purchases", <ShoppingCartOutlined />),
+          getItem("Manage Payouts", "/instructor/manage-payouts", <OrderedListOutlined />),
           getItem("Tools", "/instructor/tools", <ToolOutlined />),
-          getItem(
-            "Resources",
-            "/instructor/resources",
-            <QuestionCircleOutlined />
-          ),
+          getItem("Resources", "/instructor/resources", <QuestionCircleOutlined />),
         ]);
       } else if (dataUser.role === roles.ADMIN) {
         setItems([
           getItem("Dashboard", paths.ADMIN_DASHBOARD, <FundOutlined />),
           getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
-          getItem(
-            "Instructor's Request",
-            "/admin/instructor-requests",
-            <TeamOutlined />
-          ),
-          getItem(
-            "Manage Purchases",
-            "/admin/manage-all-purchase",
-            <TeamOutlined />
-          ),
+          getItem("Instructor's Request", "/admin/instructor-requests", <TeamOutlined />),
+          getItem("Manage Purchases", "/admin/manage-all-purchase", <ShoppingCartOutlined />),
 
-          getItem(
-            "Manage Categories",
-            "/admin/manage-categories",
-            <UnorderedListOutlined />
-          ),
+          getItem("Manage Categories", "/admin/manage-categories", <UnorderedListOutlined />),
           getItem(
             "Manage Courses",
             "/admin/manage-courses",
-            <FundProjectionScreenOutlined />
+            <img
+              src="https://cdn2.iconfinder.com/data/icons/learning-1/64/video-tutorial-clip-online-course-256.png"
+              width={18}
+            />
           ),
           getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
-          getItem(
-            "Manage Reviews",
-            "/admin/manage-reviews",
-            <CommentOutlined />
-          ),
-          getItem(
-            "Manage Payouts",
-            "/admin/manage-payouts",
-            <DesktopOutlined />
-          ),
+          getItem("Manage Reviews", "/admin/manage-reviews", <CommentOutlined />),
+          getItem("Manage Payouts", "/admin/manage-payouts", <OrderedListOutlined />),
         ]);
       }
     }
@@ -193,11 +151,7 @@ const Dashboard: React.FC = () => {
       label: (
         <Link
           className="mt-2 text-lg"
-          to={
-            dataUser.role === roles.INSTRUCTOR
-              ? "/instructor/paidMemberships"
-              : "/admin/paidMemberships"
-          }
+          to={dataUser.role === roles.INSTRUCTOR ? "/instructor/paidMemberships" : "/admin/paidMemberships"}
         >
           Paid Memberships
         </Link>
@@ -206,14 +160,7 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <Link
-          className="text-lg"
-          to={
-            dataUser.role === roles.INSTRUCTOR
-              ? "/instructor/setting"
-              : "/admin/setting"
-          }
-        >
+        <Link className="text-lg" to={dataUser.role === roles.INSTRUCTOR ? "/instructor/setting" : "/admin/setting"}>
           Setting
         </Link>
       ),
@@ -221,14 +168,7 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <Link
-          className="text-lg"
-          to={
-            dataUser.role === roles.INSTRUCTOR
-              ? "/instructor/help"
-              : "/admin/help"
-          }
-        >
+        <Link className="text-lg" to={dataUser.role === roles.INSTRUCTOR ? "/instructor/help" : "/admin/help"}>
           Help
         </Link>
       ),
@@ -238,11 +178,7 @@ const Dashboard: React.FC = () => {
       label: (
         <Link
           className="text-lg"
-          to={
-            dataUser.role === roles.INSTRUCTOR
-              ? "/instructor/sendFeedBack"
-              : "/admin/sendFeedBack"
-          }
+          to={dataUser.role === roles.INSTRUCTOR ? "/instructor/sendFeedBack" : "/admin/sendFeedBack"}
         >
           Send Feedback
         </Link>
@@ -251,10 +187,7 @@ const Dashboard: React.FC = () => {
     },
     {
       label: (
-        <p
-          onClick={() => logout(navigate)}
-          className="text-lg hover:cursor-pointer hover:text-red-600"
-        >
+        <p onClick={() => logout(navigate)} className="text-lg hover:cursor-pointer hover:text-red-600">
           Logout
         </p>
       ),
@@ -265,18 +198,9 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
-        >
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} width={230}>
           <div className="demo-logo-vertical" />
-          <Menu
-            className="py-4 bg-white-50 h-full"
-            defaultSelectedKeys={["1"]}
-            mode="vertical"
-            items={items}
-          />
+          <Menu className="py-4 bg-white-50 h-full " defaultSelectedKeys={["1"]} mode="inline" items={items} />
         </Sider>
         <Layout className="bg-stone-100">
           <Header className="flex justify-between items-center drop-shadow-xl bg-white ">
@@ -286,9 +210,7 @@ const Dashboard: React.FC = () => {
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
                   <Avatar
-                    src={
-                      typeof user.avatar === "string" ? user.avatar : undefined
-                    }
+                    src={typeof user.avatar === "string" ? user.avatar : undefined}
                     className="hover:cursor-pointer "
                     size={40}
                     icon={<UserOutlined />}
@@ -309,9 +231,7 @@ const Dashboard: React.FC = () => {
               <Outlet />
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>
-            @ 2024 FLearn. All rights reserved
-          </Footer>
+          <Footer style={{ textAlign: "center" }}>@ 2024 FLearn. All rights reserved</Footer>
         </Layout>
       </Layout>
     </>

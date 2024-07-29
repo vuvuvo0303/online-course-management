@@ -49,7 +49,7 @@ const AdminManageFeedbacks: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [pagination.current, pagination.pageSize]);
 
   const handleDeleteReview = useCallback(
     async (_id: string, reviewer_name: string, course_name: string) => {
@@ -64,18 +64,16 @@ const AdminManageFeedbacks: React.FC = () => {
     },
     [fetchReviews]
   );
-  const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } = {
-      current: pagination.current ?? 1,
-      pageSize: pagination.pageSize ?? 10,
-      total: pagination.total ?? 0,
-    };
-
-    setPagination(newPagination);
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
   };
 
-  const handlePaginationChange = (page: number, pageSize: number) => {
-    setPagination({ ...pagination, current: page, pageSize });
+  const handlePaginationChange = (page: number, pageSize?: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize || 10,
+    }));
   };
   const columns: TableProps<Review>["columns"] = [
     {

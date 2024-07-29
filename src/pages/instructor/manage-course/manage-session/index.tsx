@@ -205,7 +205,7 @@ const ManageSession: React.FC = () => {
           <span>Manage Sessions</span>
         </Breadcrumb.Item>
       </Breadcrumb>
-      <h1 className="text-center m-5">Manage Session</h1>
+  
       {/* filter session by true false */}
       <div className="grid grid-cols-2">
         <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-10">

@@ -111,7 +111,7 @@ const InstructorManageSubscriptions = () => {
                     },
                 ]}
             />
-            <h1 className="text-center my-10">Manage Subscriptions</h1>
+            
             <Tabs defaultActiveKey="subscription" items={items} onChange={onChange} />
             <Input.Search
                 placeholder="Search"
