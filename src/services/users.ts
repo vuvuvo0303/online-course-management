@@ -38,6 +38,11 @@ export const getUsers = async (
     return response;
 };
 
+export const getUserDetail = async (_id: string) => {
+    const response = await axiosInstance.get(`${API_GET_USER_DETAIL}/${_id}`);
+    return response
+}
+
 export const changePassword = async (values: ValuesChangePassword) => {
     const response: ResponseData = await axiosInstance.put(API_CHANGE_PASSWORD, {
             user_id: user._id,

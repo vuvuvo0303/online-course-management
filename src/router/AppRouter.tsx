@@ -123,6 +123,10 @@ const AppRouter: React.FC = () => {
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManagerReviews /> : <Navigate to={paths.HOME} />}
           />
           <Route
+            path={paths.INSTRUCTOR_PROFILE}
+            element={canAccess([roles.INSTRUCTOR]) ? <Profile /> : <Navigate to={paths.HOME} />}
+          />
+          <Route
             path={paths.INSTRUCTOR_MANAGE_COURSES}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManageCourses /> : <Navigate to={paths.HOME} />}
           />

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Course } from "../../../models/Course";
 import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, EyeOutlined, DislikeOutlined, LikeOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { addCourseToCart } from '../../../services/cart';
+import { paths } from "../../../consts";
 
 interface CourseCardProps {
     course: Course;
@@ -61,14 +62,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                             </Link>
                         ) : (
                             <>
-                                <Link to='/cart'>
+                                <Link to={paths.STUDENT_CART}>
                                     <button onClick={() => addCourseToCart(course._id)} className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
                                         <ShoppingCartOutlined className="mr-2" /> Add to Cart
                                     </button>
                                 </Link>
-                                <button className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
-                                    Buy now
-                                </button>
                             </>
                         )}
                     </div>
