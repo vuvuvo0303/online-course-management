@@ -16,61 +16,32 @@ const formatTime = (minutes: number): string => {
 };
 
 const Content: React.FC<ContentProps> = ({ course }) => {
-    const headerStyle = {
-        backgroundColor: 'lightgray',
-        color: 'black',
-        padding: '10px',
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    };
-
-    const itemStyle = {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '5px 0',
-        color: 'lightgray',
-    };
-
-    const contentStyle = {
-        backgroundColor: 'white',
-        padding: '10px',
-        color: '#000',
-    };
-
-    const iconTextStyle = {
-        marginLeft: '1rem',
-        flex: 1,
-    };
-
     return (
         <div className='p-8 bg-white rounded-md'>
             <h2 className='text-black mb-4'>Course Content</h2>
             <Collapse accordion ghost>
-                {course.session_list.map((session, sessionIndex) => (
+                {course.session_list.map((session) => (
                     <Panel
                         header={
-                            <div style={headerStyle} key={sessionIndex}>
+                            <div className="flex justify-between items-center p-3 bg-gray-200">
                                 <div className='flex items-center'>
                                     <VideoCameraOutlined />
-                                    <span style={iconTextStyle}>{session.name}</span>
+                                    <span className="ml-4">{session.name}</span>
                                 </div>
                                 <div>
                                     <span>{formatTime(session.full_time)}</span>
                                 </div>
                             </div>
                         }
-                        key={sessionIndex}
+                        key={session.name} // Assuming each session has a unique id
                         showArrow={false}
                     >
-                        <div style={contentStyle}>
-                            {session.lesson_list.map((lesson, lessonIndex) => (
-                                <div style={itemStyle} key={lessonIndex}>
+                        <div className="p-3 bg-white text-black">
+                            {session.lesson_list.map((lesson) => (
+                                <div className="flex justify-between items-center py-2" key={lesson.name}> {/* Assuming each lesson has a unique id */}
                                     <div className="flex items-center">
                                         <PlayCircleOutlined />
-                                        <p style={iconTextStyle}>{lesson.name}</p>
+                                        <p className="ml-4">{lesson.name}</p>
                                     </div>
                                     <span>{formatTime(lesson.full_time)}</span>
                                 </div>

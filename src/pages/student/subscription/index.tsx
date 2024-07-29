@@ -6,20 +6,22 @@ import { useEffect, useState } from "react";
 import useDebounce from "../../../hooks/useDebounce";
 import { getItemsBySubscriber, handleSubscriptionByInstructorOrStudent } from "../../../services/subscription";
 import { SearchOutlined } from "@ant-design/icons";
-
+import LoadingComponent from "../../../components/loading";
 const StudentSubscription = () => {
     const [keyword, setKeyword] = useState<string>("");
     const [subscriber, setSubscriber] = useState<Subscription[]>([]);
     const debouncedSearchTerm = useDebounce(keyword, 500);
-
+    const [loading, setLoading] = useState(true);
     //search instructor by student name
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setKeyword(e.target.value);
     };
 
     const getSubscriber = async () => {
+        setLoading(true)
         const res = await getItemsBySubscriber(debouncedSearchTerm, 1, 100);
         setSubscriber(res);
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -36,7 +38,12 @@ const StudentSubscription = () => {
             getSubscriber();
         }
     }
-
+    if (loading) {
+        return (<>
+          <LoadingComponent />
+        </>)
+      }
+    
     const columns: TableProps<Subscription>['columns'] = [
         {
             title: 'Instructor Name',

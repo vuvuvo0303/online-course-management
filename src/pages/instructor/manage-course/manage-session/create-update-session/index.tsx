@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Input, Breadcrumb, Select, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import { Editor } from '@tinymce/tinymce-react';
 import { HomeOutlined } from "@ant-design/icons";
 import { Course, Session } from "../../../../../models";
 import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
-import axiosInstance from "../../../../../services/axiosInstance.ts";
-import { getUserFromLocalStorrage } from "../../../../../services/auth.ts";
-
+import { axiosInstance, getUserFromLocalStorrage } from "../../../../../services";
+import TinyMCEEditorComponent from "../../../../../components/tinyMCE";
+import LoadingComponent from "../../../../../components/loading";
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -30,8 +29,7 @@ const CreateUpdateSession = () => {
   const [courseIdUpdate, setCourseIdUpdate] = useState<string>("");
   const [courses, setCourses] = useState<Course[]>([]);
   const [userId, setUserId] = useState<string>('');
-  //value of tinymce (field: description)
-  const [value, setValue] = useState<string>('Enter something here');
+  const [content, setContent] = useState<string>('Enter something here');
   useEffect(() => {
     const user = getUserFromLocalStorrage();
     setUserId(user?._id);
@@ -42,25 +40,20 @@ const CreateUpdateSession = () => {
     // update session
     if (sessionId) {
       const fetchSession = async () => {
-        try {
-          const response = await axiosInstance.get(`${API_GET_SESSION}/${sessionId}`);
-          const data = response.data;
-          form.setFieldsValue({
-            name: data.name,
-            description: data.description,
-            course_id: {
-              value: data.course_id, label: data.course_name
-            },
-            position_order: data.position_order
-          });
-          setValue(data.description);
-          // if instructor don't update new course , program will use old data
-          setCourseIdUpdate(data.course_id)
-        } catch (error) {
-          //
-        } finally {
-          setLoading(false);
-        }
+        const response = await axiosInstance.get(`${API_GET_SESSION}/${sessionId}`);
+        const data = response.data;
+        form.setFieldsValue({
+          name: data.name,
+          description: data.description,
+          course_id: {
+            value: data.course_id, label: data.course_name
+          },
+          position_order: data.position_order
+        });
+        setContent(data.description);
+        // if instructor don't update new course , program will use old data
+        setCourseIdUpdate(data.course_id)
+        setLoading(false);
       };
       fetchSession();
     } else {
@@ -71,39 +64,30 @@ const CreateUpdateSession = () => {
   //Fetch course
   useEffect(() => {
     const fetchCourses = async () => {
-      try {
-        const res = await axiosInstance.post(API_GET_COURSES,
-          {
-            "searchCondition": {
-              "keyword": "",
-              "category": "",
-              "status": "new",
-              "is_deleted": false
-            },
-            "pageInfo": {
-              "pageNum": 1,
-              "pageSize": 10
-            }
+      const res = await axiosInstance.post(API_GET_COURSES,
+        {
+          "searchCondition": {
+            "keyword": "",
+            "category": "",
+            "status": "new",
+            "is_deleted": false
+          },
+          "pageInfo": {
+            "pageNum": 1,
+            "pageSize": 10
           }
-        );
-        if (res.data) {
-          console.log("courses: ", res.data.pageData);
-
-          setCourses(res.data.pageData);
         }
-      } catch (error) {
-        console.log("Error: ", error);
-      } finally {
-        setLoading(false)
-      }
+      );
+
+      setCourses(res.data.pageData);
+      setLoading(false)
     };
     fetchCourses();
   }, [userId, role])
 
   const onFinish = async (values: Session) => {
-    values.description = value;
+    values.description = content;
     // setLoading(true);
-    console.log("check values: ", values);
     // update session component for manga sessions and manage all sessions
     if (sessionId) {
       try {
@@ -168,7 +152,7 @@ const CreateUpdateSession = () => {
   return (
     <div className="flex justify-center items-center h-full mt-10">
       {loading ? (
-        <div>Loading ...</div>
+        <LoadingComponent />
       ) : (
         <div className="w-full max-w-6xl bg-white p-8 rounded shadow">
           {
@@ -211,25 +195,7 @@ const CreateUpdateSession = () => {
               label="Description"
               name="description"
             >
-              <Editor
-                apiKey="oppz09dr2j6na1m8aw9ihopacggkqdg19jphtdksvl25ol4k"
-                init={{
-                  placeholder: "Description",
-
-                  height: 200,
-                  menubar: true,
-                  plugins: [
-                    "advlist autolink lists link image charmap print preview anchor",
-                    "searchreplace visualblocks code fullscreen textcolor ",
-                    "insertdatetime media table paste code help wordcount",
-                  ],
-                  textcolor_rows: "4",
-
-                  toolbar:
-                    "undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent ",
-                }}
-                onEditorChange={handleEditorChange}
-              ></Editor>
+              <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
             </Form.Item>
 
             {

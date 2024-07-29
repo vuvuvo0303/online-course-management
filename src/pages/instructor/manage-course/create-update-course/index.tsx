@@ -1,35 +1,28 @@
 import { Category, Course } from "../../../../models";
-import { API_CREATE_COURSE, API_GET_CATEGORIES, API_GET_COURSE, API_UPDATE_COURSE } from "../../../../consts";
+import { API_CREATE_COURSE, API_GET_COURSE, API_UPDATE_COURSE } from "../../../../consts";
 import { useNavigate, useParams } from "react-router-dom";
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Form, Input, message, Select } from 'antd';
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
-import { Editor } from '@tinymce/tinymce-react';
 import axiosInstance from "../../../../services/axiosInstance.ts";
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 14 },
-    },
-};
-
+import { getCategories } from "../../../../services/category.ts";
+import TinyMCEEditorComponent from "../../../../components/tinyMCE";
+import { formItemLayout } from "../../../../layout/form";
+import LoadingComponent from "../../../../components/loading";
 const InstructorCreateCourse: React.FC = () => {
     const [des, setDes] = useState<string>("");
     const navigate = useNavigate();
-    const [cates, setCates] = useState<Category[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const { id, _id } = useParams<{ _id: string, id: string }>();
     const [form] = useForm();
     const token = localStorage.getItem("token");
-    const [value, setValue] = useState<string>('Enter something here');
+    const [content, setContent] = useState<string>('Enter something here');
     // Fetch course
     useEffect(() => {
         const fetchCourse = async () => {
+            setLoading(true);
             try {
                 const response = await
                     axiosInstance.get(`${API_GET_COURSE}/${_id}`)
@@ -45,8 +38,10 @@ const InstructorCreateCourse: React.FC = () => {
                         price: data?.price,
                         discount: data?.discount
                     })
-                    setValue(data.description);
+                    setContent(data.description);
                 }
+
+                setLoading(false);
             } catch (error) {
                 console.log("Error occurred: ", error);
             }
@@ -57,37 +52,22 @@ const InstructorCreateCourse: React.FC = () => {
     }, [_id, form])
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await axiosInstance.post(API_GET_CATEGORIES, {
-                    "searchCondition": {
-                        "keyword": "",
-                        "is_delete": false
-                    },
-                    "pageInfo": {
-                        "pageNum": 1,
-                        "pageSize": 10
-                    }
-                });
-
-                if (response) {
-                    setCates(response.data.pageData);
-                }
-            } catch (error) {
-                //
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchCategories();
+        const fetchData = async () => {
+            const dataCategories = await getCategories();
+            setCategories(dataCategories);
+            console.log("dataCategories: ", dataCategories)
+            setLoading(false);
+        }
+        fetchData();
     }, [token]);
 
     if (loading) {
-        return <p className="text-center">Loading ...</p>;
+        return (<>
+            <LoadingComponent />
+        </>)
     }
     function isValidHttpUrl(string: string) {
         let url;
-
         try {
             url = new URL(string);
         } catch (_) {
@@ -106,7 +86,7 @@ const InstructorCreateCourse: React.FC = () => {
         }
         if (!des) {
             //if instructor don't change description
-            values.description = value;
+            values.description = content;
         } else {
             values.description = des;
         }
@@ -216,9 +196,9 @@ const InstructorCreateCourse: React.FC = () => {
                     >
 
                         <Select>
-                            {cates.map((cate) => (
-                                <Select.Option key={cate._id} value={cate._id}>
-                                    {cate.name}
+                            {categories.map((category) => (
+                                <Select.Option key={category._id} value={category._id}>
+                                    {category.name}
                                 </Select.Option>
                             ))}
                         </Select>
@@ -227,25 +207,7 @@ const InstructorCreateCourse: React.FC = () => {
                         label="Description"
                         name="description"
                     >
-                        <Editor
-                            apiKey="oppz09dr2j6na1m8aw9ihopacggkqdg19jphtdksvl25ol4k"
-                            init={{
-                                placeholder: "Description",
-                                height: 200,
-                                menubar: true,
-                                plugins: [
-                                    "advlist autolink lists link image charmap print preview anchor",
-                                    "searchreplace visualblocks code fullscreen textcolor",
-                                    "insertdatetime media table paste code help wordcount",
-                                ],
-                                forced_root_block: '', // Thiết lập này vô hiệu hóa thẻ <p>
-                                textcolor_rows: "4",
-                                toolbar:
-                                    "undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent",
-                                // Bạn có thể thêm các cấu hình khác nếu cần
-                            }}
-                            onEditorChange={handleEditorChange}
-                        />
+                        <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
                     </Form.Item>
                     {
                         !_id && <Form.Item
@@ -284,7 +246,7 @@ const InstructorCreateCourse: React.FC = () => {
                         </Form.Item>
                     }
                     <Form.Item
-                        label="Price"
+                        label="Price(vnd)"
                         name="price"
                         rules={[{ required: true, message: 'Please input a number!' },
                         {

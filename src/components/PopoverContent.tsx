@@ -66,7 +66,7 @@ const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
                                     image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
                                     title={cart.course_name}
                                     author={cart.instructor_name}
-                                    price={cart.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}
+                                    price={cart.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                                 />
                             </Link>
                             <hr className="w-full my-4 border-gray-300" />
@@ -79,7 +79,7 @@ const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
                                     image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
                                     title={cart.course_name}
                                     author={cart.instructor_name}
-                                    price={cart.price.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}
+                                    price={cart.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                                 />
                             </Link>
                             <hr className="w-full my-4 border-gray-300" />

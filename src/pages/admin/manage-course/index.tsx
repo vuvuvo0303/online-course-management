@@ -1,8 +1,7 @@
-import { ArrowRightOutlined, EditOutlined, HomeOutlined, PlayCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, EditOutlined, PlayCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Breadcrumb,
   Button,
   Empty,
   Form,
@@ -19,12 +18,14 @@ import {
   TableProps,
   Tag,
 } from "antd";
-import { API_COURSE_LOGS, API_COURSE_STATUS, API_GET_COURSES, getColor } from "../../../consts";
-import axiosInstance from "../../../services/axiosInstance.ts";
+import { API_COURSE_LOGS, API_COURSE_STATUS, API_GET_COURSES, getColor, paths } from "../../../consts";
 import { format } from "date-fns";
 import { Course, Log } from "../../../models";
 import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
+import CustomBreadcrumb from "../../../components/breadcrumb";
+import { axiosInstance } from "../../../services";
+import LoadingComponent from "../../../components/loading";
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [changeStatus, setChangeStatus] = useState<string>("");
@@ -58,68 +59,59 @@ const AdminManageCourses: React.FC = () => {
     setComment(e.target.value);
   };
   const fetchLog = async () => {
-    try {
-      setLogLoading(true);
-      const response = await axiosInstance.post(API_COURSE_LOGS, {
-        searchCondition: {
-          course_id: courseId,
-          keyword: keywordLogStatus,
-          old_status: oldStatus,
-          new_status: newStatus,
-          is_deleted: false,
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 100,
-        },
-      });
-      if (response) {
-        setLogs(
-          response.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
-            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-          })
-        );
-        setLogLoading(false);
-      }
-    } catch (error) {
-      //
+    setLogLoading(true);
+    const response = await axiosInstance.post(API_COURSE_LOGS, {
+      searchCondition: {
+        course_id: courseId,
+        keyword: keywordLogStatus,
+        old_status: oldStatus,
+        new_status: newStatus,
+        is_deleted: false,
+      },
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 100,
+      },
+    });
+    if (response) {
+      setLogs(
+        response.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        })
+      );
+      setLogLoading(false);
     }
   };
   useEffect(() => {
-    //fetch logs
     if (courseId) {
       fetchLog();
     }
   }, [courseId, oldStatus, newStatus, keywordLogStatus, setLogLoading, setLogs]);
   const fetchCourses = useCallback(async () => {
-    try {
-      const params = {
-        searchCondition: {
-          keyword: debouncedSearchTerm,
-          category_id: categoryId,
-          status: status,
-          is_deleted: false,
-        },
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
-        },
-      };
-      const response = await axiosInstance.post(API_GET_COURSES, params);
-      if (response.data) {
-        setCourses(response.data.pageData || response.data);
-        setPagination((prev) => ({
-          ...prev,
-          total: response.data.pageInfo?.totalItems || response.data.length,
-          current: response.data.pageInfo?.pageNum || 1,
-          pageSize: response.data.pageInfo?.pageSize || response.data.length,
-        }));
-      }
-    } catch (error) {
-      //
-    } finally {
-      setLoading(false);
+    setLoading(true)
+    const params = {
+      searchCondition: {
+        keyword: debouncedSearchTerm,
+        category_id: categoryId,
+        status: status,
+        is_deleted: false,
+      },
+      pageInfo: {
+        pageNum: pagination.current,
+        pageSize: pagination.pageSize,
+      },
+    };
+    const response = await axiosInstance.post(API_GET_COURSES, params);
+    if (response.data) {
+      setCourses(response.data.pageData || response.data);
+      setPagination((prev) => ({
+        ...prev,
+        total: response.data.pageInfo?.totalItems || response.data.length,
+        current: response.data.pageInfo?.pageNum || 1,
+        pageSize: response.data.pageInfo?.pageSize || response.data.length,
+      }));
     }
+    setLoading(false);
   }, [categoryId, pagination.current, pagination.pageSize, searchText, status, debouncedSearchTerm]);
 
   useEffect(() => {
@@ -274,23 +266,14 @@ const AdminManageCourses: React.FC = () => {
       key: "updated_at",
       render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
     },
-    // {
-    //   title: "Action",
-    //   key: "action",
-    //   width: "15",
-    //   render: (record: Course) => (
-    //     <>
-    //       <Link to={`/admin/manage-course/${record._id}/manage-session`}>
-    //         <EyeOutlined className="text-purple-500 m-2" />
-    //       </Link>
-    //     </>
-    //   ),
-    // },
   ];
 
   if (loading) {
-    return <p className="flex justify-center items-center">Loading ...</p>;
+    return (<>
+      <LoadingComponent />
+    </>)
   }
+
 
   const showModal = (record: Course) => {
     setSelectedCourse(record);
@@ -363,6 +346,16 @@ const AdminManageCourses: React.FC = () => {
     setOldStatus("");
     setNewStatus(value);
   };
+
+  const statusOptions = [
+    { label: <span>new</span>, value: "new" },
+    { label: <span>waiting_approve</span>, value: "waiting_approve" },
+    { label: <span>approve</span>, value: "approve" },
+    { label: <span>reject</span>, value: "reject" },
+    { label: <span>active</span>, value: "active" },
+    { label: <span>inactive</span>, value: "inactive" },
+  ];
+
   return (
     <div className="container mx-auto p-4">
       <Modal
@@ -393,18 +386,7 @@ const AdminManageCourses: React.FC = () => {
             style={{ width: 200 }}
             className="m-5"
             onChange={handleChangeOldStatus}
-            options={[
-              {
-                options: [
-                  { label: <span>new</span>, value: "new" },
-                  { label: <span>waiting approve</span>, value: "waiting_approve" },
-                  { label: <span>approve</span>, value: "approve" },
-                  { label: <span>reject</span>, value: "reject" },
-                  { label: <span>active</span>, value: "active" },
-                  { label: <span>inactive</span>, value: "inactive" },
-                ],
-              },
-            ]}
+            options={[{ statusOptions }]}
           />
           {/* Filter log by new status */}
           <Select
@@ -412,18 +394,7 @@ const AdminManageCourses: React.FC = () => {
             style={{ width: 200 }}
             className="m-5"
             onChange={handleChangeNewStatus}
-            options={[
-              {
-                options: [
-                  { label: <span>new</span>, value: "new" },
-                  { label: <span>waiting_approve</span>, value: "waiting_approve" },
-                  { label: <span>approve</span>, value: "approve" },
-                  { label: <span>reject</span>, value: "reject" },
-                  { label: <span>active</span>, value: "active" },
-                  { label: <span>inactive</span>, value: "inactive" },
-                ],
-              },
-            ]}
+            options={[{ statusOptions }]}
           />
           <div>
             {logLoading === false ? (
@@ -535,20 +506,7 @@ const AdminManageCourses: React.FC = () => {
           </Button>
         </div>
       </Modal>
-
-      {/* Breadcrumb */}
-      <Breadcrumb
-        className="py-3"
-        items={[
-          {
-            href: "/",
-            title: <HomeOutlined />,
-          },
-          {
-            title: "Manage Course",
-          },
-        ]}
-      />
+      <CustomBreadcrumb currentTitle="Manage Courses" currentHref={paths.ADMIN_HOME} />
 
       {/* Filters and Search */}
       <Space className="flex flex-wrap  mb-4">

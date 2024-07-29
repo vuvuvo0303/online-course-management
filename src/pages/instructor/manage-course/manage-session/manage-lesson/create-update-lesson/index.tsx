@@ -6,12 +6,11 @@ import {
   Breadcrumb,
   Select,
   message,
-  // SelectProps, Tag
 } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Lessons, Session } from "../../../../../../models/index.ts";
 import { HomeOutlined } from "@ant-design/icons";
-import axiosInstance from "../../../../../../services/axiosInstance.ts";
+import { axiosInstance, getUserFromLocalStorrage } from "../../../../../../services";
 import {
   API_CREATE_LESSON,
   API_GET_COURSES,
@@ -21,20 +20,9 @@ import {
   API_UPDATE_LESSON,
   paths,
 } from "../../../../../../consts";
-import { Editor } from "@tinymce/tinymce-react";
-import { getUserFromLocalStorrage } from "../../../../../../services/auth.ts";
-// import { Editor } from '@tinymce/tinymce-react';
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 14, offset: 5 },
-  },
-};
-
+import TinyMCEEditorComponent from "../../../../../../components/tinyMCE";
+import { formItemLayout } from "../../../../../../layout/form";
+import LoadingComponent from "../../../../../../components/loading";
 const CreateUpdateLesson: React.FC = () => {
   const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
@@ -45,7 +33,7 @@ const CreateUpdateLesson: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [userId, setUserId] = useState<string>("");
   const [course_id, setCourse_id] = useState<string>("");
-  const [value, setValue] = useState<string>("Enter something here");
+  const [content, setContent] = useState<string>("Enter something here");
   const [des, setDes] = useState<string>("");
   useEffect(() => {
     const user = getUserFromLocalStorrage();
@@ -55,29 +43,24 @@ const CreateUpdateLesson: React.FC = () => {
   useEffect(() => {
     if (lectureId) {
       const fetchData = async () => {
-        try {
-          const response = await axiosInstance.get(`${API_GET_LESSON}/${lectureId}`);
-          const data = response.data;
-          form.setFieldsValue({
-            name: data.name,
-            course_id: data.course_id,
-            session_id: data.session_id,
-            user_id: data.user_id,
-            lesson_type: data.lesson_type,
-            description: data.description,
-            video_url: data.video_url,
-            image_url: data.image_url,
-            price: data.price,
-            full_time: data.full_time,
-            position_order: data.position_order,
-          });
-          setCourse_id(data.course_id);
-          setValue(data.description);
-        } catch (error) {
-          //
-        } finally {
-          setLoading(false);
-        }
+        const response = await axiosInstance.get(`${API_GET_LESSON}/${lectureId}`);
+        const data = response.data;
+        form.setFieldsValue({
+          name: data.name,
+          course_id: data.course_id,
+          session_id: data.session_id,
+          user_id: data.user_id,
+          lesson_type: data.lesson_type,
+          description: data.description,
+          video_url: data.video_url,
+          image_url: data.image_url,
+          price: data.price,
+          full_time: data.full_time,
+          position_order: data.position_order,
+        });
+        setCourse_id(data.course_id);
+        setContent(data.description);
+        setLoading(false);
       };
       fetchData();
     }
@@ -164,11 +147,10 @@ const CreateUpdateLesson: React.FC = () => {
     }
     if (!des) {
       //if instructor don't change description
-      values.description = value;
+      values.description = content;
     } else {
       values.description = des;
     }
-    console.log("check values: ", values);
     setLoading(true);
     try {
       //Update lesson
@@ -193,14 +175,13 @@ const CreateUpdateLesson: React.FC = () => {
     }
   };
   const handleChangeCourseId = (value: string) => {
-    console.log("onchange value: ", value);
     setCourse_id(value);
   };
 
   return (
     <div className="flex justify-center items-center  h-full mt-10">
       {loading ? (
-        <div>Loading ...</div>
+        <LoadingComponent />
       ) : (
         <div className="w-full max-w-7xl bg-white  p-8 rounded shadow">
           {courseId && sessionId != undefined ? (
@@ -306,25 +287,7 @@ const CreateUpdateLesson: React.FC = () => {
               label="Description"
               name="description"
             >
-              <Editor
-                apiKey="oppz09dr2j6na1m8aw9ihopacggkqdg19jphtdksvl25ol4k"
-                init={{
-                  placeholder: "Description",
-
-                  height: 200,
-                  menubar: true,
-                  plugins: [
-                    "advlist autolink lists link image charmap print preview anchor",
-                    "searchreplace visualblocks code fullscreen textcolor ",
-                    "insertdatetime media table paste code help wordcount",
-                  ],
-                  textcolor_rows: "4",
-
-                  toolbar:
-                    "undo redo | styleselect | fontsizeselect| code | bold italic | alignleft aligncenter alignright alignjustify | outdent indent ",
-                }}
-                onEditorChange={handleEditorChange}
-              ></Editor>
+              <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
             </Form.Item>
 
 

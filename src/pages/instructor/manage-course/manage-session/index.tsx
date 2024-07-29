@@ -17,6 +17,7 @@ import { Link, useParams } from "react-router-dom";
 import { API_GET_COURSE, API_GET_SESSIONS } from "../../../../consts";
 import axiosInstance from "../../../../services/axiosInstance.ts";
 import useDebounce from "../../../../hooks/useDebounce";
+import LoadingComponent from "../../../../components/loading";
 import { format } from "date-fns";
 const ManageSession: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -173,9 +174,10 @@ const ManageSession: React.FC = () => {
   ];
 
   if (loading) {
-    return <div className="text-center">Loading...</div>;
-  }
-
+    return (<>
+        <LoadingComponent />
+    </>)
+}
   if (error) {
     return <div>{error}</div>;
   }
@@ -187,7 +189,7 @@ const ManageSession: React.FC = () => {
     <div>
       <Modal
         title="Confirm Delete"
-        visible={open}
+        open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
@@ -217,9 +219,9 @@ const ManageSession: React.FC = () => {
             options={[
               {
                 options: [
-                  { label: <span>true</span>, value: true },
-                  { label: <span>false</span>, value: false },
-                ],
+                  { label: <span>Deleted</span>, value: true },
+                  { label: <span>Existing</span>, value: false },
+              ],
               },
             ]}
           />
@@ -240,7 +242,7 @@ const ManageSession: React.FC = () => {
         </div>
       </div>
 
-      <Table dataSource={sessions} columns={columns} rowKey={(record: Session) => record._id} pagination={false} onChange={handleTableChange}/>
+      <Table dataSource={sessions} columns={columns} rowKey={(record: Session) => record._id} pagination={false} onChange={handleTableChange} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

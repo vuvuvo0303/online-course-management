@@ -18,8 +18,8 @@ import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
 import logo2 from "../../assets/logo2.jpg";
-import { paths, roles } from "../../consts";
-import { getUserFromLocalStorrage, logout } from "../../services/auth.ts";
+import { roles } from "../../consts";
+import { logout } from "../../services/auth.ts";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -38,16 +38,18 @@ const Dashboard: React.FC = () => {
     email: null,
   });
 
-  const user: User = getUserFromLocalStorrage();
+  const userString = localStorage.getItem("user");
+  const user: User = userString ? JSON.parse(userString) : null;
+  const userRole = user?.role;
   useEffect(() => {
-    if (user) {
+    if (userRole && user) {
       setDataUser({
-        role: user.role,
+        role: userRole,
         fullName: user.name,
         email: user.email,
       });
     }
-  }, []);
+  }, [userRole]);
 
   function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
     return {
@@ -84,7 +86,7 @@ const Dashboard: React.FC = () => {
         ]);
       } else if (dataUser.role === roles.ADMIN) {
         setItems([
-          getItem("Dashboard", paths.ADMIN_DASHBOARD, <FundOutlined />),
+          getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
           getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
           getItem("Instructor's Request", "/admin/instructor-requests", <TeamOutlined />),
           getItem("Manage Purchases", "/admin/manage-all-purchase", <ShoppingCartOutlined />),
@@ -118,10 +120,10 @@ const Dashboard: React.FC = () => {
       label: (
         <div className="text-sm">
           <Row>
-            <Col span={8} className="p-5 pt-2 pb-2">
+            <Col span={8} className="p-4 pt-2 pb-2">
               <Avatar
                 src={typeof user.avatar === "string" ? user.avatar : undefined}
-                className="hover:cursor-pointer bg-black"
+                className="hover:cursor-pointer mr-5 border border-black"
                 size={50}
                 icon={<UserOutlined />}
               />
@@ -131,7 +133,7 @@ const Dashboard: React.FC = () => {
                 <p className="text-base font-bold">{dataUser.fullName}</p>
               </Row>
               <div>
-                <p className="text-xs">{dataUser.email}</p>
+                <p className="text-md">{dataUser.email}</p>
               </div>
             </Col>
           </Row>
@@ -210,8 +212,10 @@ const Dashboard: React.FC = () => {
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
                   <Avatar
-                    src={typeof user.avatar === "string" ? user.avatar : undefined}
-                    className="hover:cursor-pointer "
+                    src={
+                      typeof user.avatar === "string" ? user.avatar : undefined
+                    }
+                    className="hover:cursor-pointer border border-black"
                     size={40}
                     icon={<UserOutlined />}
                   />

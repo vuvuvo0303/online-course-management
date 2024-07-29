@@ -73,6 +73,8 @@ export const API_UPDATE_STATUS_PAYOUT = "/api/payout/update-status";
 //Client
 export const API_CLIENT_GET_COURSES = "/api/client/course/search";
 export const API_CLIENT_GET_COURSE_DETAIL = "/api/client/course";
+export const API_CLIENT_GET_BLOGS = "/api/client/blog/search";
+export const API_CLIENT_GET_BLOG = "/api/client/blog";
 //Blog
 export const API_CREATE_BLOG = "/api/blog";
 export const API_GET_BLOGS = "/api/blog/search";
@@ -150,7 +152,7 @@ export const getColorPayout = (status: string) => {
       return "blue";
     case "completed":
       return "yellow";
-      case "reejected":
+    case "rejected":
       return "purple";
   }
 };
@@ -191,7 +193,6 @@ export const paths = {
   NAME_CATEGORY: "/category",
   COURSE: "/course",
   ALL_COURSES: "/course/all-courses",
-  LESSON: "/course/lesson",
   SITEMAP: "/sitemap",
   NOTFOUND: "/notfound",
   COURSE_DETAILS: "/course/all-courses/course/:_id",
@@ -207,18 +208,19 @@ export const paths = {
   STUDENT_PAYMENT_HISTORY: "/payment-history",
   STUDENT_ENROLLMENT: "/enrollment",
   STUDENT_CHECKOUT: "/checkout",
+  LESSON: "/course/lesson/:_id",
   STUDENT_CART: "/cart",
   STUDENT_PURCHASE: "/purchase",
   STUDENT_SUBSCRIPTION: "/subscription",
   /* INSTRUCTORS PATHS */
- 
+
   INSTRUCTOR_DASHBOARD: "dashboard",
   INSTRUCTOR_PROFILE: "profile",
   INSTRUCTOR_CREATE_COURSE: "manage-courses/create-course",
   INSTRUCTOR_UPDATE_COURSE: "manage-courses/update-course/:_id",
   INSTRUCTOR_UPDATE_COURSE_DETAIL:
     "manage-courses/course-detail/:id/update-course/:_id",
-    INSTRUCTOR_MANAGE_PAYOUTS: "manage-payouts",
+  INSTRUCTOR_MANAGE_PAYOUTS: "manage-payouts",
   INSTRUCTOR_MANAGE_REVIEWS: "manage-reviews",
   INSTRUCTOR_MANAGE_COURSES: "manage-courses",
   INSTRUCTOR_MANAGE_SUPSCRIPTIONS: "manage-subscriptions",

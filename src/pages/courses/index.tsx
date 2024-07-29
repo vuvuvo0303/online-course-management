@@ -7,7 +7,7 @@ import MyList from "../enrollment/MyList";
 import List from "../../components/categories/list";
 import TeacherCategories from "../../components/categories/teacher";
 import { ExclamationCircleFilled, FilterOutlined } from "@ant-design/icons";
-import { CartComponents } from "../../components";
+//import { CartComponents } from "../../components";
 import styles from "./courses.module.css";
 // import axiosInstance from "../../services/axiosInstance";
 
@@ -180,10 +180,10 @@ const CoursesCategory: React.FC = () => {
             )}
             <div className={`${styles.course_list} ${isSidebarOpen ? "" : "w-full"}`}>
               <div className="mb-5 lg:ml-[5rem]">
+                {/* <CartComponents />
                 <CartComponents />
                 <CartComponents />
-                <CartComponents />
-                <CartComponents />
+                <CartComponents /> */}
               </div>
             </div>
           </div>

@@ -1,104 +1,122 @@
-import { useState } from 'react';
-import { Input, Dropdown, Typography, Button, Drawer } from 'antd';
-import { SearchOutlined, TagOutlined, FileTextOutlined, ImportOutlined } from '@ant-design/icons';
-import { categoryFilters } from '../consts';
+import { useEffect, useState } from 'react';
+import { Popover, Input, Spin, List, Button } from 'antd';
+import { fetchCoursesByClient } from '../services';
+import { Course } from '../models';
+import { Link } from 'react-router-dom';
+import { ArrowRightOutlined, HeartOutlined } from '@ant-design/icons';
 
-const SearchTool = () => {
+const CourseCard = ({ image = '', title = '', author = '', price = '', paid = '' }:
+    { image?: string; title?: string; author?: string; price?: string; paid?: string }) => {
+    return (
+        <div className="flex items-center p-2 max-w-[21rem]">
+            <img src={image || '/default-image.jpg'} alt={title} className="w-24 h-16 rounded-md" />
+            <div className="ml-4">
+                <h4 className="text-base font-bold">{title}</h4>
+                <p className="text-xs text-gray-600">{author}</p>
+                <p className="text-xs font-semibold line-through">{price}</p>
+                <p className="text-lg font-semibold">{paid}</p>
+            </div>
+        </div>
+    );
+};
+
+const SearchTool: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedItem, setSelectedItem] = useState('All'); // Default selected item
-    const [drawerVisible, setDrawerVisible] = useState(false);
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [visible, setVisible] = useState<boolean>(false);
 
-    const handleSearch = () => {
-        // Implement your search logic here
-        const results = categoryFilters.filter(filter =>
-            filter.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        console.log(results);
-    };
+    const fetchCourses = async (term: string) => {
+        if (term.trim() === '') return; // Avoid API call if search term is empty
 
-    const items = [
-        {
-            key: '1',
-            label: 'All',
-            icon: <SearchOutlined />,
-        },
-        {
-            key: '2',
-            label: 'Course',
-            icon: <FileTextOutlined />,
-        },
-        {
-            key: '3',
-            label: 'Category',
-            icon: <ImportOutlined />,
-        },
-        {
-            key: '4',
-            label: 'Keyword',
-            icon: <TagOutlined />,
-        },
-    ];
-
-    const handleMenuClick = (e: { key: string; }) => {
-        const selectedItem = items.find(item => item.key === e.key);
-        if (selectedItem) {
-            setSelectedItem(selectedItem.label);
-        } else {
-            setSelectedItem('All'); // Default fallback
+        setLoading(true);
+        try {
+            const res = await fetchCoursesByClient(term, "");
+            setCourses(res);
+        } catch (error) {
+            console.error("Failed to fetch courses:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const toggleDrawer = () => {
-        setDrawerVisible(!drawerVisible);
+    useEffect(() => {
+        fetchCourses(searchTerm);
+    }, [searchTerm]);
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
+        setVisible(e.target.value.trim() !== '');
     };
+
+    const handleVisibleChange = (visible: boolean) => {
+        setVisible(visible);
+    };
+
+    const content = (
+        <div style={{ width: '500px' }}>
+            {loading ? (
+                <div className="flex justify-center items-center h-full">
+                    <Spin />
+                </div>
+            ) : courses.length > 0 ? (
+                <List
+                    dataSource={courses}
+                    renderItem={(course) => (
+                        <List.Item key={course._id} className="flex justify-between items-center">
+                            <div className="flex-1">
+                                <CourseCard
+                                    image={course.image_url}
+                                    title={course.name}
+                                    author={course.instructor_name}
+                                    price={course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                    paid={course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                />
+                            </div>
+                            <div className='flex flex-col gap-2 items-end'>
+                                <Link to={`/course/all-courses/course/${course._id}`}>
+                                    <Button
+                                        type="primary"
+                                        className="ml-2 text-xs px-2 py-1"
+                                    >
+                                        <ArrowRightOutlined className="text-sm" /> View Course
+                                    </Button>
+                                </Link>
+                                <Link to={`/enrollment`}>
+                                    <Button
+                                        type="default"
+                                        className="ml-2 text-xs px-2 py-1"
+                                    >
+                                        <HeartOutlined className="text-sm" /> Save
+                                    </Button>
+                                </Link>
+                            </div>
+                        </List.Item>
+                    )}
+                />
+            ) : (
+                <p>No results found.</p>
+            )}
+        </div>
+    );
 
     return (
         <div className="relative w-full md:w-[650px] md:ml-[3.5rem]">
-            <div className="flex items-center">
-                <Input.Search
-                    addonBefore={<Dropdown
-                        menu={{
-                            items,
-                            selectable: true,
-                            defaultSelectedKeys: ['1'],
-                            onClick: handleMenuClick,
-                        }}
-                    >
-                        <Typography.Link>
-                            <Button className="border-none h-[1rem]">
-                                {selectedItem}
-                            </Button>
-                        </Typography.Link>
-                    </Dropdown>}
-                    className="w-full hidden md:block"
-                    placeholder="Search categories..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onSearch={handleSearch}
-                />
-                <Button
-                    className="md:hidden border border-none h-[31.6px] "
-                    onClick={toggleDrawer}
-                    icon={<SearchOutlined />}
-                />
-            </div>
-            <Drawer
-
-                placement="right"
-                closable={true}
-
-                onClose={toggleDrawer}
-                open={drawerVisible}
-                width={Math.min(window.innerWidth - 100, 320)} // Adjust the width to be responsive
+            <Popover
+                content={content}
+                title="Search Results"
+                placement="bottom"
+                trigger="click"
+                visible={visible}
+                onVisibleChange={handleVisibleChange}
             >
-                <Input.Search
-                    className="w-full rounded-lg border-black"
-                    placeholder="Search categories..."
+                <Input
+                    placeholder="Search courses..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onSearch={handleSearch}
+                    onChange={handleSearchChange}
+                    onPressEnter={() => setVisible(true)}
                 />
-            </Drawer>
+            </Popover>
         </div>
     );
 };

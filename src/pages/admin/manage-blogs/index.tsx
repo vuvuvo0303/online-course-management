@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DeleteOutlined, EditOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Form,
   Input,
@@ -11,21 +11,20 @@ import {
   TableColumnsType,
   TablePaginationConfig,
 } from "antd";
-import { Breadcrumb, Button, Image, Table } from "antd";
+import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
-import axiosInstance from "../../../services/axiosInstance.ts";
+import { axiosInstance, getCategories, getUserFromLocalStorrage, deleteBlog } from "../../../services";
 import {
-  API_DELETE_BLOG,
   API_GET_BLOGS,
   API_CREATE_BLOG,
   API_UPDATE_BLOG,
   paths,
   API_GET_BLOG,
-} from "../../../consts/index.ts";
+} from "../../../consts";
+import LoadingComponent from "../../../components/loading";
 import { format } from "date-fns";
-import { getCategories } from "../../../services/category.ts";
-import { getUserFromLocalStorrage } from "../../../services/auth.ts";
-// import useDebounce from "../../../hooks/useDebounce.ts";
+import CustomBreadcrumb from "../../../components/breadcrumb";
+import TinyMCEEditorComponent from "../../../components/tinyMCE";
 
 const AdminManageBlogs: React.FC = () => {
   const [dataBlogs, setDataBlogs] = useState<Blog[]>([]);
@@ -36,95 +35,109 @@ const AdminManageBlogs: React.FC = () => {
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0 });
   const [categories, setCategories] = useState<Category[]>([]);
   const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
-  // const debouncedSearch = useDebounce(searchText, 500);
-  // const [searchText, setSearchText] = useState<string>("");
+  const [content, setContent] = useState<string>("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchBlogs();
-      const categoriesData = await getCategories();
-      setCategories(categoriesData);
-      setLoading(false);
-    };
-    fetchData();
+    fetchCategories();
   }, []);
+
   useEffect(() => {
-    fetchBlogs();
+    getBlogs();
   }, [pagination.current, pagination.pageSize]);
 
-  const handleDelete = async (id: string, title: string) => {
-    try {
-      await axiosInstance.delete(`${API_DELETE_BLOG}/${id}`);
-      message.success(`Deleted blog ${title} successfully`);
-      await fetchBlogs();
-    } catch (error) {
-      //
-    }
+  const fetchCategories = async () => {
+    const categories = await getCategories();
+    setCategories(categories);
   };
 
-  const fetchBlogs = async () => {
-    try {
-      const response = await axiosInstance.post(API_GET_BLOGS, {
-        searchCondition: {
-          category_id: "",
-          is_deleted: false,
-        },
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
-        },
-      });
-      setDataBlogs(response.data.pageData);
+  const getBlogs = async () => {
+    setLoading(true);
+    const response = await axiosInstance.post(API_GET_BLOGS, {
+      searchCondition: {
+        category_id: "",
+        is_deleted: false,
+      },
+      pageInfo: {
+        pageNum: pagination.current,
+        pageSize: pagination.pageSize,
+      },
+    });
+    setDataBlogs(response.data.pageData);
+    setPagination({
+      ...pagination,
+      total: response.data.pageInfo.totalItems,
+      current: response.data.pageInfo.pageNum,
+      pageSize: response.data.pageInfo.pageSize,
+    });
+    setLoading(false);
+  };
 
-      setPagination({
-        ...pagination,
-        total: response.data.pageInfo.totalItems,
-        current: response.data.pageInfo.pageNum,
-        pageSize: response.data.pageInfo.pageSize,
-      });
-    } catch (error) {
-      message.error("Failed to fetch blogs");
-    }
+  const handleEditorChange = (value: string) => {
+    setContent(value);
   };
 
   const handleUpdateClick = async (id: string) => {
     setIsUpdateMode(true);
     setIsModalVisible(true);
-    try {
-      const response = await axiosInstance.get(`${API_GET_BLOG}/${id}`);
-      const blogData = response.data;
-      setCurrentBlog(blogData);
-      form.setFieldsValue({
-        name: blogData.name,
-        category_id: blogData.category_id,
-        image_url: blogData.image_url,
-        description: blogData.description,
-        content: blogData.content,
-      });
-    } catch (error) {
-      //
-    }
+    setLoading(true);
+    const response = await axiosInstance.get(`${API_GET_BLOG}/${id}`);
+    const blogData = response.data;
+    setCurrentBlog(blogData);
+    form.setFieldsValue({
+      name: blogData.name,
+      category_id: blogData.category_id,
+      image_url: blogData.image_url,
+      description: blogData.description,
+      content: blogData.content,
+    });
+    setContent(blogData.content);
+    setLoading(false);
   };
 
   const handleSubmit = async (values: Blog) => {
-    try {
-      if (isUpdateMode && currentBlog) {
-        const user = getUserFromLocalStorrage();
-        const payload = { ...values, user_id: user._id }
-        await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
-        message.success("Blog updated successfully");
-      } else {
-        await axiosInstance.post(API_CREATE_BLOG, values);
-        message.success("Blog added successfully");
-      }
-      setIsModalVisible(false);
-      form.resetFields();
-      setIsUpdateMode(false);
-      setCurrentBlog(null);
-      await fetchBlogs();
-    } catch (error) {
-      //
+    if (isUpdateMode && currentBlog) {
+      const user = getUserFromLocalStorrage();
+      const payload = { ...values, content, user_id: user._id };
+      await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
+      message.success("Blog updated successfully");
+    } else {
+      const user = getUserFromLocalStorrage();
+      const payload = { ...values, content, user_id: user._id };
+      await axiosInstance.post(API_CREATE_BLOG, payload);
+      message.success("Blog added successfully");
     }
+    setIsModalVisible(false);
+    form.resetFields();
+    setIsUpdateMode(false);
+    setCurrentBlog(null);
+    setContent("");
+    await getBlogs();
+  };
+
+  const handlePaginationChange = (page: number, pageSize?: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize || 10,
+    }));
+  };
+
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
+  };
+
+  const handleResetContent = () => {
+    setIsUpdateMode(false);
+    setIsModalVisible(true);
+    setContent("");
+    form.resetFields();
+  };
+
+  const handleCancelModal = () => {
+    setIsModalVisible(false);
+    setIsUpdateMode(false);
+    setCurrentBlog(null);
+    form.resetFields();
   };
 
   const columns: TableColumnsType<Blog> = [
@@ -140,9 +153,9 @@ const AdminManageBlogs: React.FC = () => {
       width: "15%",
     },
     {
-      title: "Content",
-      dataIndex: "content",
-      key: "content",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
     },
     {
       title: "Image",
@@ -179,7 +192,7 @@ const AdminManageBlogs: React.FC = () => {
           <Popconfirm
             title="Delete the Blog"
             description="Are you sure to delete this Blog?"
-            onConfirm={() => handleDelete(record._id, record.name)}
+            onConfirm={() => deleteBlog(record._id, record.name, getBlogs)}
             okText="Yes"
             cancelText="No"
           >
@@ -194,166 +207,26 @@ const AdminManageBlogs: React.FC = () => {
   ];
 
   if (loading) {
-    return <p className="text-center">Loading...</p>;
+    return (<>
+      <LoadingComponent />
+    </>)
   }
-  const handlePaginationChange = (page: number, pageSize?: number) => {
-    setPagination((prev) => ({
-      ...prev,
-      current: page,
-      pageSize: pageSize || 10,
-    }));
-  };
 
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
-  };
+  // const handlePaginationChange = (page: number, pageSize?: number) => {
+  //   setPagination((prev) => ({
+  //     ...prev,
+  //     current: page,
+  //     pageSize: pageSize || 10,
+  //   }));
+  // };
+
   return (
     <div>
       <div className="flex justify-between">
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              title: <HomeOutlined />,
-            },
-            {
-              href: paths.ADMIN_HOME,
-              title: (
-                <>
-                  <UserOutlined />
-                  <span>Admin</span>
-                </>
-              ),
-            },
-            {
-              title: "Manage Blogs",
-            },
-          ]}
-        />
+        <CustomBreadcrumb currentTitle="Manage Blogs" currentHref={paths.ADMIN_HOME} />
         <div className="py-2">
-          <Button
-            type="primary"
-            onClick={() => {
-              setIsUpdateMode(false);
-              setIsModalVisible(true);
-              form.resetFields();
-            }}
-          >
-            Add New Blog
-          </Button>
+          <Button type="primary" onClick={handleResetContent}>Add New Blog</Button>
         </div>
-
-        <Modal
-          title={isUpdateMode ? "Update Blog" : "Add New Blog"}
-          open={isModalVisible}
-          onCancel={() => {
-            setIsModalVisible(false);
-            setIsUpdateMode(false);
-            setCurrentBlog(null);
-            form.resetFields();
-          }}
-          footer={null}
-        >
-          {isUpdateMode && currentBlog ? (
-            <Form form={form} layout="vertical" onFinish={handleSubmit}>
-              <Form.Item
-                name="name"
-                label="Title"
-                rules={[{ required: true, message: "Please input the blog title!" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="category_id"
-                label="Category"
-                rules={[{ required: true, message: "Please select a category!" }]}
-              >
-                <Select placeholder="Select a category">
-                  {categories.map((category) => (
-                    <Select.Option key={category._id} value={category._id}>
-                      {category.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item
-                name="image_url"
-                label="Image URL"
-                rules={[{ required: true, message: "Please input the image URL!" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="description"
-                label="Description"
-                rules={[{ required: true, message: "Please input the description!" }]}
-              >
-                <Input.TextArea maxLength={250} />
-              </Form.Item>
-              <Form.Item
-                name="content"
-                label="Content"
-                rules={[{ required: true, message: "Please input the content!" }]}
-              >
-                <Input.TextArea maxLength={250} />
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  Update
-                </Button>
-              </Form.Item>
-            </Form>
-          ) : (
-            <Form form={form} layout="vertical" onFinish={handleSubmit}>
-              <Form.Item
-                name="name"
-                label="Title"
-                rules={[{ required: true, message: "Please input the blog title!" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="category_id"
-                label="Category"
-                rules={[{ required: true, message: "Please select a category!" }]}
-              >
-                <Select placeholder="Select a category">
-                  {categories.map((category) => (
-                    <Select.Option key={category._id} value={category._id}>
-                      {category.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item
-                name="image_url"
-                label="Image URL"
-                rules={[{ required: true, message: "Please input the image URL!" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="description"
-                label="Description"
-                rules={[{ required: true, message: "Please input the description!" }]}
-              >
-                <Input.TextArea maxLength={250} />
-              </Form.Item>
-              <Form.Item
-                name="content"
-                label="Content"
-                rules={[{ required: true, message: "Please input the content!" }]}
-              >
-                <Input.TextArea maxLength={250} />
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  Submit
-                </Button>
-              </Form.Item>
-            </Form>
-          )}
-        </Modal>
       </div>
       <Table
         columns={columns}
@@ -372,6 +245,65 @@ const AdminManageBlogs: React.FC = () => {
           showSizeChanger
         />
       </div>
+
+      <Modal
+        title={isUpdateMode ? "Update Blog" : "Add New Blog"}
+        open={isModalVisible}
+        onCancel={handleCancelModal}
+        footer={null}
+      >
+        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+          <Form.Item
+            name="name"
+            label="Title"
+            rules={[{ required: true, message: "Please input the blog title!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="category_id"
+            label="Category"
+            rules={[{ required: true, message: "Please select a category!" }]}
+          >
+            <Select placeholder="Select a category">
+              {categories.map((category) => (
+                <Select.Option key={category._id} value={category._id}>
+                  {category.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="image_url"
+            label="Image URL"
+            rules={[{ required: true, message: "Please input the image URL!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[{ required: true, message: "Please input the blog description!" }]}
+          >
+            <Input.TextArea maxLength={250} showCount />
+          </Form.Item>
+          <Form.Item
+            name="content"
+            label="Content"
+            rules={[{ required: true, message: "Please input the blog content!" }]}
+          >
+            <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
+          </Form.Item>
+          <Form.Item>
+            <div className="flex justify-end">
+              <Button onClick={handleCancelModal}>Cancel</Button>
+              <Button type="primary" htmlType="submit" className="ml-2">
+                {isUpdateMode ? "Update Blog" : "Add Blog"}
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
