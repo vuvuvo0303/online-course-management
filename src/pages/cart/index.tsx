@@ -202,7 +202,7 @@ const CartPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex-4">
+        <div className="flex-4 mt-10">
           {(cartsNew.length > 0 || cartsCancel.length > 0) && (
             <div className={styles.cart_checkout}>
               <div className={styles.total_price}>
