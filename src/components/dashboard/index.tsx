@@ -18,7 +18,7 @@ import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
 import logo2 from "../../assets/logo2.jpg";
-import { roles } from "../../consts";
+import { paths, roles } from "../../consts";
 import { logout } from "../../services/auth.ts";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -212,9 +212,7 @@ const Dashboard: React.FC = () => {
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
                   <Avatar
-                    src={
-                      typeof user.avatar === "string" ? user.avatar : undefined
-                    }
+                    src={typeof user.avatar === "string" ? user.avatar : undefined}
                     className="hover:cursor-pointer border border-black"
                     size={40}
                     icon={<UserOutlined />}

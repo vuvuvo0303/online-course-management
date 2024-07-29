@@ -38,34 +38,15 @@ const AdminManageFeedbacks: React.FC = () => {
     });
     setData(response.data.pageData);
 
-      setPagination({
-        ...pagination,
-        total: response.data.pageInfo.totalItems,
-        current: response.data.pageInfo.pageNum,
-        pageSize: response.data.pageInfo.pageSize,
-      });
-    } catch (error) {
-      console.error("Error fetching students:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [pagination.current, pagination.pageSize]);
+    setPagination({
+      ...pagination,
+      total: response.data.pageInfo.totalItems,
+      current: response.data.pageInfo.pageNum,
+      pageSize: response.data.pageInfo.pageSize,
+    });
+    setLoading(false);
+  }, []);
 
-  const handleDeleteReview = useCallback(
-    async (_id: string, reviewer_name: string, course_name: string) => {
-      try {
-        await axiosInstance.delete(`${API_DELETE_REVIEW}/${_id}`);
-        setData((prevReview) => prevReview.filter((review) => review._id === _id));
-        message.success(`Review of ${reviewer_name} for course ${course_name} deleted successfully.`);
-        fetchReviews();
-      } catch {
-        //
-      }
-    },
-    [fetchReviews]
-  );
-  const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
 
   const handleTableChange = (pagination: PaginationProps) => {
     const newPagination: { current: number; pageSize: number; total: number } = {
@@ -77,12 +58,8 @@ const AdminManageFeedbacks: React.FC = () => {
     setPagination(newPagination);
   };
 
-  const handlePaginationChange = (page: number, pageSize?: number) => {
-    setPagination((prev) => ({
-      ...prev,
-      current: page,
-      pageSize: pageSize || 10,
-    }));
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({ ...pagination, current: page, pageSize });
   };
   const columns: TableProps<Review>["columns"] = [
     {

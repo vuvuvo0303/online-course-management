@@ -315,7 +315,6 @@ const AdminManageUsers: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      defaultSortOrder: "descend",
       render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
       width: "10%",
     },
@@ -371,14 +370,14 @@ const AdminManageUsers: React.FC = () => {
               setFileList(
                 avatarUrl
                   ? [
-                      {
-                        uid: "-1",
-                        name: "avatar.png",
-                        status: "done",
-                        url: avatarUrl,
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      } as UploadFile<any>,
-                    ]
+                    {
+                      uid: "-1",
+                      name: "avatar.png",
+                      status: "done",
+                      url: avatarUrl,
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    } as UploadFile<any>,
+                  ]
                   : []
               );
             }}
@@ -399,91 +398,6 @@ const AdminManageUsers: React.FC = () => {
       ),
     },
   ];
-
-  const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } = {
-      current: pagination.current ?? 1,
-      pageSize: pagination.pageSize ?? 10,
-      total: pagination.total ?? 0,
-    };
-
-    setPagination(newPagination);
-  };
-  const handleRoleChangeModal = (value: string) => {
-    setRoleForModal(value);
-  };
-  const handlePaginationChange = (page: number, pageSize: number) => {
-    setPagination({ ...pagination, current: page, pageSize });
-  };
-  const handleAddClick = () => {
-    setModalMode("Add");
-    setIsModalVisible(true);
-    form.resetFields();
-    setFileList([]);
-  };
-
-  const handleEditUser = async (values: User) => {
-    setLoading(true);
-    try {
-      let avatarUrl = values.avatar;
-
-      if (values.avatar && typeof values.avatar !== "string" && values.avatar.file?.originFileObj) {
-        avatarUrl = await uploadFile(values.avatar.file.originFileObj);
-      }
-
-      const updatedUser = {
-        ...values,
-        avatar: avatarUrl,
-        email: values.email,
-      };
-
-      const response: ResponseData = await axiosInstance.put(`${API_UPDATE_USER}/${formData._id}`, updatedUser);
-      if (response.success) {
-        if (formData.role !== values.role) {
-          await axiosInstance.put(API_CHANGE_ROLE, {
-            user_id: formData._id,
-            role: values.role,
-          });
-        }
-
-        setDataUsers((prevData) =>
-          prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
-        );
-
-        message.success("Updated user successfully");
-        setIsModalVisible(false);
-        form.resetFields();
-        getUsers();
-      } else {
-        // Handle error for edit users
-      }
-    } catch (error) {
-      // Handle error
-    }
-    setLoading(false);
-  };
-
-  if (loading) {
-    return <p className="text-center">Loading...</p>;
-  }
-  const onFinish = (values: User) => {
-    if (modalMode === "Edit") {
-      if (formData._id) {
-        handleEditUser({ ...formData, ...values });
-      } else {
-        //
-      }
-    } else {
-      handleAddNewUser(values);
-    }
-  };
-  const handleRolefilter = (value: string) => {
-    setSelectedRole(value);
-  };
-  const handleStatus = (value: string) => {
-    setSelectedStatus(value);
-    getUsers();
-  };
 
   return (
     <div>
@@ -628,6 +542,7 @@ const AdminManageUsers: React.FC = () => {
               {modalMode === "Add" ? "Submit" : "Edit"}
             </Button>
           </Form.Item>
+
         </Form>
       </Modal>
 

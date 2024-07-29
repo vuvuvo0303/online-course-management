@@ -41,14 +41,11 @@ const CartPage: React.FC = () => {
 
   const getCartWaitingPaid = async () => {
     setLoading(true);
-    setLoading(true);
     const res = await getCarts("waiting_paid");
     if (res) {
       setCartsWaitingPaid(res);
       setLoading(false);
-      setLoading(false);
     }
-  };
   };
 
   useEffect(() => {
