@@ -30,20 +30,24 @@ const AdminManagePayouts: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
   const debouncedSearch = useDebounce(searchText, 500);
   const [statusFilter, setStatusFilter] = useState<string>("request_payout");
-  const [dataRejectPayout, setDataRejectPayout] = useState<{ id: string, status: string }>({ id: "", status: "" });
+  const [dataStatusPayout, setDataStatusPayout] = useState<{ id: string, status: string }>({ id: "", status: "" });
   const [comment, setComment] = useState<string>("");
   // modal to show reject's comment request payout
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const showModal = (id: string, status: string) => {
     setOpen(true);
-    setDataRejectPayout({ id, status })
+    setDataStatusPayout({ id, status })
   };
 
   const handleOk = async () => {
-    if (comment != "") {
+    if (comment != "" && dataStatusPayout.status === "rejected") {
       setLoading(true)
-      await handleUpdateStatus(dataRejectPayout.id, dataRejectPayout.status, comment)
+      await handleUpdateStatus(dataStatusPayout.id, dataStatusPayout.status, comment)
+      setComment("")
+    }else if(dataStatusPayout.status === "completed"){
+      setLoading(true)
+      await handleUpdateStatus(dataStatusPayout.id, dataStatusPayout.status, comment)
       setComment("")
     }
     else {
@@ -71,7 +75,9 @@ const AdminManagePayouts: React.FC = () => {
         searchCondition: {
           payout_no: debouncedSearch,
           instructor_id: "",
-          status: statusFilter ? statusFilter : ["request_payout", "completed"],
+          status: statusFilter
+          // ? statusFilter : ["request_payout", "completed"],
+          ,
           is_delete: false,
         },
         pageInfo: {
@@ -194,21 +200,34 @@ const AdminManagePayouts: React.FC = () => {
       key: "action",
       width: "20%",
       render: (record: Payout) => (
-        <div className="flex gap-2">
-          <Button type="primary" onClick={() => handleUpdateStatus(record._id, "completed", "")}>
-            Completed
-          </Button>
-          <Button type="primary" danger onClick={() => showModal(record._id, "completed")}>
-            Rejected
-          </Button>
-        </div>
+        <>
+          {
+            (record.status === "request_payout") &&
+            <div className="flex gap-2">
+              <Button type="primary" onClick={() => showModal(record._id, "completed")}>
+                Completed
+              </Button>
+              <Button type="primary" danger onClick={() => showModal(record._id, "rejected")}>
+                Rejected
+              </Button>
+            </div>
+          }
+          {/* {
+            (record.status === "rejected") &&
+            <div className="flex gap-2">
+              <Button type="primary" onClick={() => handleUpdateStatus(record._id, "completed", "")}>
+                Completed
+              </Button>
+            </div>
+          } */}
+        </>
       ),
     });
   }
 
   const handleUpdateStatus = async (id: string, status: string, comment: string) => {
     const res = await updateStatusPayout(id, status, comment);
-    console.log("payout res: ", res);
+    console.log("payout status: ", status);
     if (res) {
       message.success(`Change Payout Status To ${status === "completed" ? "Completed" : "Rejected"} Successfully`)
       getPayouts();
@@ -254,8 +273,10 @@ const AdminManagePayouts: React.FC = () => {
           value={statusFilter}
           className="w-full md:w-34 mt-2 md:mt-0 md:ml-2"
         >
+
           <Select.Option value="request_payout">Request Payout</Select.Option>
           <Select.Option value="completed">Completed</Select.Option>
+          <Select.Option value="rejected">Rejected</Select.Option>
         </Select>
       </Space>
 

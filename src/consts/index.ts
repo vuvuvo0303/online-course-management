@@ -152,7 +152,7 @@ export const getColorPayout = (status: string) => {
       return "blue";
     case "completed":
       return "yellow";
-    case "reejected":
+    case "rejected":
       return "purple";
   }
 };
