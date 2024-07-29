@@ -1,6 +1,13 @@
 import ResponseData from "../models/ResponseData.ts";
-import {API_CHANGE_PASSWORD, API_CHANGE_ROLE, API_CHANGE_STATUS, API_DELETE_USER, API_GET_USER_DETAIL, API_GET_USERS} from "../consts/index.ts";
-import {message} from "antd";
+import {
+  API_CHANGE_PASSWORD,
+  API_CHANGE_ROLE,
+  API_CHANGE_STATUS,
+  API_DELETE_USER,
+  API_GET_USER_DETAIL,
+  API_GET_USERS,
+} from "../consts/index.ts";
+import { message } from "antd";
 import { getUserFromLocalStorage, axiosInstance } from "./index.ts";
 import { UserRole } from "../models/User.ts";
 
@@ -9,7 +16,7 @@ interface ValuesChangePassword {
   newPassword: string;
 }
 
-export const user = getUserFromLocalStorrage();
+export const user = getUserFromLocalStorage();
 
 export const getUsers = async (
   keyword: string = "",
@@ -42,9 +49,9 @@ export const getUsers = async (
 };
 
 export const getUserDetail = async (_id: string) => {
-    const response = await axiosInstance.get(`${API_GET_USER_DETAIL}/${_id}`);
-    return response
-}
+  const response = await axiosInstance.get(`${API_GET_USER_DETAIL}/${_id}`);
+  return response;
+};
 
 export const changePassword = async (values: ValuesChangePassword) => {
   const response: ResponseData = await axiosInstance.put(API_CHANGE_PASSWORD, {
