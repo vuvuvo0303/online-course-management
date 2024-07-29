@@ -9,7 +9,7 @@ interface ValuesChangePassword {
     newPassword: string
 }
 
-const user = getUserFromLocalStorage();
+export const user = getUserFromLocalStorage();
 
 export const getUsers = async (
     keyword: string = "",

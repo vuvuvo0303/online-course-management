@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Rate, Tabs } from 'antd';
 import { HeartOutlined, FlagOutlined, EyeOutlined, LikeOutlined, DislikeOutlined, ShareAltOutlined, CopyrightOutlined, MessageOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import About from '../about';
-import Content from './content/content';
-import ReviewPage from './reviews/review';
+//import Content from '../course-detail/content/content'
+import ReviewPage from '../course-detail/reviews/review'
 import { Link } from 'react-router-dom';
 import './index.css';
-import Instructor from './instructor/info';
+import Instructor from '../course-detail/instructor/info'
 import { paths } from '../../consts';
 
 const { TabPane } = Tabs;
@@ -114,7 +114,7 @@ const Course: React.FC = () => {
             </div>
             <div className="course-content">
                 {activeTabKey === '1' && <About />}
-                {activeTabKey === '2' && <Content />}
+                {/* {activeTabKey === '2' && <Content />} */}
                 {activeTabKey === '3' && <ReviewPage />}
                 {activeTabKey === '4' && <Instructor />}
             </div>
