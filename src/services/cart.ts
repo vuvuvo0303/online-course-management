@@ -20,7 +20,6 @@ export const getCarts = async (status: string) => {
             return response.data.pageData;
         }
     } catch (error) {
-        console.log("getCarts -error", error)
         return error;
     }
 }

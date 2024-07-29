@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './cartComponents.module.css';
 import { Checkbox, Col, Form, Row, Tag } from "antd";
-import { getColorCart, imgCourse } from "../../consts/index.ts";
+import { getColorCart } from "../../consts";
 import { Cart } from '../../models';
 import { formItemLayout } from '../../layout/form';
 
@@ -34,7 +34,7 @@ const CartComponents: React.FC<CartComponentsProps>
                                                     <Checkbox onChange={() => onChangeCheckBox(cartsNew)}></Checkbox>
                                                 </Col>
                                                 <Col span={20}>
-                                                    <img src={imgCourse} alt="Course" />
+                                                    <img src={cartsNew.course_image} alt="Course" />
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -69,7 +69,7 @@ const CartComponents: React.FC<CartComponentsProps>
                                 <div style={{ minWidth: "768px" }} key={cartsCancel._id}>
                                     <Row className='border my-5' gutter={10}>
                                         <Col span={6}>
-                                            <img src={imgCourse} alt="Course" />
+                                            <img src={cartsNew?.course_image} alt="Course" />
                                         </Col>
                                         <Col className='' span={6}>
                                             <Tag className='mt-8 text-center' color={getColorCart(cartsCancel.status)}> {cartsCancel.status}</Tag>
