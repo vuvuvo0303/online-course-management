@@ -27,7 +27,6 @@ export const getCarts = async (status: string) => {
 
 //CART-01 - Create Cart (All)
 export const addCourseToCart = async (course_id: string) => {
-    try {
         const response = await axiosInstance.post(API_CREATE_CART, {
             "course_id": course_id
         })
@@ -35,10 +34,6 @@ export const addCourseToCart = async (course_id: string) => {
             message.success("Add To Cart Successfully!")
             return response.data.pageData
         }
-    } catch (error) {
-        console.log("addCourseToCart -error", error)
-        return error;
-    }
 }
 
 // CART-03 update status cart (All)

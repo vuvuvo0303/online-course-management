@@ -1,92 +1,35 @@
 import { useState, useCallback } from 'react';
 import { Rate, Progress, Input, Button, Modal, Form, message } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
-import 'tailwindcss/tailwind.css'; // Make sure Tailwind CSS is configured
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { API_CREATE_REVIEW, API_GET_REVIEWS } from "../../../consts";
 import { Review } from "../../../models";
+import { useParams } from 'react-router-dom';
 
 
 
 const ReviewPage: React.FC = () => {
-    const [reviews, setReviews] = useState<Review[]>([
-        {
-            reviewer_name: 'John Doe',
-            created_at: new Date(),
-            rating: 4.5,
-            comment: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
-            _id: '',
-            updated_at: new Date(),
-            user_id: '',
-            course_id: '',
-            is_deleted: false,
-            reviewer_id: '',
-            course_name: ''
-        },
-        {
-            reviewer_name: 'John Doe',
-            created_at: new Date(),
-            rating: 4.5,
-            comment: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
-            _id: '',
-            updated_at: new Date(),
-            user_id: '',
-            course_id: '',
-            is_deleted: false,
-            reviewer_id: '',
-            course_name: ' ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
-        },
-        {
-            reviewer_name: 'John Doe',
-            created_at: new Date(),
-            rating: 4.5,
-            comment: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
-            _id: '',
-            updated_at: new Date(),
-            user_id: '',
-            course_id: '',
-            is_deleted: false,
-            reviewer_id: '',
-            course_name: ' ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
-        },
-        {
-            reviewer_name: 'John Doe',
-            created_at: new Date(),
-            rating: 4.5,
-            comment: 'Nam gravida elit a velit rutrum, eget dapibus ex elementum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
-            _id: '',
-            updated_at: new Date(),
-            user_id: '',
-            course_id: '',
-            is_deleted: false,
-            reviewer_id: '',
-            course_name: ' ac ante ipsum primis in faucibus. Fusce lacinia, nunc sit amet tincidunt venenatis.',
-        },
-    ]);
+    const [dataReviews, setDataReviews] = useState<Review[]>([]);
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const course_id = useParams()._id;
 
     const fetchReviews = useCallback(async () => {
-        try {
-            const response = await axiosInstance.get(API_GET_REVIEWS);
-            if (response.data.pageData) {
-                setReviews(response.data.pageData);
-            }
-        } catch (error) {
-            console.log(error);
+        const response = await axiosInstance.get(API_GET_REVIEWS);
+        if (response.data.pageData) {
+            setDataReviews(response.data.pageData);
         }
     }, []);
 
     const handleAddNewReview = useCallback(
         async (values: Review) => {
+            const payload = { ...values, course_id }
             try {
                 setLoading(true);
-                const response = await axiosInstance.post(API_CREATE_REVIEW, values);
+                const response = await axiosInstance.post(API_CREATE_REVIEW, payload);
                 if (response.data) {
-                    const newReview = response.data;
-                    setReviews((prevReviews) => [newReview, ...prevReviews]);
                     setIsModalVisible(false);
                     form.resetFields();
                     fetchReviews();
@@ -156,7 +99,7 @@ const ReviewPage: React.FC = () => {
                     className="mb-4"
                 />
                 <div className="h-[35rem] overflow-y-auto pr-2">
-                    {reviews.map((review, index) => (
+                    {dataReviews.map((review, index) => (
                         <div
                             className="bg-gray-900 p-4 rounded-md mb-4"
                             key={index}
@@ -182,7 +125,7 @@ const ReviewPage: React.FC = () => {
             </div>
             <Modal
                 title="Add Your Review"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onCancel={handleCancel}
                 footer={null}
             >

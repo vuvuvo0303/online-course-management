@@ -1,7 +1,7 @@
 import ResponseData from "../models/ResponseData.ts";
 import {API_CHANGE_PASSWORD, API_CHANGE_ROLE, API_CHANGE_STATUS, API_DELETE_USER, API_GET_USER_DETAIL, API_GET_USERS} from "../consts/index.ts";
 import {message} from "antd";
-import { getUserFromLocalStorrage, axiosInstance } from "./index.ts";
+import { getUserFromLocalStorage, axiosInstance } from "./index.ts";
 import { UserRole } from "../models/User.ts";
 
 interface ValuesChangePassword {
@@ -9,7 +9,7 @@ interface ValuesChangePassword {
     newPassword: string
 }
 
- export const user = getUserFromLocalStorrage();
+export const user = getUserFromLocalStorage();
 
 export const getUsers = async (
     keyword: string = "",

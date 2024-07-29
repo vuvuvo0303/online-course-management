@@ -135,7 +135,7 @@ h1 {
   @apply lg:px-20 py-6 px-5;
 }
 
-/* Navbar */
+/* Index */
 .navbar {
   @apply py-5 px-8 border-b border-nav-border gap-4;
 }

@@ -152,7 +152,7 @@ const EditProfile: React.FC = () => {
 
             <Modal
                 title="Edit Profile"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onCancel={handleCancel}
                 footer={[
                     <Button key="cancel" onClick={handleCancel}>

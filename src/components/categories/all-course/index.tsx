@@ -55,16 +55,16 @@ const AllCourses: React.FC = () => {
   const renderPopoverContent = (course: Course) => {
     // Add course and go to cart
     const handleGoToCourse = async () => {
-        if (!user || user.role !== 'student') {
-          navigate("/login");
-        } else {
-          try {
-            await addCourseToCart(course._id);
-          } catch (error) {
-            //
-          }
+      if (!user || user.role !== 'student') {
+        navigate("/login");
+      } else {
+        try {
+          await addCourseToCart(course._id);
+        } catch (error) {
+          //
         }
-      };
+      }
+    };
     const lastUpdated = format(new Date(course.updated_at), "dd/MM/yyyy");
     return (
       <div className="popover-content w-full">
