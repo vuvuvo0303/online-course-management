@@ -30,7 +30,7 @@ const InstructorManagePurchase = () => {
 
   useEffect(() => {
     getPurchasesByInstructor();
-  }, [statusPurchase,purchaseNoSearch]);
+  }, [statusPurchase, purchaseNoSearch]);
 
   if (loading) {
     return (

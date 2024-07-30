@@ -124,12 +124,12 @@ const InstructorManagePayout = () => {
       width: "10%",
       render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
     },
-    ...(statusPayout === "new" ? [{
+    ...(statusPayout === "new" || statusPayout === "rejected"? [{
       title: "Action",
       dataIndex: "status",
       key: "action",
-      render: (status: string, record: Payout) =>
-        status === "new" && (
+      render: ( record: Payout) =>
+        (
           <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
             Request Payout
           </Button>
@@ -189,7 +189,7 @@ const InstructorManagePayout = () => {
         <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
       </Modal>
       <div className="container mx-auto px-10">
-        <h1 className="text-center my-10">Manage Payout</h1>
+        <h1 className="text-center my-10">Manage Payout</h1>cx5323
         <Input.Search
           placeholder="Search By Purchase No"
           value={searchPayout}
