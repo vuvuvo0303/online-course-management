@@ -5,19 +5,24 @@ import { message } from "antd";
 
 
 export const getBlogs = async () => {
-    const response = await axiosInstance.post(API_CLIENT_GET_BLOGS,
-        {
-            "searchCondition": {
-                "category_id": "",
-                "is_deleted": false
-            },
-            "pageInfo": {
-                "pageNum": 1,
-                "pageSize": 100
+    try{
+        const response = await axiosInstance.post(API_CLIENT_GET_BLOGS,
+            {
+                "searchCondition": {
+                    "category_id": "",
+                    "is_deleted": false
+                },
+                "pageInfo": {
+                    "pageNum": 1,
+                    "pageSize": 100
+                }
             }
-        }
-    );
-    return response;
+        );
+        return response;
+    }catch(error){
+        return [];
+    }
+    
 };
 
 export const deleteBlog = async (id: string, title: string, getBlogs: () => Promise<void>) => {

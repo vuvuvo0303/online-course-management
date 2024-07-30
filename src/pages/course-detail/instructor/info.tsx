@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Button } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Instructor } from '../../../models'; // Import the Course type
-import { axiosInstance } from '../../../services';
-import { API_CLIENT_GET_COURSE_DETAIL, API_GET_USER_DETAIL } from '../../../consts';
+import { axiosInstance, getUserDetail } from '../../../services';
+import { API_CLIENT_GET_COURSE_DETAIL } from '../../../consts';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 
@@ -15,8 +15,9 @@ const Info = () => {
     useEffect(() => {
         const fetchData = async () => {
             const instructorId = await getInstructorId();
-            const instructor = await getInstructor(instructorId);
-            setDataInstructor(instructor);
+            const responseInstructor = await getUserDetail(instructorId);
+            const instructorInfo = responseInstructor.data;
+            setDataInstructor(instructorInfo);
         }
         fetchData();
     }, [])
@@ -28,11 +29,6 @@ const Info = () => {
     const getInstructorId = async () => {
         const response = await axiosInstance.get(`${API_CLIENT_GET_COURSE_DETAIL}/${course_id}`);
         return response.data.instructor_id;
-    }
-
-    const getInstructor = async (instructorId: string) => {
-        const response = await axiosInstance.get(`${API_GET_USER_DETAIL}/${instructorId}`)
-        return response.data
     }
 
     const formatDate = (date: Date | undefined): string => {

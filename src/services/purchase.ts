@@ -23,7 +23,6 @@ export const getItemsByStudent = async (purchase_no: string, cart_no: string, co
          
         }
     } catch (error) {
-        console.log("Error occurred: ", error)
         return [];
     }
 }
@@ -45,13 +44,8 @@ export const getItemsByInstructor = async (purchase_no: string, cart_no: string,
             }
         }
         )
-        if (response) {    
-            console.log("response api: ", response)     
-            return response.data.pageData;
-         
-        }
+            return response.data.pageData;         
     } catch (error) {
-        console.log("Error occurred: ", error)
         return [];
     }
 }

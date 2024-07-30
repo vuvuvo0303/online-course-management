@@ -1,12 +1,11 @@
 import { message } from "antd";
 import { API_CREATE_PAYOUT, API_GET_PAYOUTS, API_UPDATE_STATUS_PAYOUT } from "../consts";
 import axiosInstance from "./axiosInstance";
-import { TransactionsPurchase } from "models/Purchase";
+import { TransactionsPurchase } from "../models";
 //PAYOUT-01 Create Payout (Admin, Instructor)
 
 export const createPayout = async (instructor_id: string, transactions: TransactionsPurchase[]) => {
     try {
-        console.log("transactions: ", transactions)
         const response = await axiosInstance.post(API_CREATE_PAYOUT, {
             "instructor_id": instructor_id,
             "transactions": transactions
@@ -18,8 +17,7 @@ export const createPayout = async (instructor_id: string, transactions: Transact
             message.error("Please select at least 1 purchase to create payout!");
         }
     } catch (error) {
-        console.log("Error occurred: ", error)
-        return [];
+        return;
     }
 }
 //Payout02 Get Payouts (Admin, Instructor)
@@ -43,7 +41,6 @@ export const getPayouts = async (payout_no: string, instructor_id: string, statu
         }
         message.error("Create Payout Failed!");
     } catch (error) {
-        console.log("Error occurred: ", error)
         return [];
     }
 }

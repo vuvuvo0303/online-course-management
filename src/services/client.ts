@@ -19,7 +19,6 @@ export const fetchCoursesByClient = async (keyword: string, category_id: string)
             return response.data.pageData;
         }
     } catch (error) {
-        console.log("Error occurred: ", error)
         return [];
     }
 }

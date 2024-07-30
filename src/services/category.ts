@@ -16,9 +16,7 @@ export const getCategories = async () => {
             }
         
         )
-        if(response){
             return response.data.pageData;
-        }
     } catch (error) {
         return [];
     }

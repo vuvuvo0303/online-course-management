@@ -27,7 +27,6 @@ export const getUsers = async (
   pageNum: number = 1,
   pageSize: number = 10
 ) => {
-  try {
     const response = await axiosInstance.post(API_GET_USERS, {
       searchCondition: {
         keyword: keyword || "",
@@ -42,10 +41,6 @@ export const getUsers = async (
       },
     });
     return response;
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    throw error;
-  }
 };
 
 export const getUserDetail = async (_id: string) => {
@@ -99,6 +94,6 @@ export const getInstructorDetailPublic = async (instructor_id: string) => {
       return response.data;
     }
   } catch (error) {
-    return [];
+    return;
   }
 };

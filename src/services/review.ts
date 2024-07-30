@@ -24,11 +24,8 @@ export const getAllReviews = async (course_id: string, rating: number, pageNum: 
         "pageSize": pageSize
       }
     })
-    if (response) {
       return response.data.pageData;
-    }
   } catch (error) {
-    console.log("getAllReviews - error: ", error);
     return error;
   }
 }
@@ -37,11 +34,8 @@ export const getAllReviews = async (course_id: string, rating: number, pageNum: 
 export const getReviewByInstructor = async (review_id: string) => {
   try {
     const response = await axiosInstance.get(`${API_GET_REVIEW}/${review_id}`)
-    if (response) {
       return response;
-    }
   } catch (error) {
-    console.log("getReviewByInstructor - error: ", error);
-    return error;
+    return {};
   }
 }

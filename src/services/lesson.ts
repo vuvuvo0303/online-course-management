@@ -22,14 +22,10 @@ export const createLesson =
                 "position_order": position_order
             }
             )
-            if (response) {
                 message.success("Create Lesson Successfully!")
                 return response.data;
-
-            }
         } catch (error) {
-            console.log("createLesson - Error occurred: ", error)
-            return error;
+            return [];
         }
     }
 
@@ -53,12 +49,9 @@ export const getLessons =
                 }
             }
             )
-            if (response) {
                 return response.data.pageData;
-            }
         } catch (error) {
-            console.log("getLessons - Error occurred: ", error)
-            return error;
+            return [];
         }
     }
 
@@ -70,8 +63,7 @@ export const getLesson = async (lessonId: string) => {
             return response.data;
         }
     } catch (error) {
-        console.log("getLesson - Error occurred: ", error)
-        return error;
+        return;
     }
 }
 
@@ -92,14 +84,10 @@ export const updateLesson =
                 "position_order": position_order
             }
             )
-            if (response) {
                 message.success("Update Lesson Successfully!")
                 return response.data;
-
-            }
         } catch (error) {
-            console.log("updateLesson - Error occurred: ", error)
-            return error;
+            return;
         }
     }
 
@@ -108,12 +96,9 @@ export const updateLesson =
 export const deleteLesson = async (lessonId: string) => {
     try {
         const response = await axiosInstance.delete(`${API_DELETE_LESSON}/${lessonId}`)
-        if (response) {
             message.success("Delete Lesson Successfully!")
             return response;
-        }
     } catch (error) {
-        console.log("deleteLesson - Error occurred: ", error)
-        return error;
+        return;
     }
 }

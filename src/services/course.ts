@@ -21,14 +21,11 @@ export const createCourseByInstructor =
                 "discount": discount
             }
             )
-            if (response) {
                 message.success("Create Course Successfully!")
                 return response.data;
 
-            }
         } catch (error) {
-            console.log("createCourseByInstructor - Error occurred: ", error)
-            return error;
+            return;
         }
     }
 
@@ -64,8 +61,7 @@ export const getCourse = async (course_id: string) => {
             return response.data;
         }
     } catch (error) {
-        console.log("getCourse - Error occurred: ", error)
-        return error;
+        return;
     }
 }
 
@@ -85,14 +81,10 @@ export const updateCourseByInstructor =
                 "discount": discount
             }
             )
-            if (response) {
                 message.success("Update Course Successfully!")
                 return response.data;
-
-            }
         } catch (error) {
-            console.log("updateCourseByInstructor - Error occurred: ", error)
-            return error;
+            return;
         }
     }
 
@@ -100,13 +92,10 @@ export const updateCourseByInstructor =
 export const deleteCourse = async (course_id: string) => {
     try {
         const response = await axiosInstance.delete(`${API_DELETE_COURSE}/${course_id}`)
-        if (response) {
             message.success("Delete Course Successfully!")
             return response;
-        }
     } catch (error) {
-        console.log("deleteCourse - Error occurred: ", error)
-        return error;
+        return;
     }
 }
 
@@ -118,13 +107,10 @@ export const changeStatusCourse = async (course_id: string, new_status: string, 
             "new_status": new_status,
             "comment": comment
         })
-        if (response) {
             message.success("Change Status Course Successfully!")
             return response.data;
-        }
     } catch (error) {
-        console.log("deleteCourse - Error occurred: ", error)
-        return error;
+        return;
     }
 }
 
@@ -146,11 +132,8 @@ export const getCourseLogs =
                 }
             }
             )
-            if (response) {
                 return response.data.pageData;
-            }
         } catch (error) {
-            console.log("getCourseLogs - Error occurred: ", error)
-            return error;
+            return;
         }
     }
