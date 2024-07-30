@@ -167,7 +167,7 @@ const Categories = () => {
                                                 <img
                                                     alt="course"
                                                     src={course.image_url || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'} // Fallback image
-                                                    className="w-full max-h-40 object-cover"
+                                                    className="w-80 max-h-40 object-cover"
                                                     onError={handleImageError}
                                                 />
                                             </Link>
@@ -181,7 +181,7 @@ const Categories = () => {
                                         description={course.instructor_name}
                                     />
                                     <div className="mt-2">
-                                        <div className="flex items-center text-sm">
+                                        <div className="flexCenter items-center text-sm">
                                             <span className="mr-1">{course.average_rating}</span>
                                             <Rate
                                                 value={course.average_rating}
@@ -190,7 +190,7 @@ const Categories = () => {
                                             />
                                             <span className="ml-1 text-gray-500">({course.review_count})</span>
                                         </div>
-                                        <div className="flex items-baseline mt-2">
+                                        <div className="flexCenter items-baseline mt-2">
                                             <div className="text-2xl text-gray-500 font-bold">{course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
                                             <div className="text-xl text-gray-500 ml-1 line-through">{course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
                                         </div>
