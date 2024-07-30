@@ -22,7 +22,6 @@ const AllCourses: React.FC = () => {
     });
     const [category, setCategory] = useState<string | undefined>(undefined);
     const [rating, setRating] = useState<number | undefined>(undefined);
-    const [price, setPrice] = useState<string | undefined>(undefined);
 
     const fetchCourses = useCallback(async () => {
         setLoading(true);
@@ -35,7 +34,6 @@ const AllCourses: React.FC = () => {
                     keyword: searchText,
                     category: category,
                     rating: rating,
-                    price: price,
                 },
                 pageInfo: {
                     pageNum: pagination.current,
@@ -58,7 +56,7 @@ const AllCourses: React.FC = () => {
             setLoading(false);
             setInitialLoad(false);
         }
-    }, [searchText, category, rating, price, pagination.current, pagination.pageSize]);
+    }, [searchText, category, rating, pagination.current, pagination.pageSize]);
 
     useEffect(() => {
         fetchCourses();
@@ -88,12 +86,12 @@ const AllCourses: React.FC = () => {
                     placeholder="Search courses"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
-                    className="w-full md:w-2/6"
+                    className="w-full md:w-3/5"
                 />
                 <CategoriesDropdown onSelect={(value) => setCategory(value)} />
                 <Select
                     placeholder="Rating"
-                    className="w-full md:w-1/6"
+                    className="w-full md:w-1/5"
                     onChange={(value) => setRating(value)}
                 >
                     <Option value={2}>
@@ -109,18 +107,9 @@ const AllCourses: React.FC = () => {
                         <RatingOption value={5} label="5 Stars" />
                     </Option>
                 </Select>
-                <Select
-                    placeholder="Price"
-                    className="w-full md:w-1/6"
-                    onChange={(value) => setPrice(value)}
-                >
-                    <Option value="low">Up to 100,000</Option>
-                    <Option value="medium">100,000 - 1,000,000</Option>
-                    <Option value="high">1,000,000+</Option>
-                </Select>
                 <Button
                     onClick={handleSearch}
-                    className="bg-orange-500 text-white py-2 px-4 rounded-md w-full md:w-1/6"
+                    className="bg-orange-500 text-white py-2 px-4 rounded-md w-full md:w-1/5"
                 >
                     Search
                 </Button>

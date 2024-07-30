@@ -123,7 +123,7 @@ const Lesson: React.FC = () => {
                     {'<'}
                 </Button>
                 <h1 className="text-[1.1rem] font-bold ml-[2rem]">{course?.name}</h1>
-                {isMobile && <Button type="primary" onClick={showDrawer}>Course Content</Button>}
+                {isMobile && <Button type="primary" onClick={showDrawer} className="left-[160px]">Course Content</Button>}
             </div>
             <div className="flex flex-1">
                 <div className={`p-6 bg-white overflow-auto ${isMobile ? 'w-full' : 'w-3/4'}`} style={{ height: 'calc(100vh - 112px)' }}>
@@ -140,7 +140,7 @@ const Lesson: React.FC = () => {
                     ) : (
                         <>
                             {renderSelectedLesson()}
-                            <h2 className="text-xl font-semibold mt-4">{selectedLesson?.name || 'Select a lesson to view the details'}</h2>
+                            <h2 className="text-xl font-semibold">{selectedLesson?.name || 'Select a lesson to view the details'}</h2>
                             <p>{selectedLesson?.description}</p>
                             {error && <p className="text-red-500">{error}</p>}
                         </>
@@ -150,24 +150,28 @@ const Lesson: React.FC = () => {
                     <div className="w-1/4 p-5 bg-white overflow-auto border-l border-gray-300" style={{ height: 'calc(100vh - 112px)' }}>
                         <Spin spinning={loading}>
                             {course && (
-                                <Collapse accordion ghost activeKey={activeKey} onChange={handlePanelChange}>
-                                    {course.session_list.map((session, index) => (
-                                        <Panel
-                                            header={
-                                                <div className="flex items-center border-b border-gray-300 pb-2 mb-2">
-                                                    <VideoCameraOutlined />
-                                                    <span className="ml-2">{session.name}</span>
-                                                </div>
-                                            }
-                                            key={index.toString()}
-                                        >
-                                            {session.lesson_list.map(renderLessonContent)}
-                                        </Panel>
-                                    ))}
-                                </Collapse>
+                                <>
+                                    <h1 className="text-xl font-semibold mb-4">Course Content</h1>
+                                    <Collapse accordion ghost activeKey={activeKey} onChange={handlePanelChange}>
+                                        {course.session_list.map((session, index) => (
+                                            <Panel
+                                                header={
+                                                    <div className="flex items-center border-b border-gray-300 pb-2 mb-2">
+                                                        <VideoCameraOutlined />
+                                                        <span className="ml-2">{session.name}</span>
+                                                    </div>
+                                                }
+                                                key={index.toString()}
+                                            >
+                                                {session.lesson_list.map(renderLessonContent)}
+                                            </Panel>
+                                        ))}
+                                    </Collapse>
+                                </>
                             )}
                         </Spin>
                     </div>
+
                 )}
                 {isMobile && (
                     <Drawer title="Course Content" placement="right" onClose={onClose} open={open}>

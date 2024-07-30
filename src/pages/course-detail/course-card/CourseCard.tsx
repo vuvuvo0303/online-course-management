@@ -1,10 +1,11 @@
-import { Rate } from "antd";
-import { Link } from 'react-router-dom';
-import { Course } from "../../../models/Course";
+import React, { useState } from 'react';
+import { Rate, message } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { addCourseToCart } from '../../../services/cart';
 import { paths } from "../../../consts";
 import { formatMinute } from "../../../utils";
+import { Course } from "../../../models/Course";
 
 interface CourseCardProps {
     course: Course;
@@ -12,7 +13,29 @@ interface CourseCardProps {
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
+    const navigate = useNavigate();
+    const user = localStorage.getItem("user");
+    const [loading, setLoading] = useState(false);
 
+    const handleAddToCart = async () => {
+        if (!user) {
+            message.info('Please login before adding items to your cart.');
+            navigate(paths.LOGIN);
+        } else {
+            setLoading(true);
+            try {
+                // Optimistically navigate to the cart page
+                navigate(paths.STUDENT_CART);
+                await addCourseToCart(course._id);
+                // message.success('Course added to cart!');
+            } catch (error) {
+                // message.error('Failed to add course to cart. Please try again.');
+                // Optionally navigate back or handle the error UI-wise
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
 
     return (
         <div className="flex flex-col lg:flex-row w-full lg:h-[24rem] bg-gray shadow-md rounded-lg p-5">
@@ -20,6 +43,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                 <img
                     src={course.image_url}
                     className="w-[25rem] h-[15rem] rounded-lg"
+                    alt={course.name}
                 />
                 <div className="flex flex-row gap-10 text-white lg:mt-[3.6rem] lg:ml-20">
                     <a href="/enrollment" className="button save flex items-center mb-2">
@@ -64,13 +88,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                                 </button>
                             </Link>
                         ) : (
-                            <>
-                                <Link to={paths.STUDENT_CART}>
-                                    <button onClick={() => addCourseToCart(course._id)} className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
-                                        <ShoppingCartOutlined className="mr-2" /> Add to Cart
-                                    </button>
-                                </Link>
-                            </>
+                            <button onClick={handleAddToCart} className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500" disabled={loading}>
+                                <ShoppingCartOutlined className="mr-2" />
+                                {loading ? 'Adding...' : 'Add to Cart'}
+                            </button>
                         )}
                     </div>
                     <div className="text-xs mt-2">30-Day Money-Back Guarantee</div>
