@@ -34,7 +34,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             </div>
             <div className="pl-5 flex flex-col text-white flex-grow lg:pl-10">
                 <div className="text-3xl font-bold">{course.name}</div>
-                <div className="pt-2 pb-2">{course.description.replace(/^<p>/, '').replace(/<\/p>$/, '')}</div>
+                <div className="pt-2 pb-2 truncate w-full max-w-[200px]">
+                    {course.description.replace(/^<p>/, '').replace(/<\/p>$/, '')}
+                </div>
                 <div className="space-y-2 flex-grow">
                     <div className="flex items-center mb-2">
                         <div className="mt-3">

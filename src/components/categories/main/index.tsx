@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Card, Button, Skeleton, Rate } from 'antd';
-import Carousel from "react-multi-carousel";
-import axiosInstance from "../../../services/axiosInstance";
-import { API_CLIENT_GET_CATEGORIES } from "../../../consts";
+import Carousel from 'react-multi-carousel';
+import axiosInstance from '../../../services/axiosInstance';
+import { API_CLIENT_GET_CATEGORIES } from '../../../consts';
 import { Link } from 'react-router-dom';
 import { fetchCoursesByClient } from '../../../services';
 import { Course } from '../../../models';
@@ -14,8 +14,9 @@ const { Meta } = Card;
 
 const Categories = () => {
     const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [categoryLoading, setCategoryLoading] = useState(false);
     const [courses, setCourses] = useState<Course[]>([]);
+    const [courseLoading, setCourseLoading] = useState(false);
     const [ratings, setRatings] = useState<number[]>([3, 4, 5]);
     const [pagination, setPagination] = useState({
         current: 1,
@@ -25,7 +26,7 @@ const Categories = () => {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
     const fetchCategories = useCallback(async () => {
-        setLoading(true);
+        setCategoryLoading(true);
         try {
             const response = await axiosInstance.post(API_CLIENT_GET_CATEGORIES, {
                 searchCondition: {
@@ -48,9 +49,9 @@ const Categories = () => {
                 }));
             }
         } catch (error) {
-            console.error("Error fetching categories:", error);
+            console.error('Error fetching categories:', error);
         } finally {
-            setLoading(false);
+            setCategoryLoading(false);
         }
     }, [pagination.current, pagination.pageSize]);
 
@@ -59,20 +60,20 @@ const Categories = () => {
     }, [fetchCategories]);
 
     // Fetch courses to display
-    const fetchCourse = async () => {
-        setLoading(true);
+    const fetchCourses = async () => {
+        setCourseLoading(true);
         try {
             const res = await fetchCoursesByClient("", "");
             setCourses(res);
         } catch (error) {
-            console.error("Failed to fetch courses:", error);
+            console.error('Failed to fetch courses:', error);
         } finally {
-            setLoading(false);
+            setCourseLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchCourse();
+        fetchCourses();
     }, []);
 
 
@@ -97,6 +98,7 @@ const Categories = () => {
 
     const handleFilterClick = (filter: string) => {
         setSelectedCategory(filter);
+        // Optionally, you can fetch courses based on the selected category
     };
 
     const handleRatingChange = (index: number, value: number) => {
@@ -115,15 +117,19 @@ const Categories = () => {
         <div className="categories-container">
             <div className="categories-content">
                 <div className="category-filters-container">
-                    {categories.map((category) => (
-                        <Button
-                            key={category._id}
-                            className="category-filter-button"
-                            onClick={() => handleFilterClick(category.name)}
-                        >
-                            {category.name}
-                        </Button>
-                    ))}
+                    {categoryLoading ? (
+                        <Skeleton active />
+                    ) : (
+                        categories.map((category) => (
+                            <Button
+                                key={category._id}
+                                className="category-filter-button"
+                                onClick={() => handleFilterClick(category.name)}
+                            >
+                                {category.name}
+                            </Button>
+                        ))
+                    )}
                 </div>
                 <h1 className="categories-header">{selectedCategory}</h1>
                 <Link to={`/courses/${selectedCategory}`}>
@@ -136,7 +142,7 @@ const Categories = () => {
                     </Button>
                 </Link>
 
-                {loading ? (
+                {courseLoading ? (
                     <Skeleton active />
                 ) : (
                     <Carousel
@@ -156,7 +162,7 @@ const Categories = () => {
                                     className="w-[20rem] mx-auto shadow-lg rounded-lg overflow-hidden"
                                     style={{ margin: '10px' }}
                                     cover={
-                                        <div className="h-48 bg-white flex items-center justify-center overflow-hidden">
+                                        <div className="relative h-48 bg-white flex items-center justify-center overflow-hidden">
                                             <Link to={`/course/all-courses/course/${course._id}`}>
                                                 <img
                                                     alt="course"
@@ -175,18 +181,18 @@ const Categories = () => {
                                         description={course.instructor_name}
                                     />
                                     <div className="mt-2">
-                                        <div className="flexCenter items-center text-sm">
-                                            <span className="mr-2">{course.average_rating}</span>
+                                        <div className="flex items-center text-sm">
+                                            <span className="mr-1">{course.average_rating}</span>
                                             <Rate
                                                 value={course.average_rating}
                                                 onChange={(value) => handleRatingChange(index, value)}
                                                 disabled
                                             />
-                                            <span className="ml-2 text-gray-500">({course.review_count})</span>
+                                            <span className="ml-1 text-gray-500">({course.review_count})</span>
                                         </div>
-                                        <div className="flexCenter items-baseline mt-2">
+                                        <div className="flex items-baseline mt-2">
                                             <div className="text-2xl text-gray-500 font-bold">{course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
-                                            <div className="text-xl text-gray-500 ml-2 line-through">{course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
+                                            <div className="text-xl text-gray-500 ml-1 line-through">{course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
                                         </div>
                                     </div>
                                 </Card>

@@ -1,22 +1,21 @@
-import { useState } from 'react';
 import { Rate, Tabs } from 'antd';
 import { HeartOutlined, FlagOutlined, EyeOutlined, LikeOutlined, DislikeOutlined, ShareAltOutlined, CopyrightOutlined, MessageOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import About from '../about';
-//import Content from '../course-detail/content/content'
-import ReviewPage from '../course-detail/reviews/review'
+// import About from '../about';
+// //import Content from '../course-detail/content/content'
+// import ReviewPage from '../course-detail/reviews/review'
 import { Link } from 'react-router-dom';
 import './index.css';
-import Instructor from '../course-detail/instructor/info'
+// import Instructor from '../course-detail/instructor/info'
 import { paths } from '../../consts';
 
 const { TabPane } = Tabs;
 
 const Course: React.FC = () => {
-    const [activeTabKey, setActiveTabKey] = useState('1');
+    // const [activeTabKey, setActiveTabKey] = useState('1');
 
-    const onChange = (key: string) => {
-        setActiveTabKey(key);
-    };
+    // const onChange = (key: string) => {
+    //     setActiveTabKey(key);
+    // };
 
     return (
         <div>
@@ -105,7 +104,7 @@ const Course: React.FC = () => {
 
             </div>
             <div className="course-tabs">
-                <Tabs defaultActiveKey="1" centered onChange={onChange}>
+                <Tabs defaultActiveKey="1" >
                     <TabPane tab="About" key="1" />
                     <TabPane tab="Course Content" key="2" />
                     <TabPane tab="Reviews" key="3" />
@@ -113,10 +112,10 @@ const Course: React.FC = () => {
                 </Tabs>
             </div>
             <div className="course-content">
-                {activeTabKey === '1' && <About />}
+                {/* {activeTabKey === '1' && <About />}
                 {/* {activeTabKey === '2' && <Content />} */}
-                {activeTabKey === '3' && <ReviewPage />}
-                {activeTabKey === '4' && <Instructor />}
+                {/* {activeTabKey === '3' && <ReviewPage />}
+                // {activeTabKey === '4' && <Instructor />} */}
             </div>
         </div>
     );
