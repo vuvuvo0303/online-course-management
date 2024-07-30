@@ -80,7 +80,7 @@ const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
                             <hr className="w-full my-4 border-gray-300" />
                         </div>
                     ))}
-                    <button className="mt-2 ml-[1rem] mr-[1rem] px-4 py-2 bg-black text-white w-[19rem] rounded">View cart</button>
+                    <button className="mt-2 ml-[1rem] px-4 py-2 bg-black text-white w-[19rem] rounded">View cart</button>
                     <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })} </div>
                 </>
             )}
