@@ -159,7 +159,7 @@ const InstructorCreateCourse: React.FC = () => {
                         !_id && <Form.Item
                             label="Content"
                             name="content"
-                            rules={[{ required: true, message: 'Please input!' }]}
+                            rules={[{ required: false, message: 'Please input!' }]}
                         >
                             <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
 

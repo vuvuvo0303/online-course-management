@@ -120,10 +120,22 @@ const AppRouter: React.FC = () => {
         <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
         <Route path={paths.LESSON} element={<Lesson />} />
         {/* Route for Instructor */}
+
+
         <Route
           path="/instructor/*"
           element={canAccess([roles.INSTRUCTOR]) ? <Dashboard /> : <Navigate to={paths.HOME} />}
         >
+          <Route
+            path={paths.INSTRUCTOR_LEARN}
+            element={canAccess([roles.INSTRUCTOR]) ? <AllCourses /> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_LEARN_COURSE}
+            element={canAccess([roles.INSTRUCTOR]) ? <CourseDetails /> 
+              : <Navigate to={paths.HOME} />
+            }
+          />
           <Route
             path={paths.INSTRUCTOR_MANAGE_REVIEWS}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManagerReviews /> : <Navigate to={paths.HOME} />}
@@ -201,7 +213,7 @@ const AppRouter: React.FC = () => {
             path={paths.INSTRUCTOR_MANAGE_ALL_SESSION}
             element={canAccess([roles.INSTRUCTOR]) ? <ManageAllSession /> : <Navigate to={paths.HOME} />}
           />
-           <Route
+          <Route
             path={paths.INSTRUCTOR_LESSON_OF_MANAGE_ALL_SESSIONS}
             element={canAccess([roles.INSTRUCTOR]) ? <ManageLesson /> : <Navigate to={paths.HOME} />}
           />
