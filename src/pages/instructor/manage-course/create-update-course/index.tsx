@@ -4,12 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button, Form, Input, message, Select } from 'antd';
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
-import axiosInstance from "../../../../services/axiosInstance.ts";
-import { getCategories } from "../../../../services/category.ts";
-import TinyMCEEditorComponent from "../../../../components/tinyMCE";
+import { getCategories, axiosInstance } from "../../../../services";
+import { TinyMCEEditorComponent, LoadingComponent, CustomBreadcrumb } from "../../../../components";
 import { formItemLayout } from "../../../../layout/form";
-import LoadingComponent from "../../../../components/loading";
-import CustomBreadcrumb from "../../../../components/breadcrumb/index.tsx";
 const InstructorCreateCourse: React.FC = () => {
     const [des, setDes] = useState<string>("");
     const navigate = useNavigate();
@@ -121,7 +118,7 @@ const InstructorCreateCourse: React.FC = () => {
 
     return (
         <>
-                <CustomBreadcrumb/>
+            <CustomBreadcrumb />
             {_id !== undefined && _id !== "" ? (
                 <h1 className="text-center">Update Course</h1>
             ) : (

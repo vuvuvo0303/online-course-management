@@ -4,22 +4,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models";
 import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
 import { axiosInstance, getUserFromLocalStorage } from "../../../../../services";
-import TinyMCEEditorComponent from "../../../../../components/tinyMCE";
-import LoadingComponent from "../../../../../components/loading";
-import CustomBreadcrumb from "../../../../../components/breadcrumb";
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 14, offset: 5 },
-  },
-};
+import { TinyMCEEditorComponent, CustomBreadcrumb, LoadingComponent } from "../../../../../components";
+import { formItemLayout } from "../../../../../layout/form";
 
 const CreateUpdateSession = () => {
-  
+
   const { courseId, sessionId } = useParams<{ courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
@@ -65,7 +54,7 @@ const CreateUpdateSession = () => {
   useEffect(() => {
     if (courseId) {
       setCourseIdUpdate(courseId)
-    } 
+    }
     const fetchCourses = async () => {
       const res = await axiosInstance.post(API_GET_COURSES,
         {
@@ -121,7 +110,7 @@ const CreateUpdateSession = () => {
         // manage course -> manage session
         if (!courseId) {
           setCourseIdUpdate(values.course_id)
-        } 
+        }
         await axiosInstance.post(`${API_CREATE_SESSION}`, {
           "name": values.name,
           "course_id": courseIdUpdate,
@@ -157,7 +146,7 @@ const CreateUpdateSession = () => {
         <LoadingComponent />
       ) : (
         <div className="w-full max-w-6xl bg-white p-8 rounded shadow">
-          <CustomBreadcrumb/>
+          <CustomBreadcrumb />
 
           <h1 className="text-center mb-8">{sessionId ? "Update Session" : "Create Session"}</h1>
           <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
