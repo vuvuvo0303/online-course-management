@@ -8,8 +8,9 @@ import { createStyles } from "antd-style";
 import LoadingComponent from "../../../components/loading";
 import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
+import CustomBreadcrumb from "../../../components/breadcrumb";
 
-const useStyle = createStyles(({ token }) => ({
+const useStyle = createStyles(({token }) => ({
   "my-modal-body": {
     background: token.blue1,
     padding: token.paddingSM,
@@ -189,7 +190,7 @@ const InstructorManagePayout = () => {
         <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
       </Modal>
       <div className="container mx-auto px-10">
-        <h1 className="text-center my-10">Manage Payout</h1>cx5323
+        <CustomBreadcrumb/>
         <Input.Search
           placeholder="Search By Purchase No"
           value={searchPayout}

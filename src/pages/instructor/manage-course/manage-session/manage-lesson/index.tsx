@@ -1,5 +1,5 @@
-import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, message, Modal, Select, Table, TableProps, Tag, } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {  Button, Input, message, Modal, Select, Table, TableProps, Tag, } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models/index.ts";
@@ -190,7 +190,7 @@ const LectureOfCourse: React.FC = () => {
             title: 'Course Name',
             dataIndex: 'course_name',
             key: 'course_name',
-            render:(course_name: string)=>(
+            render: (course_name: string) => (
                 <div className="truncate">
                     {course_name}
                 </div>
@@ -303,18 +303,10 @@ const LectureOfCourse: React.FC = () => {
                     {
                         courseId && sessionId ? (
                             <>
-                          <CustomBreadcrumb homeHref="/" />
+                                <CustomBreadcrumb />
                             </>
                         ) : (
-                            <>
-                                <Breadcrumb className="py-2" >
-                                    <Breadcrumb.Item href="/dashboard">
-                                        <HomeOutlined />
-                                    </Breadcrumb.Item>
-                                    <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
-                                </Breadcrumb>
-                                <h1 className="text-center m-10">Manage All Lessons</h1>
-                            </>
+                            <CustomBreadcrumb />
                         )
                     }
                     <div className="grid grid-cols-2">

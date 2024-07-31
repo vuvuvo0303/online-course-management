@@ -371,6 +371,16 @@ const InstructorManageCourses: React.FC = () => {
       render: (update_at: Date) => format(new Date(update_at), "dd/MM/yyyy"),
     },
     {
+      title: "Review",
+      dataIndex: "_id",
+      key: "_id",
+      render: (_id: string) => (
+        <>
+          <EyeOutlined onClick={() => showModalReview(_id, 0)} className="m-2 text-blue-500 cursor-pointer" />
+        </>
+      ),
+    },
+    {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
@@ -380,16 +390,6 @@ const InstructorManageCourses: React.FC = () => {
             <EditOutlined className="mt-2 text-blue-500" />
           </Link>
           <DeleteOutlined onClick={() => showModal(_id, record)} className="text-red-500 m-2" />
-        </>
-      ),
-    },
-    {
-      title: "Review",
-      dataIndex: "_id",
-      key: "_id",
-      render: (_id: string) => (
-        <>
-          <EyeOutlined onClick={() => showModalReview(_id, 0)} className="m-2 text-blue-500 cursor-pointer" />
         </>
       ),
     },
@@ -495,7 +495,7 @@ const InstructorManageCourses: React.FC = () => {
         footer={""}
       // onCancel={handleCancel}
       >
-      <Table loading={loadingTable} dataSource={reviews} columns={columnsReviews} />;
+      <Table loading={loadingTable} dataSource={reviews} columns={columnsReviews} />
       </Modal>
       {/* modal log status */}
       <Modal

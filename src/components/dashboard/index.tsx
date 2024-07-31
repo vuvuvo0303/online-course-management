@@ -68,7 +68,7 @@ const Dashboard: React.FC = () => {
     if (dataUser.role === roles.INSTRUCTOR) {
       setItems([
         getItem("Dashboard", paths.INSTRUCTOR_DASHBOARD, <FundOutlined />),
-        getItem("Manage Reviews", "/instructor/manage-reviews", <CommentOutlined />),
+        // getItem("Manage Reviews", "/instructor/manage-reviews", <CommentOutlined />),
         getItem(
           "Manage Courses",
           "/instructor/manage-courses",
