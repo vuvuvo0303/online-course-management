@@ -74,6 +74,7 @@ const AdminManageBlogs: React.FC = () => {
 
   const handleEditorChange = (value: string) => {
     setContent(value);
+    form.setFieldsValue({ content: value });
   };
 
   const handleUpdateClick = async (id: string) => {
@@ -126,6 +127,7 @@ const AdminManageBlogs: React.FC = () => {
     setPagination(pagination);
   };
 
+
   const handleResetContent = () => {
     setIsUpdateMode(false);
     setIsModalVisible(true);
@@ -139,6 +141,7 @@ const AdminManageBlogs: React.FC = () => {
     setCurrentBlog(null);
     form.resetFields();
   };
+
 
   const columns: TableColumnsType<Blog> = [
     {
@@ -212,13 +215,6 @@ const AdminManageBlogs: React.FC = () => {
     </>)
   }
 
-  // const handlePaginationChange = (page: number, pageSize?: number) => {
-  //   setPagination((prev) => ({
-  //     ...prev,
-  //     current: page,
-  //     pageSize: pageSize || 10,
-  //   }));
-  // };
 
   return (
     <div>

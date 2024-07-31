@@ -16,10 +16,10 @@ import {
 import type { MenuProps } from "antd";
 import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { User } from "../../models/User";
+import { User } from "../../models";
 import logo2 from "../../assets/logo2.jpg";
 import { paths, roles } from "../../consts";
-import { logout } from "../../services/auth.ts";
+import { logout } from "../../services";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -68,7 +68,6 @@ const Dashboard: React.FC = () => {
     if (dataUser.role === roles.INSTRUCTOR) {
       setItems([
         getItem("Dashboard", paths.INSTRUCTOR_DASHBOARD, <FundOutlined />),
-        // getItem("Manage Reviews", "/instructor/manage-reviews", <CommentOutlined />),
         getItem(
           "Manage Courses",
           "/instructor/manage-courses",
@@ -142,14 +141,16 @@ const Dashboard: React.FC = () => {
       ),
       key: "1",
     },
-    {
-      label: (
-        <Link className="text-lg" to={paths.INSTRUCTOR_PROFILE}>
-          View Profile
-        </Link>
-      ),
-      key: "2",
-    },
+    ...(dataUser.role === roles.INSTRUCTOR ? [
+      {
+        label: (
+          <Link className="text-lg" to={paths.INSTRUCTOR_PROFILE}>
+            View Profile
+          </Link>
+        ),
+        key: "2",
+      }
+    ] : []),
     {
       label: (
         <Link
