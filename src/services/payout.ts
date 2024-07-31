@@ -54,7 +54,6 @@ export const updateStatusPayout = async (payout_id: string, status: string, comm
         })
         return response
     } catch (error) {
-        console.log("updateStatusPayout- Error occurred: ", error)
         return;
     }
 }

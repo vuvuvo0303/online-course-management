@@ -74,7 +74,6 @@ const SubscribeButtonComponent: React.FC<SubscribeButtonProps> = ({
     ];
 
     const handleMenuClick: MenuProps['onClick'] = (e) => {
-        console.log('click', e);
         if (e.key === '4') {
             showModal();
         }

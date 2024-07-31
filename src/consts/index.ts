@@ -1,3 +1,4 @@
+
 /* API */
 
 //Base URL
@@ -86,6 +87,9 @@ export const API_CLIENT_GET_CATEGORIES = "/api/client/category/search";
 export const API_INSTRUCTOR_OR_STUDENT_SUBSCRIPTIONS = "/api/subscription";
 export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-instructor";
 export const API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER = "/api/subscription/search-for-subscriber";
+
+
+
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";
@@ -93,6 +97,7 @@ export const colorIs_delete = (is_delete: boolean) => {
     return "blue";
   }
 };
+
 
 export const optionStatus = () => [
   { label: "new", value: "new" },
@@ -293,6 +298,7 @@ export const paths = {
   AVATAR:
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PyKYrBKAWWy6YCbQzWQcwIRqH8wYMPluIZiMpV1w0NYSbocTZz0ICWFkLcXhaMyvCwQ&usqp=CAU",
 };
+
 
 /* ROLE */
 export const roles = {

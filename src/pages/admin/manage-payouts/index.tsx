@@ -45,13 +45,13 @@ const AdminManagePayouts: React.FC = () => {
 
   const toggleModal = (idx: number, target: boolean, transactions?: Transaction[]) => {
     if (transactions) {
-        setTransactions(transactions);
+      setTransactions(transactions);
     }
     setIsModalOpen((p) => {
-        p[idx] = target;
-        return [...p];
+      p[idx] = target;
+      return [...p];
     });
-};
+  };
 
   const handleOk = async () => {
     if (comment != "" && dataStatusPayout.status === "rejected") {
@@ -73,7 +73,6 @@ const AdminManagePayouts: React.FC = () => {
   };
 
   const handleCancel = () => {
-    console.log('Clicked cancel button');
     setOpen(false);
   };
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -152,11 +151,11 @@ const AdminManagePayouts: React.FC = () => {
       key: 'transactions',
       width: '15%',
       render: (transactions: Transaction[], record: Payout) => (
-          <div onClick={() => toggleModal(0, true, transactions)} className="text-blue-500 cursor-pointer">
-              {record.payout_no}
-          </div>
+        <div onClick={() => toggleModal(0, true, transactions)} className="text-blue-500 cursor-pointer">
+          {record.payout_no}
+        </div>
       )
-  },
+    },
     {
       title: "Instructor Email",
       dataIndex: "instructor_email",
@@ -245,7 +244,6 @@ const AdminManagePayouts: React.FC = () => {
 
   const handleUpdateStatus = async (id: string, status: string, comment: string) => {
     const res = await updateStatusPayout(id, status, comment);
-    console.log("payout status: ", status);
     if (res) {
       message.success(`Change Payout Status To ${status === "completed" ? "Completed" : "Rejected"} Successfully`)
       getPayouts();
@@ -256,7 +254,7 @@ const AdminManagePayouts: React.FC = () => {
     setComment(e.target.value);
   };
 
-  const columnsTransactions :TableProps['columns']= [
+  const columnsTransactions: TableProps['columns'] = [
     {
       title: 'Price',
       dataIndex: 'price',
@@ -273,25 +271,25 @@ const AdminManagePayouts: React.FC = () => {
       key: 'price_paid',
     },
     {
-        title: 'Created Date',
-        dataIndex: 'created_at',
-        key: 'craeted_at',
-        render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
-      },
+      title: 'Created Date',
+      dataIndex: 'created_at',
+      key: 'craeted_at',
+      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+    },
   ];
 
   return (
     <div>
-        <Modal
-                title="Transactions"
-                open={isModalOpen[0]}
-                onOk={() => toggleModal(0, false)}
-                onCancel={() => toggleModal(0, false)}
-                // classNames={classNames}
-                footer={null}
-            >
-                <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
-            </Modal>
+      <Modal
+        title="Transactions"
+        open={isModalOpen[0]}
+        onOk={() => toggleModal(0, false)}
+        onCancel={() => toggleModal(0, false)}
+        // classNames={classNames}
+        footer={null}
+      >
+        <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
+      </Modal>
       <Modal
         title="Title"
         open={open}
@@ -307,7 +305,7 @@ const AdminManagePayouts: React.FC = () => {
 
       </Modal>
       <div className="flex justify-between">
-      <CustomBreadcrumb homeHref="/" />
+        <CustomBreadcrumb homeHref="/" />
       </div>
       <Space className="flex flex-wrap mb-4">
         <Input.Search

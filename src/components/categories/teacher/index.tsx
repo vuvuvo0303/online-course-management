@@ -35,7 +35,6 @@ const TeacherCategories: React.FC = () => {
     setLoading(true);
     try {
       const res = await getItemsBySubscriber("", 1, 10); // Điều chỉnh keyword, pageNum và pageSize theo nhu cầu
-      console.log(res);
       setTeachers(res);
     } catch (error) {
       console.error("Failed to fetch teachers:", error);
@@ -85,10 +84,10 @@ const TeacherCategories: React.FC = () => {
                 </div>
                 <div className="mt-4">
                   <p className="text-gray-600 text-sm">
-                  Subscribed Date: {format(new Date(teacher.created_at), 'dd/MM/yyyy')}
+                    Subscribed Date: {format(new Date(teacher.created_at), 'dd/MM/yyyy')}
                   </p>
                   <p className="text-gray-600 text-sm">
-                  Subscribed Date: {format(new Date(teacher.updated_at), 'dd/MM/yyyy')}
+                    Subscribed Date: {format(new Date(teacher.updated_at), 'dd/MM/yyyy')}
                   </p>
                 </div>
               </Card>
