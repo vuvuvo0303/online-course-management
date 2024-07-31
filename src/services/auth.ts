@@ -120,5 +120,6 @@ export const logout = ( navigate: ReturnType<typeof useNavigate>) => {
   else {
     navigate(paths.HOME);
   }
+  message.info("You logout from the system");
   localStorage.clear();
 };

@@ -22,18 +22,19 @@ export const getUsers = async (
   keyword: string = "",
   role: string = "all",
   status: boolean = true,
-  is_verified: string = "",
-  is_delete: boolean = false,
+  is_verified: boolean = true,
+  is_deleted: boolean = false,
   pageNum: number = 1,
   pageSize: number = 10
 ) => {
+  try {
     const response = await axiosInstance.post(API_GET_USERS, {
       searchCondition: {
         keyword: keyword || "",
         role: role || "all",
         status: status !== undefined ? status : true,
-        is_verified: is_verified || "",
-        is_delete: is_delete !== undefined ? is_delete : false,
+        is_verified: is_verified !== undefined ? is_verified : true,
+        is_delete: is_deleted !== undefined ? is_deleted : false,
       },
       pageInfo: {
         pageNum: pageNum || 1,
@@ -41,6 +42,18 @@ export const getUsers = async (
       },
     });
     return response;
+  } catch (error) {
+    return {
+      data: {
+        pageInfo: {
+          totalItems: 0,
+          pageNum,
+          pageSize
+        },
+        pageData: []
+      }
+    };
+  }
 };
 
 export const getUserDetail = async (_id: string) => {

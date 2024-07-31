@@ -32,7 +32,7 @@ const ReviewPage: React.FC = () => {
     const fetchReviews = useCallback(async () => {
         const response = await axiosInstance.post(API_GET_REVIEWS, {
             "searchCondition": {
-                "course_id": "",
+                "course_id": course_id,
                 "rating": 0,
                 "is_instructor": false,
                 "is_rating_order": false,

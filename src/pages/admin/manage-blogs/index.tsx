@@ -46,7 +46,8 @@ const AdminManageBlogs: React.FC = () => {
   }, [pagination.current, pagination.pageSize]);
 
   const fetchCategories = async () => {
-    const categories = await getCategories();
+    const responseCategories = await getCategories();
+    const categories = responseCategories.data.pageData
     setCategories(categories);
   };
 

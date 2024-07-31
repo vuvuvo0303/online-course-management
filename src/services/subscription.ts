@@ -39,6 +39,15 @@ export const getItemsBySubscriber = async (keyword: string, pageNum: number, pag
             return response.data.pageData;
         }
     } catch (error) {
-        return [];
-    }
-}
+        return {
+          data: {
+            pageInfo: {
+              totalItems: 0,
+              pageNum,
+              pageSize
+            },
+            pageData: []
+          }
+        };
+      }
+    };

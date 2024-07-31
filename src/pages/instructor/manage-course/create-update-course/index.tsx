@@ -53,9 +53,9 @@ const InstructorCreateCourse: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const dataCategories = await getCategories();
-            setCategories(dataCategories);
-            console.log("dataCategories: ", dataCategories)
+            const responseCategories = await getCategories();
+            const categories = responseCategories.data.pageData
+            setCategories(categories);
             setLoading(false);
         }
         fetchData();

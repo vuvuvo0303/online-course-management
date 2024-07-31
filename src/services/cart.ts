@@ -4,19 +4,32 @@ import axiosInstance from "./axiosInstance"
 
 
 // get carts (All)
-export const getCarts = async (status: string) => {
+export const getCarts = async (status: string = "", is_deleted: boolean = false, pageNum: number = 1, pageSize: number = 100) => {
+    try {
         const response = await axiosInstance.post(API_GET_CARTS, {
             "searchCondition": {
-                "status": status,
-                "is_deleted": false
+                "status": status || "",
+                "is_deleted": is_deleted || false
             },
             "pageInfo": {
-                "pageNum": 1,
-                "pageSize": 100
+                "pageNum": pageNum || 1,
+                "pageSize": pageSize || 100
             }
         })
             return response.data.pageData;
-}
+    } catch (error) {
+        return {
+          data: {
+            pageInfo: {
+              totalItems: 0,
+              pageNum,
+              pageSize
+            },
+            pageData: []
+          }
+        };
+      }
+    };
 
 //CART-01 - Create Cart (All)
 export const addCourseToCart = async (course_id: string) => {

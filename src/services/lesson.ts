@@ -50,10 +50,19 @@ export const getLessons =
             }
             )
                 return response.data.pageData;
-        } catch (error) {
-            return [];
-        }
-    }
+            } catch (error) {
+                return {
+                  data: {
+                    pageInfo: {
+                      totalItems: 0,
+                      pageNum,
+                      pageSize
+                    },
+                    pageData: []
+                  }
+                };
+              }
+            };
 
 // LESSON-03 Get Lesson (All)
 export const getLesson = async (lessonId: string) => {

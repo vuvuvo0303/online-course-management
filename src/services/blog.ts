@@ -5,27 +5,36 @@ import { message } from "antd";
 
 
 export const getBlogs = async ({
-    category_id = "",
-    is_deleted = false,
-    pageNum = 1,
-    pageSize = 100
-  } = {}) => {
-    try {
-      const response = await axiosInstance.post(API_CLIENT_GET_BLOGS, {
-        "searchCondition": {
-          "category_id": category_id,
-          "is_deleted": is_deleted
-        },
-        "pageInfo": {
-          "pageNum": pageNum,
-          "pageSize": pageSize
-        }
-      });
-      return response;
-    } catch (error) {
-      return [];
-    }
-  };
+  category_id = "",
+  is_deleted = false,
+  pageNum = 1,
+  pageSize = 100
+} = {}) => {
+  try {
+    const response = await axiosInstance.post(API_CLIENT_GET_BLOGS, {
+      "searchCondition": {
+        "category_id": category_id,
+        "is_deleted": is_deleted
+      },
+      "pageInfo": {
+        "pageNum": pageNum,
+        "pageSize": pageSize
+      }
+    });
+    return response;
+  } catch (error) {
+        return {
+          data: {
+            pageInfo: {
+              totalItems: 0,
+              pageNum,
+              pageSize
+            },
+            pageData: []
+          }
+        };
+      }
+    };
 
 export const deleteBlog = async (id: string, title: string, getBlogs: () => Promise<void>) => {
     await axiosInstance.delete(`${API_DELETE_BLOG}/${id}`);

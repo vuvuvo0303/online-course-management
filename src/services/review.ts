@@ -25,10 +25,19 @@ export const getAllReviews = async (course_id: string, rating: number, pageNum: 
       }
     })
       return response.data.pageData;
-  } catch (error) {
-    return error;
-  }
-}
+    } catch (error) {
+      return {
+        data: {
+          pageInfo: {
+            totalItems: 0,
+            pageNum,
+            pageSize
+          },
+          pageData: []
+        }
+      };
+    }
+  };
 
 //REVIEW-03 Get Review (Instructor)
 export const getReviewByInstructor = async (review_id: string) => {

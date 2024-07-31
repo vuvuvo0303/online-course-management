@@ -44,10 +44,19 @@ export const getSessions =
             }
             )
                 return response.data.pageData;
-        } catch (error) {
-            return [];
-        }
-    }
+            } catch (error) {
+                return {
+                  data: {
+                    pageInfo: {
+                      totalItems: 0,
+                      pageNum,
+                      pageSize
+                    },
+                    pageData: []
+                  }
+                };
+              }
+            };
 
 // SESSION-03 Get Session (Instructor)
 export const getSession = async (sessionId: string) => {

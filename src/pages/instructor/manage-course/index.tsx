@@ -210,8 +210,9 @@ const InstructorManageCourses: React.FC = () => {
   //fetch categories
   useEffect(() => {
     const fetchData = async () => {
-      const dataCategories = await getCategories();
-      setCategories(dataCategories);
+      const responseCategories = await getCategories();
+      const categories = responseCategories.data.pageData
+      setCategories(categories);
     }
     fetchData();
   }, []);
@@ -495,7 +496,7 @@ const InstructorManageCourses: React.FC = () => {
         footer={""}
       // onCancel={handleCancel}
       >
-      <Table loading={loadingTable} dataSource={reviews} columns={columnsReviews} />
+        <Table loading={loadingTable} dataSource={reviews} columns={columnsReviews} />
       </Modal>
       {/* modal log status */}
       <Modal

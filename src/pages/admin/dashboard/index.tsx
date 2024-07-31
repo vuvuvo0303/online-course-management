@@ -1,7 +1,7 @@
 import { FileDoneOutlined, PlaySquareOutlined, TeamOutlined } from "@ant-design/icons";
 import { Badge, Card, Col, Row } from "antd";
 import { UserChart } from "../chart/userchart";
-import { RevenueChart, data } from '../chart/revenuechart';
+import { RevenueChart } from '../chart/revenuechart';
 // import top1 from "../../../assets/top1.png";
 // import top2 from "../../../assets/top2.png";
 // import top3 from "../../../assets/top3.png";
@@ -21,7 +21,7 @@ const AdminDashboard: React.FC = () => {
 
   const fetchData = useCallback(async () => {
     const blogs = await getBlogs();
-    const courses = await getCourses("", "", "", false, 1, 100);
+    const courses = await getCourses();
     const students = await getUsers("", "student");
     const instructors = await getUsers("", "instructor");
     const totalBlogs = blogs.data.pageInfo.totalItems

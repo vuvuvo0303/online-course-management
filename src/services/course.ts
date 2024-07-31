@@ -47,11 +47,11 @@ export const getCourses = async (
             },
             "pageInfo": {
                 "pageNum": pageNum || 1,
-                "pageSize": pageSize || 10
+                "pageSize": pageSize || 100
             }
         }
             )
-        return response.data.pageData;
+        return response;
     }
 // COURSE-03 Get Course (Instructor)
 export const getCourse = async (course_id: string) => {

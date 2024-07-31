@@ -41,9 +41,18 @@ export const getPayouts = async (payout_no: string, instructor_id: string, statu
         }
         message.error("Create Payout Failed!");
     } catch (error) {
-        return [];
-    }
-}
+        return {
+          data: {
+            pageInfo: {
+              totalItems: 0,
+              pageNum,
+              pageSize
+            },
+            pageData: []
+          }
+        };
+      }
+    };
 
 //PAYOUT-03 Update Status Payout (Admin, Instructor)
 export const updateStatusPayout = async (payout_id: string, status: string, comment: string) => {
