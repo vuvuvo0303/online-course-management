@@ -6,8 +6,7 @@ import { paths } from "../../../consts/index";
 import { ArrowRightOutlined, HeartOutlined } from "@ant-design/icons";
 import { fetchCoursesByClient, addCourseToCart, getUserFromLocalStorage } from "../../../services";
 import { Course } from "../../../models";
-import { format } from "date-fns";
-import { formatCurrency } from "../../../utils";
+import { formatCurrency, formatDate } from "../../../utils";
 
 const { Meta } = Card;
 
@@ -76,7 +75,7 @@ const AllCourses = () => {
       }
     };
 
-    const lastUpdated = format(new Date(course.updated_at), "dd/MM/yyyy");
+    const lastUpdated = formatDate(course.updated_at);
     return (
       <div className="popover-content w-full">
         <Meta

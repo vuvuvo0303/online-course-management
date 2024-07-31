@@ -5,8 +5,8 @@ import './blog.css';
 import { useEffect, useState } from 'react';
 import { Blog } from '../../../models';
 import { getBlogs, handleGetBlogDetail } from '../../../services';
-import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '../../../utils';
 
 const { Meta } = Card;
 
@@ -65,7 +65,7 @@ const HomeBlog: React.FC = () => {
                                         >
                                             <Meta
                                                 title={blog.name}
-                                                description={format(blog.updated_at, "dd/MM/yyyy")}
+                                                description={formatDate(blog.updated_at)}
                                             />
                                         </Card>
                                     </a>

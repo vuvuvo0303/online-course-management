@@ -17,10 +17,8 @@ import {
   API_GET_SESSIONS,
   API_UPDATE_LESSON,
 } from "../../../../../../consts";
-import TinyMCEEditorComponent from "../../../../../../components/tinyMCE";
+import { TinyMCEEditorComponent, CustomBreadcrumb, LoadingComponent } from "../../../../../../components";
 import { formItemLayout } from "../../../../../../layout/form";
-import LoadingComponent from "../../../../../../components/loading";
-import CustomBreadcrumb from "../../../../../../components/breadcrumb/index.tsx";
 const CreateUpdateLesson: React.FC = () => {
   const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
@@ -183,9 +181,9 @@ const CreateUpdateLesson: React.FC = () => {
       ) : (
         <div className="w-full max-w-7xl bg-white  p-8 rounded shadow">
           {courseId && sessionId != undefined ? (
-            <CustomBreadcrumb/>
+            <CustomBreadcrumb />
           ) : (
-            <CustomBreadcrumb/>
+            <CustomBreadcrumb />
           )}
           <h1 className="text-center mb-8">{lectureId ? "Update Lesson" : "Create Lesson"}</h1>
           <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
