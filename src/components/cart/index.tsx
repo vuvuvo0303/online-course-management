@@ -2,18 +2,9 @@ import React from 'react';
 import styles from './cartComponents.module.css';
 import { Checkbox, Col, Form, Row, Tag } from "antd";
 import { getColorCart } from "../../consts";
-import { Cart } from '../../models';
 import { formItemLayout } from '../../layout/form';
+import { CartComponentsProps } from '../../models/Cart';
 
-interface CartComponentsProps {
-    cartsNew?: Cart;
-    cartsCancel?: Cart;
-    totalCost: number;
-    handleCheckoutNow: () => void;
-    onChangeCheckBox: (cart: Cart) => void;
-    handleDeleteCart: (cart_id: string) => void
-    cartsWaitingPaid: Cart[];
-}
 
 const CartComponents: React.FC<CartComponentsProps>
     = ({ cartsNew, cartsCancel, onChangeCheckBox, handleDeleteCart }) => {

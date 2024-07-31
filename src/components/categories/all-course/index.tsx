@@ -4,10 +4,9 @@ import Carousel from "react-multi-carousel";
 import { Link, useNavigate } from "react-router-dom";
 import { paths } from "../../../consts/index";
 import { ArrowRightOutlined, HeartOutlined } from "@ant-design/icons";
-import { fetchCoursesByClient, addCourseToCart } from "../../../services";
+import { fetchCoursesByClient, addCourseToCart, getUserFromLocalStorage } from "../../../services";
 import { Course } from "../../../models";
 import { format } from "date-fns";
-import { user } from "../../../services/users";
 
 const { Meta } = Card;
 
@@ -16,6 +15,7 @@ const AllCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const user = getUserFromLocalStorage();
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },
@@ -56,18 +56,14 @@ const AllCourses = () => {
     // Add course and go to cart
     const handleGoToCourse = async (course: Course) => {
       if (!user || user.role !== 'student') {
-        navigate("/login");
+        navigate(paths.LOGIN);
       } else {
-        try {
-          if(course.is_purchased ===false && course.is_in_cart === false) {
-            await addCourseToCart(course._id);
-          } else if(course.is_in_cart === true && course.is_purchased === false) {
-            navigate(paths.STUDENT_CART);
-          } else if(course.is_in_cart === true && course.is_purchased === true) {
-            navigate(`${paths.STUDENT_STUDY_COURSE}/${course._id}`);
-          }
-        } catch (error) {
-          console.error("Failed to handle course action:", error);
+        if (course.is_purchased === false && course.is_in_cart === false) {
+          await addCourseToCart(course._id);
+        } else if (course.is_in_cart === true && course.is_purchased === false) {
+          navigate(paths.STUDENT_CART);
+        } else if (course.is_in_cart === true && course.is_purchased === true) {
+          navigate(`${paths.STUDENT_STUDY_COURSE}/${course._id}`);
         }
       }
     };

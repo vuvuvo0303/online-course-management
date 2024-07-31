@@ -1,5 +1,5 @@
 export { default as Navbar } from './navbar'
 export { default as Footer } from './footer'
-export { default as CartComponents } from './cart/CartComponents'
+export { default as CartComponents } from './cart'
 export { default as LoadingComponent } from './loading'
 export { default as SubscribeButtonComponent } from './subscribe-button'
