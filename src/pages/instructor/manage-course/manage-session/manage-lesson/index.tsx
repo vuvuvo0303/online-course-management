@@ -202,22 +202,22 @@ const LectureOfCourse: React.FC = () => {
             key: 'session_name',
 
         },
-        {
-            title: 'Video Url',
-            dataIndex: 'video_url',
-            key: 'video_url',
-            render: (video_url: string) => (
-                <>
-                    <iframe src={video_url} ></iframe>
-                </>
-            )
-        },
-        {
-            title: 'Image Url',
-            dataIndex: 'image_url',
-            key: 'image_url',
+        // {
+        //     title: 'Video Url',
+        //     dataIndex: 'video_url',
+        //     key: 'video_url',
+        //     render: (video_url: string) => (
+        //         <>
+        //             <iframe src={video_url} ></iframe>
+        //         </>
+        //     )
+        // },
+        // {
+        //     title: 'Image Url',
+        //     dataIndex: 'image_url',
+        //     key: 'image_url',
 
-        },
+        // },
         {
             title: 'Lesson type',
             dataIndex: 'lesson_type',
