@@ -1,12 +1,14 @@
-import { Breadcrumb, Input, Pagination, Select, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
+import { Input, Pagination, Select, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
 import { API_GET_PURCHASE_BY_ADMIN, getColorPurchase } from "../../../consts";
 import { format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { axiosInstance } from "../../../services";
-import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
-import { Purchase } from "../../../models/Purchase";
+import { Purchase } from "../../../models";
 import LoadingComponent from "../../../components/loading";
+import CustomBreadcrumb from "../../../components/breadcrumb";
+import { formatCurrency } from "../../../utils";
 
 const ManageAllPurchase = () => {
   const [loading, setLoading] = useState(true);
@@ -95,7 +97,7 @@ const ManageAllPurchase = () => {
       dataIndex: "price_paid",
       key: "price_paid",
       render: (price_paid: number) => {
-        return price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+        return formatCurrency(price_paid);
       },
     },
     {
@@ -116,13 +118,7 @@ const ManageAllPurchase = () => {
 
   return (
     <div>
-
-      <Breadcrumb className="p-3">
-        <Breadcrumb.Item>
-          <HomeOutlined />
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>Manage All Purchase</Breadcrumb.Item>
-      </Breadcrumb>
+      <CustomBreadcrumb />
       <div className="flex items-center mb-3">
         <Space>
           <Input.Search

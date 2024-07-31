@@ -24,6 +24,7 @@ import CustomBreadcrumb from "../../../components/breadcrumb";
 import { axiosInstance, updateStatusPayout } from "../../../services";
 import LoadingComponent from "../../../components/loading";
 import TextArea from "antd/es/input/TextArea";
+import { formatCurrency } from "../../../utils";
 
 const AdminManagePayouts: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -173,7 +174,7 @@ const AdminManagePayouts: React.FC = () => {
       key: "balance_instructor_paid",
       width: "15%",
       render: (balance_instructor_paid: number) => (
-        <>{balance_instructor_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
+        <>{formatCurrency(balance_instructor_paid)}</>
       ),
     },
 
@@ -182,7 +183,7 @@ const AdminManagePayouts: React.FC = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
       width: "15%",
-      render: (balance_instructor_received: number) => <>{balance_instructor_received.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>
+      render: (balance_instructor_received: number) => <>{formatCurrency(balance_instructor_received)}</>
     },
     {
       title: "Status",

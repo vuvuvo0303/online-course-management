@@ -11,6 +11,7 @@ import { User } from "../../models/User";
 import { Link } from "react-router-dom";
 import CustomButton from "../../components/CustomButton";
 import LoadingComponent from "../../components/loading";
+import { formatCurrency } from "../../utils";
 const Checkout: React.FC = () => {
   // const [payment, setPayment] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -142,7 +143,7 @@ const Checkout: React.FC = () => {
                         <p className={styles.detailLabel}>
                           <strong>Total Price:</strong>
                         </p>
-                        <p className={styles.detailValue}>{totalPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                        <p className={styles.detailValue}>{formatCurrency(totalPrice)}</p>
                       </div>
                     </>
 
@@ -190,7 +191,7 @@ const Checkout: React.FC = () => {
 
                         </Col>
                         <Col span={6}>
-                          <p className='pt-12'>{cart.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                          <p className='pt-12'>{formatCurrency(cart.price)}</p>
                           <p>Discount: {cart.discount}%</p>
                         </Col>
 
@@ -198,7 +199,7 @@ const Checkout: React.FC = () => {
                           <Row>
                             <Col span={12}>
                               <p className='pt-12'>Total:</p>
-                              <p >{cart.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                              <p >{formatCurrency(cart.price_paid)}</p>
                             </Col>
                           </Row>
                         </Col>
@@ -363,14 +364,14 @@ const Checkout: React.FC = () => {
         </h2>
         <div className={styles.summaryDescription}>
           <p>
-            <strong>Original Price:</strong> {totalCost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+            <strong>Original Price:</strong> {formatCurrency(totalCost)}
           </p>
           <p>
             <strong>Discount:</strong> 0
           </p>
           <hr style={{ width: "250px" }} />
           <p>
-            <strong>Total:</strong> {totalPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+            <strong>Total:</strong> {formatCurrency(totalPrice)}
           </p>
         </div>
         <div className={styles.confirm}>

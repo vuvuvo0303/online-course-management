@@ -33,25 +33,29 @@ const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = ({
         },
         ...pathnames.map((value, index) => {
             // Bỏ qua các phần breadcrumb nếu vai trò là instructor hoặc admin
-            if (isInstructorOrAdmin) {
-                if (value === "instructor" || value === "admin") {
-                    return null;
-                }
-            }
-
-            currentPath += `/${value}`;
-            const isLast = index === pathnames.length - 1;
-
-            // Skip IDs assuming they are numeric or are MongoDB ObjectIDs
-            if (!isNaN(Number(value)) || value.match(/^[0-9a-fA-F]{24}$/)) {
+            if (isInstructorOrAdmin && (value === "instructor" || value === "admin")) {
+                currentPath += `/${value}`;
                 return null;
             }
 
+            // Skip IDs assuming they are numeric or are MongoDB ObjectIDs
+            if (!isNaN(Number(value)) || value.match(/^[0-9a-fA-F]{24}$/)) {
+                currentPath += `/${value}`;
+                return null;
+            }
+
+            // Cập nhật đường dẫn hiện tại
+            currentPath += `/${value}`;
+
+            // Tạo liên kết cho các mục breadcrumb
+            const isLast = index === pathnames.length - 1;
+            const title = formatTitle(value);
+
             return {
                 title: isLast ? (
-                    formatTitle(value)
+                    title
                 ) : (
-                    <Link to={currentPath}>{formatTitle(value)}</Link>
+                    <Link to={currentPath}>{title}</Link>
                 ),
             };
         }).filter(item => item !== null),

@@ -26,6 +26,7 @@ import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import { axiosInstance } from "../../../services";
 import LoadingComponent from "../../../components/loading";
+import { formatCurrency } from "../../../utils";
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [changeStatus, setChangeStatus] = useState<string>("");
@@ -280,13 +281,6 @@ const AdminManageCourses: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const formatVND = (value: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
-  };
-
   const uniqueCategoriesMap = new Map();
   courses.forEach((course) => {
     if (!uniqueCategoriesMap.has(course.category_name)) {
@@ -465,7 +459,7 @@ const AdminManageCourses: React.FC = () => {
             </div>
             <div>
               <span className="text-base font-bold">Price: </span>
-              {formatVND(selectedCourse.price)}
+              {formatCurrency(selectedCourse.price)}
             </div>
             <div>
               <span className="text-base font-bold">Discount: </span>
@@ -506,7 +500,7 @@ const AdminManageCourses: React.FC = () => {
           </Button>
         </div>
       </Modal>
-      <CustomBreadcrumb  />
+      <CustomBreadcrumb />
 
       {/* Filters and Search */}
       <Space className="flex flex-wrap  mb-4">

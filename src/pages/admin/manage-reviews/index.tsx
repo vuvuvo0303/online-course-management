@@ -3,7 +3,6 @@ import type { PaginationProps, TablePaginationConfig, TableProps } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Review } from "../../../models";
-import { paths } from "../../../consts";
 import { format } from "date-fns";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import { deleteReview, getAllReviews } from "../../../services";
@@ -116,7 +115,7 @@ const AdminManageFeedbacks: React.FC = () => {
 
   return (
     <div>
-      <CustomBreadcrumb currentTitle="Manage Review" currentHref={paths.ADMIN_HOME} />
+      <CustomBreadcrumb/>
       <Table
         rowKey={(record: Review) => record._id}
         columns={columns}

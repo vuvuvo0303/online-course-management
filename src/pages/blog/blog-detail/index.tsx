@@ -46,7 +46,7 @@ const BlogDetail: React.FC = () => {
     return (
         <div className={`${styles.blogDetailContainer}`}>
             <div className='container mx-auto'>
-                <CustomBreadcrumb currentTitle='Blog' currentHref={paths.HOME} />
+                <CustomBreadcrumb />
             </div>
             <div className='px-0 w-full mx-auto'>
                 <div className='bg-white-transparent py-11 px-3 w-full relative'>

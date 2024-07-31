@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { addCourseToCart } from '../../../services/cart';
 import { paths } from "../../../consts";
-import { formatMinute } from "../../../utils";
+import { formatCurrency, formatMinute } from "../../../utils";
 import { Course } from "../../../models";
 
 interface CourseCardProps {
@@ -71,10 +71,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     <div><strong>Instructor:</strong> {course.instructor_name}</div>
                     <div><span className="text-sm">Last update:</span> {new Date(course.updated_at).toLocaleDateString()}</div>
                     <div className="flex flex-row gap-4">
-                        <div className="text-4xl">{course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
+                        <div className="text-4xl">{formatCurrency(course.price_paid)}</div>
                         <div className="text-2xl mt-[0.2rem]">
                             <span className="line-through">
-                                {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                {formatCurrency(course.price)}
                             </span>
                         </div>
                     </div>

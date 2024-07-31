@@ -4,6 +4,7 @@ import { fetchCoursesByClient } from '../services';
 import { Course } from '../models';
 import { Link } from 'react-router-dom';
 import { ArrowRightOutlined, HeartOutlined } from '@ant-design/icons';
+import { formatCurrency } from '../utils';
 
 const CourseCard = ({ image = '', title = '', author = '', price = '', paid = '' }:
     { image?: string; title?: string; author?: string; price?: string; paid?: string }) => {
@@ -64,8 +65,8 @@ const SearchTool: React.FC = () => {
                                     image={course.image_url}
                                     title={course.name}
                                     author={course.instructor_name}
-                                    price={course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
-                                    paid={course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                    price={formatCurrency(course.price)}
+                                    paid={formatCurrency(course.price_paid)}
                                 />
                             </div>
                             <div className='flex flex-col gap-2 items-end'>

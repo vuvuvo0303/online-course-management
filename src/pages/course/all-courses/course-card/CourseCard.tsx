@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Course } from "../../../../models/Course";
 import { HeartOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import defaultImage from "../../../../../public/l1.jpg";
+import { formatCurrency } from "../../../../utils";
 
 interface CourseCardProps {
     course: Course;
@@ -29,7 +30,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                         <div>
                             <p className="text-sm text-gray-700">Lessons: {course.lesson_count}</p>
                             <p className="text-sm text-gray-700">Instructor: {course.instructor_name}</p>
-                            <p className="text-sm text-gray-700">Price: {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                            <p className="text-sm text-gray-700">Price: {formatCurrency(course.price)}</p>
                         </div>
                         <div className="flex flex-col items-center space-y-2">
                             <Link to={`/course/all-courses/course/${course._id}`}>
