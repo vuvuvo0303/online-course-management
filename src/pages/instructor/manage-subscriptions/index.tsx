@@ -1,12 +1,13 @@
-import { Breadcrumb, Input, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
-import {  API_INSTRUCTOR_GET_SUBSCRIPTIONS, API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER, getColorStatusSubscribe } from "../../../consts/index";
+import { Input, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
+import { API_INSTRUCTOR_GET_SUBSCRIPTIONS, API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER, getColorStatusSubscribe } from "../../../consts/index";
 import { format } from "date-fns";
 import { Subscription } from "models/Subscription";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../services/axiosInstance";
 import useDebounce from "../../../hooks/useDebounce";
-import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import LoadingComponent from "../../../components/loading";
+import CustomBreadcrumb from "../../../components/breadcrumb";
 const InstructorManageSubscriptions = () => {
     const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
     const [keyword, setKeyword] = useState<string>("");
@@ -38,7 +39,7 @@ const InstructorManageSubscriptions = () => {
             }
         }
         fetchSubscriptions();
-    }, [debouncedSearchTerm,selectedTab, apiLink, ])
+    }, [debouncedSearchTerm, selectedTab, apiLink,])
 
     //search student by student name
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +62,7 @@ const InstructorManageSubscriptions = () => {
         }
         console.log("selectedTab", selectedTab)
     };
-    
+
     const items: TabsProps['items'] = [
         {
             key: 'subscription',
@@ -83,12 +84,12 @@ const InstructorManageSubscriptions = () => {
             dataIndex: 'is_subscribed',
             key: 'is_subscribed',
             render: (is_subscribed: boolean) => (
-                <>           
-                        <div >
-                            <Tag color={getColorStatusSubscribe(is_subscribed)}>
-                                {is_subscribed === true ? "Subscribed" : "Unsubscribed"}
-                            </Tag>
-                        </div>
+                <>
+                    <div >
+                        <Tag color={getColorStatusSubscribe(is_subscribed)}>
+                            {is_subscribed === true ? "Subscribed" : "Unsubscribed"}
+                        </Tag>
+                    </div>
                 </>
             )
         },
@@ -107,19 +108,7 @@ const InstructorManageSubscriptions = () => {
     ];
     return (
         <>
-            <Breadcrumb
-                className="py-2"
-                items={[
-                    {
-                        href: "/",
-                        title: <HomeOutlined />,
-                    },
-                    {
-                        title: "Manage Subscriptions",
-                    },
-                ]}
-            />
-            
+            <CustomBreadcrumb />
             <Tabs defaultActiveKey="subscription" items={items} onChange={onChange} />
             <Input.Search
                 placeholder="Search"
@@ -129,7 +118,7 @@ const InstructorManageSubscriptions = () => {
                 style={{ width: 200 }}
                 enterButton={<SearchOutlined className="text-white" />}
             />
-            <Table columns={columns} dataSource={subscriptions} rowKey={(record:Subscription) => (record._id)}/>
+            <Table columns={columns} dataSource={subscriptions} rowKey={(record: Subscription) => (record._id)} />
         </>
     )
 }
