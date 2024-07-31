@@ -30,19 +30,17 @@ import { format } from "date-fns";
 import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 
 import { User, UserRole } from "../../../models/User.ts";
-import uploadFile from "../../../utils/upload.ts";
 import { PaginationProps } from "antd";
 import {
   API_CHANGE_ROLE,
   API_CREATE_USER,
   API_UPDATE_USER,
-  paths,
 } from "../../../consts";
 import ResponseData from "models/ResponseData.ts";
 import { useDebounce } from "../../../hooks";
-import CustomBreadcrumb from "../../../components/breadcrumb";
+import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { axiosInstance, changeStatusUser, changeUserRole, deleteUser, getUsers } from "../../../services";
-import LoadingComponent from "../../../components/loading";
+import { getBase64, uploadFile } from "../../../utils";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AdminManageUsers: React.FC = () => {
@@ -118,14 +116,6 @@ const AdminManageUsers: React.FC = () => {
     },
     [fetchUsers, form]
   );
-
-  const getBase64 = (file: FileType): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
@@ -383,7 +373,7 @@ const AdminManageUsers: React.FC = () => {
   return (
     <div>
       <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-        <CustomBreadcrumb currentTitle="Manage User" currentHref={paths.ADMIN_HOME} />
+        <CustomBreadcrumb />
 
         <div className="mt-3 md:mt-0">
           <Button type="primary" className="py-2" onClick={() => {

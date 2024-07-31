@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { API_GET_PAYOUTS, getColorPayout } from "../../../consts";
+import { getColorPayout } from "../../../consts";
 import {
   Button,
   Form,
@@ -21,7 +21,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Payout, Transaction } from "../../../models/Payout.ts";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
-import { axiosInstance, updateStatusPayout } from "../../../services";
+import { getPayouts, updateStatusPayout } from "../../../services";
 import LoadingComponent from "../../../components/loading";
 import TextArea from "antd/es/input/TextArea";
 import { formatCurrency } from "../../../utils";
@@ -81,41 +81,23 @@ const AdminManagePayouts: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
-  const getPayouts = useCallback(async () => {
+  const fetchPayouts = useCallback(async () => {
     setLoading(true);
-    try {
-      const response = await axiosInstance.post(API_GET_PAYOUTS, {
-        searchCondition: {
-          payout_no: debouncedSearch,
-          instructor_id: "",
-          status: statusFilter
-          // ? statusFilter : ["request_payout", "completed"],
-          ,
-          is_delete: false,
-        },
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
-        },
-      });
+    const responsePayouts = await getPayouts(debouncedSearch, "", statusFilter, false, false, pagination.current, pagination.pageSize);
 
-      setDataPayouts(response.data.pageData);
-      setPagination({
-        ...pagination,
-        total: response.data.pageInfo.totalItems,
-        current: response.data.pageInfo.pageNum,
-        pageSize: response.data.pageInfo.pageSize,
-      });
-    } catch (error) {
-      //
-    } finally {
-      setLoading(false);
-    }
+    setDataPayouts(responsePayouts.data.pageData);
+    setPagination({
+      ...pagination,
+      total: responsePayouts.data.pageInfo.totalItems,
+      current: responsePayouts.data.pageInfo.pageNum,
+      pageSize: responsePayouts.data.pageInfo.pageSize,
+    });
+    setLoading(false);
   }, [debouncedSearch, pagination.current, pagination.pageSize, statusFilter]);
 
   useEffect(() => {
-    getPayouts();
-  }, [getPayouts]);
+    fetchPayouts();
+  }, [fetchPayouts]);
 
   if (loading) {
     return (<>
