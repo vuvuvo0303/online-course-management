@@ -109,9 +109,8 @@ const ChangePassword = () => {
             <div className="pb-5 flex flex-col">
               <div className="flex items-center gap-3">
                 <span
-                  className={`p-1 inline-block rounded-full ${
-                    validations.newPassword.minLength ? "bg-green-400" : "bg-stone-400"
-                  }`}
+                  className={`p-1 inline-block rounded-full ${validations.newPassword.minLength ? "bg-green-400" : "bg-stone-400"
+                    }`}
                 ></span>
                 <span className={validations.newPassword.minLength ? "text-green-400" : "text-stone-400"}>
                   Minimum characters 12
@@ -119,9 +118,8 @@ const ChangePassword = () => {
               </div>
               <div className="flex items-center gap-3">
                 <span
-                  className={`p-1 inline-block rounded-full ${
-                    validations.newPassword.upperCase ? "bg-green-400" : "bg-stone-400"
-                  }`}
+                  className={`p-1 inline-block rounded-full ${validations.newPassword.upperCase ? "bg-green-400" : "bg-stone-400"
+                    }`}
                 ></span>
                 <span className={validations.newPassword.upperCase ? "text-green-400" : "text-stone-400"}>
                   One UpperCase Character
@@ -129,9 +127,8 @@ const ChangePassword = () => {
               </div>
               <div className="flex items-center gap-3">
                 <span
-                  className={`p-1 inline-block rounded-full ${
-                    validations.newPassword.lowerCase ? "bg-green-400" : "bg-stone-400"
-                  }`}
+                  className={`p-1 inline-block rounded-full ${validations.newPassword.lowerCase ? "bg-green-400" : "bg-stone-400"
+                    }`}
                 ></span>
                 <span className={validations.newPassword.lowerCase ? "text-green-400" : "text-stone-400"}>
                   One LowerCase Character
@@ -139,9 +136,8 @@ const ChangePassword = () => {
               </div>
               <div className="flex items-center gap-3">
                 <span
-                  className={`p-1 inline-block rounded-full ${
-                    validations.newPassword.specialChar ? "bg-green-400" : "bg-stone-400"
-                  }`}
+                  className={`p-1 inline-block rounded-full ${validations.newPassword.specialChar ? "bg-green-400" : "bg-stone-400"
+                    }`}
                 ></span>
                 <span className={validations.newPassword.specialChar ? "text-green-400" : "text-stone-400"}>
                   One Special Character
@@ -149,9 +145,8 @@ const ChangePassword = () => {
               </div>
               <div className="flex items-center gap-3">
                 <span
-                  className={`p-1 inline-block rounded-full ${
-                    validations.newPassword.noSpace ? "bg-green-400" : "bg-stone-400"
-                  }`}
+                  className={`p-1 inline-block rounded-full ${validations.newPassword.noSpace ? "bg-green-400" : "bg-stone-400"
+                    }`}
                 ></span>
                 <span className={validations.newPassword.noSpace ? "text-green-400" : "text-stone-400"}>
                   Do not have a space character
@@ -185,7 +180,7 @@ const ChangePassword = () => {
             <Form.Item>
               <div className="mt-10">
                 <Button
-                  style={{ backgroundColor: "orange", color: "black" }}
+                  style={{ color: "white" }}
                   type="primary"
                   htmlType="submit"
                   block

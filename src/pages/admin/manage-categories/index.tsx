@@ -278,12 +278,6 @@ const AdminManageCategories: React.FC = () => {
       },
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      ellipsis: true,
-    },
-    {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",

@@ -34,7 +34,7 @@ export const getUsers = async (
         role: role || "all",
         status: status !== undefined ? status : true,
         is_verified: is_verified !== undefined ? is_verified : true,
-        is_delete: is_deleted !== undefined ? is_deleted : false,
+        is_deleted: is_deleted !== undefined ? is_deleted : false,
       },
       pageInfo: {
         pageNum: pageNum || 1,

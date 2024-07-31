@@ -1,11 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Rate, Progress, Input, Button, Modal, Form, message } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
-import axiosInstance from "../../../services/axiosInstance.ts";
-import { API_CREATE_REVIEW, API_GET_REVIEWS } from "../../../consts";
+import { API_CREATE_REVIEW } from "../../../consts";
 import { Review } from "../../../models";
 import { useParams } from 'react-router-dom';
 import { calculateAverageRating, countRatings } from '../../../utils';
+import { getAllReviews, axiosInstance } from '../../../services';
 
 const ReviewPage: React.FC = () => {
     const [dataReviews, setDataReviews] = useState<Review[]>([]);
@@ -30,23 +30,10 @@ const ReviewPage: React.FC = () => {
     }, [dataReviews]);
 
     const fetchReviews = useCallback(async () => {
-        const response = await axiosInstance.post(API_GET_REVIEWS, {
-            "searchCondition": {
-                "course_id": course_id,
-                "rating": 0,
-                "is_instructor": false,
-                "is_rating_order": false,
-                "is_deleted": false
-            },
-            "pageInfo": {
-                "pageNum": 1,
-                "pageSize": 10
-            }
-        });
-        if (response.data.pageData) {
-            setDataReviews(response.data.pageData);
-        }
-    }, []);
+        const responseReviews = await getAllReviews();
+        const reviews = responseReviews.data.pageData;
+        setDataReviews(reviews);
+    }, [])
 
     const handleAddNewReview = async (values: Review) => {
         const payload = { ...values, course_id }

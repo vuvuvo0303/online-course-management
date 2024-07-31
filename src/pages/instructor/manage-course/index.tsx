@@ -92,9 +92,8 @@ const InstructorManageCourses: React.FC = () => {
 
   const getReviewsByInstructor = async (course_id: string, rating: number) => {
     setLoadingTable(true)
-    const res = await getAllReviews(course_id, rating, 1, 100);
-    console.log("get reviews: ", res);
-    setReviews(res);
+    const res = await getAllReviews(course_id, rating, true, false, false, 1, 100);
+    setReviews(res.data.pageData);
     setLoadingTable(false)
   }
 
