@@ -1,12 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Rate, Progress, Input, Button, Modal, Form, message } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
-import axiosInstance from "../../../services/axiosInstance.ts";
 import { API_CREATE_REVIEW } from "../../../consts";
 import { Review } from "../../../models";
 import { useParams } from 'react-router-dom';
 import { calculateAverageRating, countRatings } from '../../../utils';
-import { getAllReviews } from 'services/review.ts';
+import { getAllReviews, axiosInstance } from '../../../services';
 
 const ReviewPage: React.FC = () => {
     const [dataReviews, setDataReviews] = useState<Review[]>([]);

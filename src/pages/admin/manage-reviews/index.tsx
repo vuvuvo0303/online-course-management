@@ -3,10 +3,10 @@ import type { PaginationProps, TablePaginationConfig, TableProps } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Review } from "../../../models";
-import { API_GET_REVIEWS, paths } from "../../../consts";
+import { paths } from "../../../consts";
 import { format } from "date-fns";
 import CustomBreadcrumb from "../../../components/breadcrumb";
-import { axiosInstance, deleteReview, getAllReviews } from "../../../services";
+import { deleteReview, getAllReviews } from "../../../services";
 import LoadingComponent from "../../../components/loading";
 const AdminManageFeedbacks: React.FC = () => {
   const [data, setData] = useState<Review[]>([]);
