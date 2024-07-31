@@ -140,7 +140,7 @@ export const getColorPurchase = (status: string) => {
     case "request_paid":
       return "blue";
     case "completed":
-      return "yellow";
+      return "green";
   }
 };
 
@@ -230,7 +230,7 @@ export const paths = {
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",
   INSTRUCTOR_CREATE_LECTURE:
-    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/create-lecture",
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lessons/create-lesson",
   INSTRUCTOR_UPDATE_LECTURE:
     "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
@@ -244,6 +244,7 @@ export const paths = {
     "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:_id",
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
+  INSTRUCTOR_LESSON_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/:sessionId/manage-lessons",
   INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS:
     "manage-all-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS:

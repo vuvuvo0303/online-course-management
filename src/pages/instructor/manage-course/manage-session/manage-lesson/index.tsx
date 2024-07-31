@@ -371,7 +371,7 @@ const LectureOfCourse: React.FC = () => {
                         <div>
                             {
                                 courseId && sessionId ? (
-                                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}//create-lecture`}>
+                                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lessons/create-lesson`}>
                                         <Button type="primary" className="my-10 float-right">Add New Lessons</Button>
                                     </Link>
                                 ) :

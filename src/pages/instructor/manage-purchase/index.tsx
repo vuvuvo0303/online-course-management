@@ -204,15 +204,17 @@ const InstructorManagePurchase = () => {
 
   return (
     <div className="container mx-auto px-10">
-      <CustomBreadcrumb/>
+      <CustomBreadcrumb />
       <div className="flex justify-between mb-5">
         <div>
           {statusPurchase === "new" && (
-            <Button onClick={() => handleCreatePayout()} className="" type="primary">
-              Create Payout
-            </Button>
+            <>
+              <Button onClick={() => handleCreatePayout()} className="" type="primary">
+                Create Payout
+              </Button>
+              <Checkbox onChange={handleCheckAllPurchased} className="ml-2"> (Check all purchased)</Checkbox>
+            </>
           )}
-          <Checkbox onChange={handleCheckAllPurchased} className="ml-2"> (Check all purchased)</Checkbox>
         </div>
         <Input.Search
           placeholder="Search By Purchase No"

@@ -159,7 +159,7 @@ const ManageAllSession = () => {
                     {
                         role === "instructor" ?
                             (
-                                <Link className="text-blue-500" to={`/instructor/manage-courses/${record.course_id}/manage-sessions/${record._id}/manage-lessons`}>Lesson of {name}</Link>
+                                <Link className="text-blue-500" to={`/instructor/manage-all-sessions/${record._id}/manage-lessons`}>Lesson of {name}</Link>
                             )
                             :
                             (
