@@ -121,7 +121,6 @@ const AppRouter: React.FC = () => {
         <Route path={paths.LESSON} element={<Lesson />} />
         {/* Route for Instructor */}
 
-
         <Route
           path="/instructor/*"
           element={canAccess([roles.INSTRUCTOR]) ? <Dashboard /> : <Navigate to={paths.HOME} />}

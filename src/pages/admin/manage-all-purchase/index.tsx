@@ -1,13 +1,13 @@
 import { Input, Pagination, Select, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
 import { API_GET_PURCHASE_BY_ADMIN, getColorPurchase } from "../../../consts";
-import { format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { axiosInstance } from "../../../services";
-import {SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
-import { Purchase } from "../../../models/Purchase";
+import { Purchase } from "../../../models";
 import LoadingComponent from "../../../components/loading";
 import CustomBreadcrumb from "../../../components/breadcrumb";
+import { formatCurrency, formatDate } from "../../../utils";
 
 const ManageAllPurchase = () => {
   const [loading, setLoading] = useState(true);
@@ -96,7 +96,7 @@ const ManageAllPurchase = () => {
       dataIndex: "price_paid",
       key: "price_paid",
       render: (price_paid: number) => {
-        return price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+        return formatCurrency(price_paid);
       },
     },
     {
@@ -109,7 +109,7 @@ const ManageAllPurchase = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: string) => formatDate(created_at),
       width: "10%",
     },
 

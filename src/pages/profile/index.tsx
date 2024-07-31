@@ -18,7 +18,6 @@ const Profile: React.FC = () => {
   const [activeTabKey, setActiveTabKey] = useState('1');
 
   const user = getUserFromLocalStorage();
-  const googleID = user.google_id;
 
   let avatarSrc;
 

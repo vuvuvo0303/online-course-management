@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button, Input, Space, Table, Modal, Form, Pagination, Popconfirm, Spin, Select, message, } from "antd";
 import { DeleteOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons";
-import { format } from "date-fns";
 import { Category } from "../../../models";
 import { axiosInstance } from "../../../services";
 import type { TablePaginationConfig } from "antd/es/table/interface";
@@ -10,6 +9,7 @@ import { API_CREATE_CATEGORY, API_DELETE_CATEGORY, API_GET_CATEGORIES, API_UPDAT
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import LoadingComponent from "../../../components/loading";
+import { formatDate } from "../../../utils";
 const AdminManageCategories: React.FC = () => {
   const [dataCategories, setDataCategories] = useState<Category[]>([]);
   const [searchText, setSearchText] = useState<string>("");
@@ -281,13 +281,13 @@ const AdminManageCategories: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      render: (updated_at: Date) => formatDate(updated_at),
     },
     {
       title: "Action",
@@ -318,7 +318,7 @@ const AdminManageCategories: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center ">
-        <CustomBreadcrumb/>
+        <CustomBreadcrumb />
 
         <Button type="primary" onClick={handleOpenModal}>
           Add New Category
