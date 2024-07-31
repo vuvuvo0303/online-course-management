@@ -10,7 +10,7 @@ import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 
-const useStyle = createStyles(({token }) => ({
+const useStyle = createStyles(({ token }) => ({
   "my-modal-body": {
     background: token.blue1,
     padding: token.paddingSM,
@@ -54,13 +54,13 @@ const InstructorManagePayout = () => {
   const getPayoutsByInstructor = async () => {
     // no loading for search
     if (payoutNoSearch != "") {
-      const response = await getPayouts(payoutNoSearch, "", statusPayout, 1, 100);
-      setPayouts(response);
+      const response = await getPayouts(payoutNoSearch, "", statusPayout, true, false, 1, 100);
+      setPayouts(response.data.pageData);
       setLoading(false);
     } else {
       setLoading(true);
-      const response = await getPayouts(payoutNoSearch, "", statusPayout, 1, 100);
-      setPayouts(response);
+      const response = await getPayouts(payoutNoSearch, "", statusPayout, true, false, 1, 100);
+      setPayouts(response.data.pageData);
       setLoading(false);
     }
   };
@@ -125,16 +125,16 @@ const InstructorManagePayout = () => {
       width: "10%",
       render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
     },
-    ...(statusPayout === "new" || statusPayout === "rejected"? [{
+    ...(statusPayout === "new" || statusPayout === "rejected" ? [{
       title: "Action",
       dataIndex: "status",
       key: "action",
-      render: ( record: Payout) =>
-        (
-          <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
-            Request Payout
-          </Button>
-        ),
+      render: (record: Payout) =>
+      (
+        <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
+          Request Payout
+        </Button>
+      ),
     }] : []),
   ];
 
@@ -190,7 +190,7 @@ const InstructorManagePayout = () => {
         <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
       </Modal>
       <div className="container mx-auto px-10">
-        <CustomBreadcrumb/>
+        <CustomBreadcrumb />
         <Input.Search
           placeholder="Search By Purchase No"
           value={searchPayout}

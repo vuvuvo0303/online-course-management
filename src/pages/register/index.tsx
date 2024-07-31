@@ -5,11 +5,11 @@ import { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import Login2 from "../../assets/Login2.jpg";
 import { useForm } from "antd/es/form/Form";
-import uploadFile from "../../utils/upload";
 import axiosInstance from "../../services/axiosInstance.ts";
 import Recaptcha from "../register/reCaptcha.tsx";
 import { API_REGISTER, paths, roles } from "../../consts";
 import { Instructor } from "../../models";
+import { getBase64, uploadFile } from "../../utils";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -54,15 +54,6 @@ const RegisterPage: React.FC = () => {
     }, 2000);
     setLoading(false);
   };
-
-
-  const getBase64 = (file: FileType): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {

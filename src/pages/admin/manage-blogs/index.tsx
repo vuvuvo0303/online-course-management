@@ -15,7 +15,7 @@ import {
 import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
 import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog } from "../../../services";
-import { API_GET_BLOGS, API_CREATE_BLOG, API_UPDATE_BLOG, paths, API_GET_BLOG } from "../../../consts";
+import { API_GET_BLOGS, API_CREATE_BLOG, API_UPDATE_BLOG, API_GET_BLOG } from "../../../consts";
 import LoadingComponent from "../../../components/loading";
 import { format } from "date-fns";
 import CustomBreadcrumb from "../../../components/breadcrumb";
@@ -237,14 +237,14 @@ const AdminManageBlogs: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
       width: "10%",
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      render: (updated_at: Date) => formatDate(updated_at),
       width: "10%",
     },
     {
@@ -286,7 +286,7 @@ const AdminManageBlogs: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between">
-        <CustomBreadcrumb currentTitle="Manage Blogs" currentHref={paths.ADMIN_HOME} />
+        <CustomBreadcrumb />
         <div className="py-2">
           <Button type="primary" onClick={handleResetContent}>
             Add New Blog

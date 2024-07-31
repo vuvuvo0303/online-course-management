@@ -5,15 +5,12 @@ import { Image } from "antd";
 import type { UploadFile, UploadProps } from "antd";
 import { format } from "date-fns";
 import axiosInstance from "../../../services/axiosInstance";
-import { API_UPDATE_USER } from "../../../consts/index";
+import { API_UPDATE_USER } from "../../../consts";
 import LoadingComponent from "../../../components/loading";
-import uploadFile from "../../../utils/upload";
+import { getBase64, uploadFile } from "../../../utils";
 
 
 type FileType = Parameters<Required<UploadProps>["beforeUpload"]>[0];
-
-
-
 
 
 const EditProfile = () => {
@@ -45,7 +42,7 @@ const EditProfile = () => {
     updated_at: "",
     video: "",
   });
-  
+
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -94,15 +91,6 @@ const EditProfile = () => {
     }
   }, [form]);
 
-
-  const getBase64 = (file: FileType): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
@@ -124,7 +112,7 @@ const EditProfile = () => {
     setLoading(true);
     try {
       const values = await form.validateFields();
-  
+
       let avatarUrl: string = user.avatar || "";
       if (fileList.length > 0) {
         const file = fileList[0];
@@ -132,12 +120,12 @@ const EditProfile = () => {
           avatarUrl = await uploadFile(file.originFileObj as File);
         }
       }
-    
+
       const formattedDob = format(new Date(values.dob), "yyyy-MM-dd");
-  
-    
+
+
       const updatedUser = {
-        ...user, 
+        ...user,
         name: values.name !== undefined ? values.name : user.name,
         email: values.email !== undefined ? values.email : user.email,
         phone_number: values.phone_number !== undefined ? values.phone_number : user.phone_number,
@@ -145,30 +133,30 @@ const EditProfile = () => {
         avatar: avatarUrl !== undefined ? avatarUrl : user.avatar,
         description: values.description !== undefined ? values.description : user.description,
         video: values.video !== undefined ? values.video : user.video,
-        balance: user.balance, 
-        balance_total: user.balance_total, 
-        bank_account: user.bank_account, 
-        bank_name: user.bank_name, 
-        created_at: user.created_at, 
-        google_id: user.google_id, 
-        is_deleted: user.is_deleted, 
-        is_verified: user.is_verified, 
-        role: user.role, 
-        status: user.status, 
-        token_version: user.token_version, 
-        transactions: user.transactions, 
-        updated_at: new Date().toISOString(), 
+        balance: user.balance,
+        balance_total: user.balance_total,
+        bank_account: user.bank_account,
+        bank_name: user.bank_name,
+        created_at: user.created_at,
+        google_id: user.google_id,
+        is_deleted: user.is_deleted,
+        is_verified: user.is_verified,
+        role: user.role,
+        status: user.status,
+        token_version: user.token_version,
+        transactions: user.transactions,
+        updated_at: new Date().toISOString(),
       };
-  
+
       console.log("Updated user data:", updatedUser);
-  
+
       const response = await axiosInstance.put(`${API_UPDATE_USER}/${user._id}`, updatedUser);
-  
+
       if (response.data.email === updatedUser.email) {
         // Cập nhật localStorage với dữ liệu mới
         localStorage.setItem("user", JSON.stringify(updatedUser));
         setUser(updatedUser);
-  
+
         form.setFieldsValue({
           name: updatedUser.name,
           email: updatedUser.email,
@@ -176,7 +164,7 @@ const EditProfile = () => {
           dob: format(new Date(updatedUser.dob), "dd/MM/yyyy"),
           avatar: updatedUser.avatar,
         });
-  
+
         message.success(`Cập nhật tài khoản ${values.name} thành công`);
       } else {
         message.error(`Cập nhật tài khoản ${values.name} thất bại. Vui lòng thử lại.`);
@@ -188,9 +176,9 @@ const EditProfile = () => {
       setLoading(false);
     }
   };
-  
-  
-  
+
+
+
   if (loading) {
     return <LoadingComponent />;
   }

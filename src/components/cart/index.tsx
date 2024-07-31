@@ -1,9 +1,9 @@
-import React from 'react';
 import styles from './cartComponents.module.css';
 import { Checkbox, Col, Form, Row, Tag } from "antd";
 import { getColorCart } from "../../consts";
 import { formItemLayout } from '../../layout/form';
 import { CartComponentsProps } from '../../models/Cart';
+import { formatCurrency } from '../../utils';
 
 
 const CartComponents: React.FC<CartComponentsProps>
@@ -39,14 +39,14 @@ const CartComponents: React.FC<CartComponentsProps>
                                         <Col span={6}>
                                             <div className='mt-12'>
                                                 <p>Discount: {cartsNew.discount}%</p>
-                                                <p>Cost: {cartsNew.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                                                <p>Cost: {formatCurrency(cartsNew.price)}</p>
                                             </div>
                                         </Col>
                                         <Col span={6}>
                                             <Row className='mt-12'>
                                                 <Col span={12}>
                                                     <p>Price:</p>
-                                                    <p>{cartsNew.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                                                    <p>{formatCurrency(cartsNew.price_paid)}</p>
                                                 </Col>
                                                 <Col span={12}>
                                                     <p onClick={() => handleDeleteCart(cartsNew._id)} className=' text-red-500 cursor-pointer'>Delete</p>
@@ -70,13 +70,13 @@ const CartComponents: React.FC<CartComponentsProps>
                                         </Col>
                                         <Col span={6}>
                                             <p className='pt-12'>Discount: {cartsCancel.discount}%</p>
-                                            <p>{cartsCancel.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                                            <p>{formatCurrency(cartsCancel.price)}</p>
                                         </Col>
                                         <Col span={6}>
                                             <Row>
                                                 <Col span={12}>
                                                     <p className='pt-12'>Total:</p>
-                                                    <p>{cartsCancel.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                                                    <p>{formatCurrency(cartsCancel.price_paid)}</p>
                                                 </Col>
                                                 <Col span={12}>
                                                     <p onClick={() => handleDeleteCart(cartsCancel._id)} className='pt-12 text-red-500 cursor-pointer'>Delete</p>

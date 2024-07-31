@@ -15,11 +15,11 @@ import {
 import { API_GET_USERS, API_REVIEW_PROFILE_INSTRUCTOR } from "../../../consts";
 import { Instructor } from "models/User";
 import axiosInstance from "../../../services/axiosInstance.ts";
-import { format } from "date-fns";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import LoadingComponent from "../../../components/loading";
+import { formatDate } from "../../../utils";
 const { TextArea } = Input;
 
 const AdminInstructorRequest = () => {
@@ -168,14 +168,14 @@ const AdminInstructorRequest = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
       width: "10%",
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      render: (updated_at: Date) => formatDate(updated_at),
       width: "10%",
     },
     {
@@ -206,7 +206,7 @@ const AdminInstructorRequest = () => {
               <Button
                 type="primary"
                 className="p-3"
-                style={{ backgroundColor:"green" }}
+                style={{ backgroundColor: "green" }}
                 onClick={() => handleApprove(record)}
               >
                 Approve
@@ -223,7 +223,7 @@ const AdminInstructorRequest = () => {
 
   return (
     <div>
-      <CustomBreadcrumb/>
+      <CustomBreadcrumb />
       <Input.Search
         placeholder="Search By Name"
         value={searchText}
