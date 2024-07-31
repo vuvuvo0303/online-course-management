@@ -19,21 +19,13 @@ const CourseDetails: React.FC = () => {
     useEffect(() => {
         const fetchCourseDetails = async () => {
             setLoading(true);
-            try {
-                const response = await axiosInstance.get(`${API_CLIENT_GET_COURSE_DETAIL}/${_id}`);
-                const courseData = response.data;
+            const response = await axiosInstance.get(`${API_CLIENT_GET_COURSE_DETAIL}/${_id}`);
+            const courseData = response.data;
 
-                if (courseData && courseData._id) {
-                    setCourse(courseData);
-                } else {
-                    // Handle case where course data is incomplete or not found
-                    console.error('Course data is incomplete or not found.');
-                }
-            } catch (error) {
-                console.error("Error fetching course details:", error);
-            } finally {
-                setLoading(false);
+            if (courseData && courseData._id) {
+                setCourse(courseData);
             }
+            setLoading(false);
         };
 
         fetchCourseDetails();
