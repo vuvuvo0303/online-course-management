@@ -297,7 +297,7 @@ const Dashboard: React.FC = () => {
               <Space>
                 <button
                   onClick={() => logout(navigate)}
-                  className="text-lg hover:cursor-pointer hover:text-red-600 bg-transparent border-none p-0"
+                  className="text-base text-white border border-red-300 bg-red-500 hover:border-red-700 hover:bg-red-700 px-3 py-1 rounded transition-colors duration-300"
                 >
                   Logout
                 </button>
