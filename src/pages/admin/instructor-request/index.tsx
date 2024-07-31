@@ -206,7 +206,7 @@ const AdminInstructorRequest = () => {
               <Button
                 type="primary"
                 className="p-3"
-                style={{ backgroundColor: "#33FF00" }}
+                style={{ backgroundColor:"green" }}
                 onClick={() => handleApprove(record)}
               >
                 Approve

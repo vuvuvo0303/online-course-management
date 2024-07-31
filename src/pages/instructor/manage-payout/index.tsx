@@ -242,7 +242,7 @@ const InstructorManagePayout = () => {
         ))}
       </Modal>
       <div className="container mx-auto px-10">
-        <h1 className="text-center my-10">Manage Payout</h1>
+        
         <Input.Search
           placeholder="Search By Purchase No"
           value={searchPayout}

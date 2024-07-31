@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 import About from './about/about';
 import Cart from './cart/CartComponents';
 import Sub from './subscription/index';
-import ChangePassword from './change-password';
+
 import { getUserFromLocalStorage } from '../../services/auth';
 
 const Profile: React.FC = () => {
@@ -50,11 +50,7 @@ const Profile: React.FC = () => {
       label: 'Subscriptions',
       children: <Sub />,
     },
-    ...(googleID ? [] : [{
-      key: '4',
-      label: 'Change Password',
-      children: <ChangePassword />,
-    }]),
+
   ];
 
   return (

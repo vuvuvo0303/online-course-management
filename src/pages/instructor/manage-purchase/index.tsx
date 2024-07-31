@@ -30,7 +30,7 @@ const InstructorManagePurchase = () => {
 
   useEffect(() => {
     getPurchasesByInstructor();
-  }, [statusPurchase,purchaseNoSearch]);
+  }, [statusPurchase, purchaseNoSearch]);
 
   if (loading) {
     return (
@@ -208,7 +208,6 @@ const InstructorManagePurchase = () => {
   };
   return (
     <div className="container mx-auto px-10">
-      <h1 className="text-center my-10">Manage Purchased</h1>
       {statusPurchase === "new" && (
         <Button onClick={() => handleCreatePayout()} className="float-right " type="primary">
           Create Payout
