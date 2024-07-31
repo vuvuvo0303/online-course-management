@@ -17,7 +17,7 @@ import { Blog, Category } from "../../../models";
 import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog } from "../../../services";
 import { API_GET_BLOGS, API_CREATE_BLOG, API_UPDATE_BLOG, API_GET_BLOG } from "../../../consts";
 import LoadingComponent from "../../../components/loading";
-import { format } from "date-fns";
+import { format, formatDate } from "date-fns";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import TinyMCEEditorComponent from "../../../components/tinyMCE";
 
