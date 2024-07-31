@@ -4,6 +4,7 @@ import {
   Button,
   Empty,
   Form,
+  Image,
   Input,
   message,
   Modal,
@@ -15,13 +16,7 @@ import {
   Tag,
 } from "antd";
 import { Category, Course, Log, Review } from "../../../models";
-import {
-  API_COURSE_LOGS,
-  API_COURSE_STATUS,
-  API_DELETE_COURSE,
-  API_GET_COURSES,
-  getColor,
-} from "../../../consts";
+import { API_COURSE_LOGS, API_COURSE_STATUS, API_DELETE_COURSE, API_GET_COURSES, getColor } from "../../../consts";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import TextArea from "antd/es/input/TextArea";
@@ -31,6 +26,7 @@ import { getCategories } from "../../../services/category.ts";
 import LoadingComponent from "../../../components/loading";
 import { getAllReviews } from "../../../services/review.ts";
 import CustomBreadcrumb from "../../../components/breadcrumb/index.tsx";
+import { data } from "pages/admin/chart/userchart.tsx";
 
 const InstructorManageCourses: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -87,15 +83,15 @@ const InstructorManageCourses: React.FC = () => {
 
   const showModalReview = (courseId: string, rating: number) => {
     setOpenReviewModal(true);
-    getReviewsByInstructor(courseId, rating)
+    getReviewsByInstructor(courseId, rating);
   };
 
   const getReviewsByInstructor = async (course_id: string, rating: number) => {
-    setLoadingTable(true)
+    setLoadingTable(true);
     const res = await getAllReviews(course_id, rating, true, false, false, 1, 100);
     setReviews(res.data.pageData);
-    setLoadingTable(false)
-  }
+    setLoadingTable(false);
+  };
 
   //show log status modal
   const fetchLog = async () => {
@@ -126,7 +122,6 @@ const InstructorManageCourses: React.FC = () => {
       //
     }
   };
-
 
   useEffect(() => {
     //fetch logs
@@ -209,9 +204,9 @@ const InstructorManageCourses: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const responseCategories = await getCategories();
-      const categories = responseCategories.data.pageData
+      const categories = responseCategories.data.pageData;
       setCategories(categories);
-    }
+    };
     fetchData();
   }, []);
   //fetch courses
@@ -249,9 +244,11 @@ const InstructorManageCourses: React.FC = () => {
   }, [status, cateId, debouncedSearchTerm, isDelete, pagination.current, pagination.pageSize]);
 
   if (loading) {
-    return (<>
-      <LoadingComponent />
-    </>)
+    return (
+      <>
+        <LoadingComponent />
+      </>
+    );
   }
   //setStatus for filter log by status
   const handleAllLog = () => {
@@ -274,9 +271,9 @@ const InstructorManageCourses: React.FC = () => {
   };
   //setStatus for filter course by status
   const handleChangeIsDelete = (value: boolean) => {
-    setLoading(true)
+    setLoading(true);
     setIsDelete(value);
-    setLoading(false)
+    setLoading(false);
   };
   // set status for chang status
   const handleChangeStatus = async (value: string) => {
@@ -380,6 +377,12 @@ const InstructorManageCourses: React.FC = () => {
       ),
     },
     {
+      title: "Image",
+      dataIndex: "image_url",
+      key: "image_url",
+      render: (image_url: string) => <Image src={image_url} />,
+    },
+    {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
@@ -450,24 +453,24 @@ const InstructorManageCourses: React.FC = () => {
 
   const columnsReviews = [
     {
-      title: 'Course Name',
-      dataIndex: 'course_name',
-      key: 'course_name',
+      title: "Course Name",
+      dataIndex: "course_name",
+      key: "course_name",
     },
     {
-      title: 'Reviewer Name',
-      dataIndex: 'reviewer_name',
-      key: 'reviewer_name',
+      title: "Reviewer Name",
+      dataIndex: "reviewer_name",
+      key: "reviewer_name",
     },
     {
-      title: 'Rating',
-      dataIndex: 'rating',
-      key: 'rating',
+      title: "Rating",
+      dataIndex: "rating",
+      key: "rating",
     },
     {
-      title: 'Comment',
-      dataIndex: 'comment',
-      key: 'comment',
+      title: "Comment",
+      dataIndex: "comment",
+      key: "comment",
     },
     {
       title: "Created Date ",
@@ -481,6 +484,7 @@ const InstructorManageCourses: React.FC = () => {
       key: "updated_at",
       render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
     },
+  
   ];
 
   return (
@@ -492,7 +496,7 @@ const InstructorManageCourses: React.FC = () => {
         open={openReviewModal}
         onCancel={handleCancelReviewModal}
         footer={""}
-      // onCancel={handleCancel}
+        // onCancel={handleCancel}
       >
         <Table loading={loadingTable} dataSource={reviews} columns={columnsReviews} />
       </Modal>
@@ -634,7 +638,6 @@ const InstructorManageCourses: React.FC = () => {
       </Modal>
       <CustomBreadcrumb />
 
-
       <div className="">
         <div className="flex gap-2 mb-3 justify-between">
           <div>
@@ -648,7 +651,6 @@ const InstructorManageCourses: React.FC = () => {
             {/* filter course by status */}
             <Select
               defaultValue="All Status"
-
               className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
               onChange={handleChange}
               options={[
@@ -699,9 +701,14 @@ const InstructorManageCourses: React.FC = () => {
             </Link>
           </div>
         </div>
-
       </div>
-      <Table rowKey={(record: Course) => record._id} columns={columnsCourses} dataSource={courses} pagination={false} onChange={handleTableChange} />
+      <Table
+        rowKey={(record: Course) => record._id}
+        columns={columnsCourses}
+        dataSource={courses}
+        pagination={false}
+        onChange={handleTableChange}
+      />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

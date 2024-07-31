@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Form,
-  Input,
-  Select,
-  message,
-} from "antd";
+import { Button, Form, Image, Input, Select, Upload, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Lessons, Session } from "../../../../../../models/index.ts";
 import { axiosInstance, getUserFromLocalStorage } from "../../../../../../services";
@@ -21,6 +15,13 @@ import TinyMCEEditorComponent from "../../../../../../components/tinyMCE";
 import { formItemLayout } from "../../../../../../layout/form";
 import LoadingComponent from "../../../../../../components/loading";
 import CustomBreadcrumb from "../../../../../../components/breadcrumb/index.tsx";
+
+import { PlusOutlined } from '@ant-design/icons';
+
+import type { GetProp, UploadFile, UploadProps } from 'antd';
+
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+
 const CreateUpdateLesson: React.FC = () => {
   const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
@@ -37,7 +38,37 @@ const CreateUpdateLesson: React.FC = () => {
     const user = getUserFromLocalStorage();
     setUserId(user?._id);
   }, []);
-
+  const getBase64 = (file: FileType): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [fileList, setFileList] = useState<UploadFile[]>([
+    
+    ]);
+  
+    const handlePreview = async (file: UploadFile) => {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj as FileType);
+      }
+  
+      setPreviewImage(file.url || (file.preview as string));
+      setPreviewOpen(true);
+    };
+  
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
+      setFileList(newFileList);
+  
+    const uploadButton = (
+      <button style={{ border: 0, background: 'none' }} type="button">
+        <PlusOutlined />
+        <div style={{ marginTop: 8 }}>Upload</div>
+      </button>
+    );  
   useEffect(() => {
     if (lectureId) {
       const fetchData = async () => {
@@ -137,6 +168,7 @@ const CreateUpdateLesson: React.FC = () => {
     setDes(value);
   };
   const onFinish = async (values: Lessons) => {
+    try{
     if (typeof values.full_time === "string") {
       values.full_time = parseFloat(values.full_time);
     }
@@ -150,7 +182,7 @@ const CreateUpdateLesson: React.FC = () => {
       values.description = des;
     }
     setLoading(true);
-    try {
+  
       //Update lesson
       if (lectureId) {
         await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values);
@@ -182,11 +214,7 @@ const CreateUpdateLesson: React.FC = () => {
         <LoadingComponent />
       ) : (
         <div className="w-full max-w-7xl bg-white  p-8 rounded shadow">
-          {courseId && sessionId != undefined ? (
-            <CustomBreadcrumb/>
-          ) : (
-            <CustomBreadcrumb/>
-          )}
+          {courseId && sessionId != undefined ? <CustomBreadcrumb /> : <CustomBreadcrumb />}
           <h1 className="text-center mb-8">{lectureId ? "Update Lesson" : "Create Lesson"}</h1>
           <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
             <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input name!" }]}>
@@ -232,7 +260,6 @@ const CreateUpdateLesson: React.FC = () => {
                 rules={[{ required: true, message: "Please session name!" }]}
               >
                 <Select
-
                   defaultValue="Choose session for this lecture"
                   options={sessions.map((session) => ({
                     label: session.name,
@@ -244,10 +271,7 @@ const CreateUpdateLesson: React.FC = () => {
             <Form.Item hidden label="User Id" name="user_id" initialValue={userId}>
               <Input.TextArea />
             </Form.Item>
-            <Form.Item
-              label="Lesson Type"
-              name="lesson_type"
-            >
+            <Form.Item label="Lesson Type" name="lesson_type">
               <Select
                 defaultValue="video"
                 options={[
@@ -261,13 +285,9 @@ const CreateUpdateLesson: React.FC = () => {
                 ]}
               />
             </Form.Item>
-            <Form.Item
-              label="Description"
-              name="description"
-            >
+            <Form.Item label="Description" name="description">
               <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
             </Form.Item>
-
 
             <Form.Item
               label="Video URL"
@@ -277,7 +297,15 @@ const CreateUpdateLesson: React.FC = () => {
               <Input />
             </Form.Item>
             <Form.Item label="Image URL" name="image_url">
-              <Input />
+              <Upload
+                action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                listType="picture-card"
+                fileList={fileList}
+                onPreview={handlePreview}
+                onChange={handleChange}
+              >
+                {fileList.length >= 1 ? null : uploadButton}
+              </Upload>
             </Form.Item>
             <Form.Item
               label="full_time"
@@ -299,7 +327,20 @@ const CreateUpdateLesson: React.FC = () => {
               </Button>
             </Form.Item>
           </Form>
+          
         </div>
+      )}
+      
+      {previewImage && (
+        <Image
+          wrapperStyle={{ display: 'none' }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(''),
+          }}
+          src={previewImage}
+        />
       )}
     </div>
   );

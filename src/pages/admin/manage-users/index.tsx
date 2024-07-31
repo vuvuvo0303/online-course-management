@@ -35,13 +35,14 @@ import { PaginationProps } from "antd";
 import {
   API_CHANGE_ROLE,
   API_CREATE_USER,
+  API_GET_USERS,
   API_UPDATE_USER,
   paths,
 } from "../../../consts";
 import ResponseData from "models/ResponseData.ts";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
-import { axiosInstance, changeStatusUser, changeUserRole, deleteUser, getUsers } from "../../../services";
+import { axiosInstance, changeStatusUser, changeUserRole, deleteUser } from "../../../services";
 import LoadingComponent from "../../../components/loading";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -69,23 +70,38 @@ const AdminManageUsers: React.FC = () => {
   const debouncedSearch = useDebounce(searchText, 500);
 
   useEffect(() => {
-    fetchUsers();
+    getUsers();
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch]);
 
-  const fetchUsers = useCallback(async () => {
+  const getUsers = useCallback(async () => {
     setLoading(true);
-    let statusValue: boolean | undefined = false;
-    if (selectedStatus === "true") {
-      statusValue = true;
+    try {
+      let statusValue: boolean | undefined = false;
+      if (selectedStatus === "true") {
+        statusValue = true;
+      }
+      const response = await axiosInstance.post(API_GET_USERS, {
+        searchCondition: {
+          role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
+          status: statusValue,
+          is_delete: false,
+          keyword: debouncedSearch,
+        },
+        pageInfo: {
+          pageNum: pagination.current,
+          pageSize: pagination.pageSize,
+        },
+      });
+      setDataUsers(response.data.pageData);
+      setPagination({
+        ...pagination,
+        total: response.data.pageInfo.totalItems,
+        current: response.data.pageInfo.pageNum,
+        pageSize: response.data.pageInfo.pageSize,
+      });
+    } catch (error) {
+      // Xử lý trường hợp lỗi
     }
-    const responseUsers = await getUsers(debouncedSearch, selectedRole === "All" ? undefined : selectedRole.toLowerCase(), statusValue, true, false, pagination.current, pagination.pageSize);
-    setDataUsers(responseUsers.data.pageData);
-    setPagination({
-      ...pagination,
-      total: responseUsers.data.pageInfo.totalItems,
-      current: responseUsers.data.pageInfo.pageNum,
-      pageSize: responseUsers.data.pageInfo.pageSize,
-    });
     setLoading(false);
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText, debouncedSearch]);
 
@@ -110,13 +126,13 @@ const AdminManageUsers: React.FC = () => {
         setIsModalVisible(false);
         form.resetFields();
         setLoading(false);
-        fetchUsers();
+        getUsers();
         setFileList([]);
       } catch (error) {
         setLoading(false);
       }
     },
-    [fetchUsers, form]
+    [getUsers, form]
   );
 
   const getBase64 = (file: FileType): Promise<string> =>
@@ -157,6 +173,7 @@ const AdminManageUsers: React.FC = () => {
     setDataUsers(updateData);
   };
 
+
   const handleTableChange = (pagination: PaginationProps) => {
     const newPagination: { current: number; pageSize: number; total: number } =
     {
@@ -172,7 +189,7 @@ const AdminManageUsers: React.FC = () => {
   };
   const handlePaginationChange = async (page: number, pageSize: number) => {
     setPagination({ ...pagination, current: page, pageSize });
-    await fetchUsers();
+    await getUsers();
   };
   const handleAddClick = () => {
     setModalMode("Add");
@@ -212,7 +229,7 @@ const AdminManageUsers: React.FC = () => {
         message.success("Updated user successfully");
         setIsModalVisible(false);
         form.resetFields();
-        fetchUsers();
+        getUsers();
       } else {
         // Handle error for edit users
       }
@@ -224,24 +241,26 @@ const AdminManageUsers: React.FC = () => {
 
   if (loading) {
     return (<>
-      <LoadingComponent />
+        <LoadingComponent />
     </>)
-  }
+}
   const onFinish = (values: User) => {
     if (modalMode === "Edit") {
       if (formData._id) {
         handleEditUser({ ...formData, ...values });
       } else {
-        handleAddNewUser(values);
+        //
       }
+    } else {
+      handleAddNewUser(values);
     }
-  }
+  };
   const handleRolefilter = (value: string) => {
     setSelectedRole(value);
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
-    fetchUsers();
+    getUsers();
   };
 
   const columns: TableColumnsType<User> = [
@@ -366,7 +385,7 @@ const AdminManageUsers: React.FC = () => {
           <Popconfirm
             title="Delete the User"
             description="Are you sure to delete this User?"
-            onConfirm={() => deleteUser(record._id, record.email, fetchUsers)}
+            onConfirm={() => deleteUser(record._id, record.email, getUsers)}
             okText="Yes"
             cancelText="No"
           >
@@ -541,4 +560,5 @@ const AdminManageUsers: React.FC = () => {
     </div>
   );
 };
+
 export default AdminManageUsers;

@@ -60,7 +60,6 @@ const Dashboard: React.FC = () => {
     } as MenuItem;
   }
   useEffect(() => {
-
     loadItems();
   }, [dataUser.role]);
 
@@ -105,10 +104,9 @@ const Dashboard: React.FC = () => {
         getItem("Manage Categories", "/admin/manage-categories", <UnorderedListOutlined />),
         getItem("Manage Reviews", "/admin/manage-reviews", <CommentOutlined />),
         getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
-
       ]);
     }
-  }
+  };
 
   const [collapsed, setCollapsed] = useState(false);
   const {
@@ -141,16 +139,18 @@ const Dashboard: React.FC = () => {
       ),
       key: "1",
     },
-    ...(dataUser.role === roles.INSTRUCTOR ? [
-      {
-        label: (
-          <Link className="text-lg" to={paths.INSTRUCTOR_PROFILE}>
-            View Profile
-          </Link>
-        ),
-        key: "2",
-      }
-    ] : []),
+    ...(dataUser.role === roles.INSTRUCTOR
+      ? [
+          {
+            label: (
+              <Link className="text-lg" to={paths.INSTRUCTOR_PROFILE}>
+                View Profile
+              </Link>
+            ),
+            key: "2",
+          },
+        ]
+      : []),
     {
       label: (
         <Link
@@ -204,7 +204,13 @@ const Dashboard: React.FC = () => {
       <Layout style={{ minHeight: "100vh" }}>
         <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} width={230}>
           <div className="demo-logo-vertical" />
-          <Menu className="py-4 bg-white-50 h-full " defaultSelectedKeys={["1"]} mode="inline" items={items} />
+          <Menu
+            className="py-4 bg-white-50 h-full "
+            defaultSelectedKeys={["2"]}
+            mode="inline"
+            items={items}
+            style={{ flex: 1, minWidth: 0 }}
+          />
         </Sider>
         <Layout className="bg-stone-100">
           <Header className="flex justify-between items-center drop-shadow-xl bg-white ">
