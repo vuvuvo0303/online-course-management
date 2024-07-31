@@ -261,7 +261,7 @@ const RegisterPage: React.FC = () => {
               <strong>
                 <Link
                   to={"/login"}
-                  className="hover:cursor-pointer hover:text-red-400"
+                  className="hover:cursor-pointer hover:text-blue-400"
                 >
                   Back to Sign in
                 </Link>

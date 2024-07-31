@@ -12,13 +12,12 @@ import {
   TablePaginationConfig,
   Tag,
 } from "antd";
-import { API_GET_USERS, API_REVIEW_PROFILE_INSTRUCTOR } from "../../../consts";
-import { Instructor } from "models/User";
-import axiosInstance from "../../../services/axiosInstance.ts";
+import { API_REVIEW_PROFILE_INSTRUCTOR, roles } from "../../../consts";
+import { Instructor } from "../../../models";
+import { axiosInstance, getUsers } from "../../../services";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
-import CustomBreadcrumb from "../../../components/breadcrumb";
-import LoadingComponent from "../../../components/loading";
+import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { formatDate } from "../../../utils";
 const { TextArea } = Input;
 
@@ -48,20 +47,10 @@ const AdminInstructorRequest = () => {
 
   const getInstructorRequest = async () => {
     setLoading(true);
-    const response = await axiosInstance.post(API_GET_USERS, {
-      searchCondition: {
-        role: "instructor",
-        is_verified: false,
-        keyword: debouncedSearch,
-      },
-      pageInfo: {
-        pageNum: pagination.current,
-        pageSize: pagination.pageSize,
-      },
-    });
+    const responseInstructorRequest = await getUsers(debouncedSearch, roles.INSTRUCTOR, true, false, false, pagination.current, pagination.pageSize);
 
-    if (response.data && response.data.pageData) {
-      const dataWithApprovalStatus = response.data.pageData.map((instructor: Instructor) => ({
+    if (responseInstructorRequest.data && responseInstructorRequest.data.pageData) {
+      const dataWithApprovalStatus = responseInstructorRequest.data.pageData.map((instructor: Instructor) => ({
         ...instructor,
         isApproved: instructor.is_verified,
         isRejected: false,
@@ -70,9 +59,9 @@ const AdminInstructorRequest = () => {
       setDataSource(dataWithApprovalStatus);
       setPagination((prev) => ({
         ...prev,
-        total: response.data.pageInfo?.totalItems || response.data.length,
-        current: response.data.pageInfo?.pageNum || 1,
-        pageSize: response.data.pageInfo?.pageSize || response.data.length,
+        total: responseInstructorRequest.data.pageInfo?.totalItems || responseInstructorRequest.data.length,
+        current: responseInstructorRequest.data.pageInfo?.pageNum || 1,
+        pageSize: responseInstructorRequest.data.pageInfo?.pageSize || responseInstructorRequest.data.length,
       }));
     }
     setLoading(false);
@@ -141,6 +130,7 @@ const AdminInstructorRequest = () => {
       title: "Avatar",
       dataIndex: "avatar",
       key: "avatar",
+      width: "10%",
       render: (avatar: string) => (
         <Avatar
           size={50}
@@ -156,6 +146,7 @@ const AdminInstructorRequest = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      width: "20%",
       render: (text) => <a>{text}</a>,
     },
     {
@@ -182,6 +173,7 @@ const AdminInstructorRequest = () => {
       title: "Verify",
       dataIndex: "is_verified",
       key: "is_verified",
+      width: "5%",
       render: (is_verified: boolean) => (
         <span>
           {is_verified ? (
@@ -195,6 +187,7 @@ const AdminInstructorRequest = () => {
     {
       title: "Action",
       key: "action",
+      width: "15%",
       render: (_, record) => (
         <Space size="middle">
           {record.isRejected ? (

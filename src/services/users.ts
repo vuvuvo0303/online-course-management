@@ -110,3 +110,4 @@ export const getInstructorDetailPublic = async (instructor_id: string) => {
     return;
   }
 };
+

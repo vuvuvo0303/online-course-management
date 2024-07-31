@@ -1,4 +1,4 @@
-import { API_GET_PURCHASE_BY_INSTRUCTOR, API_GET_PURCHASE_BY_STUDENT } from "../consts";
+import { API_GET_PURCHASE_BY_ADMIN, API_GET_PURCHASE_BY_INSTRUCTOR, API_GET_PURCHASE_BY_STUDENT } from "../consts";
 import axiosInstance from "./axiosInstance";
 
 // PURCHASE-03 Get Items by Student (Instructor, Student)
@@ -67,3 +67,41 @@ export const getItemsByInstructor = async (purchase_no: string, cart_no: string,
             };
           }
         };
+  
+export const getPurchaseForAdmin = async (
+  purchase_no: string = "",
+  cart_no: string = "",
+  course_id: string = "",
+  status: string = "",
+  is_deleted: boolean = false,
+  pageNum: number = 1,
+  pageSize: number = 100
+) => {
+  try {
+    const response = await axiosInstance.post(API_GET_PURCHASE_BY_ADMIN, {
+      searchCondition: {
+        purchase_no: purchase_no,
+        cart_no: cart_no,
+        course_id: course_id,
+        status: status,
+        is_delete: is_deleted,
+      },
+      pageInfo: {
+        pageNum: pageNum,
+        pageSize: pageSize,
+      },
+    })
+    return response;
+  } catch (error) {
+    return {
+      data: {
+        pageInfo: {
+          totalItems: 0,
+          pageNum,
+          pageSize
+        },
+        pageData: []
+      }
+    };
+  }
+  }
