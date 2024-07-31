@@ -184,7 +184,7 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="flex items-center w-full p-2">
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-10">
         {!isLoginPage && !isRegisterPage && !isForgotPassword && (
           <div className="md:hidden mt-1">
             <Drawer />
@@ -192,7 +192,7 @@ const Navbar: React.FC = () => {
         )}
       </div>
       <div className="flex items-center flex-shrink-0">
-        <Link to={paths.HOME} className="flex items-center">
+        <Link to={paths.HOME} className="flex items-center ml-12">
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
@@ -237,7 +237,7 @@ const Navbar: React.FC = () => {
               placement="bottom"
             >
               <Link to={paths.STUDENT_ENROLLMENT}>
-                <Badge className="hidden md:block" count={4}>
+                <Badge className="hidden md:block mr-5">
                   <HeartOutlined className="text-gray-400 text-2xl lg:text-3xl" />
                 </Badge>
               </Link>
@@ -257,7 +257,7 @@ const Navbar: React.FC = () => {
             >
               <Link to={paths.STUDENT_CART}>
                 <Badge count={totalCarts} className="hidden md:block">
-                  <ShoppingCartOutlined className="text-gray-400 text-2xl lg:text-3xl" />
+                  <ShoppingCartOutlined className="text-gray-400 text-2xl lg:text-3xl mr-5" />
                 </Badge>
               </Link>
             </Popover>
@@ -275,7 +275,7 @@ const Navbar: React.FC = () => {
               <Space>
                 <Avatar
                   src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
-                  className="hover:cursor-pointer hidden md:block"
+                  className="hover:cursor-pointer hidden md:block mr-10"
                   size={30}
                   icon={<UserOutlined />}
                 />
@@ -284,7 +284,7 @@ const Navbar: React.FC = () => {
           </Dropdown>
         ) : (
           <Link to={paths.LOGIN}>
-            <UserOutlined className="text-gray-400 text-2xl lg:text-3xl cursor-pointer hidden md:block" />
+            <UserOutlined className="text-gray-400 text-2xl lg:text-3xl cursor-pointer hidden md:block mr-12" />
           </Link>
         )}
       </div>
