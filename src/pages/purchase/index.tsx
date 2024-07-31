@@ -5,6 +5,7 @@ import LoadingComponent from "../../components/loading";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Table, TableProps } from "antd";
+import { formatCurrency } from "../../utils";
 
 const StudenManagePurchase = () => {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
@@ -55,7 +56,7 @@ const StudenManagePurchase = () => {
       dataIndex: "price",
       key: "price",
 
-      render: (price: number) => <>{price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>,
+      render: (price: number) => <>{formatCurrency(price)}</>,
     },
     {
       title: "Discount",
@@ -67,7 +68,7 @@ const StudenManagePurchase = () => {
       title: "Price paid",
       dataIndex: "price_paid",
       key: 'price_paid',
-            render:(price_paid:number)=> <>{price_paid.toLocaleString("vi-VN",{style:"currency",currency:"VND"})}</>
+      render: (price_paid: number) => <>{formatCurrency(price_paid)}</>
     },
     {
       title: "Created Date",

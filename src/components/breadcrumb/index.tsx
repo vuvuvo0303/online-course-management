@@ -61,8 +61,6 @@ const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = ({
         }).filter(item => item !== null),
     ];
 
-    console.log("Current Path:", currentPath); // Debug currentPath
-
     return (
         <Breadcrumb className="py-2" items={breadcrumbItems} />
     );

@@ -6,7 +6,7 @@ import { Category } from "../../../models";
 import { axiosInstance } from "../../../services";
 import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
-import { API_CREATE_CATEGORY, API_DELETE_CATEGORY, API_GET_CATEGORIES, API_UPDATE_CATEGORY, paths } from "../../../consts";
+import { API_CREATE_CATEGORY, API_DELETE_CATEGORY, API_GET_CATEGORIES, API_UPDATE_CATEGORY } from "../../../consts";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import LoadingComponent from "../../../components/loading";
@@ -318,7 +318,7 @@ const AdminManageCategories: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center ">
-        <CustomBreadcrumb/>
+        <CustomBreadcrumb />
 
         <Button type="primary" onClick={handleOpenModal}>
           Add New Category

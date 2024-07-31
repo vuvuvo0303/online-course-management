@@ -8,6 +8,7 @@ import { useEffect, useState, useCallback } from "react";
 import { paths } from "../../../consts";
 import { getUserFromLocalStorage, getCourses, getUserDetail } from "../../../services";
 import CustomBreadcrumb from "../../../components/breadcrumb";
+import { formatCurrency } from "../../../utils";
 
 const InstructorDashboard: React.FC = () => {
   const [numCourses, setNumCourses] = useState(0);
@@ -64,7 +65,7 @@ const InstructorDashboard: React.FC = () => {
           <Card title="Total Revenue" bordered={false} style={{ width: 300 }}>
             <div className="flex justify-between items-center px-1">
               <div className="flex justify-center gap-2">
-                <h1>{numBalance.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</h1>
+                <h1>{formatCurrency(numBalance)}</h1>
               </div>
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoA2JPklNgATSUB4vGt1RofKes7gQsE5zw7Q&s"

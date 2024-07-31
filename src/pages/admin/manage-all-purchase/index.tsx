@@ -3,11 +3,12 @@ import { API_GET_PURCHASE_BY_ADMIN, getColorPurchase } from "../../../consts";
 import { format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { axiosInstance } from "../../../services";
-import {SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
-import { Purchase } from "../../../models/Purchase";
+import { Purchase } from "../../../models";
 import LoadingComponent from "../../../components/loading";
 import CustomBreadcrumb from "../../../components/breadcrumb";
+import { formatCurrency } from "../../../utils";
 
 const ManageAllPurchase = () => {
   const [loading, setLoading] = useState(true);
@@ -96,7 +97,7 @@ const ManageAllPurchase = () => {
       dataIndex: "price_paid",
       key: "price_paid",
       render: (price_paid: number) => {
-        return price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+        return formatCurrency(price_paid);
       },
     },
     {

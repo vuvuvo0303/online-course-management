@@ -10,6 +10,7 @@ import LoadingComponent from "../../../components/loading";
 import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
 import CustomBreadcrumb from "../../../components/breadcrumb";
+import { formatCurrency } from '../../../utils';
 
 const InstructorManagePurchase = () => {
   const [searchPurchase, setSearchPurchase] = useState<string>("");
@@ -24,7 +25,6 @@ const InstructorManagePurchase = () => {
   const getPurchasesByInstructor = async () => {
     setLoading(true);
     const response = await getItemsByInstructor(purchaseNoSearch, "", "", statusPurchase, 1, 100);
-    console.log("response: ", response);
     setPurchases(response);
     setLoading(false);
   };
@@ -66,7 +66,7 @@ const InstructorManagePurchase = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (price: number) => <>{price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>,
+      render: (price: number) => <>{formatCurrency(price)}</>,
     },
     {
       title: "Discount",
@@ -88,7 +88,7 @@ const InstructorManagePurchase = () => {
       title: "Price paid",
       dataIndex: "price_paid",
       key: "price_paid",
-      render: (price_paid: number) => <>{price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>,
+      render: (price_paid: number) => <>{formatCurrency(price_paid)}</>,
     },
     {
       title: "Created Date",
@@ -115,7 +115,7 @@ const InstructorManagePurchase = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (price: number) => <>{price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>,
+      render: (price: number) => <>{formatCurrency(price)}</>,
     },
     {
       title: "Discount",
@@ -137,7 +137,7 @@ const InstructorManagePurchase = () => {
       title: "Price paid",
       dataIndex: "price_paid",
       key: "price_paid",
-      render: (price_paid: number) => <>{price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>,
+      render: (price_paid: number) => <>{formatCurrency(price_paid)}</>,
     },
     {
       title: "Created Date",
