@@ -51,7 +51,12 @@ const Dashboard: React.FC = () => {
     }
   }, [userRole]);
 
-  function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
+  function getItem(
+    label: React.ReactNode,
+    key: React.Key,
+    icon?: React.ReactNode,
+    children?: MenuItem[]
+  ): MenuItem {
     return {
       key,
       icon,
@@ -60,7 +65,6 @@ const Dashboard: React.FC = () => {
     } as MenuItem;
   }
   useEffect(() => {
-
     loadItems();
   }, [dataUser.role]);
 
@@ -76,22 +80,50 @@ const Dashboard: React.FC = () => {
             width={18}
           />,
           [
-            getItem("Manage All Sessions", "/instructor/manage-all-sessions", <DesktopOutlined />),
-            getItem("Manage All Lessons", "/instructor/manage-all-lessons", <DesktopOutlined />),
+            getItem(
+              "Manage All Sessions",
+              "/instructor/manage-all-sessions",
+              <DesktopOutlined />
+            ),
+            getItem(
+              "Manage All Lessons",
+              "/instructor/manage-all-lessons",
+              <DesktopOutlined />
+            ),
           ]
         ),
 
-        getItem("Manage Subscriptions", "/instructor/manage-subscriptions", <PlusCircleOutlined />),
-        getItem("Manage Purchases", "/instructor/manage-purchases", <ShoppingCartOutlined />),
-        getItem("Manage Payouts", "/instructor/manage-payouts", <OrderedListOutlined />),
+        getItem(
+          "Manage Subscriptions",
+          "/instructor/manage-subscriptions",
+          <PlusCircleOutlined />
+        ),
+        getItem(
+          "Manage Purchases",
+          "/instructor/manage-purchases",
+          <ShoppingCartOutlined />
+        ),
+        getItem(
+          "Manage Payouts",
+          "/instructor/manage-payouts",
+          <OrderedListOutlined />
+        ),
         getItem("Tools", "/instructor/tools", <ToolOutlined />),
-        getItem("Resources", "/instructor/resources", <QuestionCircleOutlined />),
+        getItem(
+          "Resources",
+          "/instructor/resources",
+          <QuestionCircleOutlined />
+        ),
       ]);
     } else if (dataUser.role === roles.ADMIN) {
       setItems([
         getItem("Dashboard", "/admin/dashboard", <FundOutlined />),
         getItem("Manage Users", "/admin/manage-users", <TeamOutlined />),
-        getItem("Instructor's Request", "/admin/instructor-requests", <TeamOutlined />),
+        getItem(
+          "Instructor's Request",
+          "/admin/instructor-requests",
+          <TeamOutlined />
+        ),
         getItem(
           "Manage Courses",
           "/admin/manage-courses",
@@ -100,129 +132,179 @@ const Dashboard: React.FC = () => {
             width={18}
           />
         ),
-        getItem("Manage Purchases", "/admin/manage-all-purchase", <ShoppingCartOutlined />),
-        getItem("Manage Payouts", "/admin/manage-payouts", <OrderedListOutlined />),
-        getItem("Manage Categories", "/admin/manage-categories", <UnorderedListOutlined />),
+        getItem(
+          "Manage Purchases",
+          "/admin/manage-all-purchase",
+          <ShoppingCartOutlined />
+        ),
+        getItem(
+          "Manage Payouts",
+          "/admin/manage-payouts",
+          <OrderedListOutlined />
+        ),
+        getItem(
+          "Manage Categories",
+          "/admin/manage-categories",
+          <UnorderedListOutlined />
+        ),
         getItem("Manage Reviews", "/admin/manage-reviews", <CommentOutlined />),
         getItem("Manage Blogs", "/admin/manage-blogs", <ProfileOutlined />),
-
       ]);
     }
-  }
+  };
 
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const dropdownItems: MenuProps["items"] = [
-    {
-      label: (
-        <div className="text-sm">
-          <Row>
-            <Col span={8} className="p-4 pt-2 pb-2">
-              <Avatar
-                src={typeof user.avatar === "string" ? user.avatar : undefined}
-                className="hover:cursor-pointer mr-5 border border-black"
-                size={50}
-                icon={<UserOutlined />}
-              />
-            </Col>
-            <Col span={16} className="pt-3 pr-3">
-              <Row>
-                <p className="text-base font-bold">{dataUser.fullName}</p>
-              </Row>
-              <div>
-                <p className="text-md">{dataUser.email}</p>
+  const dropdownItems: MenuProps["items"] =
+    dataUser.role === roles.INSTRUCTOR
+      ? [
+          {
+            label: (
+              <div className="text-sm">
+                <Row>
+                  <Col span={8} className="p-4 pt-2 pb-2">
+                    <Avatar
+                      src={
+                        typeof user.avatar === "string"
+                          ? user.avatar
+                          : undefined
+                      }
+                      className="hover:cursor-pointer mr-5 border border-black"
+                      size={50}
+                      icon={<UserOutlined />}
+                    />
+                  </Col>
+                  <Col span={16} className="pt-3 pr-3">
+                    <Row>
+                      <p className="text-base font-bold">{dataUser.fullName}</p>
+                    </Row>
+                    <div>
+                      <p className="text-md">{dataUser.email}</p>
+                    </div>
+                  </Col>
+                </Row>
               </div>
-            </Col>
-          </Row>
-        </div>
-      ),
-      key: "1",
-    },
-    ...(dataUser.role === roles.INSTRUCTOR ? [
-      {
-        label: (
-          <Link className="text-lg" to={paths.INSTRUCTOR_PROFILE}>
-            View Profile
-          </Link>
-        ),
-        key: "2",
-      }
-    ] : []),
-    {
-      label: (
-        <Link
-          className="mt-2 text-lg"
-          to={dataUser.role === roles.INSTRUCTOR ? "/instructor/paidMemberships" : "/admin/paidMemberships"}
-        >
-          Paid Memberships
-        </Link>
-      ),
-      key: "3",
-    },
-    {
-      label: (
-        <Link className="text-lg" to={dataUser.role === roles.INSTRUCTOR ? "/instructor/setting" : "/admin/setting"}>
-          Setting
-        </Link>
-      ),
-      key: "4",
-    },
-    {
-      label: (
-        <Link className="text-lg" to={dataUser.role === roles.INSTRUCTOR ? "/instructor/help" : "/admin/help"}>
-          Help
-        </Link>
-      ),
-      key: "5",
-    },
-    {
-      label: (
-        <Link
-          className="text-lg"
-          to={dataUser.role === roles.INSTRUCTOR ? "/instructor/sendFeedBack" : "/admin/sendFeedBack"}
-        >
-          Send Feedback
-        </Link>
-      ),
-      key: "6",
-    },
-    {
-      label: (
-        <p onClick={() => logout(navigate)} className="text-lg hover:cursor-pointer hover:text-red-600">
-          Logout
-        </p>
-      ),
-      key: "7",
-    },
-  ];
-
+            ),
+            key: "1",
+          },
+          {
+            label: (
+              <Link className="text-lg" to={paths.INSTRUCTOR_PROFILE}>
+                View Profile
+              </Link>
+            ),
+            key: "2",
+          },
+          {
+            label: (
+              <Link className="mt-2 text-lg" to="/instructor/paidMemberships">
+                Paid Memberships
+              </Link>
+            ),
+            key: "3",
+          },
+          {
+            label: (
+              <Link className="text-lg" to="/instructor/setting">
+                Setting
+              </Link>
+            ),
+            key: "4",
+          },
+          {
+            label: (
+              <Link className="text-lg" to="/instructor/help">
+                Help
+              </Link>
+            ),
+            key: "5",
+          },
+          {
+            label: (
+              <Link className="text-lg" to="/instructor/sendFeedBack">
+                Send Feedback
+              </Link>
+            ),
+            key: "6",
+          },
+          {
+            label: (
+              <p
+                onClick={() => logout(navigate)}
+                className="text-lg hover:cursor-pointer hover:text-red-600"
+              >
+                Logout
+              </p>
+            ),
+            key: "7",
+          },
+        ]
+      : [
+          {
+            label: (
+              <button
+                onClick={() => logout(navigate)}
+                className="text-lg hover:cursor-pointer hover:text-red-600 bg-transparent border-none p-0"
+              >
+                Logout
+              </button>
+            ),
+            key: "1",
+          },
+        ];
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} width={230}>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+          width={230}
+        >
           <div className="demo-logo-vertical" />
-          <Menu className="py-4 bg-white-50 h-full " defaultSelectedKeys={["1"]} mode="inline" items={items} />
+          <Menu
+            className="py-4 bg-white-50 h-full "
+            defaultSelectedKeys={["1"]}
+            mode="inline"
+            items={items}
+          />
         </Sider>
         <Layout className="bg-stone-100">
-          <Header className="flex justify-between items-center drop-shadow-xl bg-white ">
-            <img className="" src={logo2} alt=" logo" width={60} />
+          <Header className="flex justify-between items-center drop-shadow-xl bg-white">
+            <img className="" src={logo2} alt="logo" width={60} />
 
-            <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
-              <a onClick={(e) => e.preventDefault()}>
-                <Space>
-                  <Avatar
-                    src={typeof user.avatar === "string" ? user.avatar : undefined}
-                    className="hover:cursor-pointer border border-black"
-                    size={40}
-                    icon={<UserOutlined />}
-                  />
-                </Space>
-              </a>
-            </Dropdown>
+            {dataUser.role === roles.INSTRUCTOR ? (
+              <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
+                <a onClick={(e) => e.preventDefault()}>
+                  <Space>
+                    <Avatar
+                      src={
+                        typeof user.avatar === "string"
+                          ? user.avatar
+                          : undefined
+                      }
+                      className="hover:cursor-pointer border border-black"
+                      size={40}
+                      icon={<UserOutlined />}
+                    />
+                  </Space>
+                </a>
+              </Dropdown>
+            ) : (
+              <Space>
+                <button
+                  onClick={() => logout(navigate)}
+                  className="text-lg hover:cursor-pointer hover:text-red-600 bg-transparent border-none p-0"
+                >
+                  Logout
+                </button>
+              </Space>
+            )}
           </Header>
+
           <Content className="" style={{ margin: "30px 10px" }}>
             <div
               style={{
@@ -235,7 +317,9 @@ const Dashboard: React.FC = () => {
               <Outlet />
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>@ 2024 FLearn. All rights reserved</Footer>
+          <Footer style={{ textAlign: "center" }}>
+            @ 2024 FLearn. All rights reserved
+          </Footer>
         </Layout>
       </Layout>
     </>
