@@ -21,25 +21,28 @@ export const createPayout = async (instructor_id: string, transactions: Transact
     }
 }
 //Payout02 Get Payouts (Admin, Instructor)
-export const getPayouts = async (payout_no: string, instructor_id: string, status: string, pageNum: number, pageSize: number,) => {
+export const getPayouts = async (payout_no: string = "",
+    instructor_id: string = "",
+    status: string = "",
+    is_instructor: boolean = false,
+    is_deleted: boolean = false,
+    pageNum: number = 1,
+    pageSize: number = 10) => {
     try {
         const response = await axiosInstance.post(API_GET_PAYOUTS, {
             "searchCondition": {
-                "payout_no": payout_no,
-                "instructor_id": instructor_id,
-                "status": status,
-                "is_instructor": false,
-                "is_delete": false
+                "payout_no": payout_no || "",
+                "instructor_id": instructor_id || "",
+                "status": status || "",
+                "is_instructor": is_instructor !== undefined ? is_deleted : false,
+                "is_deleted": is_deleted !== undefined ? is_deleted : false,
             },
             "pageInfo": {
                 "pageNum": pageNum,
                 "pageSize": pageSize
             }
         })
-        if (response) {
-            return response.data.pageData;
-        }
-        message.error("Create Payout Failed!");
+            return response;
     } catch (error) {
         return {
           data: {
