@@ -33,7 +33,8 @@ const CreateUpdateLesson: React.FC = () => {
   const [userId, setUserId] = useState<string>("");
   const [course_id, setCourse_id] = useState<string>("");
   const [content, setContent] = useState<string>("Enter something here");
-  const [des, setDes] = useState<string>("");
+  // const [des, setDes] = useState<string>("");
+
   useEffect(() => {
     const user = getUserFromLocalStorage();
     setUserId(user?._id);
@@ -72,32 +73,38 @@ const CreateUpdateLesson: React.FC = () => {
   useEffect(() => {
     if (lectureId) {
       const fetchData = async () => {
-        const response = await axiosInstance.get(`${API_GET_LESSON}/${lectureId}`);
-        const data = response.data;
-        form.setFieldsValue({
-          name: data.name,
-          course_id: data.course_id,
-          session_id: data.session_id,
-          user_id: data.user_id,
-          lesson_type: data.lesson_type,
-          description: data.description,
-          video_url: data.video_url,
-          image_url: data.image_url,
-          price: data.price,
-          full_time: data.full_time,
-          position_order: data.position_order,
-        });
-        setCourse_id(data.course_id);
-        setContent(data.description);
-        setLoading(false);
+        setLoading(true);
+        try {
+          const response = await axiosInstance.get(`${API_GET_LESSON}/${lectureId}`);
+          const data = response.data;
+          form.setFieldsValue({
+            name: data.name,
+            course_id: data.course_id,
+            session_id: data.session_id,
+            user_id: data.user_id,
+            lesson_type: data.lesson_type,
+            description: data.description,
+            video_url: data.video_url,
+            image_url: data.image_url,
+            price: data.price,
+            full_time: data.full_time,
+            position_order: data.position_order,
+          });
+          setCourse_id(data.course_id);
+          setContent(data.description);
+        } catch (error) {
+          message.error("Failed to fetch lesson data.");
+        } finally {
+          setLoading(false);
+        }
       };
       fetchData();
     }
-  }, [lectureId, courseId, form, sessionId]);
+  }, [lectureId, form]);
 
-  // fetch course to create or update session
   useEffect(() => {
     const fetchCourses = async () => {
+      setLoading(true);
       try {
         const response = await axiosInstance.post(API_GET_COURSES, {
           searchCondition: {
@@ -115,58 +122,46 @@ const CreateUpdateLesson: React.FC = () => {
           setCourses(response.data.pageData);
         }
       } catch (error) {
-        //
+        message.error("Failed to fetch courses.");
       } finally {
         setLoading(false);
       }
     };
     fetchCourses();
-  }, [courseId, sessionId]);
+  }, []);
 
   useEffect(() => {
     const fetchSessions = async () => {
-      if (courseId && sessionId) {
-        try {
+      try {
+        if (courseId && sessionId) {
           const response = await axiosInstance.get(`${API_GET_SESSION}/${sessionId}`);
-          if (response) {
-            setSession(response.data);
-          }
-        } catch (error) {
-          //
-        } finally {
-          setLoading(false);
+          setSession(response.data);
+        } else if (course_id) {
+          const response = await axiosInstance.post(API_GET_SESSIONS, {
+            searchCondition: {
+              keyword: "",
+              course_id: course_id,
+              is_position_order: false,
+              is_deleted: false,
+            },
+            pageInfo: {
+              pageNum: 1,
+              pageSize: 10,
+            },
+          });
+          setSessions(response.data.pageData);
         }
-      } else {
-        if (course_id) {
-          try {
-            const response = await axiosInstance.post(API_GET_SESSIONS, {
-              searchCondition: {
-                keyword: "",
-                course_id: course_id,
-                is_position_order: false,
-                is_deleted: false,
-              },
-              pageInfo: {
-                pageNum: 1,
-                pageSize: 10,
-              },
-            });
-            if (response) {
-              setSessions(response.data.pageData);
-            }
-          } catch (error) {
-            //
-          } finally {
-            setLoading(false);
-          }
-        }
+      } catch (error) {
+        message.error("Failed to fetch sessions.");
+      } finally {
+        setLoading(false);
       }
     };
     fetchSessions();
-  }, [sessionId, courseId, course_id]);
-  const handleEditorChange = (value: string) => {
-    setDes(value);
-  };
+  }, [sessionId, course_id]);
+
+
+
   const onFinish = async (values: Lessons) => {
     try{
     if (typeof values.full_time === "string") {
@@ -175,21 +170,15 @@ const CreateUpdateLesson: React.FC = () => {
     if (typeof values.position_order === "string") {
       values.position_order = parseFloat(values.position_order);
     }
-    if (!des) {
-      //if instructor don't change description
-      values.description = content;
-    } else {
-      values.description = des;
-    }
+    values.description =  content;
+
     setLoading(true);
   
       //Update lesson
       if (lectureId) {
         await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values);
         message.success("Update Lesson Successfully!");
-      }
-      //create lesson
-      else {
+      } else {
         await axiosInstance.post(API_CREATE_LESSON, values);
         message.success("Create Lecture Successfully!");
       }
@@ -199,17 +188,18 @@ const CreateUpdateLesson: React.FC = () => {
         navigate(`/instructor/manage-all-lessons`);
       }
     } catch (error) {
-      //
+      message.error("Failed to save the lesson.");
     } finally {
       setLoading(false);
     }
   };
+
   const handleChangeCourseId = (value: string) => {
     setCourse_id(value);
   };
 
   return (
-    <div className="flex justify-center items-center  h-full mt-10">
+    <div className="flex justify-center items-center h-full mt-10">
       {loading ? (
         <LoadingComponent />
       ) : (
@@ -227,7 +217,7 @@ const CreateUpdateLesson: React.FC = () => {
                 <Input defaultValue={courseId} disabled />
               </Form.Item>
             )}
-            {/* if there is no sessionId and courseId */}
+
             {!sessionId && !courseId && (
               <Form.Item
                 label="Course Name"
@@ -235,7 +225,6 @@ const CreateUpdateLesson: React.FC = () => {
                 rules={[{ required: true, message: "Please input name!" }]}
               >
                 <Select
-                  // Save course_id to use to call the session api
                   onChange={handleChangeCourseId}
                   defaultValue="Choose course for this lecture"
                   options={courses.map((course) => ({
@@ -246,14 +235,12 @@ const CreateUpdateLesson: React.FC = () => {
               </Form.Item>
             )}
 
-            {/* manage course -> manage sessions -> manage lessons */}
             {sessionId && courseId && (
               <Form.Item initialValue={sessionId} label="Session Name" name="session_id" hidden>
                 <Input defaultValue={session?._id} disabled />
               </Form.Item>
             )}
 
-            {/* if there is no sessionId and courseId */}
             {!sessionId && !courseId && (
               <Form.Item
                 label="Session Name"
@@ -269,6 +256,7 @@ const CreateUpdateLesson: React.FC = () => {
                 />
               </Form.Item>
             )}
+
             <Form.Item hidden label="User Id" name="user_id" initialValue={userId}>
               <Input.TextArea />
             </Form.Item>
@@ -276,13 +264,9 @@ const CreateUpdateLesson: React.FC = () => {
               <Select
                 defaultValue="video"
                 options={[
-                  {
-                    options: [
-                      { label: "video", value: "video" },
-                      { label: "text", value: "text" },
-                      { label: "image", value: "image" },
-                    ],
-                  },
+                  { label: "video", value: "video" },
+                  { label: "text", value: "text" },
+                  { label: "image", value: "image" },
                 ]}
               />
             </Form.Item>
@@ -297,6 +281,7 @@ const CreateUpdateLesson: React.FC = () => {
             >
               <Input />
             </Form.Item>
+
             <Form.Item label="Image URL" name="image_url">
               <Upload
                 action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
@@ -308,20 +293,23 @@ const CreateUpdateLesson: React.FC = () => {
                 {fileList.length >= 1 ? null : uploadButton}
               </Upload>
             </Form.Item>
+
             <Form.Item
-              label="full_time"
-              name="Full Time"
+              label="Full Time"
+              name="full_time"
               rules={[{ required: true, message: "Please input a number!" }]}
             >
               <Input type="number" />
             </Form.Item>
+
             <Form.Item
-              label="position_order"
-              name="Position Order"
+              label="Position Order"
+              name="position_order"
               rules={[{ required: true, message: "Please input a number!" }]}
             >
               <Input type="number" />
             </Form.Item>
+
             <Form.Item wrapperCol={{ span: 24, offset: 6 }}>
               <Button type="primary" htmlType="submit" loading={loading}>
                 Submit
@@ -346,4 +334,5 @@ const CreateUpdateLesson: React.FC = () => {
     </div>
   );
 };
+
 export default CreateUpdateLesson;
