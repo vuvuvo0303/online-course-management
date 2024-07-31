@@ -261,6 +261,10 @@ export const paths = {
     "manage-all-lectures/update-lecture/:lectureId",
   INSTRUCTOR_MANAGE_PURCHASES:
     "manage-purchases",
+    INSTRUCTOR_LEARN:
+    "learn",
+    INSTRUCTOR_LEARN_COURSE:
+    "learn/course/:_id",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",

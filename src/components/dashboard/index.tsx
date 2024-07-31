@@ -72,6 +72,7 @@ const Dashboard: React.FC = () => {
     if (dataUser.role === roles.INSTRUCTOR) {
       setItems([
         getItem("Dashboard", paths.INSTRUCTOR_DASHBOARD, <FundOutlined />),
+        getItem("Learn", "/instructor/learn", <FundOutlined />),
         getItem(
           "Manage Courses",
           "/instructor/manage-courses",
@@ -267,9 +268,10 @@ const Dashboard: React.FC = () => {
           <div className="demo-logo-vertical" />
           <Menu
             className="py-4 bg-white-50 h-full "
-            defaultSelectedKeys={["1"]}
+            defaultSelectedKeys={["2"]}
             mode="inline"
             items={items}
+            style={{ flex: 1, minWidth: 0 }}
           />
         </Sider>
         <Layout className="bg-stone-100">

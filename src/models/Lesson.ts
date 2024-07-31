@@ -13,7 +13,7 @@ export class Lessons {
     lesson_type: LessonType;
     description: string;
     video_url: string;
-    image_url: string;
+    image_url?: string;
     full_time: number;
     position_order: number;
     created_at: string;
