@@ -28,7 +28,7 @@ const InstructorDashboard: React.FC = () => {
   }, [numBalance, numCourses])
   return (
     <div>
-      <CustomBreadcrumb currentTitle="Dashboard" currentHref={paths.INSTRUCTOR_HOME} />
+      <CustomBreadcrumb/>
       <div className="flex justify-between drop-shadow-xl gap-3">
         <Badge.Ribbon text="Flearn" color="blue">
           <Link to={paths.INSTRUCTOR_MANAGE_COURSES}>

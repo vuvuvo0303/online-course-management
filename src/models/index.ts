@@ -1,4 +1,4 @@
-export { Student, Instructor, Admin } from './User';
+export { Student, Instructor, Admin, User } from './User';
 export { Lessons } from './Lesson';
 export { Course } from './Course';
 export { Comment } from './Comment';

@@ -1,5 +1,5 @@
-import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, message, Modal, Select, Table, TableProps, Tag, } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {  Button, Input, message, Modal, Select, Table, TableProps, Tag, } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models/index.ts";
@@ -9,6 +9,7 @@ import { API_GET_LESSONS, API_GET_COURSES, API_DELETE_LESSON, API_GET_SESSIONS, 
 import { format } from "date-fns";
 import { Lessons } from "models/Lesson.ts";
 import LoadingComponent from "../../../../../components/loading";
+import CustomBreadcrumb from "../../../../../components/breadcrumb/index.tsx";
 const LectureOfCourse: React.FC = () => {
     const [data, setData] = useState<Lessons[]>([]);
     const { courseId, sessionId } = useParams<{ courseId: string, sessionId: string }>();
@@ -189,7 +190,11 @@ const LectureOfCourse: React.FC = () => {
             title: 'Course Name',
             dataIndex: 'course_name',
             key: 'course_name',
-
+            render: (course_name: string) => (
+                <div className="truncate">
+                    {course_name}
+                </div>
+            )
         },
         {
             title: 'Session Name',
@@ -197,22 +202,22 @@ const LectureOfCourse: React.FC = () => {
             key: 'session_name',
 
         },
-        {
-            title: 'Video Url',
-            dataIndex: 'video_url',
-            key: 'video_url',
-            render: (video_url: string) => (
-                <>
-                    <iframe src={video_url} ></iframe>
-                </>
-            )
-        },
-        {
-            title: 'Image Url',
-            dataIndex: 'image_url',
-            key: 'image_url',
+        // {
+        //     title: 'Video Url',
+        //     dataIndex: 'video_url',
+        //     key: 'video_url',
+        //     render: (video_url: string) => (
+        //         <>
+        //             <iframe src={video_url} ></iframe>
+        //         </>
+        //     )
+        // },
+        // {
+        //     title: 'Image Url',
+        //     dataIndex: 'image_url',
+        //     key: 'image_url',
 
-        },
+        // },
         {
             title: 'Lesson type',
             dataIndex: 'lesson_type',
@@ -298,30 +303,10 @@ const LectureOfCourse: React.FC = () => {
                     {
                         courseId && sessionId ? (
                             <>
-                                <Breadcrumb className="py-2" >
-                                    <Breadcrumb.Item href="/dashboard">
-                                        <HomeOutlined />
-                                    </Breadcrumb.Item>
-                                    <Breadcrumb.Item href="/instructor/manage-courses">
-                                        Manage Courses
-                                    </Breadcrumb.Item>
-                                    <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>
-                                        Manage Sessions
-                                    </Breadcrumb.Item>
-                                    <Breadcrumb.Item>Manage Lesson</Breadcrumb.Item>
-                                </Breadcrumb>
-                                <h1 className="text-center m-10">Manage Lessons</h1>
+                                <CustomBreadcrumb />
                             </>
                         ) : (
-                            <>
-                                <Breadcrumb className="py-2" >
-                                    <Breadcrumb.Item href="/dashboard">
-                                        <HomeOutlined />
-                                    </Breadcrumb.Item>
-                                    <Breadcrumb.Item>Manage Lectures</Breadcrumb.Item>
-                                </Breadcrumb>
-                                <h1 className="text-center m-10">Manage All Lessons</h1>
-                            </>
+                            <CustomBreadcrumb />
                         )
                     }
                     <div className="grid grid-cols-2">
@@ -386,7 +371,7 @@ const LectureOfCourse: React.FC = () => {
                         <div>
                             {
                                 courseId && sessionId ? (
-                                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/create-lecture`}>
+                                    <Link to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lessons/create-lesson`}>
                                         <Button type="primary" className="my-10 float-right">Add New Lessons</Button>
                                     </Link>
                                 ) :

@@ -23,10 +23,18 @@ export const getItemsByStudent = async (purchase_no: string, cart_no: string, co
          
         }
     } catch (error) {
-        console.log("Error occurred: ", error)
-        return [];
-    }
-}
+        return {
+          data: {
+            pageInfo: {
+              totalItems: 0,
+              pageNum,
+              pageSize
+            },
+            pageData: []
+          }
+        };
+      }
+    };
 
 // PURCHASE-02 Get Items by Instructor (Instructor)
 export const getItemsByInstructor = async (purchase_no: string, cart_no: string, course_id:string, status: string, pageNum: number, pageSize: number) => {
@@ -45,13 +53,17 @@ export const getItemsByInstructor = async (purchase_no: string, cart_no: string,
             }
         }
         )
-        if (response) {    
-            console.log("response api: ", response)     
-            return response.data.pageData;
-         
-        }
-    } catch (error) {
-        console.log("Error occurred: ", error)
-        return [];
-    }
-}
+            return response.data.pageData;         
+        } catch (error) {
+            return {
+              data: {
+                pageInfo: {
+                  totalItems: 0,
+                  pageNum,
+                  pageSize
+                },
+                pageData: []
+              }
+            };
+          }
+        };

@@ -278,12 +278,6 @@ const AdminManageCategories: React.FC = () => {
       },
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      ellipsis: true,
-    },
-    {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
@@ -324,7 +318,7 @@ const AdminManageCategories: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center ">
-        <CustomBreadcrumb currentTitle="Manage Categories" currentHref={paths.ADMIN_HOME} />
+        <CustomBreadcrumb/>
 
         <Button type="primary" onClick={handleOpenModal}>
           Add New Category

@@ -1,7 +1,6 @@
-import { ArrowRightOutlined, DeleteOutlined, EditOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import {
-  Breadcrumb,
   Button,
   Empty,
   Form,
@@ -15,14 +14,13 @@ import {
   TableProps,
   Tag,
 } from "antd";
-import { Category, Course, Log } from "../../../models";
+import { Category, Course, Log, Review } from "../../../models";
 import {
   API_COURSE_LOGS,
   API_COURSE_STATUS,
   API_DELETE_COURSE,
   API_GET_COURSES,
   getColor,
-  paths,
 } from "../../../consts";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
@@ -31,12 +29,17 @@ import { useDebounce } from "../../../hooks";
 import { format } from "date-fns";
 import { getCategories } from "../../../services/category.ts";
 import LoadingComponent from "../../../components/loading";
+import { getAllReviews } from "../../../services/review.ts";
+import CustomBreadcrumb from "../../../components/breadcrumb/index.tsx";
 
 const InstructorManageCourses: React.FC = () => {
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingTable, setLoadingTable] = useState<boolean>(true);
   const [courseId, setCourseId] = useState<string>("");
   const [open, setOpen] = useState(false);
+  const [openReviewModal, setOpenReviewModal] = useState(false);
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [course_name, setCourse_name] = useState<string>("");
   const [openLogStatus, setOpenLogStatus] = useState(false);
@@ -81,6 +84,19 @@ const InstructorManageCourses: React.FC = () => {
     setOpenChangeStatus(true);
     setCourse_name(name);
   };
+
+  const showModalReview = (courseId: string, rating: number) => {
+    setOpenReviewModal(true);
+    getReviewsByInstructor(courseId, rating)
+  };
+
+  const getReviewsByInstructor = async (course_id: string, rating: number) => {
+    setLoadingTable(true)
+    const res = await getAllReviews(course_id, rating, true, false, false, 1, 100);
+    setReviews(res.data.pageData);
+    setLoadingTable(false)
+  }
+
   //show log status modal
   const fetchLog = async () => {
     try {
@@ -192,8 +208,9 @@ const InstructorManageCourses: React.FC = () => {
   //fetch categories
   useEffect(() => {
     const fetchData = async () => {
-      const dataCategories = await getCategories();
-      setCategories(dataCategories);
+      const responseCategories = await getCategories();
+      const categories = responseCategories.data.pageData
+      setCategories(categories);
     }
     fetchData();
   }, []);
@@ -233,9 +250,9 @@ const InstructorManageCourses: React.FC = () => {
 
   if (loading) {
     return (<>
-        <LoadingComponent />
+      <LoadingComponent />
     </>)
-}
+  }
   //setStatus for filter log by status
   const handleAllLog = () => {
     setOldStatus("");
@@ -353,6 +370,16 @@ const InstructorManageCourses: React.FC = () => {
       render: (update_at: Date) => format(new Date(update_at), "dd/MM/yyyy"),
     },
     {
+      title: "Review",
+      dataIndex: "_id",
+      key: "_id",
+      render: (_id: string) => (
+        <>
+          <EyeOutlined onClick={() => showModalReview(_id, 0)} className="m-2 text-blue-500 cursor-pointer" />
+        </>
+      ),
+    },
+    {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
@@ -366,6 +393,10 @@ const InstructorManageCourses: React.FC = () => {
       ),
     },
   ];
+
+  const handleCancelReviewModal = () => {
+    setOpenReviewModal(false);
+  };
 
   const columnsLogs: TableProps["columns"] = [
     {
@@ -417,8 +448,54 @@ const InstructorManageCourses: React.FC = () => {
     },
   ];
 
+  const columnsReviews = [
+    {
+      title: 'Course Name',
+      dataIndex: 'course_name',
+      key: 'course_name',
+    },
+    {
+      title: 'Reviewer Name',
+      dataIndex: 'reviewer_name',
+      key: 'reviewer_name',
+    },
+    {
+      title: 'Rating',
+      dataIndex: 'rating',
+      key: 'rating',
+    },
+    {
+      title: 'Comment',
+      dataIndex: 'comment',
+      key: 'comment',
+    },
+    {
+      title: "Created Date ",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+    },
+    {
+      title: "Updated Date ",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+    },
+  ];
+
   return (
     <div>
+      {/* modal to show course's review */}
+      <Modal
+        width={800}
+        title="Review"
+        open={openReviewModal}
+        onCancel={handleCancelReviewModal}
+        footer={""}
+      // onCancel={handleCancel}
+      >
+        <Table loading={loadingTable} dataSource={reviews} columns={columnsReviews} />
+      </Modal>
       {/* modal log status */}
       <Modal
         width={1200}
@@ -555,82 +632,74 @@ const InstructorManageCourses: React.FC = () => {
       <Modal title="Delete Course" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
         <p>{modalText}</p>
       </Modal>
-      <div className="flex justify-between items-center">
-        {" "}
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              href: paths.INSTRUCTOR_HOME,
-              title: <HomeOutlined />,
-            },
-            {
-              title: "Manage Course",
-            },
-          ]}
-        />
-        <Link to={"/instructor/manage-courses/create-course"}>
-          <Button type="primary">Add New Course</Button>
-        </Link>
-      </div>
+      <CustomBreadcrumb />
+
 
       <div className="">
-        <div className="flex gap-2  mb-3">
-          <Input.Search
-            placeholder="Search"
-            value={keyword}
-            onChange={handleSearch}
-            style={{ width: 200 }}
-            enterButton={<SearchOutlined className="text-white" />}
-          />
-          {/* filter course by status */}
-          <Select
-            defaultValue="All Status"
+        <div className="flex gap-2 mb-3 justify-between">
+          <div>
+            <Input.Search
+              placeholder="Search"
+              value={keyword}
+              onChange={handleSearch}
+              style={{ width: 200 }}
+              enterButton={<SearchOutlined className="text-white" />}
+            />
+            {/* filter course by status */}
+            <Select
+              defaultValue="All Status"
 
-            className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
-            onChange={handleChange}
-            options={[
-              {
-                options: [
-                  { label: <span>All Status</span>, value: "" },
-                  { label: <span>New</span>, value: "new" },
-                  { label: <span>Waiting Approve</span>, value: "waiting_approve" },
-                  { label: <span>Approve</span>, value: "approve" },
-                  { label: <span>Reject</span>, value: "reject" },
-                  { label: <span>Active</span>, value: "active" },
-                  { label: <span>Inactive</span>, value: "inactive" },
-                ],
-              },
-            ]}
-          />
-          {/* filter course by isDelete */}
-          <Select
-            defaultValue={false}
-            className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
-            onChange={handleChangeIsDelete}
-            options={[
-              {
-                options: [
-                  { label: <span>Existing</span>, value: false },
-                  { label: <span>Deleted</span>, value: true },
-                ],
-              },
-            ]}
-          />
-          {/* filter course by categories */}
-          <Select
-            defaultValue="All Categories"
-            className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
-            onChange={handleCateChange}
-            options={[
-              { value: "", label: "All Categories" },
-              ...categories.map((cate) => ({
-                value: cate._id,
-                label: cate.name,
-              })),
-            ]}
-          />
+              className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+              onChange={handleChange}
+              options={[
+                {
+                  options: [
+                    { label: <span>All Status</span>, value: "" },
+                    { label: <span>New</span>, value: "new" },
+                    { label: <span>Waiting Approve</span>, value: "waiting_approve" },
+                    { label: <span>Approve</span>, value: "approve" },
+                    { label: <span>Reject</span>, value: "reject" },
+                    { label: <span>Active</span>, value: "active" },
+                    { label: <span>Inactive</span>, value: "inactive" },
+                  ],
+                },
+              ]}
+            />
+            {/* filter course by isDelete */}
+            <Select
+              defaultValue={false}
+              className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+              onChange={handleChangeIsDelete}
+              options={[
+                {
+                  options: [
+                    { label: <span>Existing</span>, value: false },
+                    { label: <span>Deleted</span>, value: true },
+                  ],
+                },
+              ]}
+            />
+            {/* filter course by categories */}
+            <Select
+              defaultValue="All Categories"
+              className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+              onChange={handleCateChange}
+              options={[
+                { value: "", label: "All Categories" },
+                ...categories.map((cate) => ({
+                  value: cate._id,
+                  label: cate.name,
+                })),
+              ]}
+            />
+          </div>
+          <div className="flex justify-between items-center mb-5">
+            <Link to={"/instructor/manage-courses/create-course"}>
+              <Button type="primary">Add New Course</Button>
+            </Link>
+          </div>
         </div>
+
       </div>
       <Table rowKey={(record: Course) => record._id} columns={columnsCourses} dataSource={courses} pagination={false} onChange={handleTableChange} />
       <div className="flex justify-end py-8">

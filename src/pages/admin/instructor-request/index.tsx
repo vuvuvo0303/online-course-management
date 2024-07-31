@@ -12,7 +12,7 @@ import {
   TablePaginationConfig,
   Tag,
 } from "antd";
-import { API_GET_USERS, API_REVIEW_PROFILE_INSTRUCTOR, paths } from "../../../consts";
+import { API_GET_USERS, API_REVIEW_PROFILE_INSTRUCTOR } from "../../../consts";
 import { Instructor } from "models/User";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { format } from "date-fns";
@@ -223,7 +223,7 @@ const AdminInstructorRequest = () => {
 
   return (
     <div>
-      <CustomBreadcrumb currentTitle="Manage Instructor Request" currentHref={paths.ADMIN_HOME} />
+      <CustomBreadcrumb/>
       <Input.Search
         placeholder="Search By Name"
         value={searchText}

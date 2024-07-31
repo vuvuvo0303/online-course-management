@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import { Card, Popover, Button, Rate, Skeleton, message } from "antd";
+import { Card, Popover, Button, Rate, Skeleton } from "antd";
 import Carousel from "react-multi-carousel";
 import { Link, useNavigate } from "react-router-dom";
 import { paths } from "../../../consts/index";
-import { HeartOutlined } from "@ant-design/icons";
-import { fetchCoursesByClient, addCourseToCart } from "../../../services";
+import { ArrowRightOutlined, HeartOutlined } from "@ant-design/icons";
+import { fetchCoursesByClient, addCourseToCart, getUserFromLocalStorage } from "../../../services";
 import { Course } from "../../../models";
 import { format } from "date-fns";
-import { user } from "../../../services/users";
 
 const { Meta } = Card;
 
-const AllCourses: React.FC = () => {
+const AllCourses = () => {
   const [ratings, setRatings] = useState<number[]>([3, 4, 5]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const user = getUserFromLocalStorage();
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },
@@ -54,18 +54,27 @@ const AllCourses: React.FC = () => {
 
   const renderPopoverContent = (course: Course) => {
     // Add course and go to cart
-    const handleGoToCourse = async () => {
-        if (!user || user.role !== 'student') {
-            message.info("Please log in to add the course to your cart")
-          navigate("/login");
-        } else {
-          try {
+    const handleGoToCourse = async (course: Course) => {
+      if (!user || user.role !== 'student') {
+        navigate(paths.LOGIN);
+      } else {
+        try {
+          if (course.is_purchased === false && course.is_in_cart === false) {
+            // setLoading(true)
             await addCourseToCart(course._id);
-          } catch (error) {
-            //
+            fetchCourse();
+            // setLoading(false)
+          } else if (course.is_in_cart === true && course.is_purchased === false) {
+            navigate(paths.STUDENT_CART);
+          } else if (course.is_in_cart === true && course.is_purchased === true) {
+            navigate(`${paths.STUDENT_STUDY_COURSE}/${course._id}`);
           }
+        } catch (error) {
+          console.error("Failed to handle course action:", error);
         }
-      };
+      }
+    };
+
     const lastUpdated = format(new Date(course.updated_at), "dd/MM/yyyy");
     return (
       <div className="popover-content w-full">
@@ -81,7 +90,7 @@ const AllCourses: React.FC = () => {
               </div>
               <div>
                 <p className="text-black text-[1rem] mb-2 truncate">
-                  Price: {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}{" "}
+                  Price: {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                 </p>
               </div>
             </div>
@@ -90,7 +99,7 @@ const AllCourses: React.FC = () => {
         <div className="flex items-center ml-[4rem]">
           <Button
             type="default"
-            onClick={handleGoToCourse}
+            onClick={() => handleGoToCourse(course)}
             style={{
               backgroundColor: "#A020F0",
               borderColor: "#A020F0",
@@ -100,7 +109,9 @@ const AllCourses: React.FC = () => {
               lineHeight: "normal", // Reset line height if necessary
             }}
           >
-            Add to cart
+            {course.is_purchased === false && course.is_in_cart === false && "Add to cart"}
+            {course.is_in_cart === true && course.is_purchased === false && "Go to cart"}
+            {course.is_purchased === true && course.is_in_cart === true && "Learn now"}
           </Button>
           <Link to={paths.STUDENT_ENROLLMENT} className="ml-4 mt-[0.4rem]">
             <HeartOutlined className="text-black text-2xl" />
@@ -126,7 +137,10 @@ const AllCourses: React.FC = () => {
     <div className="w-full">
       <div className="w-full text-left">
         <Link to={`/course/all-courses`}>
-          <h2 className="text-2xl font-bold mb-2 p-2">All Courses</h2>
+          <div className="flex">
+            <h2 className="text-2xl font-bold mb-2 p-2">All Courses</h2>
+            <ArrowRightOutlined className="mt-[-6px]" />
+          </div>
         </Link>
 
         {loading ? (

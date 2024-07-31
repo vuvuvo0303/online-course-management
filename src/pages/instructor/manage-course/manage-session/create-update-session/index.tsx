@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Breadcrumb, Select, message } from "antd";
+import { Button, Form, Input, Select, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import { HomeOutlined } from "@ant-design/icons";
 import { Course, Session } from "../../../../../models";
 import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
 import { axiosInstance, getUserFromLocalStorage } from "../../../../../services";
 import TinyMCEEditorComponent from "../../../../../components/tinyMCE";
 import LoadingComponent from "../../../../../components/loading";
+import CustomBreadcrumb from "../../../../../components/breadcrumb";
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -19,7 +19,7 @@ const formItemLayout = {
 };
 
 const CreateUpdateSession = () => {
-
+  
   const { courseId, sessionId } = useParams<{ courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
@@ -63,6 +63,9 @@ const CreateUpdateSession = () => {
   }, [courseId, form, sessionId]);
   //Fetch course
   useEffect(() => {
+    if (courseId) {
+      setCourseIdUpdate(courseId)
+    } 
     const fetchCourses = async () => {
       const res = await axiosInstance.post(API_GET_COURSES,
         {
@@ -84,6 +87,7 @@ const CreateUpdateSession = () => {
     };
     fetchCourses();
   }, [userId, role])
+
 
   const onFinish = async (values: Session) => {
     values.description = content;
@@ -115,11 +119,9 @@ const CreateUpdateSession = () => {
       // create session component for manga sessions and manage all sessions
       try {
         // manage course -> manage session
-        if (courseId) {
-          setCourseIdUpdate(courseId);
-        } else {
+        if (!courseId) {
           setCourseIdUpdate(values.course_id)
-        }
+        } 
         await axiosInstance.post(`${API_CREATE_SESSION}`, {
           "name": values.name,
           "course_id": courseIdUpdate,
@@ -155,35 +157,7 @@ const CreateUpdateSession = () => {
         <LoadingComponent />
       ) : (
         <div className="w-full max-w-6xl bg-white p-8 rounded shadow">
-          {
-            courseId ? (<Breadcrumb className="py-2" >
-              <Breadcrumb.Item href="/dashboard">
-                <HomeOutlined />
-              </Breadcrumb.Item>
-              <Breadcrumb.Item href="/instructor/manage-courses">
-                Manage Courses
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                href={`/instructor/manage-courses/${courseId}/manage-sessions`}
-              >Manage Sessions</Breadcrumb.Item>
-
-              <Breadcrumb.Item >
-                {sessionId ? "Update Session" : "Create Session"}
-              </Breadcrumb.Item>
-            </Breadcrumb>)
-              :
-              <Breadcrumb className="py-2">
-                <Breadcrumb.Item href="/dashboard">
-                  <HomeOutlined />
-                </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  href={`/instructor/manage-all-sessions`}
-                >Manage All Sessions</Breadcrumb.Item>
-                <Breadcrumb.Item >
-                  {sessionId ? "Update Session" : "Create Session"}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-          }
+          <CustomBreadcrumb/>
 
           <h1 className="text-center mb-8">{sessionId ? "Update Session" : "Create Session"}</h1>
           <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>

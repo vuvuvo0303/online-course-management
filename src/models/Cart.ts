@@ -14,6 +14,8 @@ export class Cart {
     student_name: string;
     price_paid: number;
     instructor_name: string;
+    course_image: string;
+    course_video: string;
     constructor(
       _id: string = "",
       cart_no: string = "",
@@ -30,6 +32,9 @@ export class Cart {
       student_name: string = "",
       price_paid: number = 0,
       instructor_name: string = "",
+    course_image: string = "",
+    course_video: string = ""
+
     ) {
       this._id = _id;
       this.cart_no = cart_no;
@@ -46,6 +51,18 @@ export class Cart {
       this.student_name = student_name;
       this.price_paid = price_paid;
       this.instructor_name = instructor_name;
+      this.course_image = course_image
+      this.course_video = course_video
     }
   }
   
+
+  export interface CartComponentsProps {
+    cartsNew?: Cart;
+    cartsCancel?: Cart;
+    totalCost: number;
+    handleCheckoutNow: () => void;
+    onChangeCheckBox: (cart: Cart) => void;
+    handleDeleteCart: (cart_id: string) => void
+    cartsWaitingPaid: Cart[];
+}

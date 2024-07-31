@@ -1,3 +1,4 @@
+
 /* API */
 
 //Base URL
@@ -52,7 +53,7 @@ export const API_DELETE_LESSON = "/api/lesson";
 //Review
 export const API_CREATE_REVIEW = "/api/review";
 export const API_GET_REVIEWS = "/api/review/search";
-//export const API_GET_REVIEW = "/api/review";
+export const API_GET_REVIEW = "/api/review";
 export const API_UPDATE_REVIEW = "/api/review";
 export const API_DELETE_REVIEW = "/api/review";
 //Course Logs
@@ -86,6 +87,9 @@ export const API_CLIENT_GET_CATEGORIES = "/api/client/category/search";
 export const API_INSTRUCTOR_OR_STUDENT_SUBSCRIPTIONS = "/api/subscription";
 export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-instructor";
 export const API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER = "/api/subscription/search-for-subscriber";
+
+
+
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";
@@ -93,6 +97,7 @@ export const colorIs_delete = (is_delete: boolean) => {
     return "blue";
   }
 };
+
 
 export const optionStatus = () => [
   { label: "new", value: "new" },
@@ -140,7 +145,7 @@ export const getColorPurchase = (status: string) => {
     case "request_paid":
       return "blue";
     case "completed":
-      return "yellow";
+      return "green";
   }
 };
 
@@ -151,7 +156,7 @@ export const getColorPayout = (status: string) => {
     case "request_payout":
       return "blue";
     case "completed":
-      return "yellow";
+      return "green";
     case "rejected":
       return "purple";
   }
@@ -210,6 +215,7 @@ export const paths = {
   STUDENT_CHECKOUT: "/checkout",
   STUDENT_CHANGEPASSWORD: "/change-password",
   LESSON: "/course/lesson/:_id",
+  STUDENT_STUDY_COURSE: "/course/lesson",
   STUDENT_CART: "/cart",
   STUDENT_PURCHASE: "/purchase",
   STUDENT_SUBSCRIPTION: "/subscription",
@@ -229,7 +235,7 @@ export const paths = {
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",
   INSTRUCTOR_CREATE_LECTURE:
-    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/create-lecture",
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lessons/create-lesson",
   INSTRUCTOR_UPDATE_LECTURE:
     "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
@@ -243,6 +249,7 @@ export const paths = {
     "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:_id",
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
+  INSTRUCTOR_LESSON_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/:sessionId/manage-lessons",
   INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS:
     "manage-all-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS:
@@ -291,6 +298,7 @@ export const paths = {
   AVATAR:
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PyKYrBKAWWy6YCbQzWQcwIRqH8wYMPluIZiMpV1w0NYSbocTZz0ICWFkLcXhaMyvCwQ&usqp=CAU",
 };
+
 
 /* ROLE */
 export const roles = {

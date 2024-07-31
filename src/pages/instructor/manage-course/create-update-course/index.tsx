@@ -1,8 +1,7 @@
 import { Category, Course } from "../../../../models";
 import { API_CREATE_COURSE, API_GET_COURSE, API_UPDATE_COURSE } from "../../../../consts";
 import { useNavigate, useParams } from "react-router-dom";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Form, Input, message, Select } from 'antd';
+import { Button, Form, Input, message, Select } from 'antd';
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import axiosInstance from "../../../../services/axiosInstance.ts";
@@ -10,6 +9,7 @@ import { getCategories } from "../../../../services/category.ts";
 import TinyMCEEditorComponent from "../../../../components/tinyMCE";
 import { formItemLayout } from "../../../../layout/form";
 import LoadingComponent from "../../../../components/loading";
+import CustomBreadcrumb from "../../../../components/breadcrumb/index.tsx";
 const InstructorCreateCourse: React.FC = () => {
     const [des, setDes] = useState<string>("");
     const navigate = useNavigate();
@@ -53,9 +53,9 @@ const InstructorCreateCourse: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const dataCategories = await getCategories();
-            setCategories(dataCategories);
-            console.log("dataCategories: ", dataCategories)
+            const responseCategories = await getCategories();
+            const categories = responseCategories.data.pageData
+            setCategories(categories);
             setLoading(false);
         }
         fetchData();
@@ -121,61 +121,7 @@ const InstructorCreateCourse: React.FC = () => {
 
     return (
         <>
-            {
-                id ?
-                    (
-                        <Breadcrumb
-                            items={[
-                                {
-                                    href: '/instructor/dashboard',
-                                    title: <HomeOutlined />,
-                                },
-                                {
-                                    href: '/instructor/manage-courses',
-                                    title: (
-                                        <>
-                                            <UserOutlined />
-                                            <span>Manage Courses</span>
-                                        </>
-                                    ),
-                                },
-                                {
-                                    href: (`/instructor/manage-courses/${id}`),
-                                    title: (
-                                        <>
-                                            <UserOutlined />
-                                            <span>Course Detail </span>
-                                        </>
-                                    ),
-                                },
-
-                                {
-                                    title: <>{_id ? "Update Course" : "Create Course"}</>,
-                                },
-                            ]}
-                        />
-                    )
-                    :
-                    <Breadcrumb
-                        items={[
-                            {
-                                href: '/instructor/dashboard',
-                                title: <HomeOutlined />,
-                            },
-                            {
-                                href: '/instructor/manage-courses',
-                                title: (
-                                    <>
-                                        <span>Manage Courses</span>
-                                    </>
-                                ),
-                            },
-                            {
-                                title: <>{_id ? "Update Course" : "Create Course"}</>,
-                            },
-                        ]}
-                    />
-            }
+                <CustomBreadcrumb/>
             {_id !== undefined && _id !== "" ? (
                 <h1 className="text-center">Update Course</h1>
             ) : (
@@ -207,7 +153,7 @@ const InstructorCreateCourse: React.FC = () => {
                         label="Description"
                         name="description"
                     >
-                        <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
+                        <Input.TextArea />
                     </Form.Item>
                     {
                         !_id && <Form.Item
@@ -215,7 +161,8 @@ const InstructorCreateCourse: React.FC = () => {
                             name="content"
                             rules={[{ required: true, message: 'Please input!' }]}
                         >
-                            <Input.TextArea />
+                            <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
+
                         </Form.Item>
                     }
                     <Form.Item

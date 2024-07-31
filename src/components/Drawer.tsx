@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { paths } from '../consts';
 import { Link, useNavigate } from 'react-router-dom';
 import { Drawer, Space, Avatar } from 'antd';
 import { MenuOutlined, CaretRightOutlined, CaretLeftOutlined } from '@ant-design/icons';
-import { categoryFilters, categoryCourse } from '../consts/index';
+import { categoryFilters, categoryCourse, paths } from '../consts';
 
 const SideBar: React.FC = () => {
     const [open, setOpen] = useState(false);
@@ -22,12 +21,8 @@ const SideBar: React.FC = () => {
 
     useEffect(() => {
         if (user) {
-            try {
-                const userData = JSON.parse(user);
-                setDataUser({ role: userData.role, fullName: userData.name, email: userData.email, avatarUrl: userData.avatar });
-            } catch (error) {
-                //
-            }
+            const userData = JSON.parse(user);
+            setDataUser({ role: userData.role, fullName: userData.name, email: userData.email, avatarUrl: userData.avatar });
         }
     }, [navigate, user]);
 
@@ -114,7 +109,7 @@ const SideBar: React.FC = () => {
                 )}
                 <div className="p-4">
                     <div className="font-semibold text-gray-900 text-base">More from Flearn</div>
-                    <Link to="/teaching" onClick={onClose} className="link text-sm">
+                    <Link to={paths.TEACHING} onClick={onClose} className="link text-sm">
                         Be an Instructor
                     </Link>
                 </div>

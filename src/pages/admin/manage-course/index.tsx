@@ -18,7 +18,7 @@ import {
   TableProps,
   Tag,
 } from "antd";
-import { API_COURSE_LOGS, API_COURSE_STATUS, API_GET_COURSES, getColor, paths } from "../../../consts";
+import { API_COURSE_LOGS, API_COURSE_STATUS, API_GET_COURSES, getColor } from "../../../consts";
 import { format } from "date-fns";
 import { Course, Log } from "../../../models";
 import TextArea from "antd/es/input/TextArea";
@@ -506,7 +506,7 @@ const AdminManageCourses: React.FC = () => {
           </Button>
         </div>
       </Modal>
-      <CustomBreadcrumb currentTitle="Manage Courses" currentHref={paths.ADMIN_HOME} />
+      <CustomBreadcrumb  />
 
       {/* Filters and Search */}
       <Space className="flex flex-wrap  mb-4">

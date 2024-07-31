@@ -3,13 +3,11 @@ import {
   Button,
   Form,
   Input,
-  Breadcrumb,
   Select,
   message,
 } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Lessons, Session } from "../../../../../../models/index.ts";
-import { HomeOutlined } from "@ant-design/icons";
 import { axiosInstance, getUserFromLocalStorage } from "../../../../../../services";
 import {
   API_CREATE_LESSON,
@@ -18,11 +16,11 @@ import {
   API_GET_SESSION,
   API_GET_SESSIONS,
   API_UPDATE_LESSON,
-  paths,
 } from "../../../../../../consts";
 import TinyMCEEditorComponent from "../../../../../../components/tinyMCE";
 import { formItemLayout } from "../../../../../../layout/form";
 import LoadingComponent from "../../../../../../components/loading";
+import CustomBreadcrumb from "../../../../../../components/breadcrumb/index.tsx";
 const CreateUpdateLesson: React.FC = () => {
   const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string; sessionId: string }>();
   const [form] = Form.useForm();
@@ -185,29 +183,9 @@ const CreateUpdateLesson: React.FC = () => {
       ) : (
         <div className="w-full max-w-7xl bg-white  p-8 rounded shadow">
           {courseId && sessionId != undefined ? (
-            <Breadcrumb className="py-2">
-              <Breadcrumb.Item href={paths.INSTRUCTOR_DASHBOARD}>
-                <HomeOutlined />
-              </Breadcrumb.Item>
-              <Breadcrumb.Item href="/instructor/manage-courses">Manage Courses</Breadcrumb.Item>
-              <Breadcrumb.Item href={`/instructor/manage-courses/${courseId}/manage-sessions`}>
-                Manage Sessions
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                href={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures`}
-              >
-                Manage Lectures
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>{lectureId ? "Update Lesson" : "Create Lesson"}</Breadcrumb.Item>
-            </Breadcrumb>
+            <CustomBreadcrumb/>
           ) : (
-            <Breadcrumb className="py-2">
-              <Breadcrumb.Item href={paths.INSTRUCTOR_DASHBOARD}>
-                <HomeOutlined />
-              </Breadcrumb.Item>
-              <Breadcrumb.Item href={`/instructor/manage-all-lectures`}>Manage All Lessons</Breadcrumb.Item>
-              <Breadcrumb.Item>{lectureId ? "Update Lesson" : "Create Lesson"}</Breadcrumb.Item>
-            </Breadcrumb>
+            <CustomBreadcrumb/>
           )}
           <h1 className="text-center mb-8">{lectureId ? "Update Lesson" : "Create Lesson"}</h1>
           <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
@@ -303,14 +281,14 @@ const CreateUpdateLesson: React.FC = () => {
             </Form.Item>
             <Form.Item
               label="full_time"
-              name="full_time"
+              name="Full Time"
               rules={[{ required: true, message: "Please input a number!" }]}
             >
               <Input type="number" />
             </Form.Item>
             <Form.Item
               label="position_order"
-              name="position_order"
+              name="Position Order"
               rules={[{ required: true, message: "Please input a number!" }]}
             >
               <Input type="number" />

@@ -28,18 +28,13 @@ const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
 
     useEffect(() => {
         const fetchCarts = async () => {
-            try {
-                const cartsNewResponse = await getCarts('new');
-                const cartsCancelResponse = await getCarts('cancel');
-                setCarts({
-                    cartsNew: cartsNewResponse,
-                    cartsCancel: cartsCancelResponse,
-                });
-            } catch (error) {
-                console.error("Failed to fetch carts:", error);
-            } finally {
-                setLoading(false);
-            }
+            const cartsNewResponse = await getCarts('new');
+            const cartsCancelResponse = await getCarts('cancel');
+            setCarts({
+                cartsNew: cartsNewResponse,
+                cartsCancel: cartsCancelResponse,
+            });
+            setLoading(false);
         };
 
         fetchCarts();
@@ -86,7 +81,7 @@ const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
                         </div>
                     ))}
                     <button className="mt-2 ml-[1rem] px-4 py-2 bg-black text-white w-[19rem] rounded">View cart</button>
-                    <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost.toLocaleString("vi-VN",{style:"currency",currency:"VND"})} </div>
+                    <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {totalCost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })} </div>
                 </>
             )}
         </div>

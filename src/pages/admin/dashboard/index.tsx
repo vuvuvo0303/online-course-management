@@ -1,12 +1,8 @@
 import { FileDoneOutlined, PlaySquareOutlined, TeamOutlined } from "@ant-design/icons";
 import { Badge, Card, Col, Row } from "antd";
 import { UserChart } from "../chart/userchart";
-import { RevenueChart } from "../chart/revenuechart";
-// import top1 from "../../../assets/top1.png";
-// import top2 from "../../../assets/top2.png";
-// import top3 from "../../../assets/top3.png";
+import { RevenueChart } from '../chart/revenuechart';
 import { useCallback, useEffect, useState } from "react";
-import { paths } from "../../../consts";
 // import { Course } from "../../../models";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import { getBlogs, getCourses } from "../../../services";
@@ -21,11 +17,11 @@ const AdminDashboard: React.FC = () => {
 
   const fetchData = useCallback(async () => {
     const blogs = await getBlogs();
-    const courses = await getCourses("", "", "", false, 1, 100);
+    const courses = await getCourses();
     const students = await getUsers("", "student");
     const instructors = await getUsers("", "instructor");
     const totalBlogs = blogs.data.pageInfo.totalItems
-    const totalCourses = courses.data.pageInfo.totalItems
+    const totalCourses = courses.data.pageInfo.totalItems;
     const totalStudents = students.data.pageInfo.totalItems
     const totalInstructors = instructors.data.pageInfo.totalItems
 
@@ -50,7 +46,7 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <>
-      <CustomBreadcrumb currentTitle="Dashboard" currentHref={paths.ADMIN_HOME} />
+      <CustomBreadcrumb />
       <div className="flex justify-between drop-shadow-xl gap-4">
         <Badge.Ribbon text="FLearn" color="blue">
           <Card title="Total courses in the system" bordered={false} style={{ width: 300 }}>

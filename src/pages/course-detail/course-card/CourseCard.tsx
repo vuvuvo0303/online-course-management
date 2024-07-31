@@ -1,9 +1,11 @@
-import { Rate } from "antd";
-import { Link } from 'react-router-dom';
-import { Course } from "../../../models/Course";
-import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, EyeOutlined, DislikeOutlined, LikeOutlined, ShareAltOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { message, Rate, } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
+import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { addCourseToCart } from '../../../services/cart';
 import { paths } from "../../../consts";
+import { formatMinute } from "../../../utils";
+import { Course } from "../../../models";
 
 interface CourseCardProps {
     course: Course;
@@ -11,7 +13,28 @@ interface CourseCardProps {
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
+    const navigate = useNavigate();
+    const user = localStorage.getItem("user");
+    const [loading, setLoading] = useState(false);
 
+    const handleAddToCart = async () => {
+        if (!user) {
+            navigate(paths.LOGIN);
+            message.info('Please login before adding items to your cart.');
+        } else {
+            setLoading(true);
+            try {
+                navigate(paths.STUDENT_CART);
+                await addCourseToCart(course._id);
+                // message.success('Course added to cart!');
+            } catch (error) {
+                // message.error('Failed to add course to cart. Please try again.');
+                // Optionally navigate back or handle the error UI-wise
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
 
     return (
         <div className="flex flex-col lg:flex-row w-full lg:h-[24rem] bg-gray shadow-md rounded-lg p-5">
@@ -19,6 +42,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                 <img
                     src={course.image_url}
                     className="w-[25rem] h-[15rem] rounded-lg"
+                    alt={course.name}
                 />
                 <div className="flex flex-row gap-10 text-white lg:mt-[3.6rem] lg:ml-20">
                     <a href="/enrollment" className="button save flex items-center mb-2">
@@ -33,7 +57,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             </div>
             <div className="pl-5 flex flex-col text-white flex-grow lg:pl-10">
                 <div className="text-3xl font-bold">{course.name}</div>
-                <div className="pt-2 pb-2">{course.description.replace(/^<p>/, '').replace(/<\/p>$/, '')}</div>
+                <div className="pt-2 pb-2 truncate w-full max-w-[200px]">
+                    {course.description.replace(/^<p>/, '').replace(/<\/p>$/, '')}
+                </div>
                 <div className="space-y-2 flex-grow">
                     <div className="flex items-center mb-2">
                         <div className="mt-3">
@@ -41,7 +67,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                         </div>
                         <span className="text-xs mt-2">{`(15,254 ratings)`}</span>
                     </div>
-                    <div><strong>Method:</strong> {course.category_name}</div>
+                    <div><strong>Category:</strong> {course.category_name}</div>
                     <div><strong>Instructor:</strong> {course.instructor_name}</div>
                     <div><span className="text-sm">Last update:</span> {new Date(course.updated_at).toLocaleDateString()}</div>
                     <div className="flex flex-row gap-4">
@@ -61,13 +87,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                                 </button>
                             </Link>
                         ) : (
-                            <>
-                                <Link to={paths.STUDENT_CART}>
-                                    <button onClick={() => addCourseToCart(course._id)} className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
-                                        <ShoppingCartOutlined className="mr-2" /> Add to Cart
-                                    </button>
-                                </Link>
-                            </>
+                            <button onClick={handleAddToCart} className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500" disabled={loading}>
+                                <ShoppingCartOutlined className="mr-2" />
+                                {loading ? 'Adding...' : 'Add to Cart'}
+                            </button>
                         )}
                     </div>
                     <div className="text-xs mt-2">30-Day Money-Back Guarantee</div>
@@ -76,28 +99,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             <div className="ml-4 flex flex-row text-white mt-4 lg:mt-0">
                 <div className="ml-[7rem] mb-[0.1rem] flex flex-row gap-4 items-end">
                     <div>
-                        <button className="ml-[-0.2rem] mt-[0.1rem]">
-                            <EyeOutlined className="mr-[0.2rem]" />
-                            <span>1452</span>
-                        </button>
-                    </div>
-                    <div>
-                        <button className="ml-[0.1rem] mt-[0.1rem]">
-                            <LikeOutlined className="mr-[0.3rem]" />
-                            <span>100</span>
-                        </button>
-                    </div>
-                    <div>
-                        <button className="ml-[0.1rem] mt-[0.1rem]">
-                            <DislikeOutlined className="mr-[0.3rem]" />
-                            <span>20</span>
-                        </button>
-                    </div>
-                    <div>
-                        <button className="ml-[0.1rem] mt-[0.1rem]">
-                            <ShareAltOutlined className="mr-[0.3rem]" />
-                            <span>9</span>
-                        </button>
+                        <div className="mr-3 mt-[0.1rem]">
+                            <ClockCircleOutlined className="mr-[0.2rem]" />
+                            <span>Full time to learn course: {formatMinute(course.full_time)}</span>
+                        </div>
                     </div>
                 </div>
             </div>

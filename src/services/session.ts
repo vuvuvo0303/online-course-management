@@ -22,8 +22,7 @@ export const createSession =
 
             }
         } catch (error) {
-            console.log("createSession - Error occurred: ", error)
-            return error;
+            return {};
         }
     }
 
@@ -44,14 +43,20 @@ export const getSessions =
                 }
             }
             )
-            if (response) {
                 return response.data.pageData;
-            }
-        } catch (error) {
-            console.log("getSessions - Error occurred: ", error)
-            return error;
-        }
-    }
+            } catch (error) {
+                return {
+                  data: {
+                    pageInfo: {
+                      totalItems: 0,
+                      pageNum,
+                      pageSize
+                    },
+                    pageData: []
+                  }
+                };
+              }
+            };
 
 // SESSION-03 Get Session (Instructor)
 export const getSession = async (sessionId: string) => {
@@ -61,8 +66,7 @@ export const getSession = async (sessionId: string) => {
             return response.data;
         }
     } catch (error) {
-        console.log("getSession - Error occurred: ", error)
-        return error;
+        return {};
     }
 }
 
@@ -84,8 +88,7 @@ export const updateSession =
 
             }
         } catch (error) {
-            console.log("updateSession - Error occurred: ", error)
-            return error;
+            return {};
         }
     }
 
@@ -93,12 +96,9 @@ export const updateSession =
 export const deleteSession = async (sessionId: string) => {
     try {
         const response = await axiosInstance.delete(`${API_DELETE_SESSION}/${sessionId}`)
-        if (response) {
             message.success("Delete Session Successfully!")
             return response;
-        }
     } catch (error) {
-        console.log("deleteSession - Error occurred: ", error)
-        return error;
+        return {};
     }
 }

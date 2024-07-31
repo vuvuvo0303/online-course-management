@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { API_GET_PAYOUTS, getColorPayout, paths } from "../../../consts";
+import { API_GET_PAYOUTS, getColorPayout } from "../../../consts";
 import {
   Button,
   Form,
@@ -13,11 +13,12 @@ import {
   Table,
   TableColumnsType,
   TablePaginationConfig,
+  TableProps,
   Tag,
 } from "antd";
 import { format } from "date-fns";
 import { SearchOutlined } from "@ant-design/icons";
-import { Payout } from "models/Payout.ts";
+import { Payout, Transaction } from "../../../models/Payout.ts";
 import { useDebounce } from "../../../hooks";
 import CustomBreadcrumb from "../../../components/breadcrumb";
 import { axiosInstance, updateStatusPayout } from "../../../services";
@@ -25,6 +26,8 @@ import LoadingComponent from "../../../components/loading";
 import TextArea from "antd/es/input/TextArea";
 
 const AdminManagePayouts: React.FC = () => {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState([false, false]);
   const [dataPayouts, setDataPayouts] = useState<Payout[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
@@ -40,12 +43,22 @@ const AdminManagePayouts: React.FC = () => {
     setDataStatusPayout({ id, status })
   };
 
+  const toggleModal = (idx: number, target: boolean, transactions?: Transaction[]) => {
+    if (transactions) {
+      setTransactions(transactions);
+    }
+    setIsModalOpen((p) => {
+      p[idx] = target;
+      return [...p];
+    });
+  };
+
   const handleOk = async () => {
     if (comment != "" && dataStatusPayout.status === "rejected") {
       setLoading(true)
       await handleUpdateStatus(dataStatusPayout.id, dataStatusPayout.status, comment)
       setComment("")
-    }else if(dataStatusPayout.status === "completed"){
+    } else if (dataStatusPayout.status === "completed") {
       setLoading(true)
       await handleUpdateStatus(dataStatusPayout.id, dataStatusPayout.status, comment)
       setComment("")
@@ -60,7 +73,6 @@ const AdminManagePayouts: React.FC = () => {
   };
 
   const handleCancel = () => {
-    console.log('Clicked cancel button');
     setOpen(false);
   };
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -134,17 +146,26 @@ const AdminManagePayouts: React.FC = () => {
 
   const columns: TableColumnsType<Payout> = [
     {
-      title: "Payout No",
-      dataIndex: "payout_no",
-      key: "payout_no",
-      width: "15%",
-      render: (text) => <Button type="link">{text}</Button>,
+      title: 'Payout No',
+      dataIndex: 'transactions',
+      key: 'transactions',
+      width: '15%',
+      render: (transactions: Transaction[], record: Payout) => (
+        <div onClick={() => toggleModal(0, true, transactions)} className="text-blue-500 cursor-pointer">
+          {record.payout_no}
+        </div>
+      )
     },
     {
       title: "Instructor Email",
       dataIndex: "instructor_email",
       key: "instructor_email",
       width: "15%",
+    },
+    {
+      title: 'Balance Origin',
+      dataIndex: 'balance_origin',
+      key: 'balance_origin',
     },
     {
       title: "Instructor Paid",
@@ -223,7 +244,6 @@ const AdminManagePayouts: React.FC = () => {
 
   const handleUpdateStatus = async (id: string, status: string, comment: string) => {
     const res = await updateStatusPayout(id, status, comment);
-    console.log("payout status: ", status);
     if (res) {
       message.success(`Change Payout Status To ${status === "completed" ? "Completed" : "Rejected"} Successfully`)
       getPayouts();
@@ -234,8 +254,42 @@ const AdminManagePayouts: React.FC = () => {
     setComment(e.target.value);
   };
 
+  const columnsTransactions: TableProps['columns'] = [
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      key: 'price',
+    },
+    {
+      title: 'Discount',
+      dataIndex: 'discount',
+      key: 'discount',
+    },
+    {
+      title: 'Price Paid',
+      dataIndex: 'price_paid',
+      key: 'price_paid',
+    },
+    {
+      title: 'Created Date',
+      dataIndex: 'created_at',
+      key: 'craeted_at',
+      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+    },
+  ];
+
   return (
     <div>
+      <Modal
+        title="Transactions"
+        open={isModalOpen[0]}
+        onOk={() => toggleModal(0, false)}
+        onCancel={() => toggleModal(0, false)}
+        // classNames={classNames}
+        footer={null}
+      >
+        <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
+      </Modal>
       <Modal
         title="Title"
         open={open}
@@ -247,12 +301,11 @@ const AdminManagePayouts: React.FC = () => {
           <Form.Item label="Comment" name="Comment">
             <TextArea value={comment} onChange={handleSaveComment} />
           </Form.Item>
-
         </Form>
 
       </Modal>
       <div className="flex justify-between">
-        <CustomBreadcrumb currentTitle="Manage Payouts" currentHref={paths.ADMIN_HOME} />
+        <CustomBreadcrumb homeHref="/" />
       </div>
       <Space className="flex flex-wrap mb-4">
         <Input.Search

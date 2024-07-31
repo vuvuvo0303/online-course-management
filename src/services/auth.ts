@@ -91,7 +91,6 @@ export const registerWithGoogle = async (
 
 
 export const handleNavigateRole = async (token: string, navigate: ReturnType<typeof useNavigate>) => {
-  try {
     const response = await axiosInstance.get(API_LOGIN);
     const user = response.data;
     localStorage.setItem("token", token);
@@ -111,10 +110,6 @@ export const handleNavigateRole = async (token: string, navigate: ReturnType<typ
         break;
     }
     message.success("Login successfully");
-  }
-  catch (error) {
-    //
-  }
 };
 
 export const logout = ( navigate: ReturnType<typeof useNavigate>) => {
@@ -125,5 +120,6 @@ export const logout = ( navigate: ReturnType<typeof useNavigate>) => {
   else {
     navigate(paths.HOME);
   }
+  message.info("You logout from the system");
   localStorage.clear();
 };
