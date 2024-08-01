@@ -56,24 +56,8 @@ const Info = () => {
                     />
                     <div>
                         <h3 className="text-xl font-bold">{dataInstructor?.name}</h3>
-                        <p>Create Date: {formatDate(dataInstructor?.created_at)}</p>
                         <p>Date of Birth: {formatDate(dataInstructor?.dob)}</p>
-
-                    </div>
-                </div>
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center">
-                        <span className="ml-2">Create Date: {formatDate(dataInstructor?.created_at)}</span>
-                    </div>
-                </div>
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center">
-                        <span className="ml-2">Date of Birth: {formatDate(dataInstructor?.dob)}</span>
-                    </div>
-                    <div>
-                        <span className="text-gray-500">
-                            {/* <FileWordOutlined className="ml-3" /> {instructor.numLectures} lectures */}
-                        </span>
+                        <p>Create Date: {formatDate(dataInstructor?.created_at)}</p>
                     </div>
                 </div>
                 <p className="mb-6 text-gray-700">

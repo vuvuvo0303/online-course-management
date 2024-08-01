@@ -6,7 +6,7 @@ import Login2 from "../../assets/Login2.jpg";
 import { useForm } from "antd/es/form/Form";
 import axiosInstance from "../../services/axiosInstance.ts";
 import Recaptcha from "../register/reCaptcha.tsx";
-import { API_REGISTER, emailRules, passwordRules, paths, roles } from "../../consts";
+import { API_REGISTER, avatarUrlRules, descriptionRules, emailRules, nameRules, passwordRules, paths, phoneNumberRules, roleRules, roles, videoRules } from "../../consts";
 import { Instructor } from "../../models";
 import { getBase64, uploadFile } from "../../utils";
 import { UploadButton } from "../../components";
@@ -105,11 +105,7 @@ const RegisterPage: React.FC = () => {
                 <Form.Item
                   label="Name"
                   name="name"
-                  rules={[
-                    { required: true, message: "Please input your name!" },
-                    { min: 4, message: "Name must be at least 4 characters!" },
-                    { max: 20, message: "Name must be at most 20 characters!" },
-                  ]}
+                  rules={nameRules}
                   labelCol={{ span: 24 }}
                   wrapperCol={{ span: 24 }}
                   className="mb-5"
@@ -130,9 +126,7 @@ const RegisterPage: React.FC = () => {
 
                 <Form.Item
                   name="role"
-                  rules={[
-                    { required: true, message: "Please select your role!" },
-                  ]}
+                  rules={roleRules}
                   labelCol={{ span: 24 }}
                   wrapperCol={{ span: 24 }}
                   className="mb-5"
@@ -148,12 +142,7 @@ const RegisterPage: React.FC = () => {
                     <Form.Item
                       label="Video"
                       name="video"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your video link!",
-                        },
-                      ]}
+                      rules={videoRules}
                       labelCol={{ span: 24 }}
                       wrapperCol={{ span: 24 }}
                       className="mb-5"
@@ -164,12 +153,7 @@ const RegisterPage: React.FC = () => {
                     <Form.Item
                       label="Description"
                       name="description"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your description!",
-                        },
-                      ]}
+                      rules={descriptionRules}
                       labelCol={{ span: 24 }}
                       wrapperCol={{ span: 24 }}
                       className="mb-5"
@@ -180,12 +164,7 @@ const RegisterPage: React.FC = () => {
                     <Form.Item
                       label="Phone Number"
                       name="phone_number"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your phone number!",
-                        },
-                      ]}
+                      rules={phoneNumberRules}
                       labelCol={{ span: 24 }}
                       wrapperCol={{ span: 24 }}
                       className="mb-5"
@@ -195,12 +174,7 @@ const RegisterPage: React.FC = () => {
 
                     <Form.Item
                       name="avatarUrl"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please upload your Avatar",
-                        },
-                      ]}
+                      rules={avatarUrlRules}
                     >
                       <Upload
                         action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"

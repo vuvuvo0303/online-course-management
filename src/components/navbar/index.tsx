@@ -56,21 +56,28 @@ const Navbar: React.FC = () => {
     const res = await getCarts("new");
     const res2 = await getCarts("cancel");
     let totalCost = 0;
+
     if (res) {
       setCartsNew(res);
       for (let index = 0; index < res.length; index++) {
-        totalCost += res[index].price;
+        if (res[index] && res[index].price !== undefined) {
+          totalCost += res[index].price;
+        }
       }
-      setTotalCost(totalCost);
     }
+
     if (res2) {
       setCartsCancel(res2);
       for (let index = 0; index < res2.length; index++) {
-        totalCost += res[index].price;
+        if (res2[index] && res2[index].price !== undefined) {
+          totalCost += res2[index].price;
+        }
       }
-      setTotalCost(totalCost);
     }
+
+    setTotalCost(totalCost);
   };
+
 
   useEffect(() => {
     if (token) {

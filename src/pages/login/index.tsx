@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Form, FormProps, Input, Modal, Select } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Login5 from "../../assets/Login5.jpg";
-import { paths, roles } from "../../consts";
+import { paths, roles, emailRules, passwordRules } from "../../consts";
 import { GoogleLogin } from "@react-oauth/google";
 import { handleNavigateRole, login, loginWithGoogle, registerWithGoogle } from "../../services";
 
@@ -89,14 +89,7 @@ const LoginPage: React.FC = () => {
             <Form.Item
               name="email"
               label="Email"
-              rules={[
-                { required: true, message: "Please input your email!" },
-                {
-                  type: "email",
-                  message: "Please enter the correct email format!",
-                },
-                { pattern: /^\S*$/, message: "Email must not contain spaces!" },
-              ]}
+              rules={emailRules}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
@@ -109,14 +102,7 @@ const LoginPage: React.FC = () => {
             <Form.Item
               name="password"
               label="Password"
-              rules={[
-                { required: true, message: "Please input your password!" },
-                { min: 6, message: "Password must be at least 6 characters!" },
-                {
-                  pattern: /^\S*$/,
-                  message: "Password must not contain spaces!",
-                },
-              ]}
+              rules={passwordRules}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >

@@ -104,6 +104,44 @@ export const passwordRules: Rule[] = [
   { pattern: /^\S*$/, message: "Password must not contain spaces!" },
 ];
 
+export const nameRules: Rule[] = [
+    { required: true, message: "Please input your name!" },
+    { min: 4, message: "Name must be at least 4 characters!" },
+    { max: 20, message: "Name must be at most 20 characters!" },
+]
+
+export const roleRules: Rule[] = [
+  { required: true, message: "Please select your role!" },
+]
+
+export const videoRules: Rule[] = [
+    {
+      required: true,
+      message: "Please input your video link!",
+    },
+]
+
+export const descriptionRules: Rule[] = [
+  {
+    required: true,
+    message: "Please input your description!",
+  },
+]
+
+export const phoneNumberRules: Rule[] = [
+  {
+    required: true,
+    message: "Please input your phone number!",
+  },
+]
+
+export const avatarUrlRules: Rule[] = [
+    {
+      required: true,
+      message: "Please upload your Avatar",
+    },
+]
+
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";
