@@ -53,7 +53,7 @@ export const getItemsByInstructor = async (purchase_no: string, cart_no: string,
             }
         }
         )
-            return response.data.pageData;         
+            return response;         
         } catch (error) {
             return {
               data: {

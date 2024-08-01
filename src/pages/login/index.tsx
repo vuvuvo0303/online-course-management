@@ -100,7 +100,10 @@ const LoginPage: React.FC = () => {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
-              <Input placeholder="Enter Your Email" className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto" />
+              <Input
+                placeholder="Enter Your Email"
+                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto"
+              />
             </Form.Item>
 
             <Form.Item
@@ -117,13 +120,13 @@ const LoginPage: React.FC = () => {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
             >
-              <Input.Password placeholder="Enter your password" className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto" />
+              <Input.Password
+                placeholder="Enter your password"
+                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto"
+              />
             </Form.Item>
             <div className="flex justify-center">
-              <Link
-                className="hover:text-blue-600 mt-2"
-                to={paths.FORGOT_PASSWORD}
-              >
+              <Link className="hover:text-blue-600 mt-2" to={paths.FORGOT_PASSWORD}>
                 Forgot Password
               </Link>
             </div>
@@ -144,10 +147,7 @@ const LoginPage: React.FC = () => {
           <span className="mt-4 block text-center">
             Do you have an account?{" "}
             <strong>
-              <Link
-                to={paths.REGISTER}
-                className="hover:cursor-pointer hover:text-blue-600"
-              >
+              <Link to={paths.REGISTER} className="hover:cursor-pointer hover:text-blue-600">
                 Sign up here
               </Link>
             </strong>
@@ -157,19 +157,12 @@ const LoginPage: React.FC = () => {
             <span className="text-center mx-2">or</span>
             <hr className="border-gray-300 w-1/3" />
           </div>
-          <div className="flex justify-center mt-6">
-            {renderGoogleLogin()}
-          </div>
+          <div className="flex justify-center mt-6">{renderGoogleLogin()}</div>
         </div>
       </div>
-      <Modal
-        title="Select Role"
-        open={isModalVisible}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
-      >
+      <Modal title="Select Role" open={isModalVisible} onOk={handleModalOk} onCancel={handleModalCancel}>
         <Form>
-          <Form.Item label="Role" required>
+          <Form.Item label="Role" required labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
             <Select onChange={handleRoleChange}>
               <Select.Option value="student">Student</Select.Option>
               <Select.Option value="instructor">Instructor</Select.Option>
@@ -177,7 +170,7 @@ const LoginPage: React.FC = () => {
           </Form.Item>
           {role === roles.INSTRUCTOR && (
             <>
-              <Form.Item label="Description" required>
+              <Form.Item label="Description" required labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
                 <Input
                   placeholder="Description"
                   name="description"
@@ -185,7 +178,7 @@ const LoginPage: React.FC = () => {
                   onChange={handleAdditionalFieldsChange}
                 />
               </Form.Item>
-              <Form.Item label="Phone Number" required>
+              <Form.Item label="Phone Number" required labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
                 <Input
                   placeholder="Phone Number"
                   name="phone_number"
@@ -193,12 +186,8 @@ const LoginPage: React.FC = () => {
                   onChange={handleAdditionalFieldsChange}
                 />
               </Form.Item>
-              <Form.Item label="Video URL" required>
-                <Input
-                  name="video"
-                  value={additionalFields.video}
-                  onChange={handleAdditionalFieldsChange}
-                />
+              <Form.Item label="Video URL" required labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+                <Input name="video" value={additionalFields.video} onChange={handleAdditionalFieldsChange} />
               </Form.Item>
             </>
           )}
