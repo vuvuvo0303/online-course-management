@@ -26,7 +26,7 @@ import { getCategories } from "../../../services/category.ts";
 import LoadingComponent from "../../../components/loading";
 import { getAllReviews } from "../../../services/review.ts";
 import CustomBreadcrumb from "../../../components/breadcrumb/index.tsx";
-import { data } from "pages/admin/chart/userchart.tsx";
+
 
 const InstructorManageCourses: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);

@@ -5,7 +5,8 @@ import { Course } from "../../../../models/Course";
 import { HeartOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import defaultImage from "../../../../../public/l1.jpg";
 import { getUserFromLocalStorage } from "../../../../services/auth";
-import { formatCurrency } from "utils/formatHelper";
+import { formatCurrency } from "../../../../utils/formatHelper";
+
 
 interface CourseCardProps {
     course: Course;
