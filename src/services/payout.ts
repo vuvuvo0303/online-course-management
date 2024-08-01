@@ -66,6 +66,6 @@ export const updateStatusPayout = async (payout_id: string, status: string, comm
         })
         return response
     } catch (error) {
-        return;
+        return [];
     }
 }
