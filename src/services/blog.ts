@@ -8,7 +8,7 @@ export const getBlogs = async (
   category_id: string = "",
   is_deleted: boolean = false,
   pageNum: number = 1,
-  pageSize: number = 100
+  pageSize: number = 10
   ) => {
   try {
     const response = await axiosInstance.post(API_CLIENT_GET_BLOGS, {

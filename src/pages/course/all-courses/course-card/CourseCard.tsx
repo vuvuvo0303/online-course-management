@@ -1,11 +1,11 @@
 import React from "react";
 import { Rate, Button } from "antd";
 import { Link } from 'react-router-dom';
-import { Course } from "../../../../models/Course";
+import { Course } from "../../../../models";
 import { HeartOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import defaultImage from "../../../../../public/l1.jpg";
-import { getUserFromLocalStorage } from "../../../../services/auth";
-import { formatCurrency } from "utils/formatHelper";
+import { getUserFromLocalStorage } from "../../../../services";
+import { formatCurrency } from "../../../../utils";
 
 interface CourseCardProps {
     course: Course;

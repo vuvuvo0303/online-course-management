@@ -12,13 +12,14 @@ import {
   TablePaginationConfig,
   Tag,
 } from "antd";
-import { API_REVIEW_PROFILE_INSTRUCTOR, roles } from "../../../consts";
+import { roles } from "../../../consts";
 import { Instructor } from "../../../models";
-import { axiosInstance, getUsers } from "../../../services";
+import { getUsers } from "../../../services";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
 import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { formatDate } from "../../../utils";
+import {reviewProfileInstructor} from "../../../services";
 const { TextArea } = Input;
 
 const AdminInstructorRequest = () => {
@@ -68,14 +69,10 @@ const AdminInstructorRequest = () => {
   };
 
   const handleApprove = async (record: Instructor) => {
-    const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
-      user_id: record._id,
-      status: "approve",
-      comment: "",
-    });
+    const responseProfileInstructor = await reviewProfileInstructor(record._id, "approve", "");
 
-    if (response) {
-      message.success("Email phê duyệt đã được gửi thành công");
+    if (responseProfileInstructor) {
+      message.success("Email is send successfully.");
 
       const updatedDataSource = dataSource.map((item) =>
         item._id === record._id ? { ...item, isApproved: true } : item
@@ -87,13 +84,9 @@ const AdminInstructorRequest = () => {
 
   const handleReject = async () => {
     if (!selectedInstructor) return;
-    const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
-      user_id: selectedInstructor._id,
-      status: "reject",
-      comment: rejectReason,
-    });
+    const responseReviewInstructor = await reviewProfileInstructor(selectedInstructor._id, "reject", rejectReason);
 
-    if (response) {
+    if (responseReviewInstructor) {
       message.success("Instructor rejected successfully");
 
       const updatedDataSource = dataSource.map((item) =>

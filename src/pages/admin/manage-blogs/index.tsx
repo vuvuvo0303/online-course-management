@@ -126,8 +126,6 @@ const AdminManageBlogs: React.FC = () => {
   };
 
   const handleSubmit = async (values: Blog) => {
-    try {
-
       let avatarUrl: string = "";
       if (fileList.length > 0) {
         const file = fileList[0];
@@ -156,12 +154,8 @@ const AdminManageBlogs: React.FC = () => {
       setCurrentBlog(null);
       setContent("");
       await fetchBlogs();
-    } catch (error) {
-      console.error("Error:", error);
-      message.error("An error occurred while saving the blog.");
-    }
-  };
 
+  };
 
 
   const handlePaginationChange = (page: number, pageSize?: number) => {

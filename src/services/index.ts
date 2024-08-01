@@ -1,6 +1,6 @@
 export { axiosInstance } from './axiosInstance'
 export { getUserFromLocalStorage, handleNavigateRole, login, logout, loginWithGoogle,registerWithGoogle   } from './auth'
-export { changePassword, changeStatusUser, changeUserRole, deleteUser, getInstructorDetailPublic, getUserDetail ,getUsers} from './users'
+export { changePassword, changeStatusUser, changeUserRole, deleteUser, getInstructorDetailPublic, getUserDetail ,getUsers, reviewProfileInstructor} from './users'
 export { addCourseToCart, getCarts, deleteCart, updateStatusCart } from './cart';
 export { getCategories } from './category'
 export { fetchCoursesByClient } from './client';

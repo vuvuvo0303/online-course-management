@@ -34,13 +34,12 @@ import { PaginationProps } from "antd";
 import {
   API_CHANGE_ROLE,
   API_CREATE_USER,
-  API_GET_USERS,
   API_UPDATE_USER,
 } from "../../../consts";
 import ResponseData from "models/ResponseData.ts";
 import { useDebounce } from "../../../hooks";
 import { CustomBreadcrumb, LoadingComponent } from "../../../components";
-import { axiosInstance, changeStatusUser, changeUserRole, deleteUser, getUsers } from "../../../services";
+import {axiosInstance, changeStatusUser, changeUserRole, deleteUser, getUsers} from "../../../services";
 import { getBase64, uploadFile } from "../../../utils";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -68,38 +67,23 @@ const AdminManageUsers: React.FC = () => {
   const debouncedSearch = useDebounce(searchText, 500);
 
   useEffect(() => {
-    getUsers();
+    fetchUsers();
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch]);
 
-  const getUsers = useCallback(async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
-    try {
       let statusValue: boolean | undefined = false;
       if (selectedStatus === "true") {
         statusValue = true;
       }
-      const response = await axiosInstance.post(API_GET_USERS, {
-        searchCondition: {
-          role: selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
-          status: statusValue,
-          is_delete: false,
-          keyword: debouncedSearch,
-        },
-        pageInfo: {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
-        },
-      });
-      setDataUsers(response.data.pageData);
+      const responseUsers = await getUsers(debouncedSearch, selectedRole === "All" ? undefined : selectedRole.toLowerCase(),statusValue,true,false, pagination.current, pagination.pageSize);
+      setDataUsers(responseUsers.data.pageData);
       setPagination({
         ...pagination,
-        total: response.data.pageInfo.totalItems,
-        current: response.data.pageInfo.pageNum,
-        pageSize: response.data.pageInfo.pageSize,
+        total: responseUsers.data.pageInfo.totalItems,
+        current: responseUsers.data.pageInfo.pageNum,
+        pageSize: responseUsers.data.pageInfo.pageSize,
       });
-    } catch (error) {
-      // Xử lý trường hợp lỗi
-    }
     setLoading(false);
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText, debouncedSearch]);
 
@@ -124,13 +108,13 @@ const AdminManageUsers: React.FC = () => {
         setIsModalVisible(false);
         form.resetFields();
         setLoading(false);
-        getUsers();
+        fetchUsers();
         setFileList([]);
       } catch (error) {
         setLoading(false);
       }
     },
-    [getUsers, form]
+    [fetchUsers, form]
   );
 
   const handlePreview = async (file: UploadFile) => {
@@ -179,7 +163,7 @@ const AdminManageUsers: React.FC = () => {
   };
   const handlePaginationChange = async (page: number, pageSize: number) => {
     setPagination({ ...pagination, current: page, pageSize });
-    await getUsers();
+    await fetchUsers();
   };
   const handleAddClick = () => {
     setModalMode("Add");
@@ -190,7 +174,6 @@ const AdminManageUsers: React.FC = () => {
 
   const handleEditUser = async (values: User) => {
     setLoading(true);
-    try {
       let avatarUrl = values.avatar;
 
       if (values.avatar && typeof values.avatar !== "string" && values.avatar.file?.originFileObj) {
@@ -219,13 +202,8 @@ const AdminManageUsers: React.FC = () => {
         message.success("Updated user successfully");
         setIsModalVisible(false);
         form.resetFields();
-        getUsers();
-      } else {
-        // Handle error for edit users
+        fetchUsers();
       }
-    } catch (error) {
-      // Handle error
-    }
     setLoading(false);
   };
 
@@ -238,8 +216,6 @@ const AdminManageUsers: React.FC = () => {
     if (modalMode === "Edit") {
       if (formData._id) {
         handleEditUser({ ...formData, ...values });
-      } else {
-        //
       }
     } else {
       handleAddNewUser(values);
@@ -250,7 +226,6 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
-    getUsers();
   };
 
   const columns: TableColumnsType<User> = [
@@ -375,7 +350,7 @@ const AdminManageUsers: React.FC = () => {
           <Popconfirm
             title="Delete the User"
             description="Are you sure to delete this User?"
-            onConfirm={() => deleteUser(record._id, record.email, getUsers)}
+            onConfirm={() => deleteUser(record._id, record.email, fetchUsers)}
             okText="Yes"
             cancelText="No"
           >

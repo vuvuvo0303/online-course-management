@@ -10,7 +10,7 @@ export const getItemsByStudent = async (purchase_no: string, cart_no: string, co
                 "cart_no": cart_no,
                 "course_id": course_id,
                 "status": status,
-                "is_delete": false
+                "is_deleted": false
             },
             "pageInfo": {
                 "pageNum":pageNum,
@@ -45,7 +45,7 @@ export const getItemsByInstructor = async (purchase_no: string, cart_no: string,
                 "cart_no": cart_no,
                 "course_id": course_id,
                 "status": status,
-                "is_delete": false
+                "is_deleted": false
             },
             "pageInfo": {
                 "pageNum": pageNum,

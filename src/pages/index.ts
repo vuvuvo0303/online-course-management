@@ -32,7 +32,6 @@ export { default as Lesson } from "./course/lesson";
 
 /* Instructor Page */
 export { default as InstructorDashboard } from "./instructor/instructor-dashboard/index";
-export { default as InstructorManageFeedbacks } from "./instructor/manage-instructor-feedbacks";
 export { default as InstructorCreateCourse } from "./instructor/manage-course/create-update-course";
 export { default as InstructorManageCourses } from "./instructor/manage-course/index";
 export { default as InstructorResources } from "./instructor/resources";
