@@ -3,19 +3,35 @@ import { useEffect, useState } from "react";
 import { getItemsByInstructor } from "../../../services";
 
 import { format } from "date-fns";
-import { Button, Checkbox, Input, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
+import {
+  Button,
+  Checkbox,
+  Input,
+  Pagination,
+  PaginationProps,
+  Table,
+  TablePaginationConfig,
+  TableProps,
+  Tabs,
+  TabsProps,
+  Tag,
+} from "antd";
 import { createPayout } from "../../../services/payout";
 import { getColorPurchase } from "../../../consts";
 import LoadingComponent from "../../../components/loading";
 import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
 import CustomBreadcrumb from "../../../components/breadcrumb";
-import { formatCurrency } from '../../../utils';
+import { formatCurrency } from "../../../utils";
 
 const InstructorManagePurchase = () => {
   const [searchPurchase, setSearchPurchase] = useState<string>("");
   const purchaseNoSearch = useDebounce(searchPurchase, 500);
-
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const [instructor_id, setInstructor_id] = useState<string>("");
   const [purchasesChecked, setPurchasesChecked] = useState<TransactionsPurchase[]>([]);
   const [purchases, setPurchases] = useState<Purchase[]>([]);
@@ -25,13 +41,19 @@ const InstructorManagePurchase = () => {
   const getPurchasesByInstructor = async () => {
     setLoading(true);
     const response = await getItemsByInstructor(purchaseNoSearch, "", "", statusPurchase, 1, 100);
-    setPurchases(response);
+    setPurchases(response.data.pageData);
+    setPagination({
+      ...pagination,
+      total: response.data.pageInfo.totalItems,
+      current: response.data.pageInfo.pageNum,
+      pageSize: response.data.pageInfo.pageSize,
+    });
     setLoading(false);
   };
 
   useEffect(() => {
     getPurchasesByInstructor();
-  }, [statusPurchase, purchaseNoSearch]);
+  }, [statusPurchase, purchaseNoSearch, pagination.current, pagination.pageSize]);
 
   if (loading) {
     return (
@@ -47,7 +69,7 @@ const InstructorManagePurchase = () => {
         record.status === "new" ? (
           <Checkbox
             onChange={() => onChangeCheckbox(record)}
-            checked={purchasesChecked.some(purchase => purchase.purchase_id === record._id)}
+            checked={purchasesChecked.some((purchase) => purchase.purchase_id === record._id)}
           ></Checkbox>
         ) : null,
     },
@@ -201,7 +223,19 @@ const InstructorManagePurchase = () => {
   const onChangeStatus = (key: string) => {
     setStatusPurchase(key);
   };
+  const handleTableChange = async (pagination: PaginationProps) => {
+    setPagination({
+      ...pagination,
+      current: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      total: pagination.total ?? 0,
+    });
+    await await getItemsByInstructor(purchaseNoSearch, "", "", statusPurchase, 1, 100);
+  };
 
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({ ...pagination, current: page, pageSize });
+  };
   return (
     <div className="container mx-auto px-10">
       <CustomBreadcrumb />
@@ -212,7 +246,10 @@ const InstructorManagePurchase = () => {
               <Button onClick={() => handleCreatePayout()} className="" type="primary">
                 Create Payout
               </Button>
-              <Checkbox onChange={handleCheckAllPurchased} className="ml-2"> (Check all purchased)</Checkbox>
+              <Checkbox onChange={handleCheckAllPurchased} className="ml-2">
+                {" "}
+                (Check all purchased)
+              </Checkbox>
             </>
           )}
         </div>
@@ -227,10 +264,32 @@ const InstructorManagePurchase = () => {
       </div>
       <Tabs defaultActiveKey={statusPurchase} items={items} onChange={onChangeStatus} />
       {statusPurchase === "new" ? (
-        <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} />
+        <Table
+          rowKey={(record: Purchase) => record._id}
+          dataSource={purchases}
+          columns={columns}
+          onChange={handleTableChange}
+          pagination={false}
+        />
       ) : (
-        <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columnsNotCheckbox} />
+        <Table
+          rowKey={(record: Purchase) => record._id}
+          dataSource={purchases}
+          columns={columnsNotCheckbox}
+          onChange={handleTableChange}
+          pagination={false}
+        />
       )}
+      <div className="flex justify-end py-8">
+        <Pagination
+          total={pagination.total}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
+      </div>
     </div>
   );
 };

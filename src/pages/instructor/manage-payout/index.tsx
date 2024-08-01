@@ -2,7 +2,20 @@ import { Payout, Transaction } from "../../../models";
 import { useEffect, useState } from "react";
 import { getPayouts, updateStatusPayout } from "../../../services";
 import { format } from "date-fns";
-import { Table, TableProps, Tag, Button, Modal, Tabs, message, Input, TabsProps } from "antd";
+import {
+  Table,
+  TableProps,
+  Tag,
+  Button,
+  Modal,
+  Tabs,
+  message,
+  Input,
+  TabsProps,
+  TablePaginationConfig,
+  PaginationProps,
+  Pagination,
+} from "antd";
 import { getColorPayout } from "../../../consts/index";
 import { createStyles } from "antd-style";
 import LoadingComponent from "../../../components/loading";
@@ -32,7 +45,11 @@ const useStyle = createStyles(({ token }) => ({
 const InstructorManagePayout = () => {
   const [searchPayout, setSearchPayout] = useState<string>("");
   const payoutNoSearch = useDebounce(searchPayout, 500);
-
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const [payouts, setPayouts] = useState<Payout[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -49,18 +66,30 @@ const InstructorManagePayout = () => {
 
   useEffect(() => {
     getPayoutsByInstructor();
-  }, [statusPayout, payoutNoSearch]);
+  }, [statusPayout, payoutNoSearch,pagination.current, pagination.pageSize]);
 
   const getPayoutsByInstructor = async () => {
     // no loading for search
     if (payoutNoSearch != "") {
       const response = await getPayouts(payoutNoSearch, "", statusPayout, true, false, 1, 100);
       setPayouts(response.data.pageData);
+      setPagination({
+        ...pagination,
+        total: response.data.pageInfo.totalItems,
+        current: response.data.pageInfo.pageNum,
+        pageSize: response.data.pageInfo.pageSize,
+      });
       setLoading(false);
     } else {
       setLoading(true);
       const response = await getPayouts(payoutNoSearch, "", statusPayout, true, false, 1, 100);
       setPayouts(response.data.pageData);
+      setPagination({
+        ...pagination,
+        total: response.data.pageInfo.totalItems,
+        current: response.data.pageInfo.pageNum,
+        pageSize: response.data.pageInfo.pageSize,
+      });
       setLoading(false);
     }
   };
@@ -98,9 +127,7 @@ const InstructorManagePayout = () => {
       dataIndex: "status",
       key: "status",
       render: (status: string) => (
-        <Tag color={getColorPayout(status)}>
-          {status === "request_payout" ? "request payout" : status}
-        </Tag>
+        <Tag color={getColorPayout(status)}>{status === "request_payout" ? "request payout" : status}</Tag>
       ),
     },
     {
@@ -125,17 +152,20 @@ const InstructorManagePayout = () => {
       width: "10%",
       render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
     },
-    ...(statusPayout === "new" || statusPayout === "rejected" ? [{
-      title: "Action",
-      dataIndex: "status",
-      key: "action",
-      render: (record: Payout) =>
-      (
-        <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
-          Request Payout
-        </Button>
-      ),
-    }] : []),
+    ...(statusPayout === "new" || statusPayout === "rejected"
+      ? [
+          {
+            title: "Action",
+            dataIndex: "status",
+            key: "action",
+            render: (record: Payout) => (
+              <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
+                Request Payout
+              </Button>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const columnsTransactions: TableProps<Transaction>["columns"] = [
@@ -176,7 +206,19 @@ const InstructorManagePayout = () => {
   if (loading) {
     return <LoadingComponent />;
   }
+  const handleTableChange = async (pagination: PaginationProps) => {
+    setPagination({
+      ...pagination,
+      current: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      total: pagination.total ?? 0,
+    });
+    await getPayouts();
+  };
 
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({ ...pagination, current: page, pageSize });
+  };
   return (
     <>
       <Modal
@@ -200,7 +242,23 @@ const InstructorManagePayout = () => {
           enterButton={<SearchOutlined className="text-white" />}
         />
         <Tabs defaultActiveKey={statusPayout} items={items} onChange={onChange} />
-        <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
+        <Table
+          rowKey={(record: Payout) => record._id}
+          dataSource={payouts}
+          columns={columns}
+          pagination={false}
+          onChange={handleTableChange}
+        />
+        <div className="flex justify-end py-8">
+        <Pagination
+          total={pagination.total}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
+      </div>
       </div>
     </>
   );
