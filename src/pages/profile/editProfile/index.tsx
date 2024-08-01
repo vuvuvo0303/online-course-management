@@ -1,13 +1,11 @@
 import { Avatar, Button, Col, Form, Input, message, Row, Upload } from "antd";
 import { useState, useEffect } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import { Image } from "antd";
 import type { UploadFile, UploadProps } from "antd";
-import { format } from "date-fns";
 import axiosInstance from "../../../services/axiosInstance";
 import { API_UPDATE_USER } from "../../../consts";
-import LoadingComponent from "../../../components/loading";
-import { getBase64, uploadFile } from "../../../utils";
+import { formatDate, getBase64, uploadFile } from "../../../utils";
+import { UploadButton, LoadingComponent } from "../../../components";
 
 
 type FileType = Parameters<Required<UploadProps>["beforeUpload"]>[0];
@@ -48,7 +46,7 @@ const EditProfile = () => {
     const userData = localStorage.getItem("user");
     if (userData) {
       const parsedData = JSON.parse(userData);
-      const dateOfBirth = format(new Date(parsedData.dob), "dd/MM/yyyy");
+      const dateOfBirth = formatDate(parsedData.dob);
       setUser({
         _id: parsedData._id,
         name: parsedData.name,
@@ -101,80 +99,63 @@ const EditProfile = () => {
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
-
   const handleEdit = async () => {
     setLoading(true);
-    try {
-      const values = await form.validateFields();
+    const values = await form.validateFields();
 
-      let avatarUrl: string = user.avatar || "";
-      if (fileList.length > 0) {
-        const file = fileList[0];
-        if (file.originFileObj) {
-          avatarUrl = await uploadFile(file.originFileObj as File);
-        }
+    let avatarUrl: string = user.avatar || "";
+    if (fileList.length > 0) {
+      const file = fileList[0];
+      if (file.originFileObj) {
+        avatarUrl = await uploadFile(file.originFileObj as File);
       }
-
-      const formattedDob = format(new Date(values.dob), "yyyy-MM-dd");
-
-
-      const updatedUser = {
-        ...user,
-        name: values.name !== undefined ? values.name : user.name,
-        email: values.email !== undefined ? values.email : user.email,
-        phone_number: values.phone_number !== undefined ? values.phone_number : user.phone_number,
-        dob: formattedDob !== undefined ? formattedDob : user.dob,
-        avatar: avatarUrl !== undefined ? avatarUrl : user.avatar,
-        description: values.description !== undefined ? values.description : user.description,
-        video: values.video !== undefined ? values.video : user.video,
-        balance: user.balance,
-        balance_total: user.balance_total,
-        bank_account: user.bank_account,
-        bank_name: user.bank_name,
-        created_at: user.created_at,
-        google_id: user.google_id,
-        is_deleted: user.is_deleted,
-        is_verified: user.is_verified,
-        role: user.role,
-        status: user.status,
-        token_version: user.token_version,
-        transactions: user.transactions,
-        updated_at: new Date().toISOString(),
-      };
-
-      console.log("Updated user data:", updatedUser);
-
-      const response = await axiosInstance.put(`${API_UPDATE_USER}/${user._id}`, updatedUser);
-
-      if (response.data.email === updatedUser.email) {
-        // Cập nhật localStorage với dữ liệu mới
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        setUser(updatedUser);
-
-        form.setFieldsValue({
-          name: updatedUser.name,
-          email: updatedUser.email,
-          phone_number: updatedUser.phone_number,
-          dob: format(new Date(updatedUser.dob), "dd/MM/yyyy"),
-          avatar: updatedUser.avatar,
-        });
-
-        message.success(`Cập nhật tài khoản ${values.name} thành công`);
-      } else {
-        message.error(`Cập nhật tài khoản ${values.name} thất bại. Vui lòng thử lại.`);
-      }
-    } catch (error) {
-      console.error("Update error:", error);
-      message.error("Cập nhật người dùng thất bại. Vui lòng thử lại.");
-    } finally {
-      setLoading(false);
     }
+
+    const formattedDob = formatDate(values.dob);
+
+
+    const updatedUser = {
+      ...user,
+      name: values.name !== undefined ? values.name : user.name,
+      email: values.email !== undefined ? values.email : user.email,
+      phone_number: values.phone_number !== undefined ? values.phone_number : user.phone_number,
+      dob: formattedDob !== undefined ? formattedDob : user.dob,
+      avatar: avatarUrl !== undefined ? avatarUrl : user.avatar,
+      description: values.description !== undefined ? values.description : user.description,
+      video: values.video !== undefined ? values.video : user.video,
+      balance: user.balance,
+      balance_total: user.balance_total,
+      bank_account: user.bank_account,
+      bank_name: user.bank_name,
+      created_at: user.created_at,
+      google_id: user.google_id,
+      is_deleted: user.is_deleted,
+      is_verified: user.is_verified,
+      role: user.role,
+      status: user.status,
+      token_version: user.token_version,
+      transactions: user.transactions,
+      updated_at: new Date().toISOString(),
+    };
+
+    const response = await axiosInstance.put(`${API_UPDATE_USER}/${user._id}`, updatedUser);
+
+    if (response.data.email === updatedUser.email) {
+      // Cập nhật localStorage với dữ liệu mới
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setUser(updatedUser);
+
+      form.setFieldsValue({
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone_number: updatedUser.phone_number,
+        dob: formatDate(updatedUser.dob),
+        avatar: updatedUser.avatar,
+      });
+
+      message.success(`Updated ${values.name} successfully`);
+    }
+    setLoading(false);
   };
 
 
@@ -244,7 +225,7 @@ const EditProfile = () => {
                 onPreview={handlePreview}
                 onChange={handleChange}
               >
-                {fileList.length >= 1 ? null : uploadButton}
+                {fileList.length >= 1 ? null : <UploadButton />}
               </Upload>
             </Form.Item>
           </div>

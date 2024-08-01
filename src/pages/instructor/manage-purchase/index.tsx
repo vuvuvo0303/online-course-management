@@ -194,7 +194,7 @@ const InstructorManagePurchase = () => {
     },
     {
       key: "completed",
-      label: "completed",
+      label: "Completed",
     },
   ];
 

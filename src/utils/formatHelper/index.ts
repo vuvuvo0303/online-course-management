@@ -11,6 +11,9 @@ export const formatCurrency = (amount: number): string => {
 };
 
 
-export const formatDate = (date: string | number | Date, dateFormat: string = "dd/MM/yyyy"): string => {
-    return format(new Date(date), dateFormat);
+export const formatDate = (date: string | number | Date | undefined, dateFormat: string = "dd/MM/yyyy"): string => {
+    return date ? format(new Date(date), dateFormat) : "";
 };
+
+export const upperCaseFirstLetter = (word: string | undefined): string => 
+    (word ?? "").charAt(0).toUpperCase() + (word ?? "").slice(1);

@@ -2,14 +2,14 @@ import { Button, Form, FormProps, Image, Input, message, Radio, Upload } from "a
 import { Link, useNavigate } from "react-router-dom";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState, useEffect } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import Login2 from "../../assets/Login2.jpg";
 import { useForm } from "antd/es/form/Form";
 import axiosInstance from "../../services/axiosInstance.ts";
 import Recaptcha from "../register/reCaptcha.tsx";
-import { API_REGISTER, paths, roles } from "../../consts";
+import { API_REGISTER, emailRules, passwordRules, paths, roles } from "../../consts";
 import { Instructor } from "../../models";
 import { getBase64, uploadFile } from "../../utils";
+import { UploadButton } from "../../components";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -67,13 +67,6 @@ const RegisterPage: React.FC = () => {
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
     setFileList(newFileList);
 
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
-
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#18a5a7] via-[#ffe998] to-[#ffb330] relative">
       <div className="w-full md:w-1/2 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[650px] mb-[30px] mt-[30px]">
@@ -101,17 +94,7 @@ const RegisterPage: React.FC = () => {
                 <Form.Item
                   label="Email"
                   name="email"
-                  rules={[
-                    { required: true, message: "Please input your email!" },
-                    {
-                      type: "email",
-                      message: "Please enter the correct email format!",
-                    },
-                    {
-                      pattern: /^\S*$/,
-                      message: "Email must not contain spaces!",
-                    },
-                  ]}
+                  rules={emailRules}
                   labelCol={{ span: 24 }}
                   wrapperCol={{ span: 24 }}
                   className="mb-3"
@@ -137,17 +120,7 @@ const RegisterPage: React.FC = () => {
                 <Form.Item
                   label="Password"
                   name="password"
-                  rules={[
-                    { required: true, message: "Please input your password!" },
-                    {
-                      min: 6,
-                      message: "Password must have at least 6 characters!",
-                    },
-                    {
-                      pattern: /^\S*$/,
-                      message: "Password must not contain space!",
-                    },
-                  ]}
+                  rules={passwordRules}
                   labelCol={{ span: 24 }}
                   wrapperCol={{ span: 24 }}
                   className="mb-5"
@@ -236,7 +209,7 @@ const RegisterPage: React.FC = () => {
                         onPreview={handlePreview}
                         onChange={handleChange}
                       >
-                        {fileList.length >= 1 ? null : uploadButton}
+                        {fileList.length >= 1 ? null : <UploadButton />}
                       </Upload>
                     </Form.Item>
                   </>
@@ -260,7 +233,7 @@ const RegisterPage: React.FC = () => {
               Do you already have an account?{" "}
               <strong>
                 <Link
-                  to={"/login"}
+                  to={paths.LOGIN}
                   className="hover:cursor-pointer hover:text-blue-400"
                 >
                   Back to Sign in

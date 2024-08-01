@@ -1,7 +1,7 @@
 import { LoadingOutlined } from "@ant-design/icons";
 import { Flex, Spin } from "antd";
 
-const LoadingComponent = () =>{    
+const LoadingComponent: React.FC = () => {
     return (
         <>
             <p className="flex items-center justify-center h-96">

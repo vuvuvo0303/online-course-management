@@ -16,10 +16,7 @@ import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
 import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog, getBlogs } from "../../../services";
 import { API_CREATE_BLOG, API_UPDATE_BLOG, API_GET_BLOG } from "../../../consts";
-import { CustomBreadcrumb, LoadingComponent, TinyMCEEditorComponent } from "../../../components";
-
-import { PlusOutlined } from "@ant-design/icons";
-
+import { CustomBreadcrumb, LoadingComponent, TinyMCEEditorComponent, UploadButton } from "../../../components";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { formatDate, getBase64, uploadFile } from "../../../utils";
 
@@ -49,12 +46,6 @@ const AdminManageBlogs: React.FC = () => {
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -126,34 +117,34 @@ const AdminManageBlogs: React.FC = () => {
   };
 
   const handleSubmit = async (values: Blog) => {
-      let avatarUrl: string = "";
-      if (fileList.length > 0) {
-        const file = fileList[0];
-        if (file.originFileObj) {
-          avatarUrl = await uploadFile(file.originFileObj as File);
-        }
+    let avatarUrl: string = "";
+    if (fileList.length > 0) {
+      const file = fileList[0];
+      if (file.originFileObj) {
+        avatarUrl = await uploadFile(file.originFileObj as File);
       }
+    }
 
 
-      const user = getUserFromLocalStorage();
-      const payload = { ...values, content, user_id: user._id, image_url: avatarUrl };
+    const user = getUserFromLocalStorage();
+    const payload = { ...values, content, user_id: user._id, image_url: avatarUrl };
 
-      if (isUpdateMode && currentBlog) {
-        await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
-        message.success("Blog updated successfully");
-      } else {
-        await axiosInstance.post(API_CREATE_BLOG, payload);
-        message.success("Blog added successfully");
-      }
+    if (isUpdateMode && currentBlog) {
+      await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
+      message.success("Blog updated successfully");
+    } else {
+      await axiosInstance.post(API_CREATE_BLOG, payload);
+      message.success("Blog added successfully");
+    }
 
-      // Xử lý sau khi submit thành công
-      setIsModalVisible(false);
-      form.resetFields();
-      setIsUpdateMode(false);
-      setFileList([]);
-      setCurrentBlog(null);
-      setContent("");
-      await fetchBlogs();
+    // Xử lý sau khi submit thành công
+    setIsModalVisible(false);
+    form.resetFields();
+    setIsUpdateMode(false);
+    setFileList([]);
+    setCurrentBlog(null);
+    setContent("");
+    await fetchBlogs();
 
   };
 
@@ -321,7 +312,7 @@ const AdminManageBlogs: React.FC = () => {
               onPreview={handlePreview}
               onChange={handleChange}
             >
-              {fileList.length >= 1 ? null : uploadButton}
+              {fileList.length >= 1 ? null : <UploadButton />}
             </Upload>
           </Form.Item>
           <Form.Item

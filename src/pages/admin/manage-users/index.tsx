@@ -20,12 +20,10 @@ import {
 import {
   DeleteOutlined,
   EditOutlined,
-  PlusOutlined,
   SearchOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
 
-import { format } from "date-fns";
 
 import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
 
@@ -38,9 +36,9 @@ import {
 } from "../../../consts";
 import ResponseData from "models/ResponseData.ts";
 import { useDebounce } from "../../../hooks";
-import { CustomBreadcrumb, LoadingComponent } from "../../../components";
-import {axiosInstance, changeStatusUser, changeUserRole, deleteUser, getUsers} from "../../../services";
-import { getBase64, uploadFile } from "../../../utils";
+import { CustomBreadcrumb, LoadingComponent, UploadButton } from "../../../components";
+import { axiosInstance, changeStatusUser, changeUserRole, deleteUser, getUsers } from "../../../services";
+import { formatDate, getBase64, uploadFile } from "../../../utils";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AdminManageUsers: React.FC = () => {
@@ -72,18 +70,18 @@ const AdminManageUsers: React.FC = () => {
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
-      let statusValue: boolean | undefined = false;
-      if (selectedStatus === "true") {
-        statusValue = true;
-      }
-      const responseUsers = await getUsers(debouncedSearch, selectedRole === "All" ? undefined : selectedRole.toLowerCase(),statusValue,true,false, pagination.current, pagination.pageSize);
-      setDataUsers(responseUsers.data.pageData);
-      setPagination({
-        ...pagination,
-        total: responseUsers.data.pageInfo.totalItems,
-        current: responseUsers.data.pageInfo.pageNum,
-        pageSize: responseUsers.data.pageInfo.pageSize,
-      });
+    let statusValue: boolean | undefined = false;
+    if (selectedStatus === "true") {
+      statusValue = true;
+    }
+    const responseUsers = await getUsers(debouncedSearch, selectedRole === "All" ? undefined : selectedRole.toLowerCase(), statusValue, true, false, pagination.current, pagination.pageSize);
+    setDataUsers(responseUsers.data.pageData);
+    setPagination({
+      ...pagination,
+      total: responseUsers.data.pageInfo.totalItems,
+      current: responseUsers.data.pageInfo.pageNum,
+      pageSize: responseUsers.data.pageInfo.pageSize,
+    });
     setLoading(false);
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText, debouncedSearch]);
 
@@ -128,13 +126,6 @@ const AdminManageUsers: React.FC = () => {
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
-
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
   const handleRoleChange = async (value: UserRole, userId: string) => {
     await changeUserRole(userId, value);
     setDataUsers((prevData: User[]) =>
@@ -174,44 +165,44 @@ const AdminManageUsers: React.FC = () => {
 
   const handleEditUser = async (values: User) => {
     setLoading(true);
-      let avatarUrl = values.avatar;
+    let avatarUrl = values.avatar;
 
-      if (values.avatar && typeof values.avatar !== "string" && values.avatar.file?.originFileObj) {
-        avatarUrl = await uploadFile(values.avatar.file.originFileObj);
+    if (values.avatar && typeof values.avatar !== "string" && values.avatar.file?.originFileObj) {
+      avatarUrl = await uploadFile(values.avatar.file.originFileObj);
+    }
+
+    const updatedUser = {
+      ...values,
+      avatar: avatarUrl,
+      email: values.email,
+    };
+
+    const response: ResponseData = await axiosInstance.put(`${API_UPDATE_USER}/${formData._id}`, updatedUser);
+    if (response.success) {
+      if (formData.role !== values.role) {
+        await axiosInstance.put(API_CHANGE_ROLE, {
+          user_id: formData._id,
+          role: values.role,
+        });
       }
 
-      const updatedUser = {
-        ...values,
-        avatar: avatarUrl,
-        email: values.email,
-      };
+      setDataUsers((prevData) =>
+        prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
+      );
 
-      const response: ResponseData = await axiosInstance.put(`${API_UPDATE_USER}/${formData._id}`, updatedUser);
-      if (response.success) {
-        if (formData.role !== values.role) {
-          await axiosInstance.put(API_CHANGE_ROLE, {
-            user_id: formData._id,
-            role: values.role,
-          });
-        }
-
-        setDataUsers((prevData) =>
-          prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
-        );
-
-        message.success("Updated user successfully");
-        setIsModalVisible(false);
-        form.resetFields();
-        fetchUsers();
-      }
+      message.success("Updated user successfully");
+      setIsModalVisible(false);
+      form.resetFields();
+      fetchUsers();
+    }
     setLoading(false);
   };
 
   if (loading) {
     return (<>
-        <LoadingComponent />
+      <LoadingComponent />
     </>)
-}
+  }
   const onFinish = (values: User) => {
     if (modalMode === "Edit") {
       if (formData._id) {
@@ -280,14 +271,14 @@ const AdminManageUsers: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
       width: "10%",
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      render: (updated_at: Date) => formatDate(updated_at),
       width: "10%",
     },
 
@@ -499,7 +490,7 @@ const AdminManageUsers: React.FC = () => {
               onPreview={handlePreview}
               onChange={handleChange}
             >
-              {fileList.length >= 1 ? null : uploadButton}
+              {fileList.length >= 1 ? null : <UploadButton />}
             </Upload>
           </Form.Item>
           <Form.Item>
