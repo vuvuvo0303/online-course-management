@@ -112,6 +112,12 @@ export const handleNavigateRole = async (token: string, navigate: ReturnType<typ
     message.success("Login successfully");
 };
 
+export const getCurrentLoginUser = async (token: string) => {
+  const response = await axiosInstance.get(API_CURRENT_LOGIN_USER);
+  localStorage.setItem("token", token);
+  localStorage.setItem("user", JSON.stringify(response.data));
+};
+
 export const logout = ( navigate: ReturnType<typeof useNavigate>) => {
   const user: User = getUserFromLocalStorage();
   if (user.role === roles.ADMIN) {

@@ -4,21 +4,21 @@ import axiosInstance from "./axiosInstance";
 import { message } from "antd";
 
 
-export const getBlogs = async ({
-  category_id = "",
-  is_deleted = false,
-  pageNum = 1,
-  pageSize = 100
-} = {}) => {
+export const getBlogs = async (
+  category_id: string = "",
+  is_deleted: boolean = false,
+  pageNum: number = 1,
+  pageSize: number = 10
+  ) => {
   try {
     const response = await axiosInstance.post(API_CLIENT_GET_BLOGS, {
       "searchCondition": {
-        "category_id": category_id,
-        "is_deleted": is_deleted
+        "category_id": category_id || "",
+        "is_deleted": is_deleted !== undefined ? is_deleted : false,
       },
       "pageInfo": {
-        "pageNum": pageNum,
-        "pageSize": pageSize
+        "pageNum": pageNum || 1,
+        "pageSize": pageSize || 100
       }
     });
     return response;

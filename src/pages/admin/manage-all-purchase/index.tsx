@@ -1,13 +1,12 @@
 import { Input, Pagination, Select, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
-import { API_GET_PURCHASE_BY_ADMIN, getColorPurchase } from "../../../consts";
+import { getColorPurchase } from "../../../consts";
 import { useCallback, useEffect, useState } from "react";
-import { axiosInstance } from "../../../services";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
 import { Purchase } from "../../../models";
-import LoadingComponent from "../../../components/loading";
-import CustomBreadcrumb from "../../../components/breadcrumb";
+import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { formatCurrency, formatDate } from "../../../utils";
+import { getPurchaseForAdmin } from "../../../services";
 
 const ManageAllPurchase = () => {
   const [loading, setLoading] = useState(true);
@@ -18,33 +17,21 @@ const ManageAllPurchase = () => {
   const [status, setStatus] = useState<string>("");
 
   useEffect(() => {
-    getPurchases();
+    fetchPurchases();
   }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
 
-  const getPurchases = useCallback(async () => {
+  const fetchPurchases = useCallback(async () => {
     setLoading(true)
-    const response = await axiosInstance.post(API_GET_PURCHASE_BY_ADMIN, {
-      searchCondition: {
-        purchase_no: purchaseNoSearch,
-        cart_no: "",
-        course_id: "",
-        status: status,
-        is_delete: false,
-      },
-      pageInfo: {
-        pageNum: pagination.current,
-        pageSize: pagination.pageSize,
-      },
-    });
+    const responsePurchases = await getPurchaseForAdmin(purchaseNoSearch, "", "", status, false, pagination.current, pagination.pageSize);
 
-    if (response.data && response.data.pageData) {
-      const { pageData, pageInfo } = response.data;
+    if (responsePurchases.data && responsePurchases.data.pageData) {
+      const { pageData, pageInfo } = responsePurchases.data;
       setDataSource(pageData);
       setPagination((prev) => ({
         ...prev,
-        total: pageInfo?.totalItems || response.data.length,
+        total: pageInfo?.totalItems || responsePurchases.data.length,
         current: pageInfo?.pageNum || 1,
-        pageSize: pageInfo?.pageSize || response.data.length,
+        pageSize: pageInfo?.pageSize || responsePurchases.data.length,
       }));
     } else {
       setDataSource([]);

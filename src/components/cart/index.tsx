@@ -30,8 +30,7 @@ const CartComponents: React.FC<CartComponentsProps>
                                             </Row>
                                         </Col>
                                         <Col className='' span={6}>
-                                            <Tag className='mt-8 text-center' color={getColorCart(cartsNew.status)}> {cartsNew.status}</Tag>
-                                            <p className='mt-2 font-bold '>{cartsNew.course_name}</p>
+                                            <p className='mt-10 font-bold '>{cartsNew.course_name}</p>
                                             <div className='mt-2'>
                                                 <p>{cartsNew.cart_no}</p>
                                             </div>

@@ -18,13 +18,12 @@ import {
 } from "antd";
 import { format } from "date-fns";
 import { SearchOutlined } from "@ant-design/icons";
-import { Payout, Transaction } from "../../../models/Payout.ts";
+import { Payout, Transaction } from "../../../models";
 import { useDebounce } from "../../../hooks";
-import CustomBreadcrumb from "../../../components/breadcrumb";
+import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { getPayouts, updateStatusPayout } from "../../../services";
-import LoadingComponent from "../../../components/loading";
 import TextArea from "antd/es/input/TextArea";
-import { formatCurrency } from "../../../utils";
+import { formatCurrency, formatDate } from "../../../utils";
 
 const AdminManagePayouts: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -187,7 +186,7 @@ const AdminManagePayouts: React.FC = () => {
       dataIndex: "created_at",
       key: "created_at",
       width: "10%",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
   ];
 

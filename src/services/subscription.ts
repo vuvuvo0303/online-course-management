@@ -27,7 +27,7 @@ export const getItemsBySubscriber = async (keyword: string, pageNum: number, pag
             {
                 "searchCondition": {
                     "keyword": keyword,
-                    "is_delete": false
+                    "is_deleted": false
                 },
                 "pageInfo": {
                     "pageNum": pageNum,

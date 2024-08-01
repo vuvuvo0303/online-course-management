@@ -137,7 +137,27 @@ const CartPage: React.FC = () => {
       <h3 className={`${styles.h3_cart_title} mt-10`}>
         {totalCourse} Courses in Cart
       </h3>
+      {cartsNew.length === 0 && cartsCancel.length === 0 && (
+        <div className={styles.empty_cart_container}>
+          <img
+            width={200}
+            height={200}
+            alt="empty-cart-display"
+            src="https://s.udemycdn.com/browse_components/flyout/empty-shopping-cart-v2-2x.jpg"
+          />
+          <p className="text-lg mb-4">
+            Your cart is empty. Keep shopping to find a course!
+          </p>
+          <Link to={paths.HOME}>
+            <CustomButton
+              title="Keep Shopping"
+              containerStyles="bg-purple-500"
+            />
+          </Link>
+        </div>
+      )}
       <div className="flex mt-8">
+
         <div className="flex-6 pr-4">
           {(cartsCancel.length > 0 || cartsNew.length > 0) && (
             <Row className="border p-5 mt-10" gutter={10}>
@@ -159,25 +179,7 @@ const CartPage: React.FC = () => {
           <div className="mt-0">
             <div>
               <ul className="min-w-full m-0 p-0">
-                {cartsNew.length === 0 && cartsCancel.length === 0 && (
-                  <div className={styles.empty_cart_container}>
-                    <img
-                      width={200}
-                      height={200}
-                      alt="empty-cart-display"
-                      src="https://s.udemycdn.com/browse_components/flyout/empty-shopping-cart-v2-2x.jpg"
-                    />
-                    <p className="text-lg mb-4">
-                      Your cart is empty. Keep shopping to find a course!
-                    </p>
-                    <Link to={paths.HOME}>
-                      <CustomButton
-                        title="Keep Shopping"
-                        containerStyles="bg-purple-500"
-                      />
-                    </Link>
-                  </div>
-                )}
+
                 {cartsNew.map((cart) => (
                   <CartComponents
                     cartsNew={cart}

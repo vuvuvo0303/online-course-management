@@ -12,7 +12,7 @@ import About from './about/about';
 import Cart from './cart/CartComponents';
 import Sub from './subscription/index';
 
-import { getUserFromLocalStorage } from '../../services/auth';
+import { getUserFromLocalStorage } from '../../services';
 
 const Profile: React.FC = () => {
   const [activeTabKey, setActiveTabKey] = useState('1');

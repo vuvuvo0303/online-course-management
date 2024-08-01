@@ -1,17 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Rate, Input, Button, Modal, Form, Select, message } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
-import axiosInstance from '../../../services/axiosInstance.ts';
 import { useParams } from 'react-router-dom';
-import { API_GET_COURSE, API_GET_COURSES } from '../../../consts/index.ts';
-import { Review } from '../../../models/Review.ts';
+import { API_GET_COURSE } from '../../../consts';
+import { Review } from '../../../models';
+import { getCourses, axiosInstance } from '../../../services';
 
-
-interface ReviewFormValues {
-    course_id: string;
-    comment: string;
-    rating: number;
-}
 
 const ReviewPage: React.FC = () => {
     const [reviews, setReviews] = useState<Review[]>([]);
@@ -40,22 +34,11 @@ const ReviewPage: React.FC = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axiosInstance.post(API_GET_COURSES, {
-                    searchCondition: {
-                        keyword: '',
-                        category: '',
-                        status: 'new',
-                        is_deleted: false,
-                    },
-                    pageInfo: {
-                        pageNum: 1,
-                        pageSize: 10,
-                    },
-                });
-                if (response.data) {
-                    setCourses(response.data.pageData);
-                    if (response.data.pageData.length > 0) {
-                        setSelectedCourse(response.data.pageData[0]._id);
+                const responseCourses = await getCourses("", "", "new", false, 1, 10);
+                if (responseCourses.data) {
+                    setCourses(responseCourses.data.pageData);
+                    if (responseCourses.data.pageData.length > 0) {
+                        setSelectedCourse(responseCourses.data.pageData[0]._id);
                     }
                 }
             } catch (error) {
@@ -68,7 +51,7 @@ const ReviewPage: React.FC = () => {
         }
     }, [courseId]);
 
-    const addNewReview = useCallback(async (values: ReviewFormValues) => {
+    const addNewReview = useCallback(async (values: Review) => {
         try {
             setLoading(true);
             const newReview: Review = {
@@ -112,7 +95,7 @@ const ReviewPage: React.FC = () => {
         setIsModalVisible(false);
     };
 
-    const handleAddReview = (values: ReviewFormValues) => {
+    const handleAddReview = (values: Review) => {
         addNewReview(values);
     };
 

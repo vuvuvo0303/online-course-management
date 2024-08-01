@@ -183,110 +183,111 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <nav className="flex navbar justify-between w-full md:flex-row items-center p-2">
-      <div className="flex items-center gap-5 w-full">
-        <div>
-          {!isLoginPage && !isRegisterPage && !isForgotPassword && (
-            <div className="md:hidden mt-1">
-              <Drawer />
-            </div>
-          )}
-        </div>
-        <Link to={paths.HOME} className="flex items-center">
+    <nav className="flex items-center w-full p-2">
+      <div className="flex items-center gap-10">
+        {!isLoginPage && !isRegisterPage && !isForgotPassword && (
+          <div className="md:hidden mt-1">
+            <Drawer />
+          </div>
+        )}
+      </div>
+      <div className="flex items-center flex-shrink-0">
+        <Link to={paths.HOME} className="flex items-center ml-12">
           <img
             src="/logo.jpg"
             alt="FLearn Logo"
-            className="w-20 h-auto md:w-24 lg:w-28 ml-2 md:ml-4 lg:ml-6"
+            className="w-20 h-auto md:w-24 lg:w-28"
           />
         </Link>
       </div>
-      {!isLoginOrRegister && !isForgotPassword && (
-        <div className="flex items-center lg:gap-10">
-          <div className="mr-4 lg:mr-8">
-            {!isLoginPage && !isRegisterPage && !isForgotPassword && (
-              <SearchTool />
-            )}
-          </div>
-          {!user && (
-            <div className="text-sm lg:text-base">
-              <Link
-                to={paths.TEACHING}
-                className="whitespace-nowrap overflow-hidden text-ellipsis"
-              >
-                Be Our Instructor
-              </Link>
-            </div>
-          )}
-          <>
-            {token && (
-              <>
-                <Popover
-                  content={
-                    <PopoverContent
-                      totalCost={totalCost}
-                      cartsNew={cartsNew}
-                      cartsCancel={cartsCancel}
-                    />
-                  }
-                  overlayInnerStyle={{ padding: 0 }}
-                  trigger="hover"
-                  placement="bottom"
-                >
-                  <Link to={paths.STUDENT_ENROLLMENT}>
-                    <Badge className="hidden md:block" count={4}>
-                      <HeartOutlined className="text-gray-400 text-2xl lg:text-3xl" />
-                    </Badge>
-                  </Link>
-                </Popover>
 
-                <Popover
-                  content={
-                    <PopoverContent
-                      totalCost={totalCost}
-                      cartsNew={cartsNew}
-                      cartsCancel={cartsCancel}
-                    />
-                  }
-                  overlayInnerStyle={{ padding: 0 }}
-                  trigger="hover"
-                  placement="bottom"
-                >
-                  <Link to={paths.STUDENT_CART}>
-                    <Badge count={totalCarts} className="hidden md:block">
-                      <ShoppingCartOutlined className="text-gray-400 text-2xl lg:text-3xl" />
-                    </Badge>
-                  </Link>
-                </Popover>
-              </>
-            )}
-            {user ? (
-              <Dropdown
-                className=""
-                menu={{ items: dropdownItems }}
-                trigger={["click"]}
-                overlayClassName="w-64 lg:w-72"
-              >
-                <p onClick={(e) => e.preventDefault()}>
-                  <Space>
-                    <Avatar
-                      src={
-                        dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR
-                      }
-                      className="hover:cursor-pointer hidden md:block"
-                      size={30}
-                      icon={<UserOutlined />}
-                    />
-                  </Space>
-                </p>
-              </Dropdown>
-            ) : (
-              <Link to={paths.LOGIN}>
-                <UserOutlined className="text-gray-400 text-2xl lg:text-3xl cursor-pointer hidden md:block" />
+      {!isLoginOrRegister &&
+        !isForgotPassword &&
+        !isLoginPage &&
+        !isRegisterPage && (
+          <div className="flex-grow flex justify-center">
+            <SearchTool />
+          </div>
+        )}
+
+      <div className="flex items-center flex-shrink-0 gap-5">
+        {!user && (
+          <div className="text-sm lg:text-base">
+            <Link
+              to={paths.TEACHING}
+              className="whitespace-nowrap overflow-hidden text-ellipsis text-black-500 hover:text-blue-700"
+            >
+              Be Our Instructor
+            </Link>
+          </div>
+        )}
+
+        {token && (
+          <>
+            <Popover
+              content={
+                <PopoverContent
+                  totalCost={totalCost}
+                  cartsNew={cartsNew}
+                  cartsCancel={cartsCancel}
+                />
+              }
+              overlayInnerStyle={{ padding: 0 }}
+              trigger="hover"
+              placement="bottom"
+            >
+              <Link to={paths.STUDENT_ENROLLMENT}>
+                <Badge className="hidden md:block mr-5">
+                  <HeartOutlined className="text-gray-400 text-2xl lg:text-3xl" />
+                </Badge>
               </Link>
-            )}
+            </Popover>
+
+            <Popover
+              content={
+                <PopoverContent
+                  totalCost={totalCost}
+                  cartsNew={cartsNew}
+                  cartsCancel={cartsCancel}
+                />
+              }
+              overlayInnerStyle={{ padding: 0 }}
+              trigger="hover"
+              placement="bottom"
+            >
+              <Link to={paths.STUDENT_CART}>
+                <Badge count={totalCarts} className="hidden md:block">
+                  <ShoppingCartOutlined className="text-gray-400 text-2xl lg:text-3xl mr-5" />
+                </Badge>
+              </Link>
+            </Popover>
           </>
-        </div>
-      )}
+        )}
+
+        {user ? (
+          <Dropdown
+            className=""
+            menu={{ items: dropdownItems }}
+            trigger={["click"]}
+            overlayClassName="w-64 lg:w-72"
+          >
+            <p onClick={(e) => e.preventDefault()}>
+              <Space>
+                <Avatar
+                  src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
+                  className="hover:cursor-pointer hidden md:block mr-10"
+                  size={30}
+                  icon={<UserOutlined />}
+                />
+              </Space>
+            </p>
+          </Dropdown>
+        ) : (
+          <Link to={paths.LOGIN}>
+            <UserOutlined className="text-gray-400 text-2xl lg:text-3xl cursor-pointer hidden md:block mr-12" />
+          </Link>
+        )}
+      </div>
     </nav>
   );
 };

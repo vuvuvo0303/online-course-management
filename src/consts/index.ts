@@ -2,6 +2,8 @@
 /* API */
 
 //Base URL
+import { Rule } from "antd/lib/form";
+
 export const host_main = "https://api-ojt-hcm24-react06-group01.vercel.app";
 //Auth
 export const API_LOGIN = "/api/auth";
@@ -89,6 +91,18 @@ export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-in
 export const API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER = "/api/subscription/search-for-subscriber";
 
 
+
+export const emailRules: Rule[] = [
+  { required: true, message: "Please input your email!" },
+  { type: "email", message: "Please enter the correct email format!" },
+  { pattern: /^\S*$/, message: "Email must not contain spaces!" },
+];
+
+export const passwordRules: Rule[] = [
+  { required: true, message: "Please input your password!" },
+  { min: 6, message: "Password must be at least 6 characters!" },
+  { pattern: /^\S*$/, message: "Password must not contain spaces!" },
+];
 
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {

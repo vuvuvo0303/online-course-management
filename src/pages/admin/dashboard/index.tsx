@@ -4,9 +4,8 @@ import { UserChart } from "../chart/userchart";
 import { RevenueChart } from '../chart/revenuechart';
 import { useCallback, useEffect, useState } from "react";
 // import { Course } from "../../../models";
-import CustomBreadcrumb from "../../../components/breadcrumb";
-import { getBlogs, getCourses } from "../../../services";
-import { getUsers } from "../../../services/users";
+import {CustomBreadcrumb} from "../../../components";
+import { getBlogs, getCourses, getUsers } from "../../../services";
 
 const AdminDashboard: React.FC = () => {
   //const [topCourses, setTopCourses] = useState([]);

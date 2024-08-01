@@ -5,8 +5,8 @@ import {
   API_CHANGE_STATUS,
   API_DELETE_USER,
   API_GET_USER_DETAIL,
-  API_GET_USERS,
-} from "../consts/index.ts";
+  API_GET_USERS, API_REVIEW_PROFILE_INSTRUCTOR,
+} from "../consts";
 import { message } from "antd";
 import { getUserFromLocalStorage, axiosInstance } from "./index.ts";
 import { UserRole } from "../models/User.ts";
@@ -110,3 +110,16 @@ export const getInstructorDetailPublic = async (instructor_id: string) => {
     return;
   }
 };
+
+export const reviewProfileInstructor = async (user_id: string = "", status: string = "", comment = "") => {
+ try {
+   const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
+     user_id: user_id,
+     status: status,
+     comment: comment,
+   });
+   return response;
+ }catch(error){
+  return ;
+ }
+}

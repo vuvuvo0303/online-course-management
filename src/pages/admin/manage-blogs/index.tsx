@@ -14,17 +14,11 @@ import {
 } from "antd";
 import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
-import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog } from "../../../services";
-import { API_GET_BLOGS, API_CREATE_BLOG, API_UPDATE_BLOG, API_GET_BLOG } from "../../../consts";
-import LoadingComponent from "../../../components/loading";
-import { format, formatDate } from "date-fns";
-import CustomBreadcrumb from "../../../components/breadcrumb";
-import TinyMCEEditorComponent from "../../../components/tinyMCE";
-
-import { PlusOutlined } from "@ant-design/icons";
-
+import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog, getBlogs } from "../../../services";
+import { API_CREATE_BLOG, API_UPDATE_BLOG, API_GET_BLOG } from "../../../consts";
+import { CustomBreadcrumb, LoadingComponent, TinyMCEEditorComponent, UploadButton } from "../../../components";
 import type { GetProp, UploadFile, UploadProps } from "antd";
-import uploadFile from "../../../utils/upload";
+import { formatDate, getBase64, uploadFile } from "../../../utils";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -41,13 +35,6 @@ const AdminManageBlogs: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const getBase64 = (file: FileType): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
@@ -59,18 +46,12 @@ const AdminManageBlogs: React.FC = () => {
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
   useEffect(() => {
     fetchCategories();
   }, []);
 
   useEffect(() => {
-    getBlogs();
+    fetchBlogs();
   }, [pagination.current, pagination.pageSize]);
 
   const fetchCategories = async () => {
@@ -79,24 +60,15 @@ const AdminManageBlogs: React.FC = () => {
     setCategories(categories);
   };
 
-  const getBlogs = async () => {
+  const fetchBlogs = async () => {
     setLoading(true);
-    const response = await axiosInstance.post(API_GET_BLOGS, {
-      searchCondition: {
-        category_id: "",
-        is_deleted: false,
-      },
-      pageInfo: {
-        pageNum: pagination.current,
-        pageSize: pagination.pageSize,
-      },
-    });
-    setDataBlogs(response.data.pageData);
+    const responseBlog = await getBlogs("", false, pagination.current, pagination.pageSize);
+    setDataBlogs(responseBlog.data.pageData);
     setPagination({
       ...pagination,
-      total: response.data.pageInfo.totalItems,
-      current: response.data.pageInfo.pageNum,
-      pageSize: response.data.pageInfo.pageSize,
+      total: responseBlog.data.pageInfo.totalItems,
+      current: responseBlog.data.pageInfo.pageNum,
+      pageSize: responseBlog.data.pageInfo.pageSize,
     });
     setLoading(false);
   };
@@ -112,75 +84,69 @@ const AdminManageBlogs: React.FC = () => {
     setLoading(true);
 
     try {
-        const response = await axiosInstance.get(`${API_GET_BLOG}/${id}`);
-        const blogData = response.data;
-        setCurrentBlog(blogData);
-        form.setFieldsValue({
-            name: blogData.name,
-            category_id: blogData.category_id,
-            image_url: blogData.image_url, // Hiển thị URL trong form
-            description: blogData.description,
-            content: blogData.content,
-        });
-        setContent(blogData.content);
+      const response = await axiosInstance.get(`${API_GET_BLOG}/${id}`);
+      const blogData = response.data;
+      setCurrentBlog(blogData);
+      form.setFieldsValue({
+        name: blogData.name,
+        category_id: blogData.category_id,
+        image_url: blogData.image_url, // Hiển thị URL trong form
+        description: blogData.description,
+        content: blogData.content,
+      });
+      setContent(blogData.content);
 
-        // Đặt fileList nếu có ảnh
-        if (blogData.image_url) {
-            setFileList([
-                {
-                    uid: '-1',
-                    name: 'image.png',
-                    status: 'done',
-                    url: blogData.image_url,
-                },
-            ]);
-        } else {
-            setFileList([]);
-        }
+      // Đặt fileList nếu có ảnh
+      if (blogData.image_url) {
+        setFileList([
+          {
+            uid: '-1',
+            name: 'image.png',
+            status: 'done',
+            url: blogData.image_url,
+          },
+        ]);
+      } else {
+        setFileList([]);
+      }
     } catch (error) {
-        console.error("Error fetching blog data:", error);
+      console.error("Error fetching blog data:", error);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
   const handleSubmit = async (values: Blog) => {
-    try {
-      
-        let avatarUrl: string = "";
-        if (fileList.length > 0) {
-            const file = fileList[0];
-            if (file.originFileObj) {
-                avatarUrl = await uploadFile(file.originFileObj as File);
-            }
-        }
-
-    
-        const user = getUserFromLocalStorage();
-        const payload = { ...values, content, user_id: user._id, image_url: avatarUrl };
-
-        if (isUpdateMode && currentBlog) {
-            await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
-            message.success("Blog updated successfully");
-        } else {
-            await axiosInstance.post(API_CREATE_BLOG, payload);
-            message.success("Blog added successfully");
-        }
-
-        // Xử lý sau khi submit thành công
-        setIsModalVisible(false);
-        form.resetFields();
-        setIsUpdateMode(false);
-        setFileList([]);
-        setCurrentBlog(null);
-        setContent("");
-        await getBlogs();
-    } catch (error) {
-        console.error("Error:", error);
-        message.error("An error occurred while saving the blog.");
+    let avatarUrl: string = "";
+    if (fileList.length > 0) {
+      const file = fileList[0];
+      if (file.originFileObj) {
+        avatarUrl = await uploadFile(file.originFileObj as File);
+      }
     }
-};
 
+
+    const user = getUserFromLocalStorage();
+    const payload = { ...values, content, user_id: user._id, image_url: avatarUrl };
+
+    if (isUpdateMode && currentBlog) {
+      await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
+      message.success("Blog updated successfully");
+    } else {
+      await axiosInstance.post(API_CREATE_BLOG, payload);
+      message.success("Blog added successfully");
+    }
+
+    // Xử lý sau khi submit thành công
+    setIsModalVisible(false);
+    form.resetFields();
+    setIsUpdateMode(false);
+    setFileList([]);
+    setCurrentBlog(null);
+    setContent("");
+    await fetchBlogs();
+
+  };
 
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
@@ -261,7 +227,7 @@ const AdminManageBlogs: React.FC = () => {
           <Popconfirm
             title="Delete the Blog"
             description="Are you sure to delete this Blog?"
-            onConfirm={() => deleteBlog(record._id, record.name, getBlogs)}
+            onConfirm={() => deleteBlog(record._id, record.name, fetchBlogs)}
             okText="Yes"
             cancelText="No"
           >
@@ -346,7 +312,7 @@ const AdminManageBlogs: React.FC = () => {
               onPreview={handlePreview}
               onChange={handleChange}
             >
-              {fileList.length >= 1 ? null : uploadButton}
+              {fileList.length >= 1 ? null : <UploadButton />}
             </Upload>
           </Form.Item>
           <Form.Item
