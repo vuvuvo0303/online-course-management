@@ -32,13 +32,16 @@ const LoginPage: React.FC = () => {
   const onFinish: FormProps<LoginFieldType>["onFinish"] = async (values) => {
     const { email, password } = values;
     setLoading(true);
-    const authResult = await login(email, password);
-    if (authResult && "token" in authResult) {
-      const { token } = authResult;
-      localStorage.setItem("token", token);
-      await handleNavigateRole(token, navigate);
+    try {
+      const authResult = await login(email, password);
+      if (authResult && "token" in authResult) {
+        const { token } = authResult;
+        localStorage.setItem("token", token);
+        await handleNavigateRole(token, navigate);
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleAdditionalFieldsChange = (
