@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { Button, Form, FormProps, Input, Modal, Select } from "antd";
+import { useEffect, useState, useRef } from "react";
+import { Button, Form, Input, Modal, Select, Upload, Image } from "antd";
 import { Link, useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 import Login5 from "../../assets/Login5.jpg";
 import { paths, roles } from "../../consts";
-import { GoogleLogin } from "@react-oauth/google";
 import { handleNavigateRole, login, loginWithGoogle, registerWithGoogle } from "../../services";
+import { getBase64, uploadFile } from "../../utils/uploadHelper";
+import type { FormInstance, GetProp, UploadFile, UploadProps } from "antd";
 
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type FieldType = {
   email: string;
   password: string;
@@ -21,8 +24,13 @@ const LoginPage: React.FC = () => {
   });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [role, setRole] = useState("");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const formRef = useRef<FormInstance>(null);
 
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+  const onFinish = async (values: FieldType) => {
     const { email, password } = values;
     setLoading(true);
     const authResult = await login(email, password);
@@ -52,11 +60,27 @@ const LoginPage: React.FC = () => {
       registerWithGoogle(googleId, role, additionalFields, navigate);
       setIsModalVisible(false);
       localStorage.removeItem("token");
+      // Reset form fields and fileList
+      formRef.current?.resetFields();
+      setFileList([]);
+      setAdditionalFields({
+        description: "",
+        phone_number: "",
+        video: "",
+      });
     }
   };
 
   const handleModalCancel = () => {
     setIsModalVisible(false);
+
+    formRef.current?.resetFields();
+    setFileList([]);
+    setAdditionalFields({
+      description: "",
+      phone_number: "",
+      video: "",
+    });
   };
 
   const renderGoogleLogin = () => (
@@ -67,6 +91,54 @@ const LoginPage: React.FC = () => {
       }}
     />
   );
+
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as FileType);
+    }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+  };
+
+  const handleChange: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+
+    if (newFileList.length > 0) {
+      const file = newFileList[newFileList.length - 1].originFileObj as File;
+      setUploading(true);
+      try {
+        const videoURL = await uploadFile(file);
+        setAdditionalFields((prevFields) => ({
+          ...prevFields,
+          video: videoURL,
+        }));
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    } else {
+      setAdditionalFields((prevFields) => ({
+        ...prevFields,
+        video: "",
+      }));
+    }
+  };
+
+  const beforeUpload = (file: File) => {
+    console.log(file);
+
+    return false;
+  };
+
+  useEffect(() => {
+    return cleanup;
+  }, [additionalFields.video]);
+
+  const cleanup = () => {
+    if (additionalFields.video) {
+      URL.revokeObjectURL(additionalFields.video);
+    }
+  };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#18a5a7] via-[#ffe998] to-[#ffb330] relative">
@@ -80,6 +152,7 @@ const LoginPage: React.FC = () => {
             <span className="text-sm md:text-base text-center">Log in to become a part of FLearn</span>
           </div>
           <Form
+            ref={formRef}
             name="basic"
             className="space-y-4 w-full"
             initialValues={{ remember: true }}
@@ -187,12 +260,52 @@ const LoginPage: React.FC = () => {
                 />
               </Form.Item>
               <Form.Item label="Video URL" required labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
-                <Input name="video" value={additionalFields.video} onChange={handleAdditionalFieldsChange} />
+                <Upload
+                  listType="picture-card"
+                  fileList={fileList}
+                  onPreview={handlePreview}
+                  onChange={handleChange}
+                  beforeUpload={beforeUpload}
+                  showUploadList={{ showRemoveIcon: true }}
+                  customRequest={({ file, onSuccess, onError }) => {
+                    setUploading(true);
+                    uploadFile(file as File)
+                    .then((url) => {
+                      onSuccess?.(url);
+                      setUploading(false); // End uploading
+                    })
+                    .catch((error) => {
+                      onError?.(error);
+                      setUploading(false); // End uploading
+                    });
+                }}
+                >
+                  {fileList.length < 1 && !uploading && <div>Upload</div>}
+                  {uploading && <div>Uploading...</div>}
+                </Upload>
+
+                {additionalFields.video && (
+                  <video width="320" height="240" controls>
+                    <source src={additionalFields.video} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
               </Form.Item>
             </>
           )}
         </Form>
       </Modal>
+      {previewImage && (
+        <Image
+          wrapperStyle={{ display: "none" }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
+          }}
+          src={previewImage}
+        />
+      )}
     </div>
   );
 };

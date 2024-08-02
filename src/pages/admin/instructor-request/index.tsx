@@ -149,6 +149,18 @@ const AdminInstructorRequest = () => {
       width: "20%",
     },
     {
+      title: 'Video',
+      dataIndex: 'video',
+      key: 'video',
+      width: '50%',
+      render: (video) => (
+        <video  controls>
+          <source src={video} type="video/mp4" />
+        
+        </video>
+      ),
+    },
+    {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
