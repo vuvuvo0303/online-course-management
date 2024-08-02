@@ -5,8 +5,10 @@ import { GoogleLogin } from "@react-oauth/google";
 import Login5 from "../../assets/Login5.jpg";
 import { paths, roles } from "../../consts";
 import { handleNavigateRole, login, loginWithGoogle, registerWithGoogle } from "../../services";
-import { getBase64, uploadFile } from "../../utils/uploadHelper";
+import { getBase64, uploadFile } from "../../utils/uploadHelper/index";
 import type { FormInstance, GetProp, UploadFile, UploadProps } from "antd";
+import { EmailFormItem, LoginButtonItem, PasswordFormItem } from "../../components";
+import { LeftOutlined } from "@ant-design/icons";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 type FieldType = {
@@ -156,7 +158,7 @@ const LoginPage: React.FC = () => {
 
       <div className="w-full md:w-1/2 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[650px] mb-[30px]">
         <div className="w-1/2 flex items-center justify-center">
-          <img src={Login4} alt="Vector" className="object-cover w-full h-full" />
+          <img src={Login5} alt="Vector" className="object-cover w-full h-full" />
         </div>
         <div className="w-1/2 flex flex-col justify-center p-4 md:p-8 bg-white rounded-lg">
           <div className="flex flex-col items-center mb-4">
