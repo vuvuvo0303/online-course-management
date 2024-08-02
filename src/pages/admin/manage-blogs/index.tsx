@@ -16,7 +16,7 @@ import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
 import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog, getBlogs } from "../../../services";
 import { API_CREATE_BLOG, API_UPDATE_BLOG, API_GET_BLOG } from "../../../consts";
-import { CustomBreadcrumb, LoadingComponent, TinyMCEEditorComponent, UploadButton } from "../../../components";
+import { CustomBreadcrumb, DescriptionFormItem, LoadingComponent, TinyMCEEditorComponent, UploadButton } from "../../../components";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { formatDate, getBase64, uploadFile } from "../../../utils";
 
@@ -39,7 +39,6 @@ const AdminManageBlogs: React.FC = () => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
     }
-
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
   };
@@ -112,8 +111,6 @@ const AdminManageBlogs: React.FC = () => {
       } else {
         setFileList([]);
       }
-    } catch (error) {
-      console.error("Error fetching blog data:", error);
     } finally {
       setLoading(false);
     }
@@ -318,13 +315,7 @@ const AdminManageBlogs: React.FC = () => {
               {fileList.length >= 1 ? null : <UploadButton />}
             </Upload>
           </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true, message: "Please input the blog description!" }]}
-          >
-            <Input.TextArea maxLength={250} showCount />
-          </Form.Item>
+          <DescriptionFormItem />
           <Form.Item
             name="content"
             label="Content"

@@ -65,8 +65,6 @@ const AdminInstructorRequest = () => {
           pageSize: responseInstructorRequest.data.pageInfo?.pageSize || responseInstructorRequest.data.length,
         }));
       }
-    } catch (error) {
-      setLoading(false);
     } finally {
       setLoading(false);
     }

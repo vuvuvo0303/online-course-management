@@ -7,7 +7,7 @@ import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
 import { API_CREATE_CATEGORY, API_DELETE_CATEGORY, API_UPDATE_CATEGORY } from "../../../consts";
 import { useDebounce } from "../../../hooks";
-import { CustomBreadcrumb, LoadingComponent } from "../../../components";
+import { CustomBreadcrumb, LoadingComponent, NameFormItem } from "../../../components";
 import { formatDate } from "../../../utils";
 const AdminManageCategories: React.FC = () => {
   const [dataCategories, setDataCategories] = useState<Category[]>([]);
@@ -28,15 +28,18 @@ const AdminManageCategories: React.FC = () => {
 
   const fetchCategories = useCallback(async () => {
     setLoading(true);
-    const responseCategories = await getCategories(debouncedSearchTerm, false, pagination.current, pagination.pageSize);
-    setDataCategories(responseCategories.data.pageData || responseCategories.data);
-    setPagination((prev) => ({
-      ...prev,
-      total: responseCategories.data.pageInfo?.totalItems || responseCategories.data.length,
-      current: responseCategories.data.pageInfo?.pageNum || 1,
-      pageSize: responseCategories.data.pageInfo?.pageSize || prev.pageSize,
-    }));
-    setLoading(false);
+    try {
+      const responseCategories = await getCategories(debouncedSearchTerm, false, pagination.current, pagination.pageSize);
+      setDataCategories(responseCategories.data.pageData || responseCategories.data);
+      setPagination((prev) => ({
+        ...prev,
+        total: responseCategories.data.pageInfo?.totalItems || responseCategories.data.length,
+        current: responseCategories.data.pageInfo?.pageNum || 1,
+        pageSize: responseCategories.data.pageInfo?.pageSize || prev.pageSize,
+      }));
+    } finally {
+      setLoading(false);
+    }
   }, [pagination.current, pagination.pageSize, searchText, debouncedSearchTerm]);
 
   useEffect(() => {
@@ -135,18 +138,7 @@ const AdminManageCategories: React.FC = () => {
               <Input />
             </Form.Item>
 
-            <Form.Item
-              label="Name"
-              name="name"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the name of category!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+            <NameFormItem />
             <Form.Item label="Parent Category" name="parent_category_id" rules={[{ required: false }]}>
               <Select placeholder="Select parent category">
                 <Select.Option key="none" value="none">

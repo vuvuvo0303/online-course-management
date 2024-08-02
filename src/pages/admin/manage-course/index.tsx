@@ -18,14 +18,12 @@ import {
   TableProps,
   Tag,
 } from "antd";
-import { API_COURSE_STATUS, API_GET_COURSES, getColor } from "../../../consts";
-import { format } from "date-fns";
+import { getColor } from "../../../consts";
 import { Course, Log } from "../../../models";
-import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
 import { CustomBreadcrumb, LoadingComponent } from "../../../components";
-import { axiosInstance, getCourseLogs } from "../../../services";
-import { formatCurrency } from "../../../utils";
+import { changeStatusCourse, getCourseLogs, getCourses } from "../../../services";
+import { formatCurrency, formatDate } from "../../../utils";
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [changeStatus, setChangeStatus] = useState<string>("");
@@ -77,29 +75,20 @@ const AdminManageCourses: React.FC = () => {
   }, [courseId, oldStatus, newStatus, keywordLogStatus, setLogLoading, setLogs]);
   const fetchCourses = useCallback(async () => {
     setLoading(true)
-    const params = {
-      searchCondition: {
-        keyword: debouncedSearchTerm,
-        category_id: categoryId,
-        status: status,
-        is_deleted: false,
-      },
-      pageInfo: {
-        pageNum: pagination.current,
-        pageSize: pagination.pageSize,
-      },
-    };
-    const response = await axiosInstance.post(API_GET_COURSES, params);
-    if (response.data) {
-      setCourses(response.data.pageData || response.data);
-      setPagination((prev) => ({
-        ...prev,
-        total: response.data.pageInfo?.totalItems || response.data.length,
-        current: response.data.pageInfo?.pageNum || 1,
-        pageSize: response.data.pageInfo?.pageSize || response.data.length,
-      }));
+    try {
+      const responseCourses = await getCourses(debouncedSearchTerm, categoryId, status, false, pagination.current, pagination.pageSize);
+      if (responseCourses.data) {
+        setCourses(responseCourses.data.pageData || responseCourses.data);
+        setPagination((prev) => ({
+          ...prev,
+          total: responseCourses.data.pageInfo?.totalItems || responseCourses.data.length,
+          current: responseCourses.data.pageInfo?.pageNum || 1,
+          pageSize: responseCourses.data.pageInfo?.pageSize || responseCourses.data.length,
+        }));
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [categoryId, pagination.current, pagination.pageSize, searchText, status, debouncedSearchTerm]);
 
   useEffect(() => {
@@ -139,20 +128,14 @@ const AdminManageCourses: React.FC = () => {
       return message.error("Please enter comment");
     }
     try {
-      await axiosInstance.put(API_COURSE_STATUS, {
-        course_id: courseId,
-        new_status: changeStatus,
-        comment: comment,
-      });
+      await changeStatusCourse(courseId, changeStatus, comment);
       setCourses(courses.filter((course) => course._id !== courseId));
     } catch (error) {
       //
     }
     setConfirmLoading(true);
-    setTimeout(() => {
-      setOpenChangeStatus(false);
-      setConfirmLoading(false);
-    }, 500);
+    setOpenChangeStatus(false);
+    setConfirmLoading(false);
   };
 
   const handleCancel = () => {
@@ -164,7 +147,7 @@ const AdminManageCourses: React.FC = () => {
       dataIndex: "created_at",
       key: "created_at",
       defaultSortOrder: "descend",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
     {
       title: "Name",
@@ -246,13 +229,13 @@ const AdminManageCourses: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      render: (updated_at: Date) => formatDate(updated_at),
     },
   ];
 
@@ -307,10 +290,8 @@ const AdminManageCourses: React.FC = () => {
 
   const handleOkLogStatus = () => {
     setConfirmLoading(true);
-    setTimeout(() => {
-      setOpenLogStatus(false);
-      setConfirmLoading(false);
-    }, 500);
+    setOpenLogStatus(false);
+    setConfirmLoading(false);
   };
   const handleChangeOldStatus = (value: string) => {
     setNewStatus("");
@@ -423,7 +404,7 @@ const AdminManageCourses: React.FC = () => {
           />
         </div>
         <Form.Item label="Comment" name="comment" rules={[{ required: true, message: "Please enter comment!" }]}>
-          <TextArea value={comment} onChange={handleSaveComment} />
+          <Input.TextArea value={comment} onChange={handleSaveComment} />
         </Form.Item>
       </Modal>
 
