@@ -38,6 +38,7 @@ const Cart = lazy(() => import("../pages/cart"));
 const StudentSubscription = lazy(() => import("../pages/student/subscription"));
 const StudenManagePurchase = lazy(() => import("../pages/purchase"));
 const Lesson = lazy(() => import("../pages/course/lesson"));
+const LessonByContent = lazy(() => import("../pages/course/lesson-by-content"));
 
 // Instructor Page
 const InstructorManagePayout = lazy(() => import("../pages/instructor/manage-payout"));
@@ -115,6 +116,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.STUDENT_PURCHASE} element={<StudenManagePurchase />} />
         <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
         <Route path={paths.LESSON} element={<Lesson />} />
+        <Route path={paths.LESSON_BY_CONTENT} element={<LessonByContent />} />
         {/* Route for Instructor */}
         <Route
           path="/instructor/*"

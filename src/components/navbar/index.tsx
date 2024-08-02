@@ -83,17 +83,17 @@ const Navbar: React.FC = () => {
             <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
                 src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
-                className="hover:cursor-pointer mt-1"
+                className="hover:cursor-pointer mt-1 border border-black"
                 size={50}
                 icon={<UserOutlined />}
               />
             </Col>
             <Col span={16} className="pt-3 pr-3">
               <Row>
-                <p className="text-base font-bold">{dataUser.fullName}</p>
+                <p className="text-lg font-bold">{dataUser.fullName}</p>
               </Row>
               <div>
-                <p className="text-xs">{dataUser.email}</p>
+                <p className="text-sm">{dataUser.email}</p>
               </div>
             </Col>
           </Row>
@@ -111,27 +111,11 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={"/help"}>
-          Help
-        </Link>
-      ),
-      key: "3",
-    },
-    {
-      label: (
-        <Link className="text-lg" to={"/sendFeedBack"}>
-          Send Feedback
-        </Link>
-      ),
-      key: "4",
-    },
-    {
-      label: (
         <Link className="text-lg" to={paths.STUDENT_SUBSCRIPTION}>
           Subscription
         </Link>
       ),
-      key: "5",
+      key: "3",
     },
     {
       label: (
@@ -139,14 +123,14 @@ const Navbar: React.FC = () => {
           Purchase
         </Link>
       ),
-      key: "6",
+      key: "4",
     }, {
       label: (
         <Link className="text-lg" to={paths.STUDENT_CHANGEPASSWORD}>
           Change Password
         </Link>
       ),
-      key: "7",
+      key: "5",
     },
     {
       label: (
@@ -154,7 +138,7 @@ const Navbar: React.FC = () => {
           Logout
         </p>
       ),
-      key: "8",
+      key: "6",
     },
   ];
 
@@ -176,7 +160,6 @@ const Navbar: React.FC = () => {
             className={`w-32   ml-[40px] lg:mr-2 ${isLoginOrRegister ? 'place-items-center' : ''}`}
           />
         </Link>
-        {/* <div className="left-0 top-0 w-[0.1rem] h-10 bg-slate-400 hidden md:block"></div> */}
       </div>
       {!isLoginOrRegister && !isForgotPassword && (
         <div className="flexCenter lg:gap-[60px] lg:mr-10">
@@ -235,7 +218,7 @@ const Navbar: React.FC = () => {
                   <Space>
                     <Avatar
                       src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
-                      className="hover:cursor-pointer hidden md:block"
+                      className="hover:cursor-pointer hidden md:block border border-black"
                       size={40}
                       icon={<UserOutlined />}
                     />

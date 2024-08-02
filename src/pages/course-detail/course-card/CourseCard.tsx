@@ -6,6 +6,7 @@ import { addCourseToCart } from '../../../services/cart';
 import { paths } from "../../../consts";
 import { formatMinute } from "../../../utils";
 import { Course } from "../../../models/Course";
+import './card.module.css';
 
 interface CourseCardProps {
     course: Course;
@@ -64,26 +65,41 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                 <div className="space-y-2 flex-grow">
                     <div className="flex items-center mb-2">
                         <div className="mt-3">
-                            <Rate allowHalf disabled defaultValue={4.5} />
+                            <Rate
+                                allowHalf
+                                disabled
+                                defaultValue={course.average_rating}
+                                className="custom-rate"
+                            />
                         </div>
-                        <span className="text-xs mt-2">{`(15,254 ratings)`}</span>
+                        <span className="text-base mt-2 ml-2">
+                            {course.review_count === 1
+                                ? `(${course.review_count} review)`
+                                : course.review_count > 1
+                                    ? `(${course.review_count} reviews)`
+                                    : '(No reviews)'}
+                        </span>
                     </div>
                     <div><strong>Category:</strong> {course.category_name}</div>
                     <div><strong>Instructor:</strong> {course.instructor_name}</div>
-                    <div><span className="text-sm">Last update:</span> {new Date(course.updated_at).toLocaleDateString()}</div>
-                    <div className="flex flex-row gap-4">
-                        <div className="text-4xl">{course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
-                        <div className="text-2xl mt-[0.2rem]">
-                            <span className="line-through">
-                                {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
-                            </span>
-                        </div>
-                    </div>
-                    <div className="text-xs">{course.discount}% off</div>
+                    <div><strong>Last update:</strong> {new Date(course.updated_at).toLocaleDateString('en-GB')}</div>
+                    {!course.is_purchased && (
+                        <>
+                            <div className="flex flex-row gap-4">
+                                <div className="text-4xl">{course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
+                                <div className="text-2xl mt-[0.2rem]">
+                                    <span className="line-through">
+                                        {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="text-xs">{course.discount}% off</div>
+                        </>
+                    )}
                     <div className="flex gap-4 mt-auto">
                         {course.is_purchased ? (
                             <Link to={`/course/lesson/${course._id}`}>
-                                <button className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
+                                <button className="bg-yellow-500 lg:mt-5 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
                                     Study now
                                 </button>
                             </Link>

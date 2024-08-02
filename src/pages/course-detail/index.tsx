@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Skeleton, Tabs } from "antd";
 import axiosInstance from "../../services/axiosInstance";
@@ -22,15 +22,13 @@ const CourseDetails: React.FC = () => {
             try {
                 const response = await axiosInstance.get(`${API_CLIENT_GET_COURSE_DETAIL}/${_id}`);
                 const courseData = response.data;
-
                 if (courseData && courseData._id) {
                     setCourse(courseData);
                 } else {
-                    // Handle case where course data is incomplete or not found
-                    console.error('Course data is incomplete or not found.');
+                    // console.error('Course data is incomplete or not found.');
                 }
             } catch (error) {
-                console.error("Error fetching course details:", error);
+                // console.error("Error fetching course details:", error);
             } finally {
                 setLoading(false);
             }
@@ -40,7 +38,7 @@ const CourseDetails: React.FC = () => {
     }, [_id]);
 
     const tabItems = [
-        { key: "1", label: "About", children: <About /> },
+        { key: "1", label: "About", children: course ? <About courseId={course._id} /> : <Skeleton active /> },
         { key: "2", label: "Course Content", children: course ? <Content course={course} /> : <Skeleton active /> },
         { key: "3", label: "Reviews", children: <ReviewPage /> },
         { key: "4", label: "Instructor", children: <Instructor /> }

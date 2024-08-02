@@ -59,11 +59,11 @@ const AllCourses = () => {
         navigate("/login");
       } else {
         try {
-          if(course.is_purchased ===false && course.is_in_cart === false) {
+          if (course.is_purchased === false && course.is_in_cart === false) {
             await addCourseToCart(course._id);
-          } else if(course.is_in_cart === true && course.is_purchased === false) {
+          } else if (course.is_in_cart === true && course.is_purchased === false) {
             navigate(paths.STUDENT_CART);
-          } else if(course.is_in_cart === true && course.is_purchased === true) {
+          } else if (course.is_in_cart === true && course.is_purchased === true) {
             navigate(`${paths.STUDENT_STUDY_COURSE}/${course._id}`);
           }
         } catch (error) {
@@ -167,7 +167,7 @@ const AllCourses = () => {
                     className="max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden"
                     cover={
                       <div className="relative">
-                        <Link to={`/course/all-courses/course/${course._id}`}>
+                        <Link to={`/course/all-courses/${course._id}`}>
                           <img
                             alt="course"
                             src={

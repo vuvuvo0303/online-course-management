@@ -7,6 +7,7 @@ export class Course {
   video_url?: string;
   image_url?: string;
   price: number;
+  content: string;
   discount: number;
   created_at: Date;
   updated_at: Date;
@@ -22,11 +23,16 @@ export class Course {
   average_rating: number;
   review_count: number;
   session_list: Array<{
+    _id: string; // Session ID
     name: string;
     full_time: number;
+    position_order: number; // Added position_order for session
     lesson_list: Array<{
+      _id: string; // Lesson ID
       name: string;
       full_time: number;
+      lesson_type: string; // Added lesson_type
+      position_order: number; // Added position_order for lesson
     }>;
   }>;
 
@@ -35,6 +41,7 @@ export class Course {
     name: string = "",
     category_id: string = "",
     description: string = "",
+    content: string = "",
     status: string = "",
     video_url: string = "",
     image_url: string = "",
@@ -54,11 +61,16 @@ export class Course {
     average_rating: number = 0,
     review_count: number = 0,
     session_list: Array<{
+      _id: string; // Session ID
       name: string;
       full_time: number;
+      position_order: number; // Added position_order for session
       lesson_list: Array<{
+        _id: string; // Lesson ID
         name: string;
         full_time: number;
+        lesson_type: string; // Added lesson_type
+        position_order: number; // Added position_order for lesson
       }>;
     }> = [],
   ) {
@@ -66,6 +78,7 @@ export class Course {
     this.name = name;
     this.category_id = category_id;
     this.description = description;
+    this.content = content;
     this.status = status;
     this.video_url = video_url;
     this.image_url = image_url;

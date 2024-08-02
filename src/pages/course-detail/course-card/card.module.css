@@ -1,0 +1,8 @@
+/* custom-styles.css */
+.custom-rate .ant-rate-star {
+    color: #d9d9d9;
+}
+
+.custom-rate .ant-rate-star-full {
+    color: #fadb14;
+}
