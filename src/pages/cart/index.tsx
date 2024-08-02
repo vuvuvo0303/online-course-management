@@ -1,6 +1,6 @@
 import styles from "../../components/cart/cartComponents.module.css";
 import { CartComponents } from "../../components";
-import { deleteCart, getCarts, updateStatusCart } from "../../services";
+import { deleteCart, getCarts, getUserFromLocalStorage, updateStatusCart } from "../../services";
 import { useEffect, useState } from "react";
 import { Cart } from "../../models";
 import { useNavigate } from "react-router-dom";
@@ -113,17 +113,28 @@ const CartPage: React.FC = () => {
     }
   };
 
+  const user = getUserFromLocalStorage();
+  const userRole = user.role;
+
+  const navigateToCheckoutPage = () => {
+    if (userRole === "instructor") {
+      navigate(paths.INSTRUCTOR_CHECKOUT);
+    } else if (userRole === "student") {
+      navigate(paths.STUDENT_CHECKOUT);
+    }
+  }
+
   const handleCheckoutNow = async () => {
-    // if at least 1 cart is selected
+    // if at least 1 cart is selected (in cart page)
     if (cartsChecked.length > 0) {
       for (const element of cartsChecked) {
         await updateStatusCart("waiting_paid", element._id, element.cart_no);
       }
-      navigate(paths.STUDENT_CHECKOUT);
+      navigateToCheckoutPage();
     } else {
-      // if there is at least 1 cart with status is waiting paid
+      // if there is at least 1 cart with status is waiting paid (in checkout page)
       if (cartsWaitingPaid.length > 0) {
-        navigate(paths.STUDENT_CHECKOUT);
+        navigateToCheckoutPage();
       } else {
         message.error("Please select at least one cart");
       }
@@ -136,7 +147,7 @@ const CartPage: React.FC = () => {
       <h3 className={`${styles.h3_cart_title} mt-10`}>
         {totalCourse} Courses in Cart
       </h3>
-      {cartsNew.length === 0 && cartsCancel.length === 0 && (
+      {(cartsNew.length === 0 && cartsCancel.length === 0 ) &&(
         <div className={styles.empty_cart_container}>
           <img
             width={200}

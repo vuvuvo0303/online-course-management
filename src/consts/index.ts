@@ -318,6 +318,14 @@ export const paths = {
     "learn",
     INSTRUCTOR_LEARN_COURSE:
     "learn/course/:_id",
+    INSTRUCTOR_CART:
+    "cart",
+    INSTRUCTOR_LEARN_CART:
+    "learn/cart",
+    INSTRUCTOR_CHECKOUT:
+    "checkout",
+    INSTRUCTOR_STUDY_COURSE: "course/lesson",
+    INSTRUCTOR_LESSON: "learn/course/lesson/:_id",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",
