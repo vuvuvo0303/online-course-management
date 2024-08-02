@@ -182,13 +182,16 @@ const Navbar: React.FC = () => {
         </Link>
       </div>
 
-      {!isLoginOrRegister && !isForgotPassword && !isLoginPage && !isRegisterPage && (
-        <div className="flex-grow flex justify-center">
-          <SearchTool />
-        </div>
-      )}
+      {!isLoginOrRegister &&
+        !isForgotPassword &&
+        !isLoginPage &&
+        !isRegisterPage && (
+          <div className="flex-grow flex justify-center">
+            <SearchTool />
+          </div>
+        )}
 
-      <div className="flex items-center flex-shrink-0 gap-5">
+      <div className="flex items-center flex-shrink-0 gap-5 mr-10">
         {!user && (
           <div className="text-sm lg:text-base">
             <Link
@@ -234,7 +237,7 @@ const Navbar: React.FC = () => {
               placement="bottom"
             >
               <Link to={paths.STUDENT_CART}>
-                <Badge count={totalCarts} className='hidden md:block'>
+                <Badge count={totalCarts} className="hidden md:block mr-5">
                   <ShoppingCartOutlined className="text-gray-400 text-3xl" />
                 </Badge>
               </Link>
