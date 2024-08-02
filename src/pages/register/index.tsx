@@ -1,15 +1,15 @@
-import { Button, Form, FormProps, Image, Input, message, Radio, Upload } from "antd";
+import { Button, Form, FormProps, Image, message, Radio, Upload } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState, useEffect } from "react";
 import Login2 from "../../assets/Login2.jpg";
 import { useForm } from "antd/es/form/Form";
-import axiosInstance from "../../services/axiosInstance.ts";
+import { axiosInstance } from "../../services";
 import Recaptcha from "../register/reCaptcha.tsx";
-import { API_REGISTER, avatarUrlRules, descriptionRules, emailRules, nameRules, passwordRules, paths, phoneNumberRules, roleRules, roles, videoRules } from "../../consts";
+import { API_REGISTER, avatarUrlRules, paths, roleRules, roles } from "../../consts";
 import { Instructor } from "../../models";
 import { getBase64, uploadFile } from "../../utils";
-import { UploadButton } from "../../components";
+import { DescriptionFormItem, EmailFormItem, NameFormItem, PasswordFormItem, PhoneNumberFormItem, UploadButton, VideoFormItem } from "../../components";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -91,38 +91,9 @@ const RegisterPage: React.FC = () => {
                 onFinish={onFinish}
                 autoComplete="off"
               >
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={emailRules}
-                  labelCol={{ span: 24 }}
-                  wrapperCol={{ span: 24 }}
-                  className="mb-3"
-                >
-                  <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                </Form.Item>
-
-                <Form.Item
-                  label="Name"
-                  name="name"
-                  rules={nameRules}
-                  labelCol={{ span: 24 }}
-                  wrapperCol={{ span: 24 }}
-                  className="mb-5"
-                >
-                  <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
-                </Form.Item>
-
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={passwordRules}
-                  labelCol={{ span: 24 }}
-                  wrapperCol={{ span: 24 }}
-                  className="mb-5"
-                >
-                  <Input.Password className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                </Form.Item>
+                <EmailFormItem />
+                <NameFormItem />
+                <PasswordFormItem />
 
                 <Form.Item
                   name="role"
@@ -139,39 +110,9 @@ const RegisterPage: React.FC = () => {
 
                 {role === roles.INSTRUCTOR && (
                   <>
-                    <Form.Item
-                      label="Video"
-                      name="video"
-                      rules={videoRules}
-                      labelCol={{ span: 24 }}
-                      wrapperCol={{ span: 24 }}
-                      className="mb-5"
-                    >
-                      <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
-                    </Form.Item>
-
-                    <Form.Item
-                      label="Description"
-                      name="description"
-                      rules={descriptionRules}
-                      labelCol={{ span: 24 }}
-                      wrapperCol={{ span: 24 }}
-                      className="mb-5"
-                    >
-                      <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
-                    </Form.Item>
-
-                    <Form.Item
-                      label="Phone Number"
-                      name="phone_number"
-                      rules={phoneNumberRules}
-                      labelCol={{ span: 24 }}
-                      wrapperCol={{ span: 24 }}
-                      className="mb-5"
-                    >
-                      <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
-                    </Form.Item>
-
+                    <VideoFormItem />
+                    <DescriptionFormItem />
+                    <PhoneNumberFormItem />
                     <Form.Item
                       name="avatarUrl"
                       rules={avatarUrlRules}

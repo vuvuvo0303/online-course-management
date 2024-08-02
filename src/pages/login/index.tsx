@@ -1,15 +1,12 @@
 import { useState } from "react";
-import { Button, Form, FormProps, Input, Modal, Select } from "antd";
+import { Form, FormProps, Input, Modal, Select } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Login5 from "../../assets/Login5.jpg";
-import { paths, roles, emailRules, passwordRules } from "../../consts";
+import { paths, roles } from "../../consts";
 import { GoogleLogin } from "@react-oauth/google";
 import { handleNavigateRole, login, loginWithGoogle, registerWithGoogle } from "../../services";
-
-type FieldType = {
-  email: string;
-  password: string;
-};
+import { EmailFormItem, LoginButtonItem, PasswordFormItem } from "../../components";
+import { LoginFieldType } from "../../models/Auth";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -22,7 +19,7 @@ const LoginPage: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [role, setRole] = useState("");
 
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+  const onFinish: FormProps<LoginFieldType>["onFinish"] = async (values) => {
     const { email, password } = values;
     setLoading(true);
     const authResult = await login(email, password);
@@ -86,49 +83,14 @@ const LoginPage: React.FC = () => {
             onFinish={onFinish}
             autoComplete="off"
           >
-            <Form.Item
-              name="email"
-              label="Email"
-              rules={emailRules}
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-            >
-              <Input
-                placeholder="Enter Your Email"
-                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto"
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="password"
-              label="Password"
-              rules={passwordRules}
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-            >
-              <Input.Password
-                placeholder="Enter your password"
-                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mx-auto"
-              />
-            </Form.Item>
+            <EmailFormItem />
+            <PasswordFormItem />
             <div className="flex justify-center">
               <Link className="hover:text-blue-600 mt-2" to={paths.FORGOT_PASSWORD}>
                 Forgot Password
               </Link>
             </div>
-            <Form.Item>
-              <div className="flex justify-center">
-                <Button
-                  type="primary"
-                  size="large"
-                  htmlType="submit"
-                  className="w-2/3 shadow-xl hover:shadow-sky-600"
-                  loading={loading}
-                >
-                  Login
-                </Button>
-              </div>
-            </Form.Item>
+            <LoginButtonItem loading={loading} />
           </Form>
           <span className="mt-4 block text-center">
             Do you have an account?{" "}

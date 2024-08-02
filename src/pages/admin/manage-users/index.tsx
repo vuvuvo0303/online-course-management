@@ -13,30 +13,17 @@ import {
   Popconfirm,
   Radio,
   Select,
-  Spin,
   Avatar,
   message,
 } from "antd";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  SearchOutlined,
-  UserAddOutlined,
-} from "@ant-design/icons";
-
-
+import { DeleteOutlined, EditOutlined, SearchOutlined, UserAddOutlined } from "@ant-design/icons";
 import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
-
 import { User, UserRole } from "../../../models/User.ts";
 import { PaginationProps } from "antd";
-import {
-  API_CHANGE_ROLE,
-  API_CREATE_USER,
-  API_UPDATE_USER,
-} from "../../../consts";
-import ResponseData from "models/ResponseData.ts";
+import { API_CHANGE_ROLE, API_CREATE_USER, API_UPDATE_USER, roleRules } from "../../../consts";
+import ResponseData from "../../../models/ResponseData.ts";
 import { useDebounce } from "../../../hooks";
-import { CustomBreadcrumb, LoadingComponent, UploadButton } from "../../../components";
+import { CustomBreadcrumb, DescriptionFormItem, EmailFormItem, LoadingComponent, NameFormItem, PasswordFormItem, PhoneNumberFormItem, UploadButton } from "../../../components";
 import { axiosInstance, changeStatusUser, changeUserRole, deleteUser, getUsers } from "../../../services";
 import { formatDate, getBase64, uploadFile } from "../../../utils";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -70,26 +57,30 @@ const AdminManageUsers: React.FC = () => {
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
-    let statusValue: boolean | undefined = false;
-    if (selectedStatus === "true") {
-      statusValue = true;
+    try {
+      let statusValue: boolean | undefined = false;
+      if (selectedStatus === "true") {
+        statusValue = true;
+      }
+      const responseUsers = await getUsers(debouncedSearch, selectedRole === "All" ? undefined : selectedRole.toLowerCase(), statusValue, true, false, pagination.current, pagination.pageSize);
+      setDataUsers(responseUsers.data.pageData);
+      setPagination({
+        ...pagination,
+        total: responseUsers.data.pageInfo.totalItems,
+        current: responseUsers.data.pageInfo.pageNum,
+        pageSize: responseUsers.data.pageInfo.pageSize,
+      });
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
-    const responseUsers = await getUsers(debouncedSearch, selectedRole === "All" ? undefined : selectedRole.toLowerCase(), statusValue, true, false, pagination.current, pagination.pageSize);
-    setDataUsers(responseUsers.data.pageData);
-    setPagination({
-      ...pagination,
-      total: responseUsers.data.pageInfo.totalItems,
-      current: responseUsers.data.pageInfo.pageNum,
-      pageSize: responseUsers.data.pageInfo.pageSize,
-    });
-    setLoading(false);
   }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText, debouncedSearch]);
 
   const handleAddNewUser = useCallback(
     async (values: User) => {
+      setLoading(true);
       try {
-        setLoading(true);
-
         let avatarUrl = values.avatar;
 
         if (values.avatar && typeof values.avatar !== "string" && values.avatar?.file?.originFileObj) {
@@ -108,8 +99,8 @@ const AdminManageUsers: React.FC = () => {
         setLoading(false);
         fetchUsers();
         setFileList([]);
-      } catch (error) {
-        setLoading(false);
+      } finally {
+        setLoading(false)
       }
     },
     [fetchUsers, form]
@@ -396,16 +387,14 @@ const AdminManageUsers: React.FC = () => {
         </Select>
       </Space>
 
-      <Spin spinning={loading}>
-        <Table
-          columns={columns}
-          dataSource={dataUsers}
-          rowKey={(record: User) => record._id}
-          pagination={false}
-          onChange={handleTableChange}
-          className="overflow-x-auto"
-        />
-      </Spin>
+      <Table
+        columns={columns}
+        dataSource={dataUsers}
+        rowKey={(record: User) => record._id}
+        pagination={false}
+        onChange={handleTableChange}
+        className="overflow-x-auto"
+      />
 
       <div className="flex justify-end py-8">
         <Pagination
@@ -425,33 +414,18 @@ const AdminManageUsers: React.FC = () => {
         footer={null}
       >
         <Form form={form} onFinish={onFinish} layout="vertical">
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
-            <Input />
-          </Form.Item>
+          <NameFormItem />
           {modalMode === "Add" && (
-            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input the email!" }]}>
-              <Input />
-            </Form.Item>
+            <EmailFormItem />
           )}
           {modalMode === "Add" && (
-            <Form.Item
-              name="password"
-              label="Password"
-              rules={[{ required: true, message: "Please input the password!" }]}
-            >
-              <Input.Password />
-            </Form.Item>
+            <PasswordFormItem />
           )}
           {modalMode === "Add" && (
             <Form.Item
               label="Role"
               name="role"
-              rules={[
-                {
-                  required: true,
-                  message: "Please choose the role you want to add!",
-                },
-              ]}
+              rules={roleRules}
             >
               <Radio.Group onChange={(e) => handleRoleChangeModal(e.target.value)}>
                 <Radio value="student">Student</Radio>
@@ -466,20 +440,8 @@ const AdminManageUsers: React.FC = () => {
               <Form.Item name="video" label="Video" rules={[{ required: true, message: "Please upload a video" }]}>
                 <Input />
               </Form.Item>
-              <Form.Item
-                name="description"
-                label="Description"
-                rules={[{ required: true, message: "Please enter a description" }]}
-              >
-                <Input.TextArea />
-              </Form.Item>
-              <Form.Item
-                name="phone_number"
-                label="Phone Number"
-                rules={[{ required: true, message: "Please enter a phone number" }]}
-              >
-                <Input />
-              </Form.Item>
+              <PhoneNumberFormItem />
+              <DescriptionFormItem />
             </>
           )}
           <Form.Item label="Avatar" name="avatar">
@@ -502,18 +464,20 @@ const AdminManageUsers: React.FC = () => {
         </Form>
       </Modal>
 
-      {previewImage && (
-        <Image
-          wrapperStyle={{ display: "none" }}
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-        />
-      )}
-    </div>
+      {
+        previewImage && (
+          <Image
+            wrapperStyle={{ display: "none" }}
+            preview={{
+              visible: previewOpen,
+              onVisibleChange: (visible) => setPreviewOpen(visible),
+              afterOpenChange: (visible) => !visible && setPreviewImage(""),
+            }}
+            src={previewImage}
+          />
+        )
+      }
+    </div >
   );
 };
 

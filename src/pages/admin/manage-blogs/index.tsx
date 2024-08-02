@@ -62,15 +62,18 @@ const AdminManageBlogs: React.FC = () => {
 
   const fetchBlogs = async () => {
     setLoading(true);
-    const responseBlog = await getBlogs("", false, pagination.current, pagination.pageSize);
-    setDataBlogs(responseBlog.data.pageData);
-    setPagination({
-      ...pagination,
-      total: responseBlog.data.pageInfo.totalItems,
-      current: responseBlog.data.pageInfo.pageNum,
-      pageSize: responseBlog.data.pageInfo.pageSize,
-    });
-    setLoading(false);
+    try {
+      const responseBlog = await getBlogs("", false, pagination.current, pagination.pageSize);
+      setDataBlogs(responseBlog.data.pageData);
+      setPagination({
+        ...pagination,
+        total: responseBlog.data.pageInfo.totalItems,
+        current: responseBlog.data.pageInfo.pageNum,
+        pageSize: responseBlog.data.pageInfo.pageSize,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEditorChange = (value: string) => {

@@ -1,14 +1,13 @@
 import styles from "../../components/cart/cartComponents.module.css";
 import { CartComponents } from "../../components";
-import { deleteCart, getCarts, updateStatusCart } from "../../services/cart.ts";
+import { deleteCart, getCarts, updateStatusCart } from "../../services";
 import { useEffect, useState } from "react";
 import { Cart } from "../../models";
 import { useNavigate } from "react-router-dom";
 import { Col, message, Row } from "antd";
 import { paths } from "../../consts";
 import { Link } from "react-router-dom";
-import CustomButton from "../../components/CustomButton.tsx";
-import LoadingComponent from "../../components/loading";
+import { CustomButton, LoadingComponent } from "../../components";
 const CartPage: React.FC = () => {
   const [cartsNew, setCartsNew] = useState<Cart[]>([]);
   const [cartsCancel, setCartsCancel] = useState<Cart[]>([]);
