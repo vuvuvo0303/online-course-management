@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       const { data } = error.response;
       console.log(error.response);
-      if(data.message.length > 0) {
+      if(data.message !== null) {
         switch (error.response.status) {
           case 403: {
             if(!isTokenExpired){

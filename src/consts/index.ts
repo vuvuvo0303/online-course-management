@@ -142,6 +142,14 @@ export const avatarUrlRules: Rule[] = [
     },
 ]
 
+export const commentRules: Rule[] = [
+  { required: true, message: 'Please provide a review' }
+]
+
+export const ratingRules: Rule[] = [
+  { required: true, message: 'Please provide a rating' }
+]
+
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";
