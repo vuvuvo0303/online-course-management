@@ -100,16 +100,19 @@ export const changeUserRole = async (userId: string, role: UserRole) => {
 };
 
 //USER-06 Get Instructor Detail
-export const getInstructorDetailPublic = async (instructor_id: string) => {
+export const getInstructorDetailPublic = async (instructor_id?: string) => {
+  if (!instructor_id) {
+    throw new Error("Instructor ID is required");
+  }
+
   try {
     const response = await axiosInstance.get(`${API_GET_USER_DETAIL}/${instructor_id}`);
-    if (response) {
-      return response.data;
-    }
+    return response;
   } catch (error) {
     return;
   }
 };
+
 
 export const reviewProfileInstructor = async (user_id: string = "", status: string = "", comment = "") => {
  try {

@@ -22,21 +22,24 @@ const ManageAllPurchase = () => {
 
   const fetchPurchases = useCallback(async () => {
     setLoading(true)
-    const responsePurchases = await getPurchaseForAdmin(purchaseNoSearch, "", "", status, false, pagination.current, pagination.pageSize);
+    try {
+      const responsePurchases = await getPurchaseForAdmin(purchaseNoSearch, "", "", status, false, pagination.current, pagination.pageSize);
 
-    if (responsePurchases.data && responsePurchases.data.pageData) {
-      const { pageData, pageInfo } = responsePurchases.data;
-      setDataSource(pageData);
-      setPagination((prev) => ({
-        ...prev,
-        total: pageInfo?.totalItems || responsePurchases.data.length,
-        current: pageInfo?.pageNum || 1,
-        pageSize: pageInfo?.pageSize || responsePurchases.data.length,
-      }));
-    } else {
-      setDataSource([]);
+      if (responsePurchases.data && responsePurchases.data.pageData) {
+        const { pageData, pageInfo } = responsePurchases.data;
+        setDataSource(pageData);
+        setPagination((prev) => ({
+          ...prev,
+          total: pageInfo?.totalItems || responsePurchases.data.length,
+          current: pageInfo?.pageNum || 1,
+          pageSize: pageInfo?.pageSize || responsePurchases.data.length,
+        }));
+      } else {
+        setDataSource([]);
+      }
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
 
   if (loading) {

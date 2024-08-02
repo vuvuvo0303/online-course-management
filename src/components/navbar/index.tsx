@@ -19,12 +19,14 @@ import { useEffect, useState } from "react";
 import SearchTool from "../SearchTool";
 import Drawer from "../Drawer";
 import PopoverContent from "../PopoverContent";
-import { logout } from "../../services/auth.ts";
+import { logout } from "../../services/auth";
 import { getCarts } from "../../services";
-import { Cart } from "../../models/Cart.ts";
+import { Cart } from "../../models/Cart";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const [totalCarts, setTotalCarts] = useState<number>(0);
   const [dataUser, setDataUser] = useState<{
     role: string | null;
@@ -37,45 +39,22 @@ const Navbar: React.FC = () => {
     email: null,
     avatarUrl: null,
   });
-  const isLoginOrRegister =
-    location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
-  const navigate = useNavigate();
-  const isLoginPage = location.pathname === "/login";
-  const isRegisterPage = location.pathname === "/register";
-  const isForgotPassword = location.pathname === "/forgot-password";
-  // Create a submenu for each categoryFilter
-  const user = localStorage.getItem("user");
-
-  const token = localStorage.getItem("token");
   const [cartsNew, setCartsNew] = useState<Cart[]>([]);
   const [cartsCancel, setCartsCancel] = useState<Cart[]>([]);
   const [totalCost, setTotalCost] = useState<number>(0);
 
-  // show cart when student hover shop cart icon
-  const getCart = async () => {
-    const res = await getCarts("new");
-    const res2 = await getCarts("cancel");
-    let totalCost = 0;
-    if (res) {
-      setCartsNew(res);
-      for (let index = 0; index < res.length; index++) {
-        totalCost += res[index].price;
-      }
-      setTotalCost(totalCost);
-    }
-    if (res2) {
-      setCartsCancel(res2);
-      for (let index = 0; index < res2.length; index++) {
-        totalCost += res[index].price;
-      }
-      setTotalCost(totalCost);
-    }
-  };
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
+
+  const isLoginOrRegister =
+    location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
+  const isLoginPage = location.pathname === "/login";
+  const isRegisterPage = location.pathname === "/register";
+  const isForgotPassword = location.pathname === "/forgot-password";
 
   useEffect(() => {
     if (token) {
       getCart();
-      countCart();
     }
     if (user) {
       const userData = JSON.parse(user);
@@ -86,12 +65,30 @@ const Navbar: React.FC = () => {
         avatarUrl: userData.avatar,
       });
     }
-  }, []);
+  }, [token, user]);
 
-  const countCart = async () => {
-    const res = await getCarts("new");
-    if (res) {
-      setTotalCarts(res.length);
+  const getCart = async () => {
+    try {
+      const [resNew, resCancel] = await Promise.all([
+        getCarts("new"),
+        getCarts("cancel"),
+      ]);
+      let total = 0;
+
+      if (resNew) {
+        setCartsNew(resNew);
+        total += resNew.reduce((sum, cart) => sum + (cart.price || 0), 0);
+      }
+
+      if (resCancel) {
+        setCartsCancel(resCancel);
+        total += resCancel.reduce((sum, cart) => sum + (cart.price || 0), 0);
+      }
+
+      setTotalCost(total);
+      setTotalCarts(resNew ? resNew.length : 0);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
     }
   };
 
@@ -103,17 +100,17 @@ const Navbar: React.FC = () => {
             <Col span={8} className="pl-3 pt-2 pb-2">
               <Avatar
                 src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
-                className="hover:cursor-pointer mt-1"
+                className="hover:cursor-pointer mt-1 border border-black"
                 size={50}
                 icon={<UserOutlined />}
               />
             </Col>
             <Col span={16} className="pt-3 pr-3">
               <Row>
-                <p className="text-base font-bold">{dataUser.fullName}</p>
+                <p className="text-lg font-bold">{dataUser.fullName}</p>
               </Row>
               <div>
-                <p className="text-xs">{dataUser.email}</p>
+                <p className="text-sm">{dataUser.email}</p>
               </div>
             </Col>
           </Row>
@@ -131,27 +128,11 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={"/help"}>
-          Help
-        </Link>
-      ),
-      key: "3",
-    },
-    {
-      label: (
-        <Link className="text-lg" to={"/sendFeedBack"}>
-          Send Feedback
-        </Link>
-      ),
-      key: "4",
-    },
-    {
-      label: (
         <Link className="text-lg" to={paths.STUDENT_SUBSCRIPTION}>
           Subscription
         </Link>
       ),
-      key: "5",
+      key: "3",
     },
     {
       label: (
@@ -159,7 +140,7 @@ const Navbar: React.FC = () => {
           Purchase
         </Link>
       ),
-      key: "6",
+      key: "4",
     },
     {
       label: (
@@ -167,7 +148,7 @@ const Navbar: React.FC = () => {
           Change Password
         </Link>
       ),
-      key: "7",
+      key: "5",
     },
     {
       label: (
@@ -178,7 +159,7 @@ const Navbar: React.FC = () => {
           Logout
         </p>
       ),
-      key: "8",
+      key: "6",
     },
   ];
 
@@ -210,7 +191,7 @@ const Navbar: React.FC = () => {
           </div>
         )}
 
-      <div className="flex items-center flex-shrink-0 gap-5">
+      <div className="flex items-center flex-shrink-0 gap-5 mr-10">
         {!user && (
           <div className="text-sm lg:text-base">
             <Link
@@ -256,8 +237,8 @@ const Navbar: React.FC = () => {
               placement="bottom"
             >
               <Link to={paths.STUDENT_CART}>
-                <Badge count={totalCarts} className="hidden md:block">
-                  <ShoppingCartOutlined className="text-gray-400 text-2xl lg:text-3xl mr-5" />
+                <Badge count={totalCarts} className="hidden md:block mr-5">
+                  <ShoppingCartOutlined className="text-gray-400 text-3xl" />
                 </Badge>
               </Link>
             </Popover>
@@ -266,17 +247,16 @@ const Navbar: React.FC = () => {
 
         {user ? (
           <Dropdown
-            className=""
             menu={{ items: dropdownItems }}
             trigger={["click"]}
-            overlayClassName="w-64 lg:w-72"
+            overlayClassName="w-72"
           >
             <p onClick={(e) => e.preventDefault()}>
               <Space>
                 <Avatar
                   src={dataUser.avatarUrl ? dataUser.avatarUrl : paths.AVATAR}
-                  className="hover:cursor-pointer hidden md:block mr-10"
-                  size={30}
+                  className="hover:cursor-pointer hidden md:block border border-black"
+                  size={40}
                   icon={<UserOutlined />}
                 />
               </Space>
@@ -284,7 +264,7 @@ const Navbar: React.FC = () => {
           </Dropdown>
         ) : (
           <Link to={paths.LOGIN}>
-            <UserOutlined className="text-gray-400 text-2xl lg:text-3xl cursor-pointer hidden md:block mr-12" />
+            <UserOutlined className="text-gray-400 text-3xl cursor-pointer hidden md:block" />
           </Link>
         )}
       </div>

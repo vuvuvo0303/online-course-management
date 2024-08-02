@@ -5,7 +5,7 @@ export { addCourseToCart, getCarts, deleteCart, updateStatusCart } from './cart'
 export { getCategories } from './category'
 export { fetchCoursesByClient } from './client';
 export { getItemsByStudent, getItemsByInstructor, getPurchaseForAdmin } from './purchase';
-export { handleSubscriptionByInstructorOrStudent, getItemsBySubscriber } from './subscription';
+export { subscriptionByInstructorOrStudent, getItemsBySubscriber } from './subscription';
 export { createPayout, getPayouts, updateStatusPayout } from './payout';
 export { createCourseByInstructor, getCourses, getCourse, updateCourseByInstructor, deleteCourse, changeStatusCourse, getCourseLogs } from './course';
 export { createSession, getSessions, getSession, updateSession, deleteSession } from './session';

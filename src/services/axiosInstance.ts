@@ -32,9 +32,7 @@ axiosInstance.interceptors.response.use(
   (response) => {
     console.log(response);
     if (response.status === 200 || response.status === 201) {
-      if (response.data.success) {
         return response.data;
-      }
     }
     return response;
   },
@@ -92,4 +90,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export default axiosInstance

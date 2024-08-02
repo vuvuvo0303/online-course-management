@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { Subscription } from "../../../models";
 import { useEffect, useState } from "react";
 import useDebounce from "../../../hooks/useDebounce";
-import { getItemsBySubscriber, handleSubscriptionByInstructorOrStudent } from "../../../services/subscription";
+import { getItemsBySubscriber, subscriptionByInstructorOrStudent } from "../../../services";
 import { SearchOutlined } from "@ant-design/icons";
 import LoadingComponent from "../../../components/loading";
 const StudentSubscription = () => {
@@ -28,22 +28,22 @@ const StudentSubscription = () => {
         getSubscriber();
     }, [])
 
-    const handleSubscribe =async(instructor_id: string, instructor_name:string)=>{
-        const res = await handleSubscriptionByInstructorOrStudent(instructor_id);
-        if(res){
+    const handleSubscribe = async (instructor_id: string, instructor_name: string) => {
+        const res = await subscriptionByInstructorOrStudent(instructor_id);
+        if (res) {
             message.success(`Subscribe ${instructor_name} successfully`);
             getSubscriber();
-        }else{
+        } else {
             message.success(`Un Subscribe ${instructor_name}  successfully`)
             getSubscriber();
         }
     }
     if (loading) {
         return (<>
-          <LoadingComponent />
+            <LoadingComponent />
         </>)
-      }
-    
+    }
+
     const columns: TableProps<Subscription>['columns'] = [
         {
             title: 'Instructor Name',
@@ -57,7 +57,7 @@ const StudentSubscription = () => {
             render: (is_subscribed: boolean, record: Subscription) => (
                 <>
                     <div >
-                        <Tag onClick={()=>handleSubscribe(record.instructor_id, record.instructor_name)} className="cursor-pointer" color={getColorStatusSubscribe(is_subscribed)}>
+                        <Tag onClick={() => handleSubscribe(record.instructor_id, record.instructor_name)} className="cursor-pointer" color={getColorStatusSubscribe(is_subscribed)}>
                             {is_subscribed === true ? "Subscribed" : "Un Subscribed"}
                         </Tag>
                     </div>

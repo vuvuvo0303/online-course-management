@@ -261,7 +261,7 @@ const ManageAllSession = () => {
                 </div>
                 {
                     role === "instructor" && (
-                        <Link to={`/instructor/manage-all-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New</Button></Link>
+                        <Link to={`/instructor/manage-all-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New Session</Button></Link>
                     )
 
                 }

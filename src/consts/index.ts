@@ -104,6 +104,44 @@ export const passwordRules: Rule[] = [
   { pattern: /^\S*$/, message: "Password must not contain spaces!" },
 ];
 
+export const nameRules: Rule[] = [
+    { required: true, message: "Please input your name!" },
+    { min: 4, message: "Name must be at least 4 characters!" },
+    { max: 20, message: "Name must be at most 20 characters!" },
+]
+
+export const roleRules: Rule[] = [
+  { required: true, message: "Please select your role!" },
+]
+
+export const videoRules: Rule[] = [
+    {
+      required: true,
+      message: "Please input your video link!",
+    },
+]
+
+export const descriptionRules: Rule[] = [
+  {
+    required: true,
+    message: "Please input your description!",
+  },
+]
+
+export const phoneNumberRules: Rule[] = [
+  {
+    required: true,
+    message: "Please input your phone number!",
+  },
+]
+
+export const avatarUrlRules: Rule[] = [
+    {
+      required: true,
+      message: "Please upload your Avatar",
+    },
+]
+
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";
@@ -214,7 +252,7 @@ export const paths = {
   ALL_COURSES: "/course/all-courses",
   SITEMAP: "/sitemap",
   NOTFOUND: "/notfound",
-  COURSE_DETAILS: "/course/all-courses/course/:_id",
+  COURSE_DETAILS: "/course/all-courses/:_id",
   COURSE_DETAIL: "/course/:id",
   FORGOT_PASSWORD: "/forgot-password",
   VERIFY_TOKEN: "/verify-email/:token",
@@ -229,6 +267,7 @@ export const paths = {
   STUDENT_CHECKOUT: "/checkout",
   STUDENT_CHANGEPASSWORD: "/change-password",
   LESSON: "/course/lesson/:_id",
+  LESSON_BY_CONTENT: "/course/:_id/lesson/:_id",
   STUDENT_STUDY_COURSE: "/course/lesson",
   STUDENT_CART: "/cart",
   STUDENT_PURCHASE: "/purchase",
@@ -279,6 +318,14 @@ export const paths = {
     "learn",
     INSTRUCTOR_LEARN_COURSE:
     "learn/course/:_id",
+    INSTRUCTOR_CART:
+    "cart",
+    INSTRUCTOR_LEARN_CART:
+    "learn/cart",
+    INSTRUCTOR_CHECKOUT:
+    "checkout",
+    INSTRUCTOR_STUDY_COURSE: "course/lesson",
+    INSTRUCTOR_LESSON: "learn/course/lesson/:_id",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",

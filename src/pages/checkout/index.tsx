@@ -149,14 +149,15 @@ const Checkout: React.FC = () => {
               {
                 carts.length > 0 ?
                   (
-                    <Row className='border p-5 mt-10' gutter={10}>
-                      <Col className='font-bold text-center' span={6}>Course</Col>
-                      <Col span={6}></Col>
-                      <Col className='font-bold' span={6}>Discount</Col>
-                      <Col className='font-bold' span={6}>
-                        <p>Total</p>
-                      </Col>
-                    </Row>
+                    // <Row className='border p-5 mt-10' gutter={10}>
+                    //   <Col className='font-bold text-center' span={6}>Course</Col>
+                    //   <Col span={6}></Col>
+                    //   <Col className='font-bold' span={6}>Discount</Col>
+                    //   <Col className='font-bold' span={6}>
+                    //     <p>Total</p>
+                    //   </Col>
+                    // </Row>
+                    <></>
                   )
                   : (
                     <>

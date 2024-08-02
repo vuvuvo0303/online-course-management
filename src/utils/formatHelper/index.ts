@@ -17,3 +17,15 @@ export const formatDate = (date: string | number | Date | undefined, dateFormat:
 
 export const upperCaseFirstLetter = (word: string | undefined): string => 
     (word ?? "").charAt(0).toUpperCase() + (word ?? "").slice(1);
+
+export const formatDescription = (description: string,showFullDescription: boolean ) => {
+    if (!description) return "";
+
+    const formattedDescription = description.split('.').join('.\n');
+
+    const words = formattedDescription.split(' ');
+    if (words.length > 150 && !showFullDescription) {
+        return words.slice(0, 150).join(' ') + '...';
+    }
+    return formattedDescription;
+};

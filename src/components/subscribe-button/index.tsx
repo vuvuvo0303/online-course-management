@@ -1,5 +1,5 @@
 import { Button, Dropdown, MenuProps, Modal, Space } from "antd";
-import { handleSubscriptionByInstructorOrStudent } from "../../services/subscription";
+import { subscriptionByInstructorOrStudent } from "../../services";
 import { useState } from "react";
 
 import { BellOutlined, DownOutlined, UserOutlined } from "@ant-design/icons";
@@ -26,7 +26,7 @@ const SubscribeButtonComponent: React.FC<SubscribeButtonProps> = ({
 
     const handleSubscribe = async (instructor_id: string) => {
         setLoadingButton(true);
-        await handleSubscriptionByInstructorOrStudent(instructor_id);
+        await subscriptionByInstructorOrStudent(instructor_id);
         onSubscriptionChange(); // Gọi callback khi hoàn tất xử lý
         setTimeout(() => {
             setOpen(false);

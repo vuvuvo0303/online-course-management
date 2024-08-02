@@ -59,7 +59,7 @@ const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
                         <div key={cart._id}>
                             <Link to={`/course/${cart.course_id}`}>
                                 <CourseCard
-                                    image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
+                                    image={cart.course_image}
                                     title={cart.course_name}
                                     author={cart.instructor_name}
                                     price={formatCurrency(cart.price)}
@@ -72,7 +72,7 @@ const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
                         <div key={cart._id}>
                             <Link to={`/course/${cart.course_id}`}>
                                 <CourseCard
-                                    image="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
+                                    image={cart.course_image}
                                     title={cart.course_name}
                                     author={cart.instructor_name}
                                     price={formatCurrency(cart.price)}

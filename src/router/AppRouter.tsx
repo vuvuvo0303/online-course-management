@@ -40,6 +40,7 @@ const Cart = lazy(() => import("../pages/cart"));
 const StudentSubscription = lazy(() => import("../pages/student/subscription"));
 const StudenManagePurchase = lazy(() => import("../pages/purchase"));
 const Lesson = lazy(() => import("../pages/course/lesson"));
+const LessonByContent = lazy(() => import("../pages/course/lesson-by-content"));
 
 // Instructor Page
 const InstructorManagePayout = lazy(() => import("../pages/instructor/manage-payout"));
@@ -119,6 +120,7 @@ const AppRouter: React.FC = () => {
         <Route path={paths.STUDENT_PURCHASE} element={<StudenManagePurchase />} />
         <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
         <Route path={paths.LESSON} element={<Lesson />} />
+        <Route path={paths.LESSON_BY_CONTENT} element={<LessonByContent />} />
         {/* Route for Instructor */}
 
         <Route
@@ -131,7 +133,7 @@ const AppRouter: React.FC = () => {
           />
           <Route
             path={paths.INSTRUCTOR_LEARN_COURSE}
-            element={canAccess([roles.INSTRUCTOR]) ? <CourseDetails /> 
+            element={canAccess([roles.INSTRUCTOR]) ? <CourseDetails />
               : <Navigate to={paths.HOME} />
             }
           />
@@ -236,7 +238,21 @@ const AppRouter: React.FC = () => {
             path={paths.INSTRUCTOR_MANAGE_PAYOUTS}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManagePayout /> : <Navigate to={paths.HOME} />}
           />
+          <Route
+            path={paths.INSTRUCTOR_LEARN_CART}
+            element={canAccess([roles.INSTRUCTOR]) ? <Cart/> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_LESSON}
+            element={canAccess([roles.INSTRUCTOR]) ? <Lesson/> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_CHECKOUT}
+            element={canAccess([roles.INSTRUCTOR]) ? <Checkout /> : <Navigate to={paths.HOME} />}
+          />
+
           <Route path="*" element={<NotFound />} />
+
         </Route>
 
         {/* Route for Admin */}

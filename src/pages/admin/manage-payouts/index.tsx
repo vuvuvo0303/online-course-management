@@ -16,13 +16,11 @@ import {
   TableProps,
   Tag,
 } from "antd";
-import { format } from "date-fns";
 import { SearchOutlined } from "@ant-design/icons";
 import { Payout, Transaction } from "../../../models";
 import { useDebounce } from "../../../hooks";
 import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { getPayouts, updateStatusPayout } from "../../../services";
-import TextArea from "antd/es/input/TextArea";
 import { formatCurrency, formatDate } from "../../../utils";
 
 const AdminManagePayouts: React.FC = () => {
@@ -82,16 +80,19 @@ const AdminManagePayouts: React.FC = () => {
   });
   const fetchPayouts = useCallback(async () => {
     setLoading(true);
-    const responsePayouts = await getPayouts(debouncedSearch, "", statusFilter, false, false, pagination.current, pagination.pageSize);
+    try {
+      const responsePayouts = await getPayouts(debouncedSearch, "", statusFilter, false, false, pagination.current, pagination.pageSize);
 
-    setDataPayouts(responsePayouts.data.pageData);
-    setPagination({
-      ...pagination,
-      total: responsePayouts.data.pageInfo.totalItems,
-      current: responsePayouts.data.pageInfo.pageNum,
-      pageSize: responsePayouts.data.pageInfo.pageSize,
-    });
-    setLoading(false);
+      setDataPayouts(responsePayouts.data.pageData);
+      setPagination({
+        ...pagination,
+        total: responsePayouts.data.pageInfo.totalItems,
+        current: responsePayouts.data.pageInfo.pageNum,
+        pageSize: responsePayouts.data.pageInfo.pageSize,
+      });
+    } finally {
+      setLoading(false);
+    }
   }, [debouncedSearch, pagination.current, pagination.pageSize, statusFilter]);
 
   useEffect(() => {
@@ -211,14 +212,6 @@ const AdminManagePayouts: React.FC = () => {
               </Button>
             </div>
           }
-          {/* {
-            (record.status === "rejected") &&
-            <div className="flex gap-2">
-              <Button type="primary" onClick={() => handleUpdateStatus(record._id, "completed", "")}>
-                Completed
-              </Button>
-            </div>
-          } */}
         </>
       ),
     });
@@ -256,7 +249,7 @@ const AdminManagePayouts: React.FC = () => {
       title: 'Created Date',
       dataIndex: 'created_at',
       key: 'craeted_at',
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: string) => formatDate(created_at),
     },
   ];
 
@@ -281,7 +274,7 @@ const AdminManagePayouts: React.FC = () => {
       >
         <Form>
           <Form.Item label="Comment" name="Comment">
-            <TextArea value={comment} onChange={handleSaveComment} />
+            <Input.TextArea value={comment} onChange={handleSaveComment} />
           </Form.Item>
         </Form>
 

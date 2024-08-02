@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Rate, Progress, Input, Button, Modal, Form, message } from 'antd';
-import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { API_CREATE_REVIEW } from "../../../consts";
 import { Review } from "../../../models";
 import { useParams } from 'react-router-dom';
@@ -98,11 +98,6 @@ const ReviewPage: React.FC = () => {
                         Add Your Review
                     </Button>
                 </div>
-                <Input
-                    placeholder="Search reviews..."
-                    prefix={<SearchOutlined />}
-                    className="mb-4"
-                />
                 <div className="h-[35rem] overflow-y-auto pr-2">
                     {dataReviews.map((review, index) => (
                         <div
