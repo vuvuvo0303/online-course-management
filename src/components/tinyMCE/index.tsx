@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
 import config from '../../secret/config';
+
 interface TinyMCEEditorProps {
     value: string;
     onEditorChange: (content: string) => void;
@@ -21,9 +22,7 @@ const TinyMCEEditorComponent: React.FC<TinyMCEEditorProps> = ({ value, onEditorC
             value={editorContent}
             init={{
                 height: 300,
-                plugins: [
-                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
-                ],
+                plugins: ['insertdatetime', 'media', 'table', 'help', 'wordcount'],
                 toolbar: 'undo redo | bold italic backcolor | alignleft aligncenter ' +
                     'alignright alignjustify | bullist numlist outdent indent | removeformat | help',
                 content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',

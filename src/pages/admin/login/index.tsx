@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Form, FormProps, Input, message } from 'antd';
 import { useNavigate } from "react-router-dom";
 import Login from "../../../assets/Login.png";
-import { API_CURRENT_LOGIN_USER, paths } from "../../../consts";
-import { axiosInstance, login } from "../../../services";
+import {emailRules, passwordRules, paths} from "../../../consts";
+import { getCurrentLoginUser, login} from "../../../services";
 
 type FieldType = {
   email: string;
@@ -14,12 +14,6 @@ const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchUserData = async (token: string) => {
-    const response = await axiosInstance.get(API_CURRENT_LOGIN_USER);
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(response.data));
-  };
-
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     const { email, password } = values;
     setLoading(true);
@@ -27,13 +21,12 @@ const AdminLoginPage: React.FC = () => {
     if (authResult && "token" in authResult) {
       const { token } = authResult;
       localStorage.setItem("token", token);
-      await fetchUserData(token);
+      await getCurrentLoginUser(token);
       navigate(paths.ADMIN_HOME);
       message.success("Login successfully");
     }
     setLoading(false);
   };
-
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-[#a7e05f] to-[#12ab97]">
@@ -57,14 +50,7 @@ const AdminLoginPage: React.FC = () => {
             <Form.Item
               name="email"
               label="Email"
-              rules={[
-                { required: true, message: "Please input your email!" },
-                {
-                  type: "email",
-                  message: "Please enter the correct email format!",
-                },
-                { pattern: /^\S*$/, message: "Email must not contain spaces!" },
-              ]}
+              rules={emailRules}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               style={{ marginBottom: "10px", height: "80px" }}
@@ -78,14 +64,7 @@ const AdminLoginPage: React.FC = () => {
             <Form.Item
               name="password"
               label="Password"
-              rules={[
-                { required: true, message: "Please input your password!" },
-                { min: 6, message: "Password must be at least 6 characters!" },
-                {
-                  pattern: /^\S*$/,
-                  message: "Password must not contain spaces!",
-                },
-              ]}
+              rules={passwordRules}
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               style={{ marginTop: "20px", height: "100px" }}

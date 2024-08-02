@@ -10,21 +10,17 @@ import {
   Select,
   TableColumnsType,
   TablePaginationConfig,
+  Upload,
 } from "antd";
 import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
-import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog } from "../../../services";
-import {
-  API_GET_BLOGS,
-  API_CREATE_BLOG,
-  API_UPDATE_BLOG,
-  paths,
-  API_GET_BLOG,
-} from "../../../consts";
-import LoadingComponent from "../../../components/loading";
-import { format } from "date-fns";
-import CustomBreadcrumb from "../../../components/breadcrumb";
-import TinyMCEEditorComponent from "../../../components/tinyMCE";
+import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog, getBlogs } from "../../../services";
+import { API_CREATE_BLOG, API_UPDATE_BLOG, API_GET_BLOG } from "../../../consts";
+import { CustomBreadcrumb, LoadingComponent, TinyMCEEditorComponent, UploadButton } from "../../../components";
+import type { GetProp, UploadFile, UploadProps } from "antd";
+import { formatDate, getBase64, uploadFile } from "../../../utils";
+
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AdminManageBlogs: React.FC = () => {
   const [dataBlogs, setDataBlogs] = useState<Blog[]>([]);
@@ -36,83 +32,122 @@ const AdminManageBlogs: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [currentBlog, setCurrentBlog] = useState<Blog | null>(null);
   const [content, setContent] = useState<string>("");
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as FileType);
+    }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+  };
+
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
   useEffect(() => {
-    getBlogs();
+    fetchBlogs();
   }, [pagination.current, pagination.pageSize]);
 
   const fetchCategories = async () => {
-    const categories = await getCategories();
+    const responseCategories = await getCategories();
+    const categories = responseCategories.data.pageData;
     setCategories(categories);
   };
 
-  const getBlogs = async () => {
+  const fetchBlogs = async () => {
     setLoading(true);
-    const response = await axiosInstance.post(API_GET_BLOGS, {
-      searchCondition: {
-        category_id: "",
-        is_deleted: false,
-      },
-      pageInfo: {
-        pageNum: pagination.current,
-        pageSize: pagination.pageSize,
-      },
-    });
-    setDataBlogs(response.data.pageData);
+    const responseBlog = await getBlogs("", false, pagination.current, pagination.pageSize);
+    setDataBlogs(responseBlog.data.pageData);
     setPagination({
       ...pagination,
-      total: response.data.pageInfo.totalItems,
-      current: response.data.pageInfo.pageNum,
-      pageSize: response.data.pageInfo.pageSize,
+      total: responseBlog.data.pageInfo.totalItems,
+      current: responseBlog.data.pageInfo.pageNum,
+      pageSize: responseBlog.data.pageInfo.pageSize,
     });
     setLoading(false);
   };
 
   const handleEditorChange = (value: string) => {
     setContent(value);
+    form.setFieldsValue({ content: value });
   };
 
   const handleUpdateClick = async (id: string) => {
     setIsUpdateMode(true);
     setIsModalVisible(true);
     setLoading(true);
-    const response = await axiosInstance.get(`${API_GET_BLOG}/${id}`);
-    const blogData = response.data;
-    setCurrentBlog(blogData);
-    form.setFieldsValue({
-      name: blogData.name,
-      category_id: blogData.category_id,
-      image_url: blogData.image_url,
-      description: blogData.description,
-      content: blogData.content,
-    });
-    setContent(blogData.content);
-    setLoading(false);
+
+    try {
+      const response = await axiosInstance.get(`${API_GET_BLOG}/${id}`);
+      const blogData = response.data;
+      setCurrentBlog(blogData);
+      form.setFieldsValue({
+        name: blogData.name,
+        category_id: blogData.category_id,
+        image_url: blogData.image_url, // Hiển thị URL trong form
+        description: blogData.description,
+        content: blogData.content,
+      });
+      setContent(blogData.content);
+
+      // Đặt fileList nếu có ảnh
+      if (blogData.image_url) {
+        setFileList([
+          {
+            uid: '-1',
+            name: 'image.png',
+            status: 'done',
+            url: blogData.image_url,
+          },
+        ]);
+      } else {
+        setFileList([]);
+      }
+    } catch (error) {
+      console.error("Error fetching blog data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (values: Blog) => {
+    let avatarUrl: string = "";
+    if (fileList.length > 0) {
+      const file = fileList[0];
+      if (file.originFileObj) {
+        avatarUrl = await uploadFile(file.originFileObj as File);
+      }
+    }
+
+
+    const user = getUserFromLocalStorage();
+    const payload = { ...values, content, user_id: user._id, image_url: avatarUrl };
+
     if (isUpdateMode && currentBlog) {
-      const user = getUserFromLocalStorage();
-      const payload = { ...values, content, user_id: user._id };
       await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
       message.success("Blog updated successfully");
     } else {
-      const user = getUserFromLocalStorage();
-      const payload = { ...values, content, user_id: user._id };
       await axiosInstance.post(API_CREATE_BLOG, payload);
       message.success("Blog added successfully");
     }
+
+    // Xử lý sau khi submit thành công
     setIsModalVisible(false);
     form.resetFields();
     setIsUpdateMode(false);
+    setFileList([]);
     setCurrentBlog(null);
     setContent("");
-    await getBlogs();
+    await fetchBlogs();
+
   };
+
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPagination((prev) => ({
@@ -168,14 +203,14 @@ const AdminManageBlogs: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
       width: "10%",
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      render: (updated_at: Date) => formatDate(updated_at),
       width: "10%",
     },
     {
@@ -192,7 +227,7 @@ const AdminManageBlogs: React.FC = () => {
           <Popconfirm
             title="Delete the Blog"
             description="Are you sure to delete this Blog?"
-            onConfirm={() => deleteBlog(record._id, record.name, getBlogs)}
+            onConfirm={() => deleteBlog(record._id, record.name, fetchBlogs)}
             okText="Yes"
             cancelText="No"
           >
@@ -207,25 +242,21 @@ const AdminManageBlogs: React.FC = () => {
   ];
 
   if (loading) {
-    return (<>
-      <LoadingComponent />
-    </>)
+    return (
+      <>
+        <LoadingComponent />
+      </>
+    );
   }
-
-  // const handlePaginationChange = (page: number, pageSize?: number) => {
-  //   setPagination((prev) => ({
-  //     ...prev,
-  //     current: page,
-  //     pageSize: pageSize || 10,
-  //   }));
-  // };
 
   return (
     <div>
       <div className="flex justify-between">
-        <CustomBreadcrumb currentTitle="Manage Blogs" currentHref={paths.ADMIN_HOME} />
+        <CustomBreadcrumb />
         <div className="py-2">
-          <Button type="primary" onClick={handleResetContent}>Add New Blog</Button>
+          <Button type="primary" onClick={handleResetContent}>
+            Add New Blog
+          </Button>
         </div>
       </div>
       <Table
@@ -253,11 +284,7 @@ const AdminManageBlogs: React.FC = () => {
         footer={null}
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item
-            name="name"
-            label="Title"
-            rules={[{ required: true, message: "Please input the blog title!" }]}
-          >
+          <Form.Item name="name" label="Title" rules={[{ required: true, message: "Please input the blog title!" }]}>
             <Input />
           </Form.Item>
           <Form.Item
@@ -278,7 +305,15 @@ const AdminManageBlogs: React.FC = () => {
             label="Image URL"
             rules={[{ required: true, message: "Please input the image URL!" }]}
           >
-            <Input />
+            <Upload
+              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={handlePreview}
+              onChange={handleChange}
+            >
+              {fileList.length >= 1 ? null : <UploadButton />}
+            </Upload>
           </Form.Item>
           <Form.Item
             name="description"
@@ -304,6 +339,17 @@ const AdminManageBlogs: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
+      {previewImage && (
+        <Image
+          wrapperStyle={{ display: 'none' }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(''),
+          }}
+          src={previewImage}
+        />
+      )}
     </div>
   );
 };

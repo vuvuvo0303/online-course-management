@@ -1,6 +1,9 @@
+
 /* API */
 
 //Base URL
+import { Rule } from "antd/lib/form";
+
 export const host_main = "https://api-ojt-hcm24-react06-group01.vercel.app";
 //Auth
 export const API_LOGIN = "/api/auth";
@@ -86,6 +89,59 @@ export const API_CLIENT_GET_CATEGORIES = "/api/client/category/search";
 export const API_INSTRUCTOR_OR_STUDENT_SUBSCRIPTIONS = "/api/subscription";
 export const API_INSTRUCTOR_GET_SUBSCRIPTIONS = "/api/subscription/search-for-instructor";
 export const API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER = "/api/subscription/search-for-subscriber";
+
+
+
+export const emailRules: Rule[] = [
+  { required: true, message: "Please input your email!" },
+  { type: "email", message: "Please enter the correct email format!" },
+  { pattern: /^\S*$/, message: "Email must not contain spaces!" },
+];
+
+export const passwordRules: Rule[] = [
+  { required: true, message: "Please input your password!" },
+  { min: 6, message: "Password must be at least 6 characters!" },
+  { pattern: /^\S*$/, message: "Password must not contain spaces!" },
+];
+
+export const nameRules: Rule[] = [
+    { required: true, message: "Please input your name!" },
+    { min: 4, message: "Name must be at least 4 characters!" },
+    { max: 20, message: "Name must be at most 20 characters!" },
+]
+
+export const roleRules: Rule[] = [
+  { required: true, message: "Please select your role!" },
+]
+
+export const videoRules: Rule[] = [
+    {
+      required: true,
+      message: "Please input your video link!",
+    },
+]
+
+export const descriptionRules: Rule[] = [
+  {
+    required: true,
+    message: "Please input your description!",
+  },
+]
+
+export const phoneNumberRules: Rule[] = [
+  {
+    required: true,
+    message: "Please input your phone number!",
+  },
+]
+
+export const avatarUrlRules: Rule[] = [
+    {
+      required: true,
+      message: "Please upload your Avatar",
+    },
+]
+
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";
@@ -93,6 +149,7 @@ export const colorIs_delete = (is_delete: boolean) => {
     return "blue";
   }
 };
+
 
 export const optionStatus = () => [
   { label: "new", value: "new" },
@@ -140,7 +197,7 @@ export const getColorPurchase = (status: string) => {
     case "request_paid":
       return "blue";
     case "completed":
-      return "yellow";
+      return "green";
   }
 };
 
@@ -231,7 +288,7 @@ export const paths = {
   INSTRUCTOR_RESOURCES: "resources",
   INSTRUCTOR_MANAGE_LECTURE: "lecture",
   INSTRUCTOR_CREATE_LECTURE:
-    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/create-lecture",
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lessons/create-lesson",
   INSTRUCTOR_UPDATE_LECTURE:
     "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
@@ -245,6 +302,7 @@ export const paths = {
     "manage-courses/:courseId/manage-sessions/update-session/:sessionId",
   INSTRUCTOR_MANAGE_COURSE_DETAIL: "manage-courses/:_id",
   INSTRUCTOR_MANAGE_ALL_SESSION: "manage-all-sessions",
+  INSTRUCTOR_LESSON_OF_MANAGE_ALL_SESSIONS: "manage-all-sessions/:sessionId/manage-lessons",
   INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS:
     "manage-all-sessions/create-session",
   INSTRUCTOR_UPDATE_SESSION_OF_MANAGE_ALL_SESSIONS:
@@ -256,6 +314,10 @@ export const paths = {
     "manage-all-lectures/update-lecture/:lectureId",
   INSTRUCTOR_MANAGE_PURCHASES:
     "manage-purchases",
+    INSTRUCTOR_LEARN:
+    "learn",
+    INSTRUCTOR_LEARN_COURSE:
+    "learn/course/:_id",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",
@@ -293,6 +355,7 @@ export const paths = {
   AVATAR:
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PyKYrBKAWWy6YCbQzWQcwIRqH8wYMPluIZiMpV1w0NYSbocTZz0ICWFkLcXhaMyvCwQ&usqp=CAU",
 };
+
 
 /* ROLE */
 export const roles = {

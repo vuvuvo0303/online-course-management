@@ -125,7 +125,7 @@ const ManageSession: React.FC = () => {
   };
   const columns: TableProps<Session>["columns"] = [
     {
-      title: "Course Name",
+      title: "Course Name ",
       dataIndex: "course_name",
       key: "course_name",
     },
@@ -174,10 +174,12 @@ const ManageSession: React.FC = () => {
   ];
 
   if (loading) {
-    return (<>
+    return (
+      <>
         <LoadingComponent />
-    </>)
-}
+      </>
+    );
+  }
   if (error) {
     return <div>{error}</div>;
   }
@@ -187,13 +189,7 @@ const ManageSession: React.FC = () => {
 
   return (
     <div>
-      <Modal
-        title="Confirm Delete"
-        open={open}
-        onOk={handleOk}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancel}
-      >
+      <Modal title="Confirm Delete" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
         <p>{modalText}</p>
       </Modal>
       <Breadcrumb>
@@ -207,7 +203,7 @@ const ManageSession: React.FC = () => {
           <span>Manage Sessions</span>
         </Breadcrumb.Item>
       </Breadcrumb>
-  
+
       {/* filter session by true false */}
       <div className="grid grid-cols-2">
         <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-10">
@@ -221,7 +217,7 @@ const ManageSession: React.FC = () => {
                 options: [
                   { label: <span>Deleted</span>, value: true },
                   { label: <span>Existing</span>, value: false },
-              ],
+                ],
               },
             ]}
           />
@@ -242,7 +238,13 @@ const ManageSession: React.FC = () => {
         </div>
       </div>
 
-      <Table dataSource={sessions} columns={columns} rowKey={(record: Session) => record._id} pagination={false} onChange={handleTableChange} />
+      <Table
+        dataSource={sessions}
+        columns={columns}
+        rowKey={(record: Session) => record._id}
+        pagination={false}
+        onChange={handleTableChange}
+      />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

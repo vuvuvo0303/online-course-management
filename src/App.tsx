@@ -12,13 +12,10 @@ function App() {
     location.pathname.includes("/admin") ||
     location.pathname.includes("/instructor") ||
     location.pathname.includes(paths.LOGIN) ||
-    location.pathname.includes(paths.REGISTER);
+    location.pathname.includes(paths.REGISTER) ||
+    location.pathname.includes('/course/lesson')
 
   const clientId = config.GOOGLE_CLIENT_ID;
-  if (!clientId) {
-    throw new Error("Google OAuth Client ID is not defined");
-  }
-
   return (
     <>
       <GoogleOAuthProvider clientId={clientId}>

@@ -1,5 +1,5 @@
-import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Input, message, Modal, Select, Table, TableProps } from "antd";
+import { DeleteOutlined, EditOutlined,  } from "@ant-design/icons";
+import {  Button, Input, message, Modal, Select, Table, TableProps } from "antd";
 import { useEffect, useState } from "react";
 import { Course, Session } from "../../models";
 import { Link } from "react-router-dom";
@@ -8,6 +8,7 @@ import { API_DELETE_SESSION, API_GET_COURSES, API_GET_SESSIONS } from "../../con
 import { useDebounce } from "../../hooks";
 import { format } from "date-fns";
 import LoadingComponent from "../../components/loading";
+import CustomBreadcrumb from "../../components/breadcrumb";
 const ManageAllSession = () => {
     const [keyword, setKeyword] = useState<string>('');
     const [open, setOpen] = useState(false);
@@ -158,7 +159,7 @@ const ManageAllSession = () => {
                     {
                         role === "instructor" ?
                             (
-                                <Link className="text-blue-500" to={`/instructor/manage-courses/${record.course_id}/manage-sessions/${record._id}/manage-lessons`}>Lesson of {name}</Link>
+                                <Link className="text-blue-500" to={`/instructor/manage-all-sessions/${record._id}/manage-lessons`}>Lesson of {name}</Link>
                             )
                             :
                             (
@@ -217,26 +218,8 @@ const ManageAllSession = () => {
             >
                 <p>{modalText}</p>
             </Modal>
-            <Breadcrumb>
-                {
-                    role === "instructor" ?
-                        (
-                            <Breadcrumb.Item href="/instructor/dashboard">
-                                <HomeOutlined />
-                            </Breadcrumb.Item>
-                        )
-                        :
-                        (
-                            <Breadcrumb.Item href="/admin/dashboard">
-                                <HomeOutlined />
-                            </Breadcrumb.Item>
-                        )
-                }
-                <Breadcrumb.Item>
-                    <span>Manage All Sessions</span>
-                </Breadcrumb.Item>
-            </Breadcrumb>
-            <h1 className="text-center my-5">Manage All Session</h1>
+
+            <CustomBreadcrumb />
             {/* filter session by true false */}
             <div className="grid grid-cols-2">
                 <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-10">
@@ -278,7 +261,7 @@ const ManageAllSession = () => {
                 </div>
                 {
                     role === "instructor" && (
-                        <Link to={`/instructor/manage-all-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New</Button></Link>
+                        <Link to={`/instructor/manage-all-sessions/create-session`}><Button type="primary" className="float-right my-10">Add New Session</Button></Link>
                     )
 
                 }

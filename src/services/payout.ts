@@ -1,12 +1,11 @@
 import { message } from "antd";
 import { API_CREATE_PAYOUT, API_GET_PAYOUTS, API_UPDATE_STATUS_PAYOUT } from "../consts";
 import axiosInstance from "./axiosInstance";
-import { TransactionsPurchase } from "models/Purchase";
+import { TransactionsPurchase } from "../models";
 //PAYOUT-01 Create Payout (Admin, Instructor)
 
 export const createPayout = async (instructor_id: string, transactions: TransactionsPurchase[]) => {
     try {
-        console.log("transactions: ", transactions)
         const response = await axiosInstance.post(API_CREATE_PAYOUT, {
             "instructor_id": instructor_id,
             "transactions": transactions
@@ -18,35 +17,45 @@ export const createPayout = async (instructor_id: string, transactions: Transact
             message.error("Please select at least 1 purchase to create payout!");
         }
     } catch (error) {
-        console.log("Error occurred: ", error)
-        return [];
+        return;
     }
 }
 //Payout02 Get Payouts (Admin, Instructor)
-export const getPayouts = async (payout_no: string, instructor_id: string, status: string, pageNum: number, pageSize: number,) => {
+export const getPayouts = async (payout_no: string = "",
+    instructor_id: string = "",
+    status: string = "",
+    is_instructor: boolean = false,
+    is_deleted: boolean = false,
+    pageNum: number = 1,
+    pageSize: number = 10) => {
     try {
         const response = await axiosInstance.post(API_GET_PAYOUTS, {
             "searchCondition": {
-                "payout_no": payout_no,
-                "instructor_id": instructor_id,
-                "status": status,
-                "is_instructor": false,
-                "is_delete": false
+                "payout_no": payout_no || "",
+                "instructor_id": instructor_id || "",
+                "status": status || "",
+                "is_instructor": is_instructor !== undefined ? is_deleted : false,
+                "is_deleted": is_deleted !== undefined ? is_deleted : false,
             },
             "pageInfo": {
                 "pageNum": pageNum,
                 "pageSize": pageSize
             }
         })
-        if (response) {
-            return response.data.pageData;
-        }
-        message.error("Create Payout Failed!");
+            return response;
     } catch (error) {
-        console.log("Error occurred: ", error)
-        return [];
-    }
-}
+        return {
+          data: {
+            pageInfo: {
+              totalItems: 0,
+              pageNum,
+              pageSize
+            },
+            pageData: []
+          }
+        };
+      }
+    };
 
 //PAYOUT-03 Update Status Payout (Admin, Instructor)
 export const updateStatusPayout = async (payout_id: string, status: string, comment: string) => {
@@ -57,7 +66,6 @@ export const updateStatusPayout = async (payout_id: string, status: string, comm
         })
         return response
     } catch (error) {
-        console.log("updateStatusPayout- Error occurred: ", error)
-        return;
+        return [];
     }
 }

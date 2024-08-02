@@ -18,14 +18,14 @@ import {
   TableProps,
   Tag,
 } from "antd";
-import { API_COURSE_LOGS, API_COURSE_STATUS, API_GET_COURSES, getColor, paths } from "../../../consts";
+import { API_COURSE_STATUS, API_GET_COURSES, getColor } from "../../../consts";
 import { format } from "date-fns";
 import { Course, Log } from "../../../models";
 import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
-import CustomBreadcrumb from "../../../components/breadcrumb";
-import { axiosInstance } from "../../../services";
-import LoadingComponent from "../../../components/loading";
+import { CustomBreadcrumb, LoadingComponent } from "../../../components";
+import { axiosInstance, getCourseLogs } from "../../../services";
+import { formatCurrency } from "../../../utils";
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [changeStatus, setChangeStatus] = useState<string>("");
@@ -60,22 +60,10 @@ const AdminManageCourses: React.FC = () => {
   };
   const fetchLog = async () => {
     setLogLoading(true);
-    const response = await axiosInstance.post(API_COURSE_LOGS, {
-      searchCondition: {
-        course_id: courseId,
-        keyword: keywordLogStatus,
-        old_status: oldStatus,
-        new_status: newStatus,
-        is_deleted: false,
-      },
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 100,
-      },
-    });
-    if (response) {
+    const responseLogs = await getCourseLogs(courseId, keywordLogStatus, oldStatus, newStatus, 1, 100);
+    if (responseLogs) {
       setLogs(
-        response.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
+        responseLogs.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         })
       );
@@ -280,13 +268,6 @@ const AdminManageCourses: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const formatVND = (value: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
-  };
-
   const uniqueCategoriesMap = new Map();
   courses.forEach((course) => {
     if (!uniqueCategoriesMap.has(course.category_name)) {
@@ -465,7 +446,7 @@ const AdminManageCourses: React.FC = () => {
             </div>
             <div>
               <span className="text-base font-bold">Price: </span>
-              {formatVND(selectedCourse.price)}
+              {formatCurrency(selectedCourse.price)}
             </div>
             <div>
               <span className="text-base font-bold">Discount: </span>
@@ -506,7 +487,7 @@ const AdminManageCourses: React.FC = () => {
           </Button>
         </div>
       </Modal>
-      <CustomBreadcrumb currentTitle="Manage Courses" currentHref={paths.ADMIN_HOME} />
+      <CustomBreadcrumb />
 
       {/* Filters and Search */}
       <Space className="flex flex-wrap  mb-4">

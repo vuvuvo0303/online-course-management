@@ -2,12 +2,26 @@ import { Payout, Transaction } from "../../../models";
 import { useEffect, useState } from "react";
 import { getPayouts, updateStatusPayout } from "../../../services";
 import { format } from "date-fns";
-import { Table, TableProps, Tag, Button, Modal, Tabs, message, Input, TabsProps } from "antd";
+import {
+  Table,
+  TableProps,
+  Tag,
+  Button,
+  Modal,
+  Tabs,
+  message,
+  Input,
+  TabsProps,
+  TablePaginationConfig,
+  PaginationProps,
+  Pagination,
+} from "antd";
 import { getColorPayout } from "../../../consts/index";
 import { createStyles } from "antd-style";
-import LoadingComponent from "../../../components/loading";
+import {LoadingComponent, CustomBreadcrumb} from "../../../components";
 import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
+import {formatCurrency, formatDate} from "../../../utils";
 
 const useStyle = createStyles(({ token }) => ({
   "my-modal-body": {
@@ -31,7 +45,11 @@ const useStyle = createStyles(({ token }) => ({
 const InstructorManagePayout = () => {
   const [searchPayout, setSearchPayout] = useState<string>("");
   const payoutNoSearch = useDebounce(searchPayout, 500);
-
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const [payouts, setPayouts] = useState<Payout[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -48,18 +66,30 @@ const InstructorManagePayout = () => {
 
   useEffect(() => {
     getPayoutsByInstructor();
-  }, [statusPayout, payoutNoSearch]);
+  }, [statusPayout, payoutNoSearch,pagination.current, pagination.pageSize]);
 
   const getPayoutsByInstructor = async () => {
     // no loading for search
     if (payoutNoSearch != "") {
-      const response = await getPayouts(payoutNoSearch, "", statusPayout, 1, 100);
-      setPayouts(response);
+      const response = await getPayouts(payoutNoSearch, "", statusPayout, true, false, 1, 10);
+      setPayouts(response.data.pageData);
+      setPagination({
+        ...pagination,
+        total: response.data.pageInfo.totalItems,
+        current: response.data.pageInfo.pageNum,
+        pageSize: response.data.pageInfo.pageSize,
+      });
       setLoading(false);
     } else {
       setLoading(true);
-      const response = await getPayouts(payoutNoSearch, "", statusPayout, 1, 100);
-      setPayouts(response);
+      const response = await getPayouts(payoutNoSearch, "", statusPayout, true, false, 1, 10);
+      setPayouts(response.data.pageData);
+      setPagination({
+        ...pagination,
+        total: response.data.pageInfo.totalItems,
+        current: response.data.pageInfo.pageNum,
+        pageSize: response.data.pageInfo.pageSize,
+      });
       setLoading(false);
     }
   };
@@ -97,43 +127,44 @@ const InstructorManagePayout = () => {
       dataIndex: "status",
       key: "status",
       render: (status: string) => (
-        <Tag color={getColorPayout(status)}>
-          {status === "request_payout" ? "request payout" : status}
-        </Tag>
+        <Tag color={getColorPayout(status)}>{status === "request_payout" ? "request payout" : status}</Tag>
       ),
     },
     {
       title: "Balance Origin",
       dataIndex: "balance_origin",
       key: "balance_origin",
+      render: (balance_origin: number) => <>{formatCurrency(balance_origin)}</>,
     },
     {
       title: "Balance Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
+      render: (balance_instructor_paid: number) => <>{formatCurrency(balance_instructor_paid)}</>,
     },
     {
       title: "Balance Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
+      render: (balance_instructor_received: number) => <>{formatCurrency(balance_instructor_received)}</>,
     },
     {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
       width: "10%",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: string) => formatDate(created_at),
     },
-    ...(statusPayout === "new" ? [{
+    ...(statusPayout === "new" || statusPayout === "rejected" ? [{
       title: "Action",
       dataIndex: "status",
       key: "action",
-      render: (status: string, record: Payout) =>
-        status === "new" && (
-          <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
-            Request Payout
-          </Button>
-        ),
+      render: (_text: string, record: Payout) =>
+      (
+        <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
+          Request Payout
+        </Button>
+      ),
     }] : []),
   ];
 
@@ -157,7 +188,7 @@ const InstructorManagePayout = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: string) => formatDate(created_at),
     },
   ];
 
@@ -175,7 +206,19 @@ const InstructorManagePayout = () => {
   if (loading) {
     return <LoadingComponent />;
   }
+  const handleTableChange = async (pagination: PaginationProps) => {
+    setPagination({
+      ...pagination,
+      current: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      total: pagination.total ?? 0,
+    });
+    await getPayouts();
+  };
 
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({ ...pagination, current: page, pageSize });
+  };
   return (
     <>
       <Modal
@@ -189,7 +232,7 @@ const InstructorManagePayout = () => {
         <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
       </Modal>
       <div className="container mx-auto px-10">
-        <h1 className="text-center my-10">Manage Payout</h1>
+        <CustomBreadcrumb />
         <Input.Search
           placeholder="Search By Purchase No"
           value={searchPayout}
@@ -199,7 +242,23 @@ const InstructorManagePayout = () => {
           enterButton={<SearchOutlined className="text-white" />}
         />
         <Tabs defaultActiveKey={statusPayout} items={items} onChange={onChange} />
-        <Table rowKey={(record: Payout) => record._id} dataSource={payouts} columns={columns} />
+        <Table
+          rowKey={(record: Payout) => record._id}
+          dataSource={payouts}
+          columns={columns}
+          pagination={false}
+          onChange={handleTableChange}
+        />
+        <div className="flex justify-end py-8">
+        <Pagination
+          total={pagination.total}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
+      </div>
       </div>
     </>
   );

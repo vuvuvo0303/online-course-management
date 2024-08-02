@@ -1,15 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button, Input, Space, Table, Modal, Form, Pagination, Popconfirm, Spin, Select, message, } from "antd";
 import { DeleteOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons";
-import { format } from "date-fns";
 import { Category } from "../../../models";
-import { axiosInstance } from "../../../services";
+import { axiosInstance, getCategories } from "../../../services";
 import type { TablePaginationConfig } from "antd/es/table/interface";
 import { ColumnType } from "antd/es/table";
-import { API_CREATE_CATEGORY, API_DELETE_CATEGORY, API_GET_CATEGORIES, API_UPDATE_CATEGORY, paths } from "../../../consts";
+import { API_CREATE_CATEGORY, API_DELETE_CATEGORY, API_UPDATE_CATEGORY } from "../../../consts";
 import { useDebounce } from "../../../hooks";
-import CustomBreadcrumb from "../../../components/breadcrumb";
-import LoadingComponent from "../../../components/loading";
+import { CustomBreadcrumb, LoadingComponent } from "../../../components";
+import { formatDate } from "../../../utils";
 const AdminManageCategories: React.FC = () => {
   const [dataCategories, setDataCategories] = useState<Category[]>([]);
   const [searchText, setSearchText] = useState<string>("");
@@ -29,25 +28,13 @@ const AdminManageCategories: React.FC = () => {
 
   const fetchCategories = useCallback(async () => {
     setLoading(true);
-    const response = await axiosInstance.post(API_GET_CATEGORIES, {
-      searchCondition: {
-        role: "all",
-        status: true,
-        is_deleted: false,
-        keyword: debouncedSearchTerm,
-      },
-      pageInfo: {
-        pageNum: pagination.current,
-        pageSize: pagination.pageSize,
-      },
-    }
-    )
-    setDataCategories(response.data.pageData || response.data);
+    const responseCategories = await getCategories(debouncedSearchTerm, false, pagination.current, pagination.pageSize);
+    setDataCategories(responseCategories.data.pageData || responseCategories.data);
     setPagination((prev) => ({
       ...prev,
-      total: response.data.pageInfo?.totalItems || response.data.length,
-      current: response.data.pageInfo?.pageNum || 1,
-      pageSize: response.data.pageInfo?.pageSize || prev.pageSize,
+      total: responseCategories.data.pageInfo?.totalItems || responseCategories.data.length,
+      current: responseCategories.data.pageInfo?.pageNum || 1,
+      pageSize: responseCategories.data.pageInfo?.pageSize || prev.pageSize,
     }));
     setLoading(false);
   }, [pagination.current, pagination.pageSize, searchText, debouncedSearchTerm]);
@@ -57,18 +44,8 @@ const AdminManageCategories: React.FC = () => {
   }, [fetchCategories, searchText]);
 
   const fetchParentCategories = useCallback(async () => {
-    const response = await axiosInstance.post(API_GET_CATEGORIES, {
-      searchCondition: {
-        role: "all",
-        status: true,
-        is_deleted: false,
-      },
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 100,
-      },
-    });
-    setParentCategories(response.data.pageData || response.data);
+    const responseParentCategories = await getCategories("", false);
+    setParentCategories(responseParentCategories.data.pageData || responseParentCategories.data);
   }, []);
 
   useEffect(() => {
@@ -278,22 +255,16 @@ const AdminManageCategories: React.FC = () => {
       },
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      ellipsis: true,
-    },
-    {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      render: (updated_at: Date) => formatDate(updated_at),
     },
     {
       title: "Action",
@@ -324,7 +295,7 @@ const AdminManageCategories: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center ">
-        <CustomBreadcrumb currentTitle="Manage Categories" currentHref={paths.ADMIN_HOME} />
+        <CustomBreadcrumb />
 
         <Button type="primary" onClick={handleOpenModal}>
           Add New Category

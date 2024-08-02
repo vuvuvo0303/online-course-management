@@ -36,24 +36,35 @@ const User = () => {
     const handleSubcribe = async () => {
         const response = await axiosInstance.post(API_INSTRUCTOR_OR_STUDENT_SUBSCRIPTIONS, {
             "instructor_id": id
-        })
+        });
 
-        if (response.data.is_subscribed) {
-            message.success(`Subcribed to ${dataUser?.name}`);
-            setSubcribe("Unsubcribe");
+        if (response.data && response.data.is_subscribed !== undefined) {
+            if (response.data.is_subscribed) {
+                message.success(`Subscribed to ${dataUser?.name}`);
+                setSubcribe("Unsubscribe");
+            } else {
+                message.success(`Unsubscribed from ${dataUser?.name}`);
+                setSubcribe("Subscribe");
+            }
         } else {
-            message.success(`Unsubcribed to ${dataUser?.name}`);
-            setSubcribe("Subcribe");
+            message.error("Unexpected response from the server.");
         }
-    }
+    };
+
 
     const checkSubcribeOrNot = async (name: string) => {
-        const response = await getItemsBySubscriber(name, 1, 100);
-        const subcribtion = response[0];
-        if (subcribtion.is_subscribed) {
-            setSubcribe("Unsubcribe");
+        try {
+            const response = await getItemsBySubscriber(name, 1, 100);
+            if (response && response.length > 0 && response[0].is_subscribed !== undefined) {
+                const subcribtion = response[0];
+                if (subcribtion.is_subscribed) {
+                    setSubcribe("Unsubcribe");
+                }
+            }
+        } catch (error) {
+            console.error("Error checking subscription status:", error);
         }
-    }
+    };
 
     const getAvatarSrc = (avatar: string | { file?: { originFileObj?: File } } | undefined): string | undefined => {
         if (typeof avatar === 'string') {

@@ -12,14 +12,14 @@ import {
   TablePaginationConfig,
   Tag,
 } from "antd";
-import { API_GET_USERS, API_REVIEW_PROFILE_INSTRUCTOR, paths } from "../../../consts";
-import { Instructor } from "models/User";
-import axiosInstance from "../../../services/axiosInstance.ts";
-import { format } from "date-fns";
+import { roles } from "../../../consts";
+import { Instructor } from "../../../models";
+import { getUsers } from "../../../services";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
-import CustomBreadcrumb from "../../../components/breadcrumb";
-import LoadingComponent from "../../../components/loading";
+import { CustomBreadcrumb, LoadingComponent } from "../../../components";
+import { formatDate } from "../../../utils";
+import {reviewProfileInstructor} from "../../../services";
 const { TextArea } = Input;
 
 const AdminInstructorRequest = () => {
@@ -48,20 +48,10 @@ const AdminInstructorRequest = () => {
 
   const getInstructorRequest = async () => {
     setLoading(true);
-    const response = await axiosInstance.post(API_GET_USERS, {
-      searchCondition: {
-        role: "instructor",
-        is_verified: false,
-        keyword: debouncedSearch,
-      },
-      pageInfo: {
-        pageNum: pagination.current,
-        pageSize: pagination.pageSize,
-      },
-    });
+    const responseInstructorRequest = await getUsers(debouncedSearch, roles.INSTRUCTOR, true, false, false, pagination.current, pagination.pageSize);
 
-    if (response.data && response.data.pageData) {
-      const dataWithApprovalStatus = response.data.pageData.map((instructor: Instructor) => ({
+    if (responseInstructorRequest.data && responseInstructorRequest.data.pageData) {
+      const dataWithApprovalStatus = responseInstructorRequest.data.pageData.map((instructor: Instructor) => ({
         ...instructor,
         isApproved: instructor.is_verified,
         isRejected: false,
@@ -70,23 +60,19 @@ const AdminInstructorRequest = () => {
       setDataSource(dataWithApprovalStatus);
       setPagination((prev) => ({
         ...prev,
-        total: response.data.pageInfo?.totalItems || response.data.length,
-        current: response.data.pageInfo?.pageNum || 1,
-        pageSize: response.data.pageInfo?.pageSize || response.data.length,
+        total: responseInstructorRequest.data.pageInfo?.totalItems || responseInstructorRequest.data.length,
+        current: responseInstructorRequest.data.pageInfo?.pageNum || 1,
+        pageSize: responseInstructorRequest.data.pageInfo?.pageSize || responseInstructorRequest.data.length,
       }));
     }
     setLoading(false);
   };
 
   const handleApprove = async (record: Instructor) => {
-    const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
-      user_id: record._id,
-      status: "approve",
-      comment: "",
-    });
+    const responseProfileInstructor = await reviewProfileInstructor(record._id, "approve", "");
 
-    if (response) {
-      message.success("Email phê duyệt đã được gửi thành công");
+    if (responseProfileInstructor) {
+      message.success("Email is send successfully.");
 
       const updatedDataSource = dataSource.map((item) =>
         item._id === record._id ? { ...item, isApproved: true } : item
@@ -98,13 +84,9 @@ const AdminInstructorRequest = () => {
 
   const handleReject = async () => {
     if (!selectedInstructor) return;
-    const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
-      user_id: selectedInstructor._id,
-      status: "reject",
-      comment: rejectReason,
-    });
+    const responseReviewInstructor = await reviewProfileInstructor(selectedInstructor._id, "reject", rejectReason);
 
-    if (response) {
+    if (responseReviewInstructor) {
       message.success("Instructor rejected successfully");
 
       const updatedDataSource = dataSource.map((item) =>
@@ -141,6 +123,7 @@ const AdminInstructorRequest = () => {
       title: "Avatar",
       dataIndex: "avatar",
       key: "avatar",
+      width: "10%",
       render: (avatar: string) => (
         <Avatar
           size={50}
@@ -156,6 +139,7 @@ const AdminInstructorRequest = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      width: "20%",
       render: (text) => <a>{text}</a>,
     },
     {
@@ -168,20 +152,21 @@ const AdminInstructorRequest = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
       width: "10%",
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      render: (updated_at: Date) => formatDate(updated_at),
       width: "10%",
     },
     {
       title: "Verify",
       dataIndex: "is_verified",
       key: "is_verified",
+      width: "5%",
       render: (is_verified: boolean) => (
         <span>
           {is_verified ? (
@@ -195,6 +180,7 @@ const AdminInstructorRequest = () => {
     {
       title: "Action",
       key: "action",
+      width: "15%",
       render: (_, record) => (
         <Space size="middle">
           {record.isRejected ? (
@@ -206,7 +192,7 @@ const AdminInstructorRequest = () => {
               <Button
                 type="primary"
                 className="p-3"
-                style={{ backgroundColor: "#33FF00" }}
+                style={{ backgroundColor: "green" }}
                 onClick={() => handleApprove(record)}
               >
                 Approve
@@ -223,7 +209,7 @@ const AdminInstructorRequest = () => {
 
   return (
     <div>
-      <CustomBreadcrumb currentTitle="Manage Instructor Request" currentHref={paths.ADMIN_HOME} />
+      <CustomBreadcrumb />
       <Input.Search
         placeholder="Search By Name"
         value={searchText}

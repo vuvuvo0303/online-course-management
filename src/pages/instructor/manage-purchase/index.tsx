@@ -3,34 +3,57 @@ import { useEffect, useState } from "react";
 import { getItemsByInstructor } from "../../../services";
 
 import { format } from "date-fns";
-import { Button, Checkbox, Input, Table, TableProps, Tabs, TabsProps, Tag } from "antd";
+import {
+  Button,
+  Checkbox,
+  Input,
+  Pagination,
+  PaginationProps,
+  Table,
+  TablePaginationConfig,
+  TableProps,
+  Tabs,
+  TabsProps,
+  Tag,
+} from "antd";
 import { createPayout } from "../../../services/payout";
 import { getColorPurchase } from "../../../consts";
 import LoadingComponent from "../../../components/loading";
 import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
+import CustomBreadcrumb from "../../../components/breadcrumb";
+import { formatCurrency } from "../../../utils";
 
 const InstructorManagePurchase = () => {
   const [searchPurchase, setSearchPurchase] = useState<string>("");
   const purchaseNoSearch = useDebounce(searchPurchase, 500);
-
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const [instructor_id, setInstructor_id] = useState<string>("");
   const [purchasesChecked, setPurchasesChecked] = useState<TransactionsPurchase[]>([]);
-  const [indexPurchasesChecked, setIndexPurchasesChecked] = useState<number>(0);
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [statusPurchase, setStatusPurchase] = useState<string>("new");
+
   const getPurchasesByInstructor = async () => {
     setLoading(true);
     const response = await getItemsByInstructor(purchaseNoSearch, "", "", statusPurchase, 1, 100);
-    console.log("response: ", response);
-    setPurchases(response);
+    setPurchases(response.data.pageData);
+    setPagination({
+      ...pagination,
+      total: response.data.pageInfo.totalItems,
+      current: response.data.pageInfo.pageNum,
+      pageSize: response.data.pageInfo.pageSize,
+    });
     setLoading(false);
   };
 
   useEffect(() => {
     getPurchasesByInstructor();
-  }, [statusPurchase,purchaseNoSearch]);
+  }, [statusPurchase, purchaseNoSearch, pagination.current, pagination.pageSize]);
 
   if (loading) {
     return (
@@ -43,7 +66,12 @@ const InstructorManagePurchase = () => {
   const columns: TableProps<Purchase>["columns"] = [
     {
       render: (record: Purchase) =>
-        record.status === "new" ? <Checkbox onChange={() => onChangeCheckbox(record)}></Checkbox> : null,
+        record.status === "new" ? (
+          <Checkbox
+            onChange={() => onChangeCheckbox(record)}
+            checked={purchasesChecked.some((purchase) => purchase.purchase_id === record._id)}
+          ></Checkbox>
+        ) : null,
     },
     {
       title: "Purchase No",
@@ -60,7 +88,7 @@ const InstructorManagePurchase = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (price: number) => <>{price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>,
+      render: (price: number) => <>{formatCurrency(price)}</>,
     },
     {
       title: "Discount",
@@ -82,7 +110,7 @@ const InstructorManagePurchase = () => {
       title: "Price paid",
       dataIndex: "price_paid",
       key: "price_paid",
-      render: (price_paid: number) => <>{price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>,
+      render: (price_paid: number) => <>{formatCurrency(price_paid)}</>,
     },
     {
       title: "Created Date",
@@ -109,7 +137,7 @@ const InstructorManagePurchase = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (price: number) => <>{price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>,
+      render: (price: number) => <>{formatCurrency(price)}</>,
     },
     {
       title: "Discount",
@@ -131,7 +159,7 @@ const InstructorManagePurchase = () => {
       title: "Price paid",
       dataIndex: "price_paid",
       key: "price_paid",
-      render: (price_paid: number) => <>{price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</>,
+      render: (price_paid: number) => <>{formatCurrency(price_paid)}</>,
     },
     {
       title: "Created Date",
@@ -152,43 +180,31 @@ const InstructorManagePurchase = () => {
 
   const onChangeCheckbox = (purchase: Purchase) => {
     setInstructor_id(purchase.instructor_id);
-    let index = indexPurchasesChecked;
-    // found purchase
-    let foundPurchaseId = purchasesChecked.find(
-      (purchaseCurrentCheck) => purchaseCurrentCheck.purchase_id === purchase._id
-    );
-    let newArray: TransactionsPurchase[] = [];
-    // if purchase exist
-    if (foundPurchaseId) {
-      console.log("foundPurchaseId: ", foundPurchaseId);
-      newArray = purchasesChecked.filter((item) => item.purchase_id !== foundPurchaseId?.purchase_id);
-      console.log("newArray found: ", newArray);
-      index--;
-      setIndexPurchasesChecked(index);
-      setPurchasesChecked([...newArray]);
-      foundPurchaseId = undefined;
+    const newArray: TransactionsPurchase[] = [...purchasesChecked];
+    const purchaseIndex = newArray.findIndex((p) => p.purchase_id === purchase._id);
+
+    if (purchaseIndex >= 0) {
+      // Nếu đã được chọn, bỏ chọn nó
+      newArray.splice(purchaseIndex, 1);
     } else {
-      const newTransaction = new TransactionsPurchase(purchase._id);
-      if (indexPurchasesChecked === 0) {
-        newArray[indexPurchasesChecked] = newTransaction;
-        purchasesChecked[index] = newTransaction;
-        index++;
-        setIndexPurchasesChecked(index);
-      } else if (indexPurchasesChecked >= 1) {
-        newArray[indexPurchasesChecked] = newTransaction;
-        purchasesChecked[index] = newTransaction;
-        index++;
-        setIndexPurchasesChecked(index);
-      }
-      setPurchasesChecked([...purchasesChecked]);
+      // Nếu chưa được chọn, chọn nó
+      newArray.push({ purchase_id: purchase._id });
     }
-    // if (foundPurchaseId) {
 
-    // } else {
-
-    // }
-    console.log("purchasesChecked: ", purchasesChecked);
+    setPurchasesChecked(newArray);
   };
+
+  const handleCheckAllPurchased = () => {
+    if (purchasesChecked.length === purchases.length) {
+      setPurchasesChecked([]);
+    } else {
+      const allPurchasesChecked = purchases.map((purchase) => ({
+        purchase_id: purchase._id,
+      }));
+      setPurchasesChecked(allPurchasesChecked);
+    }
+  };
+
   const items: TabsProps["items"] = [
     {
       key: "new",
@@ -200,34 +216,80 @@ const InstructorManagePurchase = () => {
     },
     {
       key: "completed",
-      label: "completed",
+      label: "Completed",
     },
   ];
+
   const onChangeStatus = (key: string) => {
     setStatusPurchase(key);
   };
+  const handleTableChange = async (pagination: PaginationProps) => {
+    setPagination({
+      ...pagination,
+      current: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      total: pagination.total ?? 0,
+    });
+    await await getItemsByInstructor(purchaseNoSearch, "", "", statusPurchase, 1, 100);
+  };
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({ ...pagination, current: page, pageSize });
+  };
   return (
     <div className="container mx-auto px-10">
-      <h1 className="text-center my-10">Manage Purchased</h1>
-      {statusPurchase === "new" && (
-        <Button onClick={() => handleCreatePayout()} className="float-right " type="primary">
-          Create Payout
-        </Button>
-      )}
-      <Input.Search
-        placeholder="Search By Purchase No"
-        value={searchPurchase}
-        onChange={(e) => setSearchPurchase(e.target.value)}
-        className="p-2 "
-        style={{ width: 250 }}
-        enterButton={<SearchOutlined className="text-white" />}
-      />
+      <CustomBreadcrumb />
+      <div className="flex justify-between mb-5">
+        <div>
+          {statusPurchase === "new" && (
+            <>
+              <Button onClick={() => handleCreatePayout()} className="" type="primary">
+                Create Payout
+              </Button>
+              <Checkbox onChange={handleCheckAllPurchased} className="ml-2">
+                {" "}
+                (Check all purchased)
+              </Checkbox>
+            </>
+          )}
+        </div>
+        <Input.Search
+          placeholder="Search By Purchase No"
+          value={searchPurchase}
+          onChange={(e) => setSearchPurchase(e.target.value)}
+          className=" "
+          style={{ width: 250 }}
+          enterButton={<SearchOutlined className="text-white" />}
+        />
+      </div>
       <Tabs defaultActiveKey={statusPurchase} items={items} onChange={onChangeStatus} />
       {statusPurchase === "new" ? (
-        <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} />
+        <Table
+          rowKey={(record: Purchase) => record._id}
+          dataSource={purchases}
+          columns={columns}
+          onChange={handleTableChange}
+          pagination={false}
+        />
       ) : (
-        <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columnsNotCheckbox} />
+        <Table
+          rowKey={(record: Purchase) => record._id}
+          dataSource={purchases}
+          columns={columnsNotCheckbox}
+          onChange={handleTableChange}
+          pagination={false}
+        />
       )}
+      <div className="flex justify-end py-8">
+        <Pagination
+          total={pagination.total}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
+      </div>
     </div>
   );
 };

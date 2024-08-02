@@ -2,14 +2,14 @@ import { Button, Form, FormProps, Image, Input, message, Radio, Upload } from "a
 import { Link, useNavigate } from "react-router-dom";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState, useEffect } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import Login2 from "../../assets/Login2.jpg";
 import { useForm } from "antd/es/form/Form";
-import uploadFile from "../../utils/upload";
 import axiosInstance from "../../services/axiosInstance.ts";
 import Recaptcha from "../register/reCaptcha.tsx";
-import { API_REGISTER, paths, roles } from "../../consts";
+import { API_REGISTER, avatarUrlRules, descriptionRules, emailRules, nameRules, passwordRules, paths, phoneNumberRules, roleRules, roles, videoRules } from "../../consts";
 import { Instructor } from "../../models";
+import { getBase64, uploadFile } from "../../utils";
+import { UploadButton } from "../../components";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -55,15 +55,6 @@ const RegisterPage: React.FC = () => {
     setLoading(false);
   };
 
-
-  const getBase64 = (file: FileType): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
@@ -75,13 +66,6 @@ const RegisterPage: React.FC = () => {
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
     setFileList(newFileList);
-
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#18a5a7] via-[#ffe998] to-[#ffb330] relative">
@@ -110,17 +94,7 @@ const RegisterPage: React.FC = () => {
                 <Form.Item
                   label="Email"
                   name="email"
-                  rules={[
-                    { required: true, message: "Please input your email!" },
-                    {
-                      type: "email",
-                      message: "Please enter the correct email format!",
-                    },
-                    {
-                      pattern: /^\S*$/,
-                      message: "Email must not contain spaces!",
-                    },
-                  ]}
+                  rules={emailRules}
                   labelCol={{ span: 24 }}
                   wrapperCol={{ span: 24 }}
                   className="mb-3"
@@ -131,11 +105,7 @@ const RegisterPage: React.FC = () => {
                 <Form.Item
                   label="Name"
                   name="name"
-                  rules={[
-                    { required: true, message: "Please input your name!" },
-                    { min: 4, message: "Name must be at least 4 characters!" },
-                    { max: 20, message: "Name must be at most 20 characters!" },
-                  ]}
+                  rules={nameRules}
                   labelCol={{ span: 24 }}
                   wrapperCol={{ span: 24 }}
                   className="mb-5"
@@ -146,17 +116,7 @@ const RegisterPage: React.FC = () => {
                 <Form.Item
                   label="Password"
                   name="password"
-                  rules={[
-                    { required: true, message: "Please input your password!" },
-                    {
-                      min: 6,
-                      message: "Password must have at least 6 characters!",
-                    },
-                    {
-                      pattern: /^\S*$/,
-                      message: "Password must not contain space!",
-                    },
-                  ]}
+                  rules={passwordRules}
                   labelCol={{ span: 24 }}
                   wrapperCol={{ span: 24 }}
                   className="mb-5"
@@ -166,9 +126,7 @@ const RegisterPage: React.FC = () => {
 
                 <Form.Item
                   name="role"
-                  rules={[
-                    { required: true, message: "Please select your role!" },
-                  ]}
+                  rules={roleRules}
                   labelCol={{ span: 24 }}
                   wrapperCol={{ span: 24 }}
                   className="mb-5"
@@ -184,12 +142,7 @@ const RegisterPage: React.FC = () => {
                     <Form.Item
                       label="Video"
                       name="video"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your video link!",
-                        },
-                      ]}
+                      rules={videoRules}
                       labelCol={{ span: 24 }}
                       wrapperCol={{ span: 24 }}
                       className="mb-5"
@@ -200,12 +153,7 @@ const RegisterPage: React.FC = () => {
                     <Form.Item
                       label="Description"
                       name="description"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your description!",
-                        },
-                      ]}
+                      rules={descriptionRules}
                       labelCol={{ span: 24 }}
                       wrapperCol={{ span: 24 }}
                       className="mb-5"
@@ -216,12 +164,7 @@ const RegisterPage: React.FC = () => {
                     <Form.Item
                       label="Phone Number"
                       name="phone_number"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your phone number!",
-                        },
-                      ]}
+                      rules={phoneNumberRules}
                       labelCol={{ span: 24 }}
                       wrapperCol={{ span: 24 }}
                       className="mb-5"
@@ -231,12 +174,7 @@ const RegisterPage: React.FC = () => {
 
                     <Form.Item
                       name="avatarUrl"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please upload your Avatar",
-                        },
-                      ]}
+                      rules={avatarUrlRules}
                     >
                       <Upload
                         action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
@@ -245,7 +183,7 @@ const RegisterPage: React.FC = () => {
                         onPreview={handlePreview}
                         onChange={handleChange}
                       >
-                        {fileList.length >= 8 ? null : uploadButton}
+                        {fileList.length >= 1 ? null : <UploadButton />}
                       </Upload>
                     </Form.Item>
                   </>
@@ -269,8 +207,8 @@ const RegisterPage: React.FC = () => {
               Do you already have an account?{" "}
               <strong>
                 <Link
-                  to={"/login"}
-                  className="hover:cursor-pointer hover:text-red-400"
+                  to={paths.LOGIN}
+                  className="hover:cursor-pointer hover:text-blue-400"
                 >
                   Back to Sign in
                 </Link>

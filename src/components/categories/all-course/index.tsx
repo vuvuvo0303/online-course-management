@@ -4,10 +4,9 @@ import Carousel from "react-multi-carousel";
 import { Link, useNavigate } from "react-router-dom";
 import { paths } from "../../../consts/index";
 import { ArrowRightOutlined, HeartOutlined } from "@ant-design/icons";
-import { fetchCoursesByClient, addCourseToCart } from "../../../services";
+import { fetchCoursesByClient, addCourseToCart, getUserFromLocalStorage } from "../../../services";
 import { Course } from "../../../models";
-import { format } from "date-fns";
-import { user } from "../../../services/users";
+import { formatCurrency, formatDate } from "../../../utils";
 
 const { Meta } = Card;
 
@@ -16,6 +15,7 @@ const AllCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const user = getUserFromLocalStorage();
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },
@@ -56,11 +56,14 @@ const AllCourses = () => {
     // Add course and go to cart
     const handleGoToCourse = async (course: Course) => {
       if (!user || user.role !== 'student') {
-        navigate("/login");
+        navigate(paths.LOGIN);
       } else {
         try {
           if (course.is_purchased === false && course.is_in_cart === false) {
+            // setLoading(true)
             await addCourseToCart(course._id);
+            fetchCourse();
+            // setLoading(false)
           } else if (course.is_in_cart === true && course.is_purchased === false) {
             navigate(paths.STUDENT_CART);
           } else if (course.is_in_cart === true && course.is_purchased === true) {
@@ -72,7 +75,7 @@ const AllCourses = () => {
       }
     };
 
-    const lastUpdated = format(new Date(course.updated_at), "dd/MM/yyyy");
+    const lastUpdated = formatDate(course.updated_at);
     return (
       <div className="popover-content w-full">
         <Meta
@@ -87,7 +90,7 @@ const AllCourses = () => {
               </div>
               <div>
                 <p className="text-black text-[1rem] mb-2 truncate">
-                  Price: {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                  Price: {formatCurrency(course.price)}
                 </p>
               </div>
             </div>
@@ -205,10 +208,10 @@ const AllCourses = () => {
                       </div>
                       <div className="flex items-baseline mt-2">
                         <div className="text-2xl text-gray-500 font-bold">
-                          {course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                          {formatCurrency(course.price_paid)}
                         </div>
                         <div className="text-xl text-gray-500 ml-2 line-through">
-                          {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                          {formatCurrency(course.price)}
                         </div>
                       </div>
                     </div>

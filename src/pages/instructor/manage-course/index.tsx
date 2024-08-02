@@ -1,10 +1,10 @@
-import { ArrowRightOutlined, DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import {
-  Breadcrumb,
   Button,
   Empty,
   Form,
+  Image,
   Input,
   message,
   Modal,
@@ -16,14 +16,7 @@ import {
   Tag,
 } from "antd";
 import { Category, Course, Log, Review } from "../../../models";
-import {
-  API_COURSE_LOGS,
-  API_COURSE_STATUS,
-  API_DELETE_COURSE,
-  API_GET_COURSES,
-  getColor,
-  paths,
-} from "../../../consts";
+import { API_COURSE_LOGS, API_COURSE_STATUS, API_DELETE_COURSE, API_GET_COURSES, getColor } from "../../../consts";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import TextArea from "antd/es/input/TextArea";
@@ -32,6 +25,8 @@ import { format } from "date-fns";
 import { getCategories } from "../../../services/category.ts";
 import LoadingComponent from "../../../components/loading";
 import { getAllReviews } from "../../../services/review.ts";
+import CustomBreadcrumb from "../../../components/breadcrumb/index.tsx";
+
 
 const InstructorManageCourses: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -88,16 +83,15 @@ const InstructorManageCourses: React.FC = () => {
 
   const showModalReview = (courseId: string, rating: number) => {
     setOpenReviewModal(true);
-    getReviewsByInstructor(courseId, rating)
+    getReviewsByInstructor(courseId, rating);
   };
 
   const getReviewsByInstructor = async (course_id: string, rating: number) => {
-    setLoadingTable(true)
-    const res = await getAllReviews(course_id, rating, 1, 100);
-    console.log("get reviews: ", res);
-    setReviews(res);
-    setLoadingTable(false)
-  }
+    setLoadingTable(true);
+    const res = await getAllReviews(course_id, rating, true, false, false, 1, 100);
+    setReviews(res.data.pageData);
+    setLoadingTable(false);
+  };
 
   //show log status modal
   const fetchLog = async () => {
@@ -128,7 +122,6 @@ const InstructorManageCourses: React.FC = () => {
       //
     }
   };
-
 
   useEffect(() => {
     //fetch logs
@@ -210,9 +203,10 @@ const InstructorManageCourses: React.FC = () => {
   //fetch categories
   useEffect(() => {
     const fetchData = async () => {
-      const dataCategories = await getCategories();
-      setCategories(dataCategories);
-    }
+      const responseCategories = await getCategories();
+      const categories = responseCategories.data.pageData;
+      setCategories(categories);
+    };
     fetchData();
   }, []);
   //fetch courses
@@ -250,9 +244,11 @@ const InstructorManageCourses: React.FC = () => {
   }, [status, cateId, debouncedSearchTerm, isDelete, pagination.current, pagination.pageSize]);
 
   if (loading) {
-    return (<>
-      <LoadingComponent />
-    </>)
+    return (
+      <>
+        <LoadingComponent />
+      </>
+    );
   }
   //setStatus for filter log by status
   const handleAllLog = () => {
@@ -275,9 +271,9 @@ const InstructorManageCourses: React.FC = () => {
   };
   //setStatus for filter course by status
   const handleChangeIsDelete = (value: boolean) => {
-    setLoading(true)
+    setLoading(true);
     setIsDelete(value);
-    setLoading(false)
+    setLoading(false);
   };
   // set status for chang status
   const handleChangeStatus = async (value: string) => {
@@ -371,6 +367,22 @@ const InstructorManageCourses: React.FC = () => {
       render: (update_at: Date) => format(new Date(update_at), "dd/MM/yyyy"),
     },
     {
+      title: "Review",
+      dataIndex: "_id",
+      key: "_id",
+      render: (_id: string) => (
+        <>
+          <EyeOutlined onClick={() => showModalReview(_id, 0)} className="m-2 text-blue-500 cursor-pointer" />
+        </>
+      ),
+    },
+    {
+      title: "Image",
+      dataIndex: "image_url",
+      key: "image_url",
+      render: (image_url: string) => <Image src={image_url} />,
+    },
+    {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
@@ -380,16 +392,6 @@ const InstructorManageCourses: React.FC = () => {
             <EditOutlined className="mt-2 text-blue-500" />
           </Link>
           <DeleteOutlined onClick={() => showModal(_id, record)} className="text-red-500 m-2" />
-        </>
-      ),
-    },
-    {
-      title: "Review",
-      dataIndex: "_id",
-      key: "_id",
-      render: (_id: string) => (
-        <>
-          <EyeOutlined onClick={() => showModalReview(_id, 0)} className="m-2 text-blue-500 cursor-pointer" />
         </>
       ),
     },
@@ -451,24 +453,24 @@ const InstructorManageCourses: React.FC = () => {
 
   const columnsReviews = [
     {
-      title: 'Course Name',
-      dataIndex: 'course_name',
-      key: 'course_name',
+      title: "Course Name",
+      dataIndex: "course_name",
+      key: "course_name",
     },
     {
-      title: 'Reviewer Name',
-      dataIndex: 'reviewer_name',
-      key: 'reviewer_name',
+      title: "Reviewer Name",
+      dataIndex: "reviewer_name",
+      key: "reviewer_name",
     },
     {
-      title: 'Rating',
-      dataIndex: 'rating',
-      key: 'rating',
+      title: "Rating",
+      dataIndex: "rating",
+      key: "rating",
     },
     {
-      title: 'Comment',
-      dataIndex: 'comment',
-      key: 'comment',
+      title: "Comment",
+      dataIndex: "comment",
+      key: "comment",
     },
     {
       title: "Created Date ",
@@ -482,6 +484,7 @@ const InstructorManageCourses: React.FC = () => {
       key: "updated_at",
       render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
     },
+  
   ];
 
   return (
@@ -493,9 +496,9 @@ const InstructorManageCourses: React.FC = () => {
         open={openReviewModal}
         onCancel={handleCancelReviewModal}
         footer={""}
-      // onCancel={handleCancel}
+        // onCancel={handleCancel}
       >
-      <Table loading={loadingTable} dataSource={reviews} columns={columnsReviews} />;
+        <Table loading={loadingTable} dataSource={reviews} columns={columnsReviews} />
       </Modal>
       {/* modal log status */}
       <Modal
@@ -633,84 +636,79 @@ const InstructorManageCourses: React.FC = () => {
       <Modal title="Delete Course" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
         <p>{modalText}</p>
       </Modal>
-      <div className="flex justify-between items-center">
-        {" "}
-        <Breadcrumb
-          className="py-2"
-          items={[
-            {
-              href: paths.INSTRUCTOR_HOME,
-              title: <HomeOutlined />,
-            },
-            {
-              title: "Manage Course",
-            },
-          ]}
-        />
-        <Link to={"/instructor/manage-courses/create-course"}>
-          <Button type="primary">Add New Course</Button>
-        </Link>
-      </div>
+      <CustomBreadcrumb />
 
       <div className="">
-        <div className="flex gap-2  mb-3">
-          <Input.Search
-            placeholder="Search"
-            value={keyword}
-            onChange={handleSearch}
-            style={{ width: 200 }}
-            enterButton={<SearchOutlined className="text-white" />}
-          />
-          {/* filter course by status */}
-          <Select
-            defaultValue="All Status"
-
-            className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
-            onChange={handleChange}
-            options={[
-              {
-                options: [
-                  { label: <span>All Status</span>, value: "" },
-                  { label: <span>New</span>, value: "new" },
-                  { label: <span>Waiting Approve</span>, value: "waiting_approve" },
-                  { label: <span>Approve</span>, value: "approve" },
-                  { label: <span>Reject</span>, value: "reject" },
-                  { label: <span>Active</span>, value: "active" },
-                  { label: <span>Inactive</span>, value: "inactive" },
-                ],
-              },
-            ]}
-          />
-          {/* filter course by isDelete */}
-          <Select
-            defaultValue={false}
-            className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
-            onChange={handleChangeIsDelete}
-            options={[
-              {
-                options: [
-                  { label: <span>Existing</span>, value: false },
-                  { label: <span>Deleted</span>, value: true },
-                ],
-              },
-            ]}
-          />
-          {/* filter course by categories */}
-          <Select
-            defaultValue="All Categories"
-            className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
-            onChange={handleCateChange}
-            options={[
-              { value: "", label: "All Categories" },
-              ...categories.map((cate) => ({
-                value: cate._id,
-                label: cate.name,
-              })),
-            ]}
-          />
+        <div className="flex gap-2 mb-3 justify-between">
+          <div>
+            <Input.Search
+              placeholder="Search"
+              value={keyword}
+              onChange={handleSearch}
+              style={{ width: 200 }}
+              enterButton={<SearchOutlined className="text-white" />}
+            />
+            {/* filter course by status */}
+            <Select
+              defaultValue="All Status"
+              className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+              onChange={handleChange}
+              options={[
+                {
+                  options: [
+                    { label: <span>All Status</span>, value: "" },
+                    { label: <span>New</span>, value: "new" },
+                    { label: <span>Waiting Approve</span>, value: "waiting_approve" },
+                    { label: <span>Approve</span>, value: "approve" },
+                    { label: <span>Reject</span>, value: "reject" },
+                    { label: <span>Active</span>, value: "active" },
+                    { label: <span>Inactive</span>, value: "inactive" },
+                  ],
+                },
+              ]}
+            />
+            {/* filter course by isDelete */}
+            <Select
+              defaultValue={false}
+              className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+              onChange={handleChangeIsDelete}
+              options={[
+                {
+                  options: [
+                    { label: <span>Existing</span>, value: false },
+                    { label: <span>Deleted</span>, value: true },
+                  ],
+                },
+              ]}
+            />
+            {/* filter course by categories */}
+            <Select
+              defaultValue="All Categories"
+              className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
+              onChange={handleCateChange}
+              options={[
+                { value: "", label: "All Categories" },
+                ...categories.map((cate) => ({
+                  value: cate._id,
+                  label: cate.name,
+                })),
+              ]}
+            />
+          </div>
+          <div className="flex justify-between items-center mb-5">
+            <Link to={"/instructor/manage-courses/create-course"}>
+              <Button type="primary">Add New Course</Button>
+            </Link>
+          </div>
         </div>
       </div>
-      <Table rowKey={(record: Course) => record._id} columns={columnsCourses} dataSource={courses} pagination={false} onChange={handleTableChange} />
+      <Table
+        rowKey={(record: Course) => record._id}
+        columns={columnsCourses}
+        dataSource={courses}
+        pagination={false}
+        onChange={handleTableChange}
+      />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

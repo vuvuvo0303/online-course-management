@@ -6,7 +6,10 @@ import axiosInstance from "./axiosInstance";
 
 
 // SUBSCRIPTION-01 Create Or Update Item
-export const handleSubscriptionByInstructorOrStudent = async (instructor_id: string) => {
+export const subscriptionByInstructorOrStudent = async (instructor_id?: string) => {
+    if(!instructor_id){
+        throw new Error("Instructor ID is required")
+    }
     try {
         const response = await axiosInstance.post(API_INSTRUCTOR_OR_STUDENT_SUBSCRIPTIONS, {
             "instructor_id": instructor_id
@@ -27,7 +30,7 @@ export const getItemsBySubscriber = async (keyword: string, pageNum: number, pag
             {
                 "searchCondition": {
                     "keyword": keyword,
-                    "is_delete": false
+                    "is_deleted": false
                 },
                 "pageInfo": {
                     "pageNum": pageNum,
@@ -39,6 +42,15 @@ export const getItemsBySubscriber = async (keyword: string, pageNum: number, pag
             return response.data.pageData;
         }
     } catch (error) {
-        return [];
-    }
-}
+        return {
+          data: {
+            pageInfo: {
+              totalItems: 0,
+              pageNum,
+              pageSize
+            },
+            pageData: []
+          }
+        };
+      }
+    };

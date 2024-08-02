@@ -5,8 +5,8 @@ import {
   API_CHANGE_STATUS,
   API_DELETE_USER,
   API_GET_USER_DETAIL,
-  API_GET_USERS,
-} from "../consts/index.ts";
+  API_GET_USERS, API_REVIEW_PROFILE_INSTRUCTOR,
+} from "../consts";
 import { message } from "antd";
 import { getUserFromLocalStorage, axiosInstance } from "./index.ts";
 import { UserRole } from "../models/User.ts";
@@ -22,8 +22,8 @@ export const getUsers = async (
   keyword: string = "",
   role: string = "all",
   status: boolean = true,
-  is_verified: string = "",
-  is_delete: boolean = false,
+  is_verified: boolean = true,
+  is_deleted: boolean = false,
   pageNum: number = 1,
   pageSize: number = 10
 ) => {
@@ -33,8 +33,8 @@ export const getUsers = async (
         keyword: keyword || "",
         role: role || "all",
         status: status !== undefined ? status : true,
-        is_verified: is_verified || "",
-        is_delete: is_delete !== undefined ? is_delete : false,
+        is_verified: is_verified !== undefined ? is_verified : true,
+        is_deleted: is_deleted !== undefined ? is_deleted : false,
       },
       pageInfo: {
         pageNum: pageNum || 1,
@@ -43,8 +43,16 @@ export const getUsers = async (
     });
     return response;
   } catch (error) {
-    console.error("Error fetching users:", error);
-    throw error;
+    return {
+      data: {
+        pageInfo: {
+          totalItems: 0,
+          pageNum,
+          pageSize
+        },
+        pageData: []
+      }
+    };
   }
 };
 
@@ -92,13 +100,29 @@ export const changeUserRole = async (userId: string, role: UserRole) => {
 };
 
 //USER-06 Get Instructor Detail
-export const getInstructorDetailPublic = async (instructor_id: string) => {
+export const getInstructorDetailPublic = async (instructor_id?: string) => {
+  if (!instructor_id) {
+    throw new Error("Instructor ID is required");
+  }
+
   try {
     const response = await axiosInstance.get(`${API_GET_USER_DETAIL}/${instructor_id}`);
-    if (response) {
-      return response.data;
-    }
+    return response;
   } catch (error) {
-    return [];
+    return;
   }
 };
+
+
+export const reviewProfileInstructor = async (user_id: string = "", status: string = "", comment = "") => {
+ try {
+   const response = await axiosInstance.put(API_REVIEW_PROFILE_INSTRUCTOR, {
+     user_id: user_id,
+     status: status,
+     comment: comment,
+   });
+   return response;
+ }catch(error){
+  return ;
+ }
+}

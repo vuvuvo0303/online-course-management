@@ -56,3 +56,13 @@ export class Cart {
     }
   }
   
+
+  export interface CartComponentsProps {
+    cartsNew?: Cart;
+    cartsCancel?: Cart;
+    totalCost: number;
+    handleCheckoutNow: () => void;
+    onChangeCheckBox: (cart: Cart) => void;
+    handleDeleteCart: (cart_id: string) => void
+    cartsWaitingPaid: Cart[];
+}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Radio, Input, Form, Row, Col, Tag, message } from "antd";
+import { Radio, Input, Form, Row, Col, message } from "antd";
 import { ToastContainer } from "react-toastify";
 
-import { getColorCart, paths } from "../../consts";
+import { paths } from "../../consts";
 import styles from "./checkout.module.css";
 import { Cart } from "../../models";
 import { getCarts, updateStatusCart } from '../../services';
@@ -11,13 +11,11 @@ import { User } from "../../models/User";
 import { Link } from "react-router-dom";
 import CustomButton from "../../components/CustomButton";
 import LoadingComponent from "../../components/loading";
+import { formatCurrency } from "../../utils";
 const Checkout: React.FC = () => {
-  // const [payment, setPayment] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [form] = Form.useForm();
-  // const [course, setCourse] = useState<Course[]>([]);
-  // const [courseImage, setCourseImage] = useState<string>("");
   const [user, setUser] = useState<User>();
   const [carts, setCarts] = useState<Cart[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -31,8 +29,6 @@ const Checkout: React.FC = () => {
   const navigate = useNavigate();
   useEffect(() => {
     getCart();
-    //fetchPaymentDetails();
-    // fetchCourseDetails();
     loadUserFromLocalStorage();
   }, []);
 
@@ -142,7 +138,7 @@ const Checkout: React.FC = () => {
                         <p className={styles.detailLabel}>
                           <strong>Total Price:</strong>
                         </p>
-                        <p className={styles.detailValue}>{totalPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                        <p className={styles.detailValue}>{formatCurrency(totalPrice)}</p>
                       </div>
                     </>
 
@@ -183,14 +179,12 @@ const Checkout: React.FC = () => {
                           <img src={cart.course_image} />
                         </Col>
                         <Col className='' span={6}>
-                          <Tag className='mt-8 text-center' color={getColorCart(cart.status)}>
-                            {cart.status === "waiting_paid" ? "waiting paid" : cart.status}</Tag>
-                          <p className='mt-2 font-bold '>{cart.course_name}</p>
+                          <p className='mt-5 font-bold '>{cart.course_name}</p>
                           <p className='mt-2'><span className='font-bold'>Cart no:</span>{cart.cart_no}</p>
 
                         </Col>
                         <Col span={6}>
-                          <p className='pt-12'>{cart.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                          <p className='pt-12'>{formatCurrency(cart.price)}</p>
                           <p>Discount: {cart.discount}%</p>
                         </Col>
 
@@ -198,7 +192,7 @@ const Checkout: React.FC = () => {
                           <Row>
                             <Col span={12}>
                               <p className='pt-12'>Total:</p>
-                              <p >{cart.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                              <p >{formatCurrency(cart.price_paid)}</p>
                             </Col>
                           </Row>
                         </Col>
@@ -363,14 +357,14 @@ const Checkout: React.FC = () => {
         </h2>
         <div className={styles.summaryDescription}>
           <p>
-            <strong>Original Price:</strong> {totalCost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+            <strong>Original Price:</strong> {formatCurrency(totalCost)}
           </p>
           <p>
             <strong>Discount:</strong> 0
           </p>
           <hr style={{ width: "250px" }} />
           <p>
-            <strong>Total:</strong> {totalPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+            <strong>Total:</strong> {formatCurrency(totalPrice)}
           </p>
         </div>
         <div className={styles.confirm}>

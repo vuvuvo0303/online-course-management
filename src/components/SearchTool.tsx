@@ -3,7 +3,8 @@ import { Popover, Input, Spin, List, Button, Drawer } from 'antd';
 import { fetchCoursesByClient } from '../services';
 import { Course } from '../models';
 import { Link } from 'react-router-dom';
-import { SearchOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined, HeartOutlined } from '@ant-design/icons';
+import { formatCurrency } from '../utils';
 
 const CourseCard = ({ image = '', title = '', author = '', price = '', paid = '' }:
     { image?: string; title?: string; author?: string; price?: string; paid?: string }) => {
@@ -72,9 +73,29 @@ const SearchTool: React.FC = () => {
                                 <CourseCard
                                     image={course.image_url}
                                     title={course.name}
-                                    author={`Course Published by ${course.instructor_name}`}
+                                    author={course.instructor_name}
+                                    price={formatCurrency(course.price)}
+                                    paid={formatCurrency(course.price_paid)}
                                 />
-                            </Link>
+                            </div>
+                            <div className='flex flex-col gap-2 items-end'>
+                                <Link to={`/course/all-courses/course/${course._id}`}>
+                                    <Button
+                                        type="primary"
+                                        className="ml-2 text-xs px-2 py-1"
+                                    >
+                                        <ArrowRightOutlined className="text-sm" /> View Course
+                                    </Button>
+                                </Link>
+                                <Link to={`/enrollment`}>
+                                    <Button
+                                        type="default"
+                                        className="ml-2 text-xs px-2 py-1"
+                                    >
+                                        <HeartOutlined className="text-sm" /> Save
+                                    </Button>
+                                </Link>
+                            </div>
                         </List.Item>
                     )}
                 />

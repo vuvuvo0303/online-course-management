@@ -3,10 +3,9 @@ import type { PaginationProps, TablePaginationConfig, TableProps } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Review } from "../../../models";
-import { API_GET_REVIEWS, paths } from "../../../consts";
 import { format } from "date-fns";
 import CustomBreadcrumb from "../../../components/breadcrumb";
-import { axiosInstance, deleteReview } from "../../../services";
+import { deleteReview, getAllReviews } from "../../../services";
 import LoadingComponent from "../../../components/loading";
 const AdminManageFeedbacks: React.FC = () => {
   const [data, setData] = useState<Review[]>([]);
@@ -23,26 +22,14 @@ const AdminManageFeedbacks: React.FC = () => {
   }, [pagination.pageSize, pagination.current]);
 
   const getReviews = useCallback(async () => {
-    const response = await axiosInstance.post(API_GET_REVIEWS, {
-      searchCondition: {
-        course_id: "",
-        rating: 0,
-        is_instructor: false,
-        is_rating_order: false,
-        is_deleted: false,
-      },
-      pageInfo: {
-        pageNum: pagination.current,
-        pageSize: pagination.pageSize,
-      },
-    });
-    setData(response.data.pageData);
+    const responseReview = await getAllReviews("", 0, false, false, false, pagination.current, pagination.pageSize)
+    setData(responseReview.data.pageData);
 
     setPagination({
       ...pagination,
-      total: response.data.pageInfo.totalItems,
-      current: response.data.pageInfo.pageNum,
-      pageSize: response.data.pageInfo.pageSize,
+      total: responseReview.data.pageInfo.totalItems,
+      current: responseReview.data.pageInfo.pageNum,
+      pageSize: responseReview.data.pageInfo.pageSize,
     });
     setLoading(false);
   }, []);
@@ -128,7 +115,7 @@ const AdminManageFeedbacks: React.FC = () => {
 
   return (
     <div>
-      <CustomBreadcrumb currentTitle="Manage Review" currentHref={paths.ADMIN_HOME} />
+      <CustomBreadcrumb/>
       <Table
         rowKey={(record: Review) => record._id}
         columns={columns}

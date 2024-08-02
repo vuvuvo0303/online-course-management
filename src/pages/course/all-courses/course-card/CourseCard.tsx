@@ -1,9 +1,12 @@
 import React from "react";
 import { Rate, Button } from "antd";
 import { Link } from 'react-router-dom';
-import { Course } from "../../../../models/Course";
+import { Course } from "../../../../models";
 import { HeartOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import defaultImage from "../../../../../public/l1.jpg";
+import { getUserFromLocalStorage } from "../../../../services/auth";
+import { formatCurrency } from "../../../../utils/formatHelper";
+
 
 interface CourseCardProps {
     course: Course;
@@ -11,7 +14,8 @@ interface CourseCardProps {
 
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
     const imageUrl = course.image_url || defaultImage;
-
+    const user = getUserFromLocalStorage();
+    const userRole = user.role;
     return (
         <div className="w-full flex p-2 h-[15rem]">
             <div className="flex flex-col md:flex-row w-full items-center bg-white shadow-md rounded-lg overflow-hidden">
@@ -29,12 +33,17 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                         <div>
                             <p className="text-sm text-gray-700">Lessons: {course.lesson_count}</p>
                             <p className="text-sm text-gray-700">Instructor: {course.instructor_name}</p>
-                            <p className="text-sm text-gray-700">Price: {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                            <p className="text-sm text-gray-700">Price: {formatCurrency(course.price)}</p>
                         </div>
                         <div className="flex flex-col items-center space-y-2">
-                            <Link to={`/course/all-courses/course/${course._id}`}>
-                                <Button type="primary" className="w-32 h-10"><ArrowRightOutlined />Go to course</Button>
-                            </Link>
+                            {userRole === "instructor" ?
+                                <Link to={`/instructor/learn/course/${course._id}`}>
+                                    <Button type="primary" className="w-32 h-10"><ArrowRightOutlined />Go to course</Button>
+                                </Link> :
+                                <Link to={`/course/all-courses/course/${course._id}`}>
+                                    <Button type="primary" className="w-32 h-10"><ArrowRightOutlined />Go to course</Button>
+                                </Link>
+                            }
                             <Button href="/enrollment" className="w-32 h-10">
                                 <HeartOutlined className="mr-2" />
                                 Save

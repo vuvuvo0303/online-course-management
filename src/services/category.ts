@@ -1,25 +1,32 @@
 import { API_GET_CATEGORIES } from "../consts/index"
 import axiosInstance from "./axiosInstance"
 
-export const getCategories = async () => {
+export const getCategories = async (keyword: string = "", is_deleted : boolean = false, pageNum: number = 1, pageSize: number = 100) => {
     try {
         const response = await axiosInstance.post(API_GET_CATEGORIES, 
             {
                 "searchCondition": {
-                    "keyword": "",
-                    "is_delete": false
+                    "keyword": keyword,
+                    "is_deleted": is_deleted
                 },
                 "pageInfo": {
-                    "pageNum": 1,
-                    "pageSize": 10
+                    "pageNum": pageNum,
+                    "pageSize": pageSize
                 }
             }
         
         )
-        if(response){
-            return response.data.pageData;
-        }
-    } catch (error) {
-        return [];
-    }
-}
+            return response;
+        } catch (error) {
+            return {
+              data: {
+                pageInfo: {
+                  totalItems: 0,
+                  pageNum,
+                  pageSize
+                },
+                pageData: []
+              }
+            };
+          }
+        };

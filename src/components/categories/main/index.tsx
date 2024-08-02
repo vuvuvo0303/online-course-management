@@ -5,10 +5,10 @@ import axiosInstance from '../../../services/axiosInstance';
 import { API_CLIENT_GET_CATEGORIES } from '../../../consts';
 import { Link } from 'react-router-dom';
 import { fetchCoursesByClient } from '../../../services';
-import { Course } from '../../../models';
+import { Course, Category } from '../../../models';
 import './Categories.css';
 import { paths } from '../../../consts';
-import { Category } from 'models/Category'; // Ensure this import is correct
+import { formatCurrency } from '../../../utils';
 
 const { Meta } = Card;
 

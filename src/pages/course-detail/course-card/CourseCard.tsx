@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Rate, message } from 'antd';
+import { message, Rate, } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { addCourseToCart } from '../../../services/cart';
 import { paths } from "../../../consts";
-import { formatMinute } from "../../../utils";
-import { Course } from "../../../models/Course";
+import { formatCurrency, formatMinute } from "../../../utils";
+import { Course } from "../../../models";
 import './card.module.css';
 
 interface CourseCardProps {
@@ -20,12 +20,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
 
     const handleAddToCart = async () => {
         if (!user) {
-            message.info('Please login before adding items to your cart.');
             navigate(paths.LOGIN);
+            message.info('Please login before adding items to your cart.');
         } else {
             setLoading(true);
             try {
-                // Optimistically navigate to the cart page
                 navigate(paths.STUDENT_CART);
                 await addCourseToCart(course._id);
                 // message.success('Course added to cart!');
@@ -82,6 +81,16 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     </div>
                     <div><strong>Category:</strong> {course.category_name}</div>
                     <div><strong>Instructor:</strong> {course.instructor_name}</div>
+                    <div><span className="text-sm">Last update:</span> {new Date(course.updated_at).toLocaleDateString()}</div>
+                    <div className="flex flex-row gap-4">
+                        <div className="text-4xl">{formatCurrency(course.price_paid)}</div>
+                        <div className="text-2xl mt-[0.2rem]">
+                            <span className="line-through">
+                                {formatCurrency(course.price)}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="text-xs">{course.discount}% off</div>
                     <div><strong>Last update:</strong> {new Date(course.updated_at).toLocaleDateString('en-GB')}</div>
                     {!course.is_purchased && (
                         <>

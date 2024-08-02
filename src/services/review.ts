@@ -9,39 +9,50 @@ export const deleteReview = async (_id: string, reviewer_name: string, course_na
 }
 
 //REVIEW-02 Get Reviews (All)
-export const getAllReviews = async (course_id: string, rating: number, pageNum: number, pageSize: number) => {
+export const getAllReviews = async (
+  course_id: string = "",
+  rating: number = 0,
+  is_instructor: boolean = false,
+  is_rating_order: boolean = false,
+  is_deleted: boolean = false,
+  pageNum: number = 1,
+  pageSize: number = 100
+) => {
   try {
     const response = await axiosInstance.post(API_GET_REVIEWS, {
       "searchCondition": {
-        "course_id": course_id,
-        "rating": rating,
-        "is_instructor": false,
-        "is_rating_order": false,
-        "is_deleted": false
+        "course_id": course_id || "",
+        "rating": rating || 0,
+        "is_instructor": is_instructor !== undefined ? is_instructor : false,
+        "is_rating_order": is_rating_order !== undefined ? is_rating_order : false,
+        "is_deleted": is_deleted !== undefined ? is_deleted : false
       },
       "pageInfo": {
-        "pageNum": pageNum,
-        "pageSize": pageSize
+        "pageNum": pageNum || 1,
+        "pageSize": pageSize || 100
       }
     })
-    if (response) {
-      return response.data.pageData;
+      return response;
+    } catch (error) {
+      return {
+        data: {
+          pageInfo: {
+            totalItems: 0,
+            pageNum,
+            pageSize
+          },
+          pageData: []
+        }
+      };
     }
-  } catch (error) {
-    console.log("getAllReviews - error: ", error);
-    return error;
-  }
-}
+  };
 
 //REVIEW-03 Get Review (Instructor)
 export const getReviewByInstructor = async (review_id: string) => {
   try {
     const response = await axiosInstance.get(`${API_GET_REVIEW}/${review_id}`)
-    if (response) {
       return response;
-    }
   } catch (error) {
-    console.log("getReviewByInstructor - error: ", error);
-    return error;
+    return {};
   }
 }

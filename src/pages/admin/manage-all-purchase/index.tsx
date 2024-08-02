@@ -1,12 +1,12 @@
-import { Breadcrumb, Input, Pagination, Select, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
-import { API_GET_PURCHASE_BY_ADMIN, getColorPurchase } from "../../../consts";
-import { format } from "date-fns";
+import { Input, Pagination, Select, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
+import { getColorPurchase } from "../../../consts";
 import { useCallback, useEffect, useState } from "react";
-import { axiosInstance } from "../../../services";
-import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
-import { Purchase } from "../../../models/Purchase";
-import LoadingComponent from "../../../components/loading";
+import { Purchase } from "../../../models";
+import { CustomBreadcrumb, LoadingComponent } from "../../../components";
+import { formatCurrency, formatDate } from "../../../utils";
+import { getPurchaseForAdmin } from "../../../services";
 
 const ManageAllPurchase = () => {
   const [loading, setLoading] = useState(true);
@@ -17,33 +17,21 @@ const ManageAllPurchase = () => {
   const [status, setStatus] = useState<string>("");
 
   useEffect(() => {
-    getPurchases();
+    fetchPurchases();
   }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
 
-  const getPurchases = useCallback(async () => {
+  const fetchPurchases = useCallback(async () => {
     setLoading(true)
-    const response = await axiosInstance.post(API_GET_PURCHASE_BY_ADMIN, {
-      searchCondition: {
-        purchase_no: purchaseNoSearch,
-        cart_no: "",
-        course_id: "",
-        status: status,
-        is_delete: false,
-      },
-      pageInfo: {
-        pageNum: pagination.current,
-        pageSize: pagination.pageSize,
-      },
-    });
+    const responsePurchases = await getPurchaseForAdmin(purchaseNoSearch, "", "", status, false, pagination.current, pagination.pageSize);
 
-    if (response.data && response.data.pageData) {
-      const { pageData, pageInfo } = response.data;
+    if (responsePurchases.data && responsePurchases.data.pageData) {
+      const { pageData, pageInfo } = responsePurchases.data;
       setDataSource(pageData);
       setPagination((prev) => ({
         ...prev,
-        total: pageInfo?.totalItems || response.data.length,
+        total: pageInfo?.totalItems || responsePurchases.data.length,
         current: pageInfo?.pageNum || 1,
-        pageSize: pageInfo?.pageSize || response.data.length,
+        pageSize: pageInfo?.pageSize || responsePurchases.data.length,
       }));
     } else {
       setDataSource([]);
@@ -95,7 +83,7 @@ const ManageAllPurchase = () => {
       dataIndex: "price_paid",
       key: "price_paid",
       render: (price_paid: number) => {
-        return price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+        return formatCurrency(price_paid);
       },
     },
     {
@@ -108,7 +96,7 @@ const ManageAllPurchase = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: string) => formatDate(created_at),
       width: "10%",
     },
 
@@ -116,13 +104,7 @@ const ManageAllPurchase = () => {
 
   return (
     <div>
-
-      <Breadcrumb className="p-3">
-        <Breadcrumb.Item>
-          <HomeOutlined />
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>Manage All Purchase</Breadcrumb.Item>
-      </Breadcrumb>
+      <CustomBreadcrumb />
       <div className="flex items-center mb-3">
         <Space>
           <Input.Search

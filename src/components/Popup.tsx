@@ -1,3 +1,4 @@
+import { paths } from "../consts";
 import { Link } from "react-router-dom";
 
 const CourseCard = ({ avatar, name, description, duration }: { avatar: string; name: string; description: string; duration: string }) => {
@@ -16,7 +17,7 @@ const CourseCard = ({ avatar, name, description, duration }: { avatar: string; n
 const Popup = () => {
     return (
         <div className="">
-            <Link to="/">
+            <Link to={paths.HOME}>
                 <CourseCard
                     avatar="https://hiu.vn/wp-content/uploads/2020/03/Khoa_KHOAHOCCOBAN.png"
                     name="System"

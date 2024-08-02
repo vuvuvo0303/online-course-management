@@ -21,7 +21,6 @@ const CourseDetails = lazy(() => import("../pages/course-detail"));
 const BlogDetail = lazy(() => import("../pages/blog/blog-detail"));
 const BlogList = lazy(() => import("../pages/blog"));
 const Enrollment = lazy(() => import("../pages/enrollment"));
-const ChangePassword = lazy(() => import("../pages/profile/change-password/index"));
 const SiteMap = lazy(() => import("../pages/sitemap"));
 const NotFound = lazy(() => import("../pages/notfound"));
 const BecomeInstructorPage = lazy(() => import("../pages/teaching"));
@@ -32,8 +31,11 @@ const VerifyToken = lazy(() => import("../pages/verify-token"));
 const User = lazy(() => import("../pages/user"));
 
 // Student Page
+const ChangePassword = lazy(() => import("../pages/profile/change-password/index"));
+
 const Checkout = lazy(() => import("../pages/checkout"));
 const Profile = lazy(() => import("../pages/profile"));
+const EditProfile = lazy(() => import("../pages/profile/editProfile/index"));
 const Cart = lazy(() => import("../pages/cart"));
 const StudentSubscription = lazy(() => import("../pages/student/subscription"));
 const StudenManagePurchase = lazy(() => import("../pages/purchase"));
@@ -109,6 +111,8 @@ const AppRouter: React.FC = () => {
 
         {/* Route for Student */}
         <Route path={paths.STUDENT_PROFILE} element={<Profile />} />
+        <Route path={paths.STUDENT_EDIT_PROFILE} element={<EditProfile />} />
+
         <Route path={paths.STUDENT_CART} element={<Cart />} />
         <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
@@ -118,10 +122,21 @@ const AppRouter: React.FC = () => {
         <Route path={paths.LESSON} element={<Lesson />} />
         <Route path={paths.LESSON_BY_CONTENT} element={<LessonByContent />} />
         {/* Route for Instructor */}
+
         <Route
           path="/instructor/*"
           element={canAccess([roles.INSTRUCTOR]) ? <Dashboard /> : <Navigate to={paths.HOME} />}
         >
+          <Route
+            path={paths.INSTRUCTOR_LEARN}
+            element={canAccess([roles.INSTRUCTOR]) ? <AllCourses /> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_LEARN_COURSE}
+            element={canAccess([roles.INSTRUCTOR]) ? <CourseDetails /> 
+              : <Navigate to={paths.HOME} />
+            }
+          />
           <Route
             path={paths.INSTRUCTOR_MANAGE_REVIEWS}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManagerReviews /> : <Navigate to={paths.HOME} />}
@@ -198,6 +213,10 @@ const AppRouter: React.FC = () => {
           <Route
             path={paths.INSTRUCTOR_MANAGE_ALL_SESSION}
             element={canAccess([roles.INSTRUCTOR]) ? <ManageAllSession /> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_LESSON_OF_MANAGE_ALL_SESSIONS}
+            element={canAccess([roles.INSTRUCTOR]) ? <ManageLesson /> : <Navigate to={paths.HOME} />}
           />
           <Route
             path={paths.INSTRUCTOR_CREATE_SESSION_OF_MANAGE_ALL_SESSIONS}
