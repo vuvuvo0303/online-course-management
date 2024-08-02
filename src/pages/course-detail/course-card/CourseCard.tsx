@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { message, Rate, } from 'antd';
+import { message, Rate } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { addCourseToCart } from '../../../services/cart';
@@ -25,11 +25,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         } else {
             setLoading(true);
             try {
-                navigate(paths.STUDENT_CART);
                 await addCourseToCart(course._id);
-                // message.success('Course added to cart!');
+                navigate(paths.STUDENT_CART);
+                message.success('Course added to cart!');
             } catch (error) {
-                // message.error('Failed to add course to cart. Please try again.');
+                message.error('Failed to add course to cart. Please try again.');
                 // Optionally navigate back or handle the error UI-wise
             } finally {
                 setLoading(false);
@@ -81,24 +81,16 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     </div>
                     <div><strong>Category:</strong> {course.category_name}</div>
                     <div><strong>Instructor:</strong> {course.instructor_name}</div>
-                    <div><span className="text-sm">Last update:</span> {new Date(course.updated_at).toLocaleDateString()}</div>
-                    <div className="flex flex-row gap-4">
-                        <div className="text-4xl">{formatCurrency(course.price_paid)}</div>
-                        <div className="text-2xl mt-[0.2rem]">
-                            <span className="line-through">
-                                {formatCurrency(course.price)}
-                            </span>
-                        </div>
+                    <div>
+                        <strong>Last update:</strong> {new Date(course.updated_at).toLocaleDateString('en-GB')}
                     </div>
-                    <div className="text-xs">{course.discount}% off</div>
-                    <div><strong>Last update:</strong> {new Date(course.updated_at).toLocaleDateString('en-GB')}</div>
                     {!course.is_purchased && (
                         <>
                             <div className="flex flex-row gap-4">
-                                <div className="text-4xl">{course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>
+                                <div className="text-4xl">{formatCurrency(course.price_paid)}</div>
                                 <div className="text-2xl mt-[0.2rem]">
                                     <span className="line-through">
-                                        {course.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                        {formatCurrency(course.price)}
                                     </span>
                                 </div>
                             </div>

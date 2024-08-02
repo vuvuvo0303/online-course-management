@@ -3,7 +3,7 @@ import { Popover, Input, Spin, List, Button, Drawer } from 'antd';
 import { fetchCoursesByClient } from '../services';
 import { Course } from '../models';
 import { Link } from 'react-router-dom';
-import { ArrowRightOutlined, HeartOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined, HeartOutlined, SearchOutlined } from '@ant-design/icons';
 import { formatCurrency } from '../utils';
 
 const CourseCard = ({ image = '', title = '', author = '', price = '', paid = '' }:
@@ -77,7 +77,7 @@ const SearchTool: React.FC = () => {
                                     price={formatCurrency(course.price)}
                                     paid={formatCurrency(course.price_paid)}
                                 />
-                            </div>
+                            </Link>
                             <div className='flex flex-col gap-2 items-end'>
                                 <Link to={`/course/all-courses/course/${course._id}`}>
                                     <Button

@@ -19,12 +19,14 @@ import { useEffect, useState } from "react";
 import SearchTool from "../SearchTool";
 import Drawer from "../Drawer";
 import PopoverContent from "../PopoverContent";
-import { logout } from "../../services/auth.ts";
+import { logout } from "../../services/auth";
 import { getCarts } from "../../services";
-import { Cart } from "../../models/Cart.ts";
+import { Cart } from "../../models/Cart";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const [totalCarts, setTotalCarts] = useState<number>(0);
   const [dataUser, setDataUser] = useState<{
     role: string | null;
@@ -37,52 +39,22 @@ const Navbar: React.FC = () => {
     email: null,
     avatarUrl: null,
   });
-  const isLoginOrRegister =
-    location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
-  const navigate = useNavigate();
-  const isLoginPage = location.pathname === "/login";
-  const isRegisterPage = location.pathname === "/register";
-  const isForgotPassword = location.pathname === "/forgot-password";
-  // Create a submenu for each categoryFilter
-  const user = localStorage.getItem("user");
-
-  const token = localStorage.getItem("token");
   const [cartsNew, setCartsNew] = useState<Cart[]>([]);
   const [cartsCancel, setCartsCancel] = useState<Cart[]>([]);
   const [totalCost, setTotalCost] = useState<number>(0);
 
-  // show cart when student hover shop cart icon
-  const getCart = async () => {
-    const res = await getCarts("new");
-    const res2 = await getCarts("cancel");
-    let totalCost = 0;
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
 
-    if (res) {
-      setCartsNew(res);
-      for (let index = 0; index < res.length; index++) {
-        if (res[index] && res[index].price !== undefined) {
-          totalCost += res[index].price;
-        }
-      }
-    }
-
-    if (res2) {
-      setCartsCancel(res2);
-      for (let index = 0; index < res2.length; index++) {
-        if (res2[index] && res2[index].price !== undefined) {
-          totalCost += res2[index].price;
-        }
-      }
-    }
-
-    setTotalCost(totalCost);
-  };
-
+  const isLoginOrRegister =
+    location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
+  const isLoginPage = location.pathname === "/login";
+  const isRegisterPage = location.pathname === "/register";
+  const isForgotPassword = location.pathname === "/forgot-password";
 
   useEffect(() => {
     if (token) {
       getCart();
-      countCart();
     }
     if (user) {
       const userData = JSON.parse(user);
@@ -93,12 +65,30 @@ const Navbar: React.FC = () => {
         avatarUrl: userData.avatar,
       });
     }
-  }, []);
+  }, [token, user]);
 
-  const countCart = async () => {
-    const res = await getCarts("new");
-    if (res) {
-      setTotalCarts(res.length);
+  const getCart = async () => {
+    try {
+      const [resNew, resCancel] = await Promise.all([
+        getCarts("new"),
+        getCarts("cancel"),
+      ]);
+      let total = 0;
+
+      if (resNew) {
+        setCartsNew(resNew);
+        total += resNew.reduce((sum, cart) => sum + (cart.price || 0), 0);
+      }
+
+      if (resCancel) {
+        setCartsCancel(resCancel);
+        total += resCancel.reduce((sum, cart) => sum + (cart.price || 0), 0);
+      }
+
+      setTotalCost(total);
+      setTotalCarts(resNew ? resNew.length : 0);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
     }
   };
 
@@ -151,7 +141,8 @@ const Navbar: React.FC = () => {
         </Link>
       ),
       key: "4",
-    }, {
+    },
+    {
       label: (
         <Link className="text-lg" to={paths.STUDENT_CHANGEPASSWORD}>
           Change Password
@@ -191,14 +182,11 @@ const Navbar: React.FC = () => {
         </Link>
       </div>
 
-      {!isLoginOrRegister &&
-        !isForgotPassword &&
-        !isLoginPage &&
-        !isRegisterPage && (
-          <div className="flex-grow flex justify-center">
-            <SearchTool />
-          </div>
-        )}
+      {!isLoginOrRegister && !isForgotPassword && !isLoginPage && !isRegisterPage && (
+        <div className="flex-grow flex justify-center">
+          <SearchTool />
+        </div>
+      )}
 
       <div className="flex items-center flex-shrink-0 gap-5">
         {!user && (
@@ -234,11 +222,13 @@ const Navbar: React.FC = () => {
             </Popover>
 
             <Popover
-              content={<PopoverContent
-                totalCost={totalCost}
-                cartsNew={cartsNew}
-                cartsCancel={cartsCancel}
-              />}
+              content={
+                <PopoverContent
+                  totalCost={totalCost}
+                  cartsNew={cartsNew}
+                  cartsCancel={cartsCancel}
+                />
+              }
               overlayInnerStyle={{ padding: 0 }}
               trigger="hover"
               placement="bottom"
@@ -249,11 +239,15 @@ const Navbar: React.FC = () => {
                 </Badge>
               </Link>
             </Popover>
-
           </>
-            }
+        )}
+
         {user ? (
-          <Dropdown className='' menu={{ items: dropdownItems }} trigger={["click"]} overlayClassName="w-72">
+          <Dropdown
+            menu={{ items: dropdownItems }}
+            trigger={["click"]}
+            overlayClassName="w-72"
+          >
             <p onClick={(e) => e.preventDefault()}>
               <Space>
                 <Avatar
@@ -270,11 +264,8 @@ const Navbar: React.FC = () => {
             <UserOutlined className="text-gray-400 text-3xl cursor-pointer hidden md:block" />
           </Link>
         )}
-      </>
-    </div>
-  )
-}
-    </nav >
+      </div>
+    </nav>
   );
 };
 
