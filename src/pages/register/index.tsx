@@ -105,12 +105,9 @@ const RegisterPage: React.FC = () => {
 
   const handleModalOk = async () => {
     try {
-      // Kiểm tra tính hợp lệ của form
       await form.validateFields();
-      // Đóng modal nếu form hợp lệ
       setModalVisible(false);
     } catch (error) {
-      // Hiển thị thông báo lỗi nếu form không hợp lệ
       message.error("Please complete all required fields.");
     }
   };
@@ -137,8 +134,10 @@ const RegisterPage: React.FC = () => {
             </h1>
           </div>
 
-          <span className="text-center">Learn from top experts.</span>
-          <span className="mb-4 text-center">Sign up to join FLearn now!</span>
+          <span className="text-center mb-4" style={{ fontSize: "14px" }}>
+            Step into success with FLearn. Join us today!
+          </span>
+
           <div className="mb-6">
             <div className="flex justify-center">
               <Form
