@@ -16,10 +16,9 @@ import {
 import type { MenuProps } from "antd";
 import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, theme } from "antd";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { User } from "../../models";
 import logo2 from "../../assets/logo2.jpg";
 import { paths, roles } from "../../consts";
-import { logout } from "../../services";
+import { getUserFromLocalStorage, logout } from "../../services";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -38,8 +37,8 @@ const Dashboard: React.FC = () => {
     email: null,
   });
 
-  const userString = localStorage.getItem("user");
-  const user: User = userString ? JSON.parse(userString) : null;
+
+  const user = getUserFromLocalStorage();
   const userRole = user?.role;
   useEffect(() => {
     if (userRole && user) {
@@ -162,100 +161,68 @@ const Dashboard: React.FC = () => {
   const dropdownItems: MenuProps["items"] =
     dataUser.role === roles.INSTRUCTOR
       ? [
-          {
-            label: (
-              <div className="text-sm">
-                <Row>
-                  <Col span={8} className="p-4 pt-2 pb-2">
-                    <Avatar
-                      src={
-                        typeof user.avatar === "string"
-                          ? user.avatar
-                          : undefined
-                      }
-                      className="hover:cursor-pointer mr-5 border border-black"
-                      size={50}
-                      icon={<UserOutlined />}
-                    />
-                  </Col>
-                  <Col span={16} className="pt-3 pr-3">
-                    <Row>
-                      <p className="text-base font-bold">{dataUser.fullName}</p>
-                    </Row>
-                    <div>
-                      <p className="text-md">{dataUser.email}</p>
-                    </div>
-                  </Col>
-                </Row>
-              </div>
-            ),
-            key: "1",
-          },
-          {
-            label: (
-              <Link className="text-lg" to={paths.INSTRUCTOR_PROFILE}>
-                View Profile
-              </Link>
-            ),
-            key: "2",
-          },
-          {
-            label: (
-              <Link className="mt-2 text-lg" to="/instructor/paidMemberships">
-                Paid Memberships
-              </Link>
-            ),
-            key: "3",
-          },
-          {
-            label: (
-              <Link className="text-lg" to="/instructor/setting">
-                Setting
-              </Link>
-            ),
-            key: "4",
-          },
-          {
-            label: (
-              <Link className="text-lg" to="/instructor/help">
-                Help
-              </Link>
-            ),
-            key: "5",
-          },
-          {
-            label: (
-              <Link className="text-lg" to="/instructor/sendFeedBack">
-                Send Feedback
-              </Link>
-            ),
-            key: "6",
-          },
-          {
-            label: (
-              <p
-                onClick={() => logout(navigate)}
-                className="text-lg hover:cursor-pointer hover:text-red-600"
-              >
-                Logout
-              </p>
-            ),
-            key: "7",
-          },
-        ]
+        {
+          label: (
+            <div className="text-sm">
+              <Row>
+                <Col span={8} className="p-4 pt-2 pb-2">
+                  <Avatar
+                    src={
+                      typeof user.avatar === "string"
+                        ? user.avatar
+                        : undefined
+                    }
+                    className="hover:cursor-pointer mr-5 border border-black"
+                    size={50}
+                    icon={<UserOutlined />}
+                  />
+                </Col>
+                <Col span={16} className="pt-3 pr-3">
+                  <Row>
+                    <p className="text-base font-bold">{dataUser.fullName}</p>
+                  </Row>
+                  <div>
+                    <p className="text-md">{dataUser.email}</p>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+          ),
+          key: "1",
+        },
+        {
+          label: (
+            <Link className="text-lg" to={paths.INSTRUCTOR_PROFILE}>
+              View Profile
+            </Link>
+          ),
+          key: "2",
+        },
+        {
+          label: (
+            <p
+              onClick={() => logout(navigate)}
+              className="text-lg hover:cursor-pointer hover:text-red-600"
+            >
+              Logout
+            </p>
+          ),
+          key: "3",
+        },
+      ]
       : [
-          {
-            label: (
-              <button
-                onClick={() => logout(navigate)}
-                className="text-lg hover:cursor-pointer hover:text-red-600 bg-transparent border-none p-0"
-              >
-                Logout
-              </button>
-            ),
-            key: "1",
-          },
-        ];
+        {
+          label: (
+            <button
+              onClick={() => logout(navigate)}
+              className="text-lg hover:cursor-pointer hover:text-red-600 bg-transparent border-none p-0"
+            >
+              Logout
+            </button>
+          ),
+          key: "1",
+        },
+      ];
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>

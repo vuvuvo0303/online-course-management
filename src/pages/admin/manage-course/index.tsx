@@ -215,7 +215,10 @@ const AdminManageCourses: React.FC = () => {
             className="flex justify-between text-blue-500 cursor-pointer"
             onClick={() => showModalLogStatus(record._id)}
           >
-            <Tag color={getColor(status)}>{status === "waiting_approve" ? "waiting approve" : status}</Tag>
+           
+          </div>
+          <div>
+          <Tag color={getColor(status)}>{status === "waiting_approve" ? "waiting approve" : status}</Tag>
             {status === "waiting_approve" ? (
               <EditOutlined onClick={() => showModalChangeStatus(record._id)} className="text-blue-500" />
             ) : (

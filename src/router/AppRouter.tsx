@@ -245,7 +245,7 @@ const AppRouter: React.FC = () => {
             element={canAccess([roles.INSTRUCTOR]) ? <Lesson /> : <Navigate to={paths.HOME} />}
           />
           <Route
-            path={paths.INSTRUCTOR_CHECKOUT}
+            path={paths.INSTRUCTOR_LEARN_CHECKOUT}
             element={canAccess([roles.INSTRUCTOR]) ? <Checkout /> : <Navigate to={paths.HOME} />}
           />
 

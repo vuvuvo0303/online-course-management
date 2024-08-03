@@ -84,10 +84,10 @@ const TeacherCategories: React.FC = () => {
                 </div>
                 <div className="mt-4">
                   <p className="text-gray-600 text-sm">
-                    Subscribed Date: {formatDate(teacher.created_at)}
+                  <span className="font-bold"> Subscribed Date:</span>  {formatDate(teacher.created_at)}
                   </p>
                   <p className="text-gray-600 text-sm">
-                    Subscribed Date: {formatDate(teacher.updated_at)}
+                  <span className="font-bold" >Update Subscribed Date:</span>   {formatDate(teacher.updated_at)}
                   </p>
                 </div>
               </Card>

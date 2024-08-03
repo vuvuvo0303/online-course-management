@@ -336,6 +336,8 @@ export const paths = {
     "learn/cart",
   INSTRUCTOR_CHECKOUT:
     "checkout",
+  INSTRUCTOR_LEARN_CHECKOUT:
+    "learn/cart/checkout",
   INSTRUCTOR_STUDY_COURSE: "course/lesson",
   INSTRUCTOR_LESSON: "learn/course/lesson/:_id",
   /* ADMIN PATHS */

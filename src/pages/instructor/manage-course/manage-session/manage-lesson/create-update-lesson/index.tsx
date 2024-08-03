@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Select, message } from "antd";
+import { Button, Form, Input, Select, Spin, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Lessons, Session } from "../../../../../../models/index.ts";
 import { axiosInstance, getUserFromLocalStorage } from "../../../../../../services";
@@ -14,7 +14,14 @@ import {
 import { formItemLayout } from "../../../../../../layout/form";
 import LoadingComponent from "../../../../../../components/loading";
 import CustomBreadcrumb from "../../../../../../components/breadcrumb/index.tsx";
+
+import { PlusOutlined } from "@ant-design/icons";
+import { Image, Upload } from "antd";
+import type { GetProp, UploadFile, UploadProps } from "antd";
+import { getBase64, uploadFile } from "../../../../../../utils/uploadHelper/index.ts";
 import TextArea from "antd/es/input/TextArea";
+
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const CreateUpdateLesson: React.FC = () => {
   const { lectureId, courseId, sessionId } = useParams<{ lectureId: string; courseId: string; sessionId: string }>();
@@ -56,6 +63,16 @@ const CreateUpdateLesson: React.FC = () => {
           });
           setCourse_id(data.course_id);
           setContent(data.description);
+          if (data.image_url) {
+            setFileList([
+              {
+                uid: '-1',
+                name: 'image.png',
+                status: 'done',
+                url: data.image_url,
+              },
+            ]);
+          }
         } catch (error) {
           message.error("Failed to fetch lesson data.");
         } finally {
@@ -74,7 +91,7 @@ const CreateUpdateLesson: React.FC = () => {
           searchCondition: {
             keyword: "",
             category: "",
-            status: "new",
+            status: "active",
             is_deleted: false,
           },
           pageInfo: {
@@ -124,8 +141,6 @@ const CreateUpdateLesson: React.FC = () => {
     fetchSessions();
   }, [sessionId, course_id]);
 
-
-
   const onFinish = async (values: Lessons) => {
     if (typeof values.full_time === "string") {
       values.full_time = parseFloat(values.full_time);
@@ -133,7 +148,20 @@ const CreateUpdateLesson: React.FC = () => {
     if (typeof values.position_order === "string") {
       values.position_order = parseFloat(values.position_order);
     }
-    values.description =  content;
+    values.description = content;
+
+  let imageUrl: string = "";
+
+  
+  if (fileList.length > 0) {
+    const file = fileList[0];
+    if (file.originFileObj) {
+      imageUrl = await uploadFile(file.originFileObj as File);
+    }
+  }
+
+  
+  values.image_url = imageUrl || values.image_url;
 
     setLoading(true);
     try {
@@ -159,7 +187,29 @@ const CreateUpdateLesson: React.FC = () => {
   const handleChangeCourseId = (value: string) => {
     setCourse_id(value);
   };
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState<UploadFile[]>([
+    
+  ]);
 
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as FileType);
+    }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+  };
+
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
+
+  const uploadButton = (
+    <button style={{ border: 0, background: "none" }} type="button">
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </button>
+  );
   return (
     <div className="flex justify-center items-center h-full mt-10">
       {loading ? (
@@ -187,7 +237,8 @@ const CreateUpdateLesson: React.FC = () => {
               >
                 <Select
                   onChange={handleChangeCourseId}
-                  defaultValue="Choose course for this lecture"
+                  notFoundContent={loading ? <Spin size="small" /> : null}
+                  defaultValue="Choose course for this lesson"
                   options={courses.map((course) => ({
                     label: course.name,
                     value: course._id,
@@ -209,7 +260,8 @@ const CreateUpdateLesson: React.FC = () => {
                 rules={[{ required: true, message: "Please session name!" }]}
               >
                 <Select
-                  defaultValue="Choose session for this lecture"
+                  notFoundContent={loading ? <Spin size="small" /> : null}
+                  defaultValue="Please select course before select session"
                   options={sessions.map((session) => ({
                     label: session.name,
                     value: session._id,
@@ -222,10 +274,7 @@ const CreateUpdateLesson: React.FC = () => {
               <Input.TextArea />
             </Form.Item>
 
-            <Form.Item
-              label="Lesson Type"
-              name="lesson_type"
-            >
+            <Form.Item label="Lesson Type" name="lesson_type">
               <Select
                 defaultValue="video"
                 options={[
@@ -236,11 +285,8 @@ const CreateUpdateLesson: React.FC = () => {
               />
             </Form.Item>
 
-            <Form.Item
-              label="Description"
-              name="description"
-            >
-              <TextArea/>
+            <Form.Item label="Description" name="description">
+              <TextArea />
             </Form.Item>
 
             <Form.Item
@@ -252,7 +298,15 @@ const CreateUpdateLesson: React.FC = () => {
             </Form.Item>
 
             <Form.Item label="Image URL" name="image_url">
-              <Input />
+              <Upload
+                action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                listType="picture-card"
+                fileList={fileList}
+                onPreview={handlePreview}
+                onChange={handleChange}
+              >
+                {fileList.length >= 8 ? null : uploadButton}
+              </Upload>
             </Form.Item>
 
             <Form.Item
@@ -272,19 +326,26 @@ const CreateUpdateLesson: React.FC = () => {
             </Form.Item>
 
             <Form.Item wrapperCol={{ span: 24, offset: 6 }}>
-              <Button type="primary" htmlType="submit" loading={loading}>
+              <Button className="float-right" type="primary" htmlType="submit" loading={loading}>
                 Submit
               </Button>
             </Form.Item>
           </Form>
         </div>
       )}
+      {previewImage && (
+        <Image
+          wrapperStyle={{ display: 'none' }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(''),
+          }}
+          src={previewImage}
+        />
+      )}
     </div>
   );
 };
 
-
 export default CreateUpdateLesson;
-
-
-

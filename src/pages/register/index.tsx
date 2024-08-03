@@ -126,9 +126,9 @@ const RegisterPage: React.FC = () => {
       >
         Home
       </Button>
-      <div className="w-full md:w-1/2 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[650px] mb-[30px] mt-[30px]">
+      <div className="w-full md:w-1/2 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[500px] mb-[30px] mt-[30px]">
         <div className="w-1/2 flex flex-col justify-center p-4 md:p-8 bg-white rounded-lg">
-          <div className="flex flex-col items-center mb-4">
+          <div className="flex flex-col items-center mb-2">
             <h1 className="text-2xl md:text-3xl font-bold text-center">
               Register
             </h1>
@@ -144,7 +144,7 @@ const RegisterPage: React.FC = () => {
                 form={form}
                 name="basic"
                 className="flex flex-col gap-1"
-                style={{ maxWidth: 500 }}
+                style={{ maxWidth: 400, overflow: "hidden" }}
                 initialValues={{ remember: true, role }}
                 onFinish={onFinish}
                 autoComplete="off"
@@ -208,7 +208,10 @@ const RegisterPage: React.FC = () => {
             }}
           />
         )}
-        <div className="w-1/2 flex items-center justify-center">
+        <div
+          className="w-1/2 flex items-center justify-center"
+          style={{ overflow: "hidden" }}
+        >
           <img
             src={Register1}
             alt="Vector"

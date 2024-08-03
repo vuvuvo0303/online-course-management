@@ -145,9 +145,14 @@ const CartPage: React.FC = () => {
     <div className="py-0 md:px-[4.8rem] px-4 mb-[4.4rem] max-w-[134rem] my-0 mx-auto">
       <h1 className="mt-10 main_h1">Course Cart</h1>
       <h3 className={`${styles.h3_cart_title} mt-10`}>
-        {totalCourse} Courses in Cart
+       {
+        (cartsNew.length === 0 && cartsCancel.length === 0 && cartsWaitingPaid.length === 0 ) &&
+        <>
+         {totalCourse} Courses in Cart
+        </>
+       }
       </h3>
-      {(cartsNew.length === 0 && cartsCancel.length === 0 ) &&(
+      {(cartsNew.length === 0 && cartsCancel.length === 0 && cartsWaitingPaid.length === 0 ) &&(
         <div className={styles.empty_cart_container}>
           <img
             width={200}
@@ -215,22 +220,26 @@ const CartPage: React.FC = () => {
           </div>
         </div>
         <div className="flex-4 mt-10">
-          {(cartsNew.length > 0 || cartsCancel.length > 0) && (
+          {(cartsNew.length > 0 || cartsCancel.length > 0 ||cartsWaitingPaid.length > 0) && (
             <div className={styles.cart_checkout}>
               <div className={styles.total_price}>
                 <div className={styles.total_checkout_container}>
-                  <div className={styles.total_price_label}>Total:</div>
-                  <div className={styles.base_price_heading}>
-                    <span>₫{totalMoney}</span>
-                  </div>
-                  <div className={styles.discount_price_checkout}>
-                    <div>
-                      <s>
-                        <span>₫{totalCost}</span>
-                      </s>
+                  { (cartsNew.length > 0 || cartsCancel.length > 0) &&
+                   <>
+                    <div className={styles.total_price_label}>Total:</div>
+                    <div className={styles.base_price_heading}>
+                      <span>₫{totalMoney}</span>
                     </div>
-                  </div>
-                  <div className={styles.discount_price_checkout}></div>
+                    <div className={styles.discount_price_checkout}>
+                      <div>
+                        <s>
+                          <span>₫{totalCost}</span>
+                        </s>
+                      </div>
+                    </div>
+                    <div className={styles.discount_price_checkout}></div>
+                    </>
+                  }
                 </div>
                 {cartsWaitingPaid.length > 0 ? (
                   cartsChecked.length > 0 ? (
@@ -238,7 +247,7 @@ const CartPage: React.FC = () => {
                       onClick={handleCheckoutNow}
                       className={styles.checkout_button}
                     >
-                      Checkout now with {cartsWaitingPaid.length} art in
+                      Checkout now with {cartsWaitingPaid.length} cart in
                       checkout page and {cartsChecked.length} cart checked
                     </button>
                   ) : (

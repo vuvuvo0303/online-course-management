@@ -5,44 +5,55 @@ import { Button, Form, Image, Input, message, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { getCategories, axiosInstance } from "../../../../services";
-import { LoadingComponent, CustomBreadcrumb, ContentFormItem, UploadButton } from "../../../../components";
+import { LoadingComponent, CustomBreadcrumb, TinyMCEEditorComponent } from "../../../../components";
 import { formItemLayout } from "../../../../layout/form";
 
+import type { GetProp, UploadFile, UploadProps } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { uploadFile } from "../../../../utils";
 
-import type { GetProp, UploadFile, UploadProps } from 'antd';
-import { getBase64, uploadFile } from "../../../../utils";
-
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const InstructorCreateCourse: React.FC = () => {
-  const [des, setDes] = useState<string>("");
+  // const [des, setDes] = useState<string>("");
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const { id, _id } = useParams<{ _id: string; id: string }>();
+  const { _id } = useParams<{ _id: string; id: string }>();
   const [form] = useForm();
   const token = localStorage.getItem("token");
   const [content, setContent] = useState<string>("Enter something here");
 
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
-  const [fileList, setFileList] = useState<UploadFile[]>([
+  const getBase64 = (file: FileType): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
 
-  ]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
     }
-
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
     setFileList(newFileList);
 
-  // Fetch course
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
+
   useEffect(() => {
     const fetchCourse = async () => {
       setLoading(true);
@@ -60,14 +71,24 @@ const InstructorCreateCourse: React.FC = () => {
             price: data?.price,
             discount: data?.discount,
           });
+          if (data.image_url) {
+            setFileList([
+              {
+                uid: '-1',
+                name: 'image.png',
+                status: 'done',
+                url: data.image_url,
+              },
+            ]);
+          }
           setContent(data.description);
         }
-
-      } finally {
         setLoading(false);
 
+      } catch (error) {
+        console.log(error)
       }
-    };
+    }
     if (_id) {
       fetchCourse();
     }
@@ -75,21 +96,22 @@ const InstructorCreateCourse: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const responseCategories = await getCategories();
-      const categories = responseCategories.data.pageData;
-      setCategories(categories);
-      setLoading(false);
+      try {
+        const responseCategories = await getCategories();
+        const categories = responseCategories.data.pageData;
+        setCategories(categories);
+        setLoading(false);
+      } catch (error) {
+        console.log("Error fetching categories: ", error);
+      }
     };
     fetchData();
   }, [token]);
 
   if (loading) {
-    return (
-      <>
-        <LoadingComponent />
-      </>
-    );
+    return <LoadingComponent />;
   }
+
   function isValidHttpUrl(string: string) {
     let url;
     try {
@@ -97,11 +119,11 @@ const InstructorCreateCourse: React.FC = () => {
     } catch (_) {
       return false;
     }
-
     return url.protocol === "http:" || url.protocol === "https:";
   }
 
   const onFinish = async (values: Course) => {
+    console.log("values: ", values)
     setLoading(true);
     try {
       if (typeof values.price === "string") {
@@ -110,65 +132,57 @@ const InstructorCreateCourse: React.FC = () => {
       if (typeof values.discount === "string") {
         values.discount = parseFloat(values.discount);
       }
-      if (!des) {
-        // if instructor doesn't change description
-        values.description = content;
-      } else {
-        values.description = des;
-      }
-
+      values.content = content;
       // Check and upload new image if exists
-      let imageUrl: string = "";
+      let imageUrl = "";
       if (fileList.length > 0) {
         const file = fileList[0];
         if (file.originFileObj) {
           imageUrl = await uploadFile(file.originFileObj as File);
         }
       }
-      values.image_url = imageUrl || values.image_url; // Use new image URL if uploaded, otherwise use the existing one
-
+      values.image_url = imageUrl || values.image_url;
+  
       // Update Course
       if (_id) {
         await axiosInstance.put<Course>(`${API_UPDATE_COURSE}/${_id}`, values);
         message.success("Update New Course Successfully");
-        if (id) {
+        if (_id) {
           navigate(`/instructor/manage-courses/${_id}`);
         } else {
           navigate(`/instructor/manage-courses`);
         }
       } else {
-        // Create Course
-        await axiosInstance.post(API_CREATE_COURSE, values, {});
-        message.success("Create New Course Successfully");
+        await axiosInstance.post(API_CREATE_COURSE, values);
+        message.success("Create Course Successfully");
         navigate(`/instructor/manage-courses`);
       }
     } catch (error) {
-      message.error("An error occurred while saving the course. Please try again.");
+      // message.error("An error occurred while saving the course. Please try again.");
+      console.error("Error saving course: ", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleEditorChange = (value: string) => {
-    setDes(value);
-    form.setFieldsValue({ content: value });
+    setContent(value);
   };
 
   return (
     <>
       <CustomBreadcrumb />
-      {_id !== undefined && _id !== "" ? (
-        <h1 className="text-center">Update Course</h1>
-      ) : (
-        <h1 className="text-center">Create Course</h1>
-      )}
-
-      <div>
-        <Form {...formItemLayout} onFinish={onFinish} form={form} variant="filled">
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input!" }]}>
+      <h1 className="text-center">{_id ? "Update Course" : "Create Course"}</h1>
+      <div className="flex justify-center items-center h-full mt-10">
+        <Form {...formItemLayout} onFinish={onFinish} form={form} variant="filled" className="w-full max-w-6xl bg-white p-8 rounded shadow">
+          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the course name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="Category" name="category_id" rules={[{ required: true, message: "Please input!" }]}>
+          <Form.Item
+            label="Category"
+            name="category_id"
+            rules={[{ required: true, message: "Please select a category!" }]}
+          >
             <Select>
               {categories.map((category) => (
                 <Select.Option key={category._id} value={category._id}>
@@ -177,54 +191,55 @@ const InstructorCreateCourse: React.FC = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Description" name="description">
+          <Form.Item label="Description (optional)"
+            rules={[{ required: true, message: "Please select a category!" }]}
+            name="description">
             <Input.TextArea />
           </Form.Item>
           {!_id && (
-            <ContentFormItem value={content} onEditorChange={handleEditorChange} />
+            <Form.Item
+              label="Content"
+              name="content"
+              rules={[{ required: false, message: "Please input course content!" }]}
+            >
+              <TinyMCEEditorComponent value={content}
+                onEditorChange={handleEditorChange}
+              />
+            </Form.Item>
           )}
           <Form.Item
-            label="Video_url"
+            label="Video URL"
             name="video_url"
             rules={[
-              { required: true, message: "Please input!" },
+              { required: true, message: "Please input a video URL!" },
               {
                 validator: (_, value) =>
-                  isValidHttpUrl(value) ? Promise.resolve() : Promise.reject("This is not a video url"),
+                  isValidHttpUrl(value) ? Promise.resolve() : Promise.reject("This is not a valid video URL"),
               },
             ]}
           >
             <Input />
           </Form.Item>
           {
-            <Form.Item
-              label="Image_url"
-              name="image_url"
-            // rules={[
-            //     {
-            //         validator: (_, value) =>
-            //             !value || isValidHttpUrl(value)
-            //                 ? Promise.resolve() : Promise.reject(new Error('This is not a valid image URL')),
-
-            //     }
-            // ]}
-            >
-              <Upload
-                action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={handlePreview}
-                onChange={handleChange}
-              >
-                {fileList.length >= 1 ? null : <UploadButton />}
-              </Upload>
-            </Form.Item>
+            !_id && (
+              <Form.Item label="Image (optional)" name="image_url">
+                <Upload
+                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                  listType="picture-card"
+                  fileList={fileList}
+                  onPreview={handlePreview}
+                  onChange={handleChange}
+                >
+                  {fileList.length >= 1 ? null : uploadButton}
+                </Upload>
+              </Form.Item>
+            )
           }
           <Form.Item
-            label="Price(vnd)"
+            label="Price (VND)"
             name="price"
             rules={[
-              { required: true, message: "Please input a number!" },
+              { required: true, message: "Please input the price!" },
               {
                 validator: (_, value) =>
                   value > 1000 ? Promise.resolve() : Promise.reject("Price must be greater than 1000!"),
@@ -233,11 +248,16 @@ const InstructorCreateCourse: React.FC = () => {
           >
             <Input type="number" />
           </Form.Item>
-          <Form.Item label="Discount" name="discount" rules={[{ required: true, message: "Please input a number!" }]}>
+          <Form.Item label="Discount" name="discount" rules={[{ required: true, message: "Please input a discount!" },
+          {
+            validator: (_, value) =>
+              value <= 100 && value >= 0 ? Promise.resolve() : Promise.reject(" Discount must be greater than or equal to 0 and less than or equal to 100 !"),
+          },
+          ]}>
             <Input type="number" />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-            <Button type="primary" htmlType="submit">
+            <Button className="float-right" type="primary" htmlType="submit">
               Submit
             </Button>
           </Form.Item>
