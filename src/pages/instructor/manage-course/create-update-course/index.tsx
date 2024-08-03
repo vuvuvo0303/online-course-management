@@ -7,13 +7,12 @@ import { useForm } from "antd/es/form/Form";
 import { getCategories, axiosInstance } from "../../../../services";
 import { TinyMCEEditorComponent, LoadingComponent, CustomBreadcrumb } from "../../../../components";
 import { formItemLayout } from "../../../../layout/form";
-import LoadingComponent from "../../../../components/loading";
-import CustomBreadcrumb from "../../../../components/breadcrumb/index.tsx";
+
 
 
 import type { GetProp, UploadFile, UploadProps } from 'antd';
 import { PlusOutlined } from "@ant-design/icons";
-import uploadFile from "../../../../utils/upload.ts";
+import {uploadFile} from "../../../../utils/uploadHelper/index";
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -78,6 +77,16 @@ const InstructorCreateCourse: React.FC = () => {
             price: data?.price,
             discount: data?.discount,
           });
+          if (data.image_url) {
+            setFileList([
+              {
+                uid: '-1',
+                name: 'image.png',
+                status: 'done',
+                url: data.image_url,
+              },
+            ]);
+          }
           setContent(data.description);
         }
 
@@ -143,7 +152,7 @@ const InstructorCreateCourse: React.FC = () => {
           imageUrl = await uploadFile(file.originFileObj as File);
         }
       }
-      values.image_url = imageUrl || values.image_url; // Use new image URL if uploaded, otherwise use the existing one
+      values.image_url = imageUrl || values.image_url;
   
       // Update Course
       if (_id) {

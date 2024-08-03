@@ -4,23 +4,34 @@ import { getItemsByStudent } from "../../services";
 import LoadingComponent from "../../components/loading";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Table, TableProps } from "antd";
+import { Pagination, Table, TablePaginationConfig, TableProps } from "antd";
 import { formatCurrency } from "../../utils";
+import { PaginationProps } from "antd/lib";
 
 const StudenManagePurchase = () => {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const getPurchasesByStudent = async () => {
     const response = await getItemsByStudent("", "", "", "", 1, 100);
-    setPurchases(response);
+    setPurchases(response.data.pageData);
+    setPagination({
+      ...pagination,
+      total: response.data.pageInfo.totalItems,
+      current: response.data.pageInfo.pageNum,
+      pageSize: response.data.pageInfo.pageSize,
+    });
     setLoading(false);
   };
 
   useEffect(() => {
     getPurchasesByStudent();
-  }, []);
+  }, [pagination.pageSize, pagination.current]);
 
   if (loading) {
     return (<>
@@ -82,11 +93,33 @@ const StudenManagePurchase = () => {
   const navigateToUser = (instructor_id: string) => {
     navigate(`/user/${instructor_id}`);
   };
+  const handleTableChange = (pagination: PaginationProps) => {
+    const newPagination: { current: number; pageSize: number; total: number } = {
+      current: pagination.current ?? 1,
+      pageSize: pagination.pageSize ?? 10,
+      total: pagination.total ?? 0,
+    };
 
+    setPagination(newPagination);
+  };
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({ ...pagination, current: page, pageSize });
+  };
   return (
     <div className="container mx-auto px-10">
       <h1 className="text-center my-10">Manage Purchased</h1>
-      <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} />
+      <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} pagination={false} onChange={handleTableChange}/>
+      <div className="flex justify-end py-8">
+        <Pagination
+          total={pagination.total}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
+      </div>
     </div>
   );
 };
