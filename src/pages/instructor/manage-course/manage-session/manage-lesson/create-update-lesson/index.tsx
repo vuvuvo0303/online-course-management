@@ -74,7 +74,7 @@ const CreateUpdateLesson: React.FC = () => {
           searchCondition: {
             keyword: "",
             category: "",
-            status: "new",
+            status: "active",
             is_deleted: false,
           },
           pageInfo: {
