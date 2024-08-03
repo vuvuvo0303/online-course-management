@@ -11,7 +11,6 @@ import { formItemLayout } from "../../../../layout/form";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { uploadFile } from "../../../../utils";
-import TextArea from "antd/es/input/TextArea";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -148,7 +147,7 @@ const InstructorCreateCourse: React.FC = () => {
       if (_id) {
         await axiosInstance.put<Course>(`${API_UPDATE_COURSE}/${_id}`, values);
         message.success("Update New Course Successfully");
-        if (id) {
+        if (_id) {
           navigate(`/instructor/manage-courses/${_id}`);
         } else {
           navigate(`/instructor/manage-courses`);
@@ -195,7 +194,7 @@ const InstructorCreateCourse: React.FC = () => {
           <Form.Item label="Description (optional)"
             rules={[{ required: true, message: "Please select a category!" }]}
             name="description">
-            <TextArea />
+            <Input.TextArea />
           </Form.Item>
           {!_id && (
             <Form.Item
