@@ -24,7 +24,7 @@ const Enrollment = lazy(() => import("../pages/enrollment"));
 const SiteMap = lazy(() => import("../pages/sitemap"));
 const NotFound = lazy(() => import("../pages/notfound"));
 const BecomeInstructorPage = lazy(() => import("../pages/teaching"));
-const CoursesCategory = lazy(() => import("../pages/courses"));
+const CoursesCategory = lazy(() => import("../pages/course-by-category"));
 const ForgotPassword = lazy(() => import("../pages/forgot-password"));
 const InternalServerError = lazy(() => import("../pages/internal-server-error"));
 const VerifyToken = lazy(() => import("../pages/verify-token"));
@@ -247,7 +247,7 @@ const AppRouter: React.FC = () => {
             element={canAccess([roles.INSTRUCTOR]) ? <Lesson/> : <Navigate to={paths.HOME} />}
           />
           <Route
-            path={paths.INSTRUCTOR_CHECKOUT}
+            path={paths.INSTRUCTOR_LEARN_CHECKOUT}
             element={canAccess([roles.INSTRUCTOR]) ? <Checkout /> : <Navigate to={paths.HOME} />}
           />
 

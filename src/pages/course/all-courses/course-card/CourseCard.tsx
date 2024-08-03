@@ -32,7 +32,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     } else if (course.is_in_cart === true && course.is_purchased === true) {
                         navigate(`${paths.INSTRUCTOR_STUDY_COURSE}/${course._id}`);
                     }
-                } else if(user.role === "student") {
+                } else if (user.role === "student") {
                     if (course.is_purchased === false && course.is_in_cart === false) {
                         await addCourseToCart(course._id);
                         navigate(paths.STUDENT_CART)
@@ -70,11 +70,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                         <div className="flex flex-col items-center space-y-2">
                             {userRole === "instructor" ?
                                 <Button onClick={() => handleGoToCourse(course)} type="primary" className="w-32 h-10"><ArrowRightOutlined />
+                                
                                     {course.is_purchased === false && course.is_in_cart === false && "Add to cart"}
                                     {course.is_in_cart === true && course.is_purchased === false && "Go to cart"}
                                     {course.is_purchased === true && course.is_in_cart === true && "Learn now"}
                                 </Button> :
-                                <Link to={`/course/all-courses/course/${course._id}`}>
+                                <Link to={`/course/all-courses/${course._id}`}>
                                     <Button type="primary" className="w-32 h-10"><ArrowRightOutlined />Go to course</Button>
                                 </Link>
                             }

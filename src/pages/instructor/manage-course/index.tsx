@@ -23,9 +23,9 @@ import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
 import { format } from "date-fns";
 import { getCategories } from "../../../services/category.ts";
-import LoadingComponent from "../../../components/loading";
+
 import { getAllReviews } from "../../../services/review.ts";
-import CustomBreadcrumb from "../../../components/breadcrumb/index.tsx";
+import { LoadingComponent, CustomBreadcrumb } from "../../../components";
 
 
 const InstructorManageCourses: React.FC = () => {
@@ -302,7 +302,7 @@ const InstructorManageCourses: React.FC = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      width: 300,
+      width: "10%",
       render: (name: string, record: Course) => (
         <>
           <div onClick={() => showModalLogStatus(record._id)} className="text-blue-500 cursor-pointer">
@@ -380,7 +380,9 @@ const InstructorManageCourses: React.FC = () => {
       title: "Image",
       dataIndex: "image_url",
       key: "image_url",
-      render: (image_url: string) => <Image src={image_url} />,
+      render: (image_url: string) => <Image  src={image_url} />,
+      width: 200,
+      
     },
     {
       title: "Action",

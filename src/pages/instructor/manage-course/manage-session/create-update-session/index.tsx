@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Select, message } from "antd";
+import { Button, Form, Input, Select, message, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models";
 import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
 import { axiosInstance, getUserFromLocalStorage } from "../../../../../services";
-import { TinyMCEEditorComponent, CustomBreadcrumb, LoadingComponent } from "../../../../../components";
+import { CustomBreadcrumb, LoadingComponent, DescriptionFormItem } from "../../../../../components";
 import { formItemLayout } from "../../../../../layout/form";
 
 const CreateUpdateSession = () => {
@@ -14,11 +14,9 @@ const CreateUpdateSession = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const [role, setRole] = useState<string>('');
-  const [des, setDes] = useState<string>("");
   const [courseIdUpdate, setCourseIdUpdate] = useState<string>("");
   const [courses, setCourses] = useState<Course[]>([]);
   const [userId, setUserId] = useState<string>('');
-  const [content, setContent] = useState<string>('Enter something here');
   useEffect(() => {
     const user = getUserFromLocalStorage();
     setUserId(user?._id);
@@ -39,7 +37,6 @@ const CreateUpdateSession = () => {
           },
           position_order: data.position_order
         });
-        setContent(data.description);
         // if instructor don't update new course , program will use old data
         setCourseIdUpdate(data.course_id)
         setLoading(false);
@@ -61,7 +58,7 @@ const CreateUpdateSession = () => {
           "searchCondition": {
             "keyword": "",
             "category": "",
-            "status": "new",
+            "status": "",
             "is_deleted": false
           },
           "pageInfo": {
@@ -79,20 +76,20 @@ const CreateUpdateSession = () => {
 
 
   const onFinish = async (values: Session) => {
-    values.description = content;
+    console.log("values: ", values);
     // setLoading(true);
-    // update session component for manga sessions and manage all sessions
+    // update session component for manage sessions and manage all sessions
     if (sessionId) {
       try {
-        const updatess = await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`,
+        const res = await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`,
           {
             "name": values.name,
             "course_id": courseIdUpdate,
-            "description": des,
+            "description": values.description,
             "position_order": 3
           }
         )
-        console.log("check update: ", updatess);
+        console.log("check update: ", res);
         message.success("Update Session Successfully!")
       } catch (error) {
         //
@@ -105,16 +102,18 @@ const CreateUpdateSession = () => {
         navigate(`/instructor/manage-all-sessions`);
       }
     } else {
-      // create session component for manga sessions and manage all sessions
+      // create session component for manage sessions and manage all sessions
       try {
         // manage course -> manage session
-        if (!courseId) {
-          setCourseIdUpdate(values.course_id)
-        }
+        // if (courseId) {
+        //   setCourseIdUpdate(courseId)
+        // }else{     // manage-all-session
+        //   setCourseIdUpdate(values.course_id)
+        // }
         await axiosInstance.post(`${API_CREATE_SESSION}`, {
           "name": values.name,
           "course_id": courseIdUpdate,
-          "description": des,
+          "description": values.description,
           "position_order": 1
         });
         message.success("Create Session Successfully!")
@@ -133,13 +132,9 @@ const CreateUpdateSession = () => {
   };
 
   const handleChange = (value: string) => {
-    console.log("check courseIdUpdate: ", value);
     setCourseIdUpdate(value);
   };
 
-  const handleEditorChange = (value: string) => {
-    setDes(value);
-  };
   return (
     <div className="flex justify-center items-center h-full mt-10">
       {loading ? (
@@ -153,14 +148,7 @@ const CreateUpdateSession = () => {
             <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Please input title!' }]}>
               <Input />
             </Form.Item>
-
-            <Form.Item
-              label="Description"
-              name="description"
-            >
-              <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
-            </Form.Item>
-
+            <DescriptionFormItem />
             {
               //  create and update session in manage all session
               !courseId &&
@@ -168,6 +156,8 @@ const CreateUpdateSession = () => {
                 <Select
                   defaultValue={"Choose course name"}
                   onChange={handleChange}
+                  // loading={loading}
+                  notFoundContent={loading ? <Spin size="small" /> : null}
                   options={courses.map(course => (
                     {
                       value: course._id, label: course.name
@@ -195,8 +185,13 @@ const CreateUpdateSession = () => {
               </Form.Item>
             }
 
+            {courseId &&
+              <Form.Item label="Course name" initialValue={courseId} hidden name="course_id" rules={[{ required: true, message: 'Please input course!' }]}>
+                <Input />
+              </Form.Item>
+            }
             <Form.Item wrapperCol={{ span: 24, offset: 6 }}>
-              <Button type="primary" htmlType="submit" loading={loading}>
+              <Button className="float-right" type="primary" htmlType="submit" loading={loading}>
                 Submit
               </Button>
             </Form.Item>

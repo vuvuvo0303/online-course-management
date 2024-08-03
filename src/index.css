@@ -15,10 +15,14 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 1.5rem;
+  height: 100%;
+  margin: 0;
 }
 
 body {
   font-family: "Inter", sans-serif;
+  height: 100%;
+  margin: 0;
 }
 
 h1 {
@@ -155,6 +159,9 @@ h1 {
 }
 
 /* Footer */
+.footer {
+  margin-top: auto;
+}
 
 .footer {
   @apply flex-col paddings w-full gap-20 bg-light-white;
@@ -233,4 +240,11 @@ h1 {
 /*Login*/
 .shadow-left {
   box-shadow: -10px 0px 20px -5px rgba(214, 232, 77, 0.4);
+}
+
+/* Đảm bảo nội dung chiếm toàn bộ chiều cao còn lại */
+.main-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }

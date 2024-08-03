@@ -116,11 +116,9 @@ const AllCourses: React.FC = () => {
             </div>
             <div className="flex flex-wrap -m-2 px-[10rem] mt-10">
                 {loading && initialLoad ? (
-                    Array.from({ length: pagination.pageSize }).map((_, index) => (
-                        <div key={index} className="w-full md:w-1/2 lg:w-1/3 p-2">
-                            <Skeleton active />
-                        </div>
-                    ))
+                    <div className="w-full md:w-1/2 lg:w-1/3 p-2">
+                        <Skeleton active />
+                    </div>
                 ) : (
                     courses.map((course) => (
                         <CourseCard key={course._id} course={course} />
