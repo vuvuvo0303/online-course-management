@@ -18,7 +18,7 @@ export { default as Enrollment } from "./enrollment/index";
 export { default as SiteMap } from "./sitemap";
 export { default as NotFound } from "./notfound";
 export { default as BecomeInstructorPage } from "./teaching";
-export { default as CoursesCategory } from "./courses";
+export { default as CoursesCategory } from "./course-by-category";
 export { default as ForgotPassword } from "./forgot-password";
 export { default as InternalServerError } from "./internal-server-error"
 export { default as VerifyToken } from "./verify-token";

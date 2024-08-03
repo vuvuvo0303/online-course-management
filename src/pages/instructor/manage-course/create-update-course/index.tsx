@@ -5,7 +5,7 @@ import { Button, Form, Image, Input, message, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { getCategories, axiosInstance } from "../../../../services";
-import { TinyMCEEditorComponent, LoadingComponent, CustomBreadcrumb } from "../../../../components";
+import { LoadingComponent, CustomBreadcrumb, TinyMCEEditorComponent } from "../../../../components";
 import { formItemLayout } from "../../../../layout/form";
 
 import type { GetProp, UploadFile, UploadProps } from "antd";
@@ -20,7 +20,7 @@ const InstructorCreateCourse: React.FC = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const {  _id } = useParams<{ _id: string; id: string }>();
+  const { _id } = useParams<{ _id: string; id: string }>();
   const [form] = useForm();
   const token = localStorage.getItem("token");
   const [content, setContent] = useState<string>("Enter something here");
@@ -75,10 +75,11 @@ const InstructorCreateCourse: React.FC = () => {
           setContent(data.content);
         }
         setLoading(false);
+
       } catch (error) {
-        console.log("Error occurred: ", error);
+        console.log(error)
       }
-    };
+    }
     if (_id) {
       fetchCourse();
     }
@@ -186,11 +187,11 @@ const InstructorCreateCourse: React.FC = () => {
             <Form.Item
               label="Content"
               name="content"
-              rules={[{ required: false, message: "Please input course content!"}]}
+              rules={[{ required: false, message: "Please input course content!" }]}
             >
               <TinyMCEEditorComponent value={content}
-              onEditorChange={handleEditorChange}
-               />
+                onEditorChange={handleEditorChange}
+              />
             </Form.Item>
           )}
           <Form.Item
@@ -206,7 +207,7 @@ const InstructorCreateCourse: React.FC = () => {
           >
             <Input />
           </Form.Item>
-          { 
+          {
             !_id && (
               <Form.Item label="Image (optional)" name="image_url">
                 <Upload

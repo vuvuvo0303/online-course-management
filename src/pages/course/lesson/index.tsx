@@ -30,12 +30,18 @@ const Lesson: React.FC = () => {
                 setLoading(true);
                 const response = await axiosInstance.get(`${API_CLIENT_GET_COURSE_DETAIL}/${_id}`);
                 setCourse(response.data);
-                setCurrentSessionIndex(0);
-                setCurrentLessonIndex(0);
+
+                if (response.data.session_list.length > 0 && response.data.session_list[0].lesson_list.length > 0) {
+                    const firstLesson = response.data.session_list[0].lesson_list[0];
+                    setCurrentSessionIndex(0);
+                    setCurrentLessonIndex(0);
+                    fetchLesson(firstLesson._id);
+                }
             } catch (error) {
                 setError('Failed to load course details.');
             } finally {
                 setLoading(false);
+                setFirstLoad(false);
             }
         };
 
@@ -51,7 +57,6 @@ const Lesson: React.FC = () => {
             setError('Failed to load lesson details.');
         } finally {
             setLoading(false);
-            setFirstLoad(false);
         }
     };
 
@@ -186,7 +191,7 @@ const Lesson: React.FC = () => {
                 <h1 className="text-[1.1rem] font-bold ml-[2rem]">{course?.name}</h1>
                 {isMobile && <Button type="primary" onClick={showDrawer} className="left-[160px]">Course Content</Button>}
             </div>
-            <div className="flex flex-1">
+            <div className="flex flex-1 mt-[72px]"> {/* Add margin-top to account for header height */}
                 <div className={`p-6 bg-white overflow-auto ${isMobile ? 'w-full' : 'w-3/4'}`} style={{ height: 'calc(100vh - 112px)' }}>
                     {loading ? (
                         firstLoad ? (
@@ -201,7 +206,7 @@ const Lesson: React.FC = () => {
                     ) : (
                         <>
                             {renderSelectedLesson()}
-                            <h2 className="text-xl font-semibold">{selectedLesson?.name || 'Select a lesson to view the details'}</h2>
+                            {/* <h2 className="text-xl font-semibold">{selectedLesson?.name || 'Select a lesson to view the details'}</h2> */}
                             <p>{selectedLesson?.description}</p>
                             {error && <p className="text-red-500">{error}</p>}
                         </>

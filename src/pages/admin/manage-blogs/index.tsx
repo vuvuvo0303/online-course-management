@@ -16,7 +16,7 @@ import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
 import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog, getBlogs } from "../../../services";
 import { API_CREATE_BLOG, API_UPDATE_BLOG, API_GET_BLOG } from "../../../consts";
-import { CustomBreadcrumb, DescriptionFormItem, LoadingComponent, TinyMCEEditorComponent, UploadButton } from "../../../components";
+import { ContentFormItem, CustomBreadcrumb, DescriptionFormItem, LoadingComponent, UploadButton } from "../../../components";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { formatDate, getBase64, uploadFile } from "../../../utils";
 
@@ -92,7 +92,7 @@ const AdminManageBlogs: React.FC = () => {
       form.setFieldsValue({
         name: blogData.name,
         category_id: blogData.category_id,
-        image_url: blogData.image_url, // Hiển thị URL trong form
+        image_url: blogData.image_url,
         description: blogData.description,
         content: blogData.content,
       });
@@ -122,10 +122,10 @@ const AdminManageBlogs: React.FC = () => {
       const file = fileList[0];
       if (file.originFileObj) {
         avatarUrl = await uploadFile(file.originFileObj as File);
+      } else if (file.url) {
+        avatarUrl = file.url;
       }
     }
-
-
     const user = getUserFromLocalStorage();
     const payload = { ...values, content, user_id: user._id, image_url: avatarUrl };
 
@@ -316,13 +316,7 @@ const AdminManageBlogs: React.FC = () => {
             </Upload>
           </Form.Item>
           <DescriptionFormItem />
-          <Form.Item
-            name="content"
-            label="Content"
-            rules={[{ required: true, message: "Please input the blog content!" }]}
-          >
-            <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
-          </Form.Item>
+          <ContentFormItem value={content} onEditorChange={handleEditorChange} />
           <Form.Item>
             <div className="flex justify-end">
               <Button onClick={handleCancelModal}>Cancel</Button>
