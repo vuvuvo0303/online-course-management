@@ -40,7 +40,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                                 <Link to={`/instructor/learn/course/${course._id}`}>
                                     <Button type="primary" className="w-32 h-10"><ArrowRightOutlined />Go to course</Button>
                                 </Link> :
-                                <Link to={`/course/all-courses/course/${course._id}`}>
+                                <Link to={`/course/all-courses/${course._id}`}>
                                     <Button type="primary" className="w-32 h-10"><ArrowRightOutlined />Go to course</Button>
                                 </Link>
                             }
