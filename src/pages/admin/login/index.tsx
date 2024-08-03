@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { Form, FormProps, message } from 'antd';
+import { Form, FormProps, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import Login from "../../../assets/Login.png";
 import { paths } from "../../../consts";
 import { getCurrentLoginUser, login } from "../../../services";
-import { EmailFormItem, LoginButtonItem, PasswordFormItem } from "../../../components";
+import {
+  EmailFormItem,
+  LoginButtonItem,
+  PasswordFormItem,
+} from "../../../components";
 import { LoginFieldType } from "../../../models/Auth";
 
 const AdminLoginPage: React.FC = () => {
@@ -29,13 +33,17 @@ const AdminLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-[#a7e05f] to-[#12ab97]">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-[#ccffaa] to-[#bfffc7]">
       <div className="flex w-10/12 max-w-5xl rounded-lg shadow-lg overflow-hidden">
         <div className="w-full md:w-4/10 flex flex-col justify-center bg-white p-8 md:p-16">
           <div className="flex justify-center items-center">
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">Welcome back, Admin!</h1>
+            <h1 className="text-3xl md:text-5xl font-bold mb-4">
+              Welcome back, Admin!
+            </h1>
           </div>
-          <span className="flex justify-center mb-4">Log in to manage FLearn</span>
+          <span className="flex justify-center mb-4">
+            Log in to manage FLearn
+          </span>
           <Form
             name="basic"
             className="space-y-4 w-full"
@@ -48,7 +56,10 @@ const AdminLoginPage: React.FC = () => {
             <LoginButtonItem loading={loading} />
           </Form>
         </div>
-        <div className="hidden md:flex w-6/10 items-center justify-center bg-gradient-to-r from-[#a7e05f] to-[#12ab97]">
+        <div
+          className="hidden md:flex w-6/10 items-center justify-center bg-gradient-to-r from-[#a7e05f] to-[#12ab97]"
+          style={{ width: "100%", height: "560px" }}
+        >
           <img
             className="w-full h-full object-cover"
             src={Login}
