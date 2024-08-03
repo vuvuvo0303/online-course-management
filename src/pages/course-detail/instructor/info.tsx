@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Instructor } from '../../../models'; // Import the Course type
-import { axiosInstance, getUserDetail } from '../../../services';
+import { axiosInstance, getUserDetail, subscriptionByInstructorOrStudent } from '../../../services';
 import { API_CLIENT_GET_COURSE_DETAIL } from '../../../consts';
 import { useParams } from 'react-router-dom';
 import { formatDate, upperCaseFirstLetter } from '../../../utils';
+import { Link } from 'react-router-dom';
 
 const Info = () => {
     const [subscribed, setSubscribed] = useState(false);
@@ -13,16 +14,26 @@ const Info = () => {
     const course_id = useParams()._id;
 
     useEffect(() => {
-        const fetchData = async () => {
-            const instructorId = await getInstructorId();
-            const responseInstructor = await getUserDetail(instructorId);
-            const instructorInfo = responseInstructor.data;
-            setDataInstructor(instructorInfo);
-        }
         fetchData();
     }, [])
 
-    const handleClick = () => {
+    const fetchData = async () => {
+        const instructorId = await getInstructorId();
+        const responseInstructor = await getUserDetail(instructorId);
+        const instructorInfo = responseInstructor.data;
+        setDataInstructor(instructorInfo);
+    }
+
+    const handleClick = async () => {
+        const response = await subscriptionByInstructorOrStudent(dataInstructor?._id);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        if (response.is_subscribed) {
+            message.success(`Subscribed to ${dataInstructor?.name}`);
+        }
+        else {
+            message.success(`Unsubscribed to ${dataInstructor?.name}`);
+        }
         setSubscribed(!subscribed);
     };
 
@@ -55,12 +66,14 @@ const Info = () => {
                         className="rounded-full w-20 h-20 mr-4"
                     />
                     <div>
-                        <h3 className="text-xl font-bold">{dataInstructor?.name}</h3>
+                        <Link to={`/user/${dataInstructor?._id}`}>
+                            <h3 className="text-xl font-bold">{dataInstructor?.name}</h3>
+                        </Link>
                         <p>Date of Birth: {formatDate(dataInstructor?.dob)}</p>
                         <p>Create Date: {formatDate(dataInstructor?.created_at)}</p>
                     </div>
                 </div>
-                <p className="mb-6 text-gray-700">
+                <p className="mb-6 text-xl text-gray-700">
                     {dataInstructor?.description}
                 </p>
             </div>

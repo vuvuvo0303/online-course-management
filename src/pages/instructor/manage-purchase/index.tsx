@@ -240,6 +240,14 @@ const InstructorManagePurchase = () => {
     <div className="container mx-auto px-10">
       <CustomBreadcrumb />
       <div className="flex justify-between mb-5">
+        <Input.Search
+          placeholder="Search By Purchase No"
+          value={searchPurchase}
+          onChange={(e) => setSearchPurchase(e.target.value)}
+          className=" "
+          style={{ width: 250 }}
+          enterButton={<SearchOutlined className="text-white" />}
+        />
         <div>
           {statusPurchase === "new" && (
             <>
@@ -253,14 +261,6 @@ const InstructorManagePurchase = () => {
             </>
           )}
         </div>
-        <Input.Search
-          placeholder="Search By Purchase No"
-          value={searchPurchase}
-          onChange={(e) => setSearchPurchase(e.target.value)}
-          className=" "
-          style={{ width: 250 }}
-          enterButton={<SearchOutlined className="text-white" />}
-        />
       </div>
       <Tabs defaultActiveKey={statusPurchase} items={items} onChange={onChangeStatus} />
       {statusPurchase === "new" ? (

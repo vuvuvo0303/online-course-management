@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance.ts";
 import { API_RESEND_TOKEN, API_VERIFY_TOKEN, paths } from "../../consts";
 import ResponseData from '../../models/ResponseData.ts';
+import { EmailFormItem } from '../../components';
 
 const VerifyToken: React.FC = () => {
     const params = useParams();
@@ -52,7 +53,7 @@ const VerifyToken: React.FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: 'url(/l2.jpg)' }}>
-            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
                 <h1 className="text-2xl font-semibold text-center mb-6">Verify Email</h1>
                 {!tokenExpired ? (
                     <div className="mb-5 text-center">
@@ -63,26 +64,15 @@ const VerifyToken: React.FC = () => {
                             <div className="flex flex-col items-center">
                                 <p className="text-red-500 mb-3">Your token has expired. Do you want to resend a new token?</p>
                                 <Form layout="vertical" onFinish={handleResendToken} className="w-full">
-                                    <Form.Item
-                                        name="email"
-                                        rules={[
-                                            { required: true, message: 'Please input your email!' },
-                                            { type: 'email', message: 'Please enter a valid email!' }
-                                        ]}
-                                    >
-                                        <Input
-                                            placeholder="Enter Your Email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full"
-                                        />
-                                    </Form.Item>
+                                    <div className='mb-3'>
+                                        <EmailFormItem value={email} onChange={(e) => setEmail(e.target.value)} />
+                                    </div>
                                     <Form.Item>
                                         <Button
                                             type="primary"
                                             htmlType="submit"
                                             loading={isLoadingResend}
-                                            className="w-full"
+                                            className="w-full py-5 mt-3"
                                         >
                                             {isLoadingResend ? "Resending..." : "Resend Token"}
                                         </Button>

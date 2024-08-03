@@ -16,7 +16,7 @@ import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
 import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog, getBlogs } from "../../../services";
 import { API_CREATE_BLOG, API_UPDATE_BLOG, API_GET_BLOG } from "../../../consts";
-import { CustomBreadcrumb, LoadingComponent, TinyMCEEditorComponent, UploadButton } from "../../../components";
+import { ContentFormItem, CustomBreadcrumb, DescriptionFormItem, LoadingComponent, UploadButton } from "../../../components";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { formatDate, getBase64, uploadFile } from "../../../utils";
 
@@ -39,7 +39,6 @@ const AdminManageBlogs: React.FC = () => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
     }
-
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
   };
@@ -62,15 +61,18 @@ const AdminManageBlogs: React.FC = () => {
 
   const fetchBlogs = async () => {
     setLoading(true);
-    const responseBlog = await getBlogs("", false, pagination.current, pagination.pageSize);
-    setDataBlogs(responseBlog.data.pageData);
-    setPagination({
-      ...pagination,
-      total: responseBlog.data.pageInfo.totalItems,
-      current: responseBlog.data.pageInfo.pageNum,
-      pageSize: responseBlog.data.pageInfo.pageSize,
-    });
-    setLoading(false);
+    try {
+      const responseBlog = await getBlogs("", false, pagination.current, pagination.pageSize);
+      setDataBlogs(responseBlog.data.pageData);
+      setPagination({
+        ...pagination,
+        total: responseBlog.data.pageInfo.totalItems,
+        current: responseBlog.data.pageInfo.pageNum,
+        pageSize: responseBlog.data.pageInfo.pageSize,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEditorChange = (value: string) => {
@@ -90,7 +92,7 @@ const AdminManageBlogs: React.FC = () => {
       form.setFieldsValue({
         name: blogData.name,
         category_id: blogData.category_id,
-        image_url: blogData.image_url, // Hiển thị URL trong form
+        image_url: blogData.image_url,
         description: blogData.description,
         content: blogData.content,
       });
@@ -109,8 +111,6 @@ const AdminManageBlogs: React.FC = () => {
       } else {
         setFileList([]);
       }
-    } catch (error) {
-      console.error("Error fetching blog data:", error);
     } finally {
       setLoading(false);
     }
@@ -122,10 +122,10 @@ const AdminManageBlogs: React.FC = () => {
       const file = fileList[0];
       if (file.originFileObj) {
         avatarUrl = await uploadFile(file.originFileObj as File);
+      } else if (file.url) {
+        avatarUrl = file.url;
       }
     }
-
-
     const user = getUserFromLocalStorage();
     const payload = { ...values, content, user_id: user._id, image_url: avatarUrl };
 
@@ -315,20 +315,8 @@ const AdminManageBlogs: React.FC = () => {
               {fileList.length >= 1 ? null : <UploadButton />}
             </Upload>
           </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true, message: "Please input the blog description!" }]}
-          >
-            <Input.TextArea maxLength={250} showCount />
-          </Form.Item>
-          <Form.Item
-            name="content"
-            label="Content"
-            rules={[{ required: true, message: "Please input the blog content!" }]}
-          >
-            <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
-          </Form.Item>
+          <DescriptionFormItem />
+          <ContentFormItem value={content} onEditorChange={handleEditorChange} />
           <Form.Item>
             <div className="flex justify-end">
               <Button onClick={handleCancelModal}>Cancel</Button>

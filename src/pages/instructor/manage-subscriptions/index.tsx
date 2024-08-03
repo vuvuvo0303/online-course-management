@@ -51,7 +51,7 @@ const InstructorManageSubscriptions = () => {
       }
     };
     fetchSubscriptions();
-  }, [debouncedSearchTerm, selectedTab, apiLink,pagination.current, pagination.pageSize]);
+  }, [debouncedSearchTerm, selectedTab, apiLink, pagination.current, pagination.pageSize]);
 
   //search student by student name
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,11 +87,12 @@ const InstructorManageSubscriptions = () => {
       label: "Subscriber",
     },
   ];
+
   const columns: TableProps<Subscription>["columns"] = [
     {
-      title: "Subscriber Name",
-      dataIndex: "subscriber_name",
-      key: "subscriber_name",
+      title: "Instructor Name",
+      dataIndex: "instructor_name",
+      key: "instructor_name",
     },
     {
       title: "Status",
@@ -135,7 +136,7 @@ const InstructorManageSubscriptions = () => {
   return (
     <>
       <CustomBreadcrumb />
-      <Tabs defaultActiveKey="subscription" items={items} onChange={onChange} />
+      <Tabs defaultActiveKey={selectedTab} items={items} onChange={onChange} />
       <Input.Search
         placeholder="Search"
         value={keyword}

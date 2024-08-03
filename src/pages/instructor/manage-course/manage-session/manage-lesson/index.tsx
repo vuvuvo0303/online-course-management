@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import {  Button, Image, Input, message, Modal, Select, Table, TableProps, Tag, } from "antd";
+import { Button, Image, Input, message, Modal, Select, Table, TableProps, Tag, } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models/index.ts";
@@ -213,12 +213,12 @@ const LectureOfCourse: React.FC = () => {
         //     )
         // },
         //   {
-    {
-      title: "Image",
-      dataIndex: "image_url",
-      key: "image_url",
-      render: (image_url: string) => <Image src={image_url} />,
-    },
+        {
+            title: "Image",
+            dataIndex: "image_url",
+            key: "image_url",
+            render: (image_url: string) => <Image src={image_url} />,
+        },
         {
             title: 'Lesson type',
             dataIndex: 'lesson_type',
@@ -310,9 +310,9 @@ const LectureOfCourse: React.FC = () => {
                             <CustomBreadcrumb />
                         )
                     }
-                    <div className="grid grid-cols-2">
+                    <div className="flex justify-between gap-20">
 
-                        <div className="grid xl:grid-cols-4 lg:grid-cols-2 grid-cols-1 gap-20">
+                        <div className="grid 2xl:grid-cols-4 lg:grid-cols-2 grid-cols-1 gap-20">
                             {/* filter lesson by course */}
                             {
                                 !courseId && (

@@ -1,11 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Rate, Progress, Input, Button, Modal, Form, message } from 'antd';
+import { Rate, Progress, Button, Modal, Form, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { API_CREATE_REVIEW } from "../../../consts";
 import { Review } from "../../../models";
 import { useParams } from 'react-router-dom';
 import { calculateAverageRating, countRatings } from '../../../utils';
 import { getAllReviews, axiosInstance } from '../../../services';
+import { CommentFormItem, RatingFormItem } from '../../../components';
 
 const ReviewPage: React.FC = () => {
     const [dataReviews, setDataReviews] = useState<Review[]>([]);
@@ -18,36 +19,39 @@ const ReviewPage: React.FC = () => {
 
     useEffect(() => {
         fetchReviews();
-        setAverageRating(calculateAverageRating(dataReviews));
-        setRatingCounts(countRatings(dataReviews));
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (dataReviews.length > 0) {
             setAverageRating(calculateAverageRating(dataReviews));
             setRatingCounts(countRatings(dataReviews));
+        } else {
+            setAverageRating(0);
+            setRatingCounts([0, 0, 0, 0, 0]);
         }
     }, [dataReviews]);
 
     const fetchReviews = useCallback(async () => {
-        const responseReviews = await getAllReviews();
+        const responseReviews = await getAllReviews(course_id);
         const reviews = responseReviews.data.pageData;
         setDataReviews(reviews);
-    }, [])
+    }, [course_id]);
 
     const handleAddNewReview = async (values: Review) => {
-        const payload = { ...values, course_id }
+        const payload = { ...values, course_id };
         setLoading(true);
-        const response = await axiosInstance.post(API_CREATE_REVIEW, payload);
-        if (response.data) {
-            setIsModalVisible(false);
-            form.resetFields();
-            fetchReviews();
-            message.success('Review added successfully.');
+        try {
+            const response = await axiosInstance.post(API_CREATE_REVIEW, payload);
+            if (response.data) {
+                setIsModalVisible(false);
+                form.resetFields();
+                fetchReviews();
+                message.success('Review added successfully.');
+            }
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
-    }
-
+    };
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -67,14 +71,14 @@ const ReviewPage: React.FC = () => {
                 <h2 className="text-xl mb-4">Student Feedback</h2>
                 <div className="flex items-center mb-4">
                     <span className="text-3xl mr-2">{averageRating}</span>
-                    <Rate allowHalf defaultValue={averageRating} disabled />
+                    <Rate allowHalf value={averageRating} disabled />
                     <span className="ml-4">Course Rating</span>
                 </div>
                 <div>
                     {ratingCounts.map((count, index) => (
                         <div className="flex items-center mb-2" key={index}>
                             <Progress
-                                percent={(count / dataReviews.length) * 100}
+                                percent={dataReviews.length > 0 ? Math.round((count / dataReviews.length) * 100) : 0}
                                 showInfo={false}
                                 strokeColor="#ff4d4f"
                                 trailColor="lightgray"
@@ -83,10 +87,10 @@ const ReviewPage: React.FC = () => {
                             <Rate
                                 className="ml-4"
                                 disabled
-                                defaultValue={5 - index}
+                                value={5 - index}
                                 count={5}
                             />
-                            <span className="ml-2">{((count / dataReviews.length) * 100).toFixed(1)}%</span>
+                            <span className="ml-2">{dataReviews.length > 0 ? Math.round((count / dataReviews.length) * 100) : 0}%</span>
                         </div>
                     ))}
                 </div>
@@ -114,7 +118,7 @@ const ReviewPage: React.FC = () => {
                             </div>
                             <Rate
                                 allowHalf
-                                defaultValue={review.rating}
+                                value={review.rating}
                                 disabled
                                 className="mb-2"
                             />
@@ -130,20 +134,9 @@ const ReviewPage: React.FC = () => {
                 footer={null}
             >
                 <Form form={form} onFinish={handleAddReview}>
-                    <Form.Item
-                        name="rating"
-                        label="Rating"
-                        rules={[{ required: true, message: 'Please provide a rating' }]}
-                    >
-                        <Rate allowHalf />
-                    </Form.Item>
-                    <Form.Item
-                        name="comment"
-                        label="Comment"
-                        rules={[{ required: true, message: 'Please provide a review' }]}
-                    >
-                        <Input.TextArea rows={4} />
-                    </Form.Item>
+
+                    <RatingFormItem />
+                    <CommentFormItem />
                     <Form.Item>
                         <Button type="default" onClick={handleCancel} className='border-none'>
                             Cancel

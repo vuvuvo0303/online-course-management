@@ -5,15 +5,12 @@ import { Button, Form, Image, Input, message, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { getCategories, axiosInstance } from "../../../../services";
-import { TinyMCEEditorComponent, LoadingComponent, CustomBreadcrumb } from "../../../../components";
+import { LoadingComponent, CustomBreadcrumb, ContentFormItem, UploadButton } from "../../../../components";
 import { formItemLayout } from "../../../../layout/form";
-import LoadingComponent from "../../../../components/loading";
-import CustomBreadcrumb from "../../../../components/breadcrumb/index.tsx";
 
 
 import type { GetProp, UploadFile, UploadProps } from 'antd';
-import { PlusOutlined } from "@ant-design/icons";
-import uploadFile from "../../../../utils/upload.ts";
+import { getBase64, uploadFile } from "../../../../utils";
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -27,39 +24,24 @@ const InstructorCreateCourse: React.FC = () => {
   const token = localStorage.getItem("token");
   const [content, setContent] = useState<string>("Enter something here");
 
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [fileList, setFileList] = useState<UploadFile[]>([
 
-  const getBase64 = (file: FileType): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
+  ]);
 
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState('');
-    const [fileList, setFileList] = useState<UploadFile[]>([
-      
-    ]);
-  
-    const handlePreview = async (file: UploadFile) => {
-      if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj as FileType);
-      }
-  
-      setPreviewImage(file.url || (file.preview as string));
-      setPreviewOpen(true);
-    };
-  
-    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
-      setFileList(newFileList);
-  
-    const uploadButton = (
-      <button style={{ border: 0, background: 'none' }} type="button">
-        <PlusOutlined />
-        <div style={{ marginTop: 8 }}>Upload</div>
-      </button>
-    );
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as FileType);
+    }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+  };
+
+  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
+    setFileList(newFileList);
+
   // Fetch course
   useEffect(() => {
     const fetchCourse = async () => {
@@ -81,9 +63,9 @@ const InstructorCreateCourse: React.FC = () => {
           setContent(data.description);
         }
 
+      } finally {
         setLoading(false);
-      } catch (error) {
-        console.log("Error occurred: ", error);
+
       }
     };
     if (_id) {
@@ -134,7 +116,7 @@ const InstructorCreateCourse: React.FC = () => {
       } else {
         values.description = des;
       }
-  
+
       // Check and upload new image if exists
       let imageUrl: string = "";
       if (fileList.length > 0) {
@@ -144,7 +126,7 @@ const InstructorCreateCourse: React.FC = () => {
         }
       }
       values.image_url = imageUrl || values.image_url; // Use new image URL if uploaded, otherwise use the existing one
-  
+
       // Update Course
       if (_id) {
         await axiosInstance.put<Course>(`${API_UPDATE_COURSE}/${_id}`, values);
@@ -166,9 +148,10 @@ const InstructorCreateCourse: React.FC = () => {
       setLoading(false);
     }
   };
-  
+
   const handleEditorChange = (value: string) => {
     setDes(value);
+    form.setFieldsValue({ content: value });
   };
 
   return (
@@ -198,9 +181,7 @@ const InstructorCreateCourse: React.FC = () => {
             <Input.TextArea />
           </Form.Item>
           {!_id && (
-            <Form.Item label="Content" name="content" rules={[{ required: false, message: "Please input!" }]}>
-              <TinyMCEEditorComponent value={content} onEditorChange={handleEditorChange} />
-            </Form.Item>
+            <ContentFormItem value={content} onEditorChange={handleEditorChange} />
           )}
           <Form.Item
             label="Video_url"
@@ -219,23 +200,23 @@ const InstructorCreateCourse: React.FC = () => {
             <Form.Item
               label="Image_url"
               name="image_url"
-              // rules={[
-              //     {
-              //         validator: (_, value) =>
-              //             !value || isValidHttpUrl(value)
-              //                 ? Promise.resolve() : Promise.reject(new Error('This is not a valid image URL')),
+            // rules={[
+            //     {
+            //         validator: (_, value) =>
+            //             !value || isValidHttpUrl(value)
+            //                 ? Promise.resolve() : Promise.reject(new Error('This is not a valid image URL')),
 
-              //     }
-              // ]}
+            //     }
+            // ]}
             >
               <Upload
                 action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                 listType="picture-card"
-                fileList={fileList}       
+                fileList={fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
               >
-                {fileList.length >= 1 ? null : uploadButton}
+                {fileList.length >= 1 ? null : <UploadButton />}
               </Upload>
             </Form.Item>
           }

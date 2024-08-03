@@ -32,9 +32,7 @@ axiosInstance.interceptors.response.use(
   (response) => {
     console.log(response);
     if (response.status === 200 || response.status === 201) {
-      if (response.data.success) {
         return response.data;
-      }
     }
     return response;
   },
@@ -42,7 +40,7 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       const { data } = error.response;
       console.log(error.response);
-      if(data.message.length > 0) {
+      if(data.message !== null) {
         switch (error.response.status) {
           case 403: {
             if(!isTokenExpired){
@@ -92,4 +90,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export default axiosInstance

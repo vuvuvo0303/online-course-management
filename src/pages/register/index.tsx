@@ -1,15 +1,40 @@
-import { Button, Form, FormProps, Image, Input, message, Radio, Upload } from "antd";
+import {
+  Button,
+  Form,
+  FormProps,
+  Image,
+  Modal,
+  message,
+  Radio,
+  RadioChangeEvent,
+  Upload,
+} from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { useState, useEffect } from "react";
-import Login2 from "../../assets/Login2.jpg";
+import Register1 from "../../assets/Register1.jpg";
 import { useForm } from "antd/es/form/Form";
-import axiosInstance from "../../services/axiosInstance.ts";
+import { axiosInstance } from "../../services";
 import Recaptcha from "../register/reCaptcha.tsx";
-import { API_REGISTER, avatarUrlRules, descriptionRules, emailRules, nameRules, passwordRules, paths, phoneNumberRules, roleRules, roles, videoRules } from "../../consts";
+import {
+  API_REGISTER,
+  avatarUrlRules,
+  paths,
+  roleRules,
+  roles,
+} from "../../consts";
 import { Instructor } from "../../models";
 import { getBase64, uploadFile } from "../../utils";
-import { UploadButton } from "../../components";
+import {
+  DescriptionFormItem,
+  EmailFormItem,
+  NameFormItem,
+  PasswordFormItem,
+  PhoneNumberFormItem,
+  UploadButton,
+  VideoFormItem,
+} from "../../components";
+import { LeftOutlined } from "@ant-design/icons";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -17,10 +42,11 @@ const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [captchaVisible, setCaptchaVisible] = useState<boolean>(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const [role, setRole] = useState<string>("student");
+  const [role, setRole] = useState<string>(roles.STUDENT);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const [form] = useForm();
 
@@ -41,7 +67,7 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
-    if (values.role === "instructor" && fileList.length > 0) {
+    if (values.role === roles.INSTRUCTOR && fileList.length > 0) {
       const file = fileList[0].originFileObj as FileType;
       const url = await uploadFile(file);
       values.avatar = url;
@@ -67,62 +93,65 @@ const RegisterPage: React.FC = () => {
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
     setFileList(newFileList);
 
+  const handleRoleChange = (e: RadioChangeEvent) => {
+    const selectedRole = e.target.value;
+    setRole(selectedRole);
+    if (selectedRole === roles.INSTRUCTOR) {
+      setModalVisible(true);
+    } else {
+      setModalVisible(false);
+    }
+  };
+
+  const handleModalOk = async () => {
+    try {
+      await form.validateFields();
+      setModalVisible(false);
+    } catch (error) {
+      message.error("Please complete all required fields.");
+    }
+  };
+
+  const handleModalCancel = () => {
+    setModalVisible(false);
+  };
+
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#18a5a7] via-[#ffe998] to-[#ffb330] relative">
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#fffcce] to-[#1e5b53] relative">
+      <Button
+        type="link"
+        icon={<LeftOutlined />}
+        onClick={() => navigate(paths.HOME)}
+        className="absolute top-4 left-4 text-blue-500 bg-white bg-opacity-70 font-bold py-2 px-4 rounded-lg inline-flex items-center"
+      >
+        Home
+      </Button>
       <div className="w-full md:w-1/2 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[650px] mb-[30px] mt-[30px]">
         <div className="w-1/2 flex flex-col justify-center p-4 md:p-8 bg-white rounded-lg">
           <div className="flex flex-col items-center mb-4">
-            <h1 className="mb-2 text-2xl md:text-3xl font-bold text-center">
+            <h1 className="text-2xl md:text-3xl font-bold text-center">
               Register
             </h1>
           </div>
 
-          <span className="mb-4 text-center">
-            Learn from top experts. Sign up for FLearn now!
+          <span className="text-center mb-4" style={{ fontSize: "14px" }}>
+            Step into success with FLearn. Join us today!
           </span>
+
           <div className="mb-6">
             <div className="flex justify-center">
               <Form
                 form={form}
                 name="basic"
                 className="flex flex-col gap-1"
-                style={{ maxWidth: 600 }}
+                style={{ maxWidth: 500 }}
                 initialValues={{ remember: true, role }}
                 onFinish={onFinish}
                 autoComplete="off"
               >
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={emailRules}
-                  labelCol={{ span: 24 }}
-                  wrapperCol={{ span: 24 }}
-                  className="mb-3"
-                >
-                  <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                </Form.Item>
-
-                <Form.Item
-                  label="Name"
-                  name="name"
-                  rules={nameRules}
-                  labelCol={{ span: 24 }}
-                  wrapperCol={{ span: 24 }}
-                  className="mb-5"
-                >
-                  <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
-                </Form.Item>
-
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={passwordRules}
-                  labelCol={{ span: 24 }}
-                  wrapperCol={{ span: 24 }}
-                  className="mb-5"
-                >
-                  <Input.Password className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                </Form.Item>
+                <EmailFormItem />
+                <NameFormItem />
+                <PasswordFormItem />
 
                 <Form.Item
                   name="role"
@@ -131,63 +160,11 @@ const RegisterPage: React.FC = () => {
                   wrapperCol={{ span: 24 }}
                   className="mb-5"
                 >
-                  <Radio.Group onChange={(e) => setRole(e.target.value)}>
-                    <Radio value="student">Student</Radio>
-                    <Radio value="instructor">Instructor</Radio>
+                  <Radio.Group onChange={handleRoleChange}>
+                    <Radio value={roles.STUDENT}>Student</Radio>
+                    <Radio value={roles.INSTRUCTOR}>Instructor</Radio>
                   </Radio.Group>
                 </Form.Item>
-
-                {role === roles.INSTRUCTOR && (
-                  <>
-                    <Form.Item
-                      label="Video"
-                      name="video"
-                      rules={videoRules}
-                      labelCol={{ span: 24 }}
-                      wrapperCol={{ span: 24 }}
-                      className="mb-5"
-                    >
-                      <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
-                    </Form.Item>
-
-                    <Form.Item
-                      label="Description"
-                      name="description"
-                      rules={descriptionRules}
-                      labelCol={{ span: 24 }}
-                      wrapperCol={{ span: 24 }}
-                      className="mb-5"
-                    >
-                      <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
-                    </Form.Item>
-
-                    <Form.Item
-                      label="Phone Number"
-                      name="phone_number"
-                      rules={phoneNumberRules}
-                      labelCol={{ span: 24 }}
-                      wrapperCol={{ span: 24 }}
-                      className="mb-5"
-                    >
-                      <Input className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm " />
-                    </Form.Item>
-
-                    <Form.Item
-                      name="avatarUrl"
-                      rules={avatarUrlRules}
-                    >
-                      <Upload
-                        action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                        listType="picture-card"
-                        fileList={fileList}
-                        onPreview={handlePreview}
-                        onChange={handleChange}
-                      >
-                        {fileList.length >= 1 ? null : <UploadButton />}
-                      </Upload>
-                    </Form.Item>
-                  </>
-                )}
 
                 {captchaVisible && <Recaptcha onVerify={setCaptchaToken} />}
 
@@ -203,8 +180,10 @@ const RegisterPage: React.FC = () => {
                 </Form.Item>
               </Form>
             </div>
-            <span className="mt-4 block text-center">
-              Do you already have an account?{" "}
+            <span className="mt-2 block text-center">
+              Do you already have an account?
+            </span>
+            <span className="block text-center mt-1">
               <strong>
                 <Link
                   to={paths.LOGIN}
@@ -231,12 +210,53 @@ const RegisterPage: React.FC = () => {
         )}
         <div className="w-1/2 flex items-center justify-center">
           <img
-            src={Login2}
+            src={Register1}
             alt="Vector"
             className="object-cover w-full h-full"
           />
         </div>
       </div>
+
+      <Modal
+        title="Instructor Details"
+        visible={modalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+        footer={null}
+        width={800}
+      >
+        <Form
+          form={form}
+          name="instructorDetails"
+          className="flex flex-col gap-4"
+          initialValues={{ remember: true }}
+        >
+          <VideoFormItem />
+          <DescriptionFormItem />
+          <PhoneNumberFormItem />
+          <Form.Item name="avatarUrl" rules={avatarUrlRules}>
+            <Upload
+              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={handlePreview}
+              onChange={handleChange}
+            >
+              {fileList.length >= 1 ? null : <UploadButton />}
+            </Upload>
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={handleModalOk}
+              className="w-full shadow-xl hover:shadow-sky-600 bg-black"
+            >
+              Save
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

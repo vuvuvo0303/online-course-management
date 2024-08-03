@@ -19,8 +19,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
 import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { formatDate } from "../../../utils";
-import {reviewProfileInstructor} from "../../../services";
-const { TextArea } = Input;
+import { reviewProfileInstructor } from "../../../services";
 
 const AdminInstructorRequest = () => {
   const [dataSource, setDataSource] = useState<Instructor[]>([]);
@@ -48,24 +47,27 @@ const AdminInstructorRequest = () => {
 
   const getInstructorRequest = async () => {
     setLoading(true);
-    const responseInstructorRequest = await getUsers(debouncedSearch, roles.INSTRUCTOR, true, false, false, pagination.current, pagination.pageSize);
+    try {
+      const responseInstructorRequest = await getUsers(debouncedSearch, roles.INSTRUCTOR, true, false, false, pagination.current, pagination.pageSize);
 
-    if (responseInstructorRequest.data && responseInstructorRequest.data.pageData) {
-      const dataWithApprovalStatus = responseInstructorRequest.data.pageData.map((instructor: Instructor) => ({
-        ...instructor,
-        isApproved: instructor.is_verified,
-        isRejected: false,
-      }));
+      if (responseInstructorRequest.data && responseInstructorRequest.data.pageData) {
+        const dataWithApprovalStatus = responseInstructorRequest.data.pageData.map((instructor: Instructor) => ({
+          ...instructor,
+          isApproved: instructor.is_verified,
+          isRejected: false,
+        }));
 
-      setDataSource(dataWithApprovalStatus);
-      setPagination((prev) => ({
-        ...prev,
-        total: responseInstructorRequest.data.pageInfo?.totalItems || responseInstructorRequest.data.length,
-        current: responseInstructorRequest.data.pageInfo?.pageNum || 1,
-        pageSize: responseInstructorRequest.data.pageInfo?.pageSize || responseInstructorRequest.data.length,
-      }));
+        setDataSource(dataWithApprovalStatus);
+        setPagination((prev) => ({
+          ...prev,
+          total: responseInstructorRequest.data.pageInfo?.totalItems || responseInstructorRequest.data.length,
+          current: responseInstructorRequest.data.pageInfo?.pageNum || 1,
+          pageSize: responseInstructorRequest.data.pageInfo?.pageSize || responseInstructorRequest.data.length,
+        }));
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleApprove = async (record: Instructor) => {
@@ -147,6 +149,18 @@ const AdminInstructorRequest = () => {
       dataIndex: "email",
       key: "email",
       width: "20%",
+    },
+    {
+      title: 'Video',
+      dataIndex: 'video',
+      key: 'video',
+      width: '50%',
+      render: (video) => (
+        <video  controls>
+          <source src={video} type="video/mp4" />
+        
+        </video>
+      ),
     },
     {
       title: "Created Date",
@@ -244,7 +258,7 @@ const AdminInstructorRequest = () => {
         okText="Reject"
         okButtonProps={{ danger: true }}
       >
-        <TextArea
+        <Input.TextArea
           rows={4}
           value={rejectReason}
           onChange={(e) => setRejectReason(e.target.value)}

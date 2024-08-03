@@ -27,9 +27,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             try {
                 await addCourseToCart(course._id);
                 navigate(paths.STUDENT_CART);
-                message.success('Course added to cart!');
+                // message.success('Course added to cart!');
             } catch (error) {
-                message.error('Failed to add course to cart. Please try again.');
+                // message.error('Failed to add course to cart. Please try again.');
                 // Optionally navigate back or handle the error UI-wise
             } finally {
                 setLoading(false);

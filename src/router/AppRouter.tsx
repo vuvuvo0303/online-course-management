@@ -238,7 +238,21 @@ const AppRouter: React.FC = () => {
             path={paths.INSTRUCTOR_MANAGE_PAYOUTS}
             element={canAccess([roles.INSTRUCTOR]) ? <InstructorManagePayout /> : <Navigate to={paths.HOME} />}
           />
+          <Route
+            path={paths.INSTRUCTOR_LEARN_CART}
+            element={canAccess([roles.INSTRUCTOR]) ? <Cart/> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_LESSON}
+            element={canAccess([roles.INSTRUCTOR]) ? <Lesson/> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_CHECKOUT}
+            element={canAccess([roles.INSTRUCTOR]) ? <Checkout /> : <Navigate to={paths.HOME} />}
+          />
+
           <Route path="*" element={<NotFound />} />
+
         </Route>
 
         {/* Route for Admin */}
