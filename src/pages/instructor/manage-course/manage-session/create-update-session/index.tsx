@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Select, message } from "antd";
+import { Button, Form, Input, Select, message, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models";
 import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
@@ -58,7 +58,7 @@ const CreateUpdateSession = () => {
           "searchCondition": {
             "keyword": "",
             "category": "",
-            "status": "new",
+            "status": "",
             "is_deleted": false
           },
           "pageInfo": {
@@ -76,11 +76,12 @@ const CreateUpdateSession = () => {
 
 
   const onFinish = async (values: Session) => {
+    console.log("values: ", values);
     // setLoading(true);
-    // update session component for manga sessions and manage all sessions
+    // update session component for manage sessions and manage all sessions
     if (sessionId) {
       try {
-        const updatess = await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`,
+        const res = await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`,
           {
             "name": values.name,
             "course_id": courseIdUpdate,
@@ -88,7 +89,7 @@ const CreateUpdateSession = () => {
             "position_order": 3
           }
         )
-        console.log("check update: ", updatess);
+        console.log("check update: ", res);
         message.success("Update Session Successfully!")
       } catch (error) {
         //
@@ -101,12 +102,14 @@ const CreateUpdateSession = () => {
         navigate(`/instructor/manage-all-sessions`);
       }
     } else {
-      // create session component for manga sessions and manage all sessions
+      // create session component for manage sessions and manage all sessions
       try {
         // manage course -> manage session
-        if (!courseId) {
-          setCourseIdUpdate(values.course_id)
-        }
+        // if (courseId) {
+        //   setCourseIdUpdate(courseId)
+        // }else{     // manage-all-session
+        //   setCourseIdUpdate(values.course_id)
+        // }
         await axiosInstance.post(`${API_CREATE_SESSION}`, {
           "name": values.name,
           "course_id": courseIdUpdate,
@@ -146,7 +149,6 @@ const CreateUpdateSession = () => {
               <Input />
             </Form.Item>
             <DescriptionFormItem />
-
             {
               //  create and update session in manage all session
               !courseId &&
@@ -154,6 +156,8 @@ const CreateUpdateSession = () => {
                 <Select
                   defaultValue={"Choose course name"}
                   onChange={handleChange}
+                  // loading={loading}
+                  notFoundContent={loading ? <Spin size="small" /> : null}
                   options={courses.map(course => (
                     {
                       value: course._id, label: course.name
@@ -181,8 +185,13 @@ const CreateUpdateSession = () => {
               </Form.Item>
             }
 
+            {courseId &&
+              <Form.Item label="Course name" initialValue={courseId} hidden name="course_id" rules={[{ required: true, message: 'Please input course!' }]}>
+                <Input />
+              </Form.Item>
+            }
             <Form.Item wrapperCol={{ span: 24, offset: 6 }}>
-              <Button type="primary" htmlType="submit" loading={loading}>
+              <Button className="float-right" type="primary" htmlType="submit" loading={loading}>
                 Submit
               </Button>
             </Form.Item>

@@ -1,7 +1,7 @@
 import { Payout, Transaction } from "../../../models";
 import { useEffect, useState } from "react";
 import { getPayouts, updateStatusPayout } from "../../../services";
-import { format } from "date-fns";
+
 import {
   Table,
   TableProps,
@@ -81,7 +81,6 @@ const InstructorManagePayout = () => {
       });
       setLoading(false);
     } else {
-      setLoading(true);
       const response = await getPayouts(payoutNoSearch, "", statusPayout, true, false, 1, 10);
       setPayouts(response.data.pageData);
       setPagination({
@@ -95,6 +94,7 @@ const InstructorManagePayout = () => {
   };
 
   const handleRequestPayout = async (payout_id: string, status: string, comment: string) => {
+    setLoading(true);
     await updateStatusPayout(payout_id, status, comment);
     message.success(`Send Request Successfully!`);
     getPayoutsByInstructor();

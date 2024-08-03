@@ -39,7 +39,7 @@ const InstructorManagePurchase = () => {
   const [statusPurchase, setStatusPurchase] = useState<string>("new");
 
   const getPurchasesByInstructor = async () => {
-    setLoading(true);
+  
     const response = await getItemsByInstructor(purchaseNoSearch, "", "", statusPurchase, 1, 100);
     setPurchases(response.data.pageData);
     setPagination({
@@ -66,7 +66,7 @@ const InstructorManagePurchase = () => {
   const columns: TableProps<Purchase>["columns"] = [
     {
       render: (record: Purchase) =>
-        record.status === "new" ? (
+        record.status === "new" && record.price_paid != 0 ? (
           <Checkbox
             onChange={() => onChangeCheckbox(record)}
             checked={purchasesChecked.some((purchase) => purchase.purchase_id === record._id)}
@@ -171,10 +171,14 @@ const InstructorManagePurchase = () => {
   ];
 
   const handleCreatePayout = async () => {
+    setLoading(true);
     const res = await createPayout(instructor_id, purchasesChecked);
     console.log("res: ", res);
     if (res) {
       getPurchasesByInstructor();
+      setPurchasesChecked([]);// reset array
+    }else{
+      setLoading(false);
     }
   };
 
@@ -190,15 +194,18 @@ const InstructorManagePurchase = () => {
       // Nếu chưa được chọn, chọn nó
       newArray.push({ purchase_id: purchase._id });
     }
-
     setPurchasesChecked(newArray);
+    console.log("purchasesChecked:", purchasesChecked)
   };
 
   const handleCheckAllPurchased = () => {
+    // if all purchases checked
     if (purchasesChecked.length === purchases.length) {
       setPurchasesChecked([]);
     } else {
-      const allPurchasesChecked = purchases.map((purchase) => ({
+      const allPurchasesChecked = purchases
+      .filter(purchase => purchase.price_paid !== 0) // Choose purchaes have price paid != 0
+      .map(purchase => ({
         purchase_id: purchase._id,
       }));
       setPurchasesChecked(allPurchasesChecked);

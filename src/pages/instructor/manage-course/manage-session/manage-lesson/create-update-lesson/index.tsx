@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Select, message } from "antd";
+import { Button, Form, Input, Select, Spin, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Lessons, Session } from "../../../../../../models/index.ts";
 import { axiosInstance, getUserFromLocalStorage } from "../../../../../../services";
@@ -133,7 +133,7 @@ const CreateUpdateLesson: React.FC = () => {
     if (typeof values.position_order === "string") {
       values.position_order = parseFloat(values.position_order);
     }
-    values.description =  content;
+    values.description = content;
 
     setLoading(true);
     try {
@@ -187,7 +187,8 @@ const CreateUpdateLesson: React.FC = () => {
               >
                 <Select
                   onChange={handleChangeCourseId}
-                  defaultValue="Choose course for this lecture"
+                  notFoundContent={loading ? <Spin size="small" /> : null}
+                  defaultValue="Choose course for this lesson"
                   options={courses.map((course) => ({
                     label: course.name,
                     value: course._id,
@@ -209,7 +210,8 @@ const CreateUpdateLesson: React.FC = () => {
                 rules={[{ required: true, message: "Please session name!" }]}
               >
                 <Select
-                  defaultValue="Choose session for this lecture"
+                  notFoundContent={loading ? <Spin size="small" /> : null}
+                  defaultValue="Please select course before select session"
                   options={sessions.map((session) => ({
                     label: session.name,
                     value: session._id,
@@ -240,7 +242,7 @@ const CreateUpdateLesson: React.FC = () => {
               label="Description"
               name="description"
             >
-              <TextArea/>
+              <TextArea />
             </Form.Item>
 
             <Form.Item
@@ -272,7 +274,7 @@ const CreateUpdateLesson: React.FC = () => {
             </Form.Item>
 
             <Form.Item wrapperCol={{ span: 24, offset: 6 }}>
-              <Button type="primary" htmlType="submit" loading={loading}>
+              <Button className="float-right" type="primary" htmlType="submit" loading={loading}>
                 Submit
               </Button>
             </Form.Item>
