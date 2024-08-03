@@ -1,18 +1,16 @@
 import { Category, Course } from "../../../../models";
-import { API_CREATE_COURSE, API_GET_COURSE, API_UPDATE_COURSE } from "../../../../consts";
+import { API_GET_COURSE, API_UPDATE_COURSE } from "../../../../consts";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Form, Image, Input, message, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
-import { getCategories, axiosInstance } from "../../../../services";
-import { LoadingComponent, CustomBreadcrumb, TinyMCEEditorComponent } from "../../../../components";
-import { formItemLayout } from "../../../../layout/form";
-
+import { getCategories, axiosInstance, createCourseByInstructor } from "../../../../services";
+import { TinyMCEEditorComponent, LoadingComponent, CustomBreadcrumb } from "../../../../components";
+import { formItemLayout } from "../../../../layout/form"
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { uploadFile } from "../../../../utils";
 import TextArea from "antd/es/input/TextArea";
-
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const InstructorCreateCourse: React.FC = () => {
@@ -24,7 +22,6 @@ const InstructorCreateCourse: React.FC = () => {
   const [form] = useForm();
   const token = localStorage.getItem("token");
   const [content, setContent] = useState<string>("Enter something here");
-
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -32,7 +29,6 @@ const InstructorCreateCourse: React.FC = () => {
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = (error) => reject(error);
     });
-
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -54,7 +50,6 @@ const InstructorCreateCourse: React.FC = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
-
   useEffect(() => {
     const fetchCourse = async () => {
       setLoading(true);
@@ -75,11 +70,10 @@ const InstructorCreateCourse: React.FC = () => {
           setContent(data.content);
         }
         setLoading(false);
-
       } catch (error) {
-        console.log(error)
+        console.log("Error occurred: ", error);
       }
-    }
+    };
     if (_id) {
       fetchCourse();
     }
@@ -135,12 +129,31 @@ const InstructorCreateCourse: React.FC = () => {
       values.image_url = imageUrl || values.image_url; // Use new image URL if uploaded, otherwise use the existing one
 
       if (_id) { //update course
-        await axiosInstance.put(`${API_UPDATE_COURSE}/${_id}`, values);
+        try {
+          await axiosInstance.put(`${API_UPDATE_COURSE}/${_id}`, values);
+        } catch (error) {
+          console.log('error: ', error)
+        }
         message.success("Update Course Successfully");
-        navigate(`/instructor/manage-courses`);
       } else {
-        await axiosInstance.post(API_CREATE_COURSE, values);
-        message.success("Create Course Successfully");
+        if(!values.content || values.content === undefined){
+          values.content === ""
+        }
+        if(!values.video_url ||  values.content === undefined){
+          values.video_url === ""
+        }
+        const res = await createCourseByInstructor(values.name, values.category_id, values.description, values.content, values.video_url, values.image_url
+          , values.price, values.discount
+        )
+        if (res) {
+          navigate(`/instructor/manage-courses`);
+        }
+        // try {
+        //   await axiosInstance.post(API_CREATE_COURSE, values);
+        // } catch (error) {
+        //   console.log('error: ', error)
+        // }
+
         navigate(`/instructor/manage-courses`);
       }
     } catch (error) {
@@ -159,8 +172,9 @@ const InstructorCreateCourse: React.FC = () => {
     <>
       <CustomBreadcrumb />
       <h1 className="text-center">{_id ? "Update Course" : "Create Course"}</h1>
-      <div className="flex justify-center items-center h-full mt-10">
-        <Form {...formItemLayout} onFinish={onFinish} form={form} variant="filled" className="w-full max-w-6xl bg-white p-8 rounded shadow">
+
+      <div>
+        <Form {...formItemLayout} onFinish={onFinish} form={form} variant="filled">
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the course name!" }]}>
             <Input />
           </Form.Item>
@@ -196,12 +210,11 @@ const InstructorCreateCourse: React.FC = () => {
           <Form.Item
             label="Video URL"
             name="video_url"
-            rules={[
-              { required: true, message: "Please input a video URL!" },
-              {
-                validator: (_, value) =>
-                  isValidHttpUrl(value) ? Promise.resolve() : Promise.reject("This is not a valid video URL"),
-              },
+            rules={[{ required: true, message: "Please input a video URL!" },
+            {
+              validator: (_, value) =>
+                isValidHttpUrl(value) ? Promise.resolve() : Promise.reject("This is not a valid video URL"),
+            },
             ]}
           >
             <Input />
@@ -243,7 +256,7 @@ const InstructorCreateCourse: React.FC = () => {
             <Input type="number" />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-            <Button className="float-right" type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit">
               Submit
             </Button>
           </Form.Item>
