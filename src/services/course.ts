@@ -2,7 +2,7 @@
 
 
 import { message } from "antd";
-import { API_COURSE_LOGS, API_CREATE_COURSE, API_DELETE_COURSE, API_GET_COURSE, API_GET_COURSES, API_UPDATE_COURSE } from "../consts";
+import { API_COURSE_LOGS, API_COURSE_STATUS, API_CREATE_COURSE, API_DELETE_COURSE, API_GET_COURSE, API_GET_COURSES, API_UPDATE_COURSE } from "../consts";
 import axiosInstance from "./axiosInstance";
 
 // COURSE-01 Create Course (Instructor)
@@ -102,7 +102,7 @@ export const deleteCourse = async (course_id: string) => {
 // COURSE-06 Change Status (Admin, Instructor)
 export const changeStatusCourse = async (course_id: string, new_status: string, comment: string) => {
     try {
-        const response = await axiosInstance.put(API_DELETE_COURSE, {
+        const response = await axiosInstance.put(API_COURSE_STATUS, {
             "course_id": course_id,
             "new_status": new_status,
             "comment": comment
@@ -132,7 +132,7 @@ export const getCourseLogs =
                 }
             }
             )
-                return response.data.pageData;
+                return response;
         } catch (error) {
             return;
         }
