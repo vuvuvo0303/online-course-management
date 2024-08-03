@@ -67,7 +67,17 @@ const InstructorCreateCourse: React.FC = () => {
             price: data?.price,
             discount: data?.discount,
           });
-          setContent(data.content);
+          if (data.image_url) {
+            setFileList([
+              {
+                uid: '-1',
+                name: 'image.png',
+                status: 'done',
+                url: data.image_url,
+              },
+            ]);
+          }
+          setContent(data.description);
         }
         setLoading(false);
       } catch (error) {
