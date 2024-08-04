@@ -380,8 +380,8 @@ const InstructorManageCourses: React.FC = () => {
       title: "Image",
       dataIndex: "image_url",
       key: "image_url",
-      render: (image_url: string) => <Image  src={image_url} />,
-      width: 200,
+      render: (image_url: string) => <Image  src={image_url} width={200} />,
+    
       
     },
     {

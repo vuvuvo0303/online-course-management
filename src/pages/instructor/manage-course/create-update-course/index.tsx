@@ -12,18 +12,37 @@ import type { GetProp, UploadFile, UploadProps } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { uploadFile } from "../../../../utils";
 import TextArea from "antd/es/input/TextArea";
+import { RuleObject } from "antd/es/form";
+import { StoreValue } from "antd/es/form/interface";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const InstructorCreateCourse: React.FC = () => {
   // const [des, setDes] = useState<string>("");
   const navigate = useNavigate();
+    const [videoUrl, setVideoUrl] = useState<string>('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { _id } = useParams<{ _id: string; id: string }>();
   const [form] = useForm();
   const token = localStorage.getItem("token");
   const [content, setContent] = useState<string>("Enter something here");
+  const ValidHttpUrl = (string: string): boolean => {
+    let url;
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;
+    }
+    return url.protocol === "http:" || url.protocol === "https:";
+  }
+
+  const validateUrl = (_: RuleObject, value: StoreValue): Promise<void> => {
+    return ValidHttpUrl(value as string)
+      ? Promise.resolve()
+      : Promise.reject("This is not a valid video URL");
+  }
+
 
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -82,6 +101,7 @@ const InstructorCreateCourse: React.FC = () => {
               },
             ]);
           }
+          setVideoUrl(data.video_url);
           setContent(data.description);
         }
         setLoading(false);
@@ -208,19 +228,30 @@ const InstructorCreateCourse: React.FC = () => {
               />
             </Form.Item>
           )}
-          <Form.Item
-            label="Video URL"
-            name="video_url"
-            rules={[
-              { required: true, message: "Please input a video URL!" },
-              {
-                validator: (_, value) =>
-                  isValidHttpUrl(value) ? Promise.resolve() : Promise.reject("This is not a valid video URL"),
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+         <Form.Item
+        label="Video URL"
+        name="video_url"
+        rules={[
+          { required: true, message: "Please input a video URL!" },
+          { validator: validateUrl },
+        ]}
+      >
+        <Input onChange={(e) => setVideoUrl(e.target.value)} />
+      </Form.Item>
+
+      {isValidHttpUrl(videoUrl) && (
+        <div className="flex justify-end mb-5">
+          <iframe 
+            width="400" 
+            height="200" 
+            src={videoUrl} 
+            title="Video preview" 
+            frameBorder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowFullScreen 
+          />
+        </div>
+      )}
           {
             !_id && (
               <Form.Item label="Image (optional)" name="image_url">

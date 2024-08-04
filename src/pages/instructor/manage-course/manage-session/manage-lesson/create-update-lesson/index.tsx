@@ -20,6 +20,8 @@ import { Image, Upload } from "antd";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { getBase64, uploadFile } from "../../../../../../utils/uploadHelper/index.ts";
 import TextArea from "antd/es/input/TextArea";
+import { RuleObject } from "antd/es/form/index";
+import { StoreValue } from "antd/es/form/interface";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -35,7 +37,17 @@ const CreateUpdateLesson: React.FC = () => {
   const [course_id, setCourse_id] = useState<string>("");
   const [content, setContent] = useState<string>("Enter something here");
   // const [des, setDes] = useState<string>("");
+  const [videoUrl, setVideoUrl] = useState<string>("");
 
+  const isValidHttpUrl = (string: string): boolean => {
+    let url;
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;
+    }
+    return url.protocol === "http:" || url.protocol === "https:";
+  };
   useEffect(() => {
     const user = getUserFromLocalStorage();
     setUserId(user?._id);
@@ -63,12 +75,13 @@ const CreateUpdateLesson: React.FC = () => {
           });
           setCourse_id(data.course_id);
           setContent(data.description);
+          setVideoUrl(data.video_url);
           if (data.image_url) {
             setFileList([
               {
-                uid: '-1',
-                name: 'image.png',
-                status: 'done',
+                uid: "-1",
+                name: "image.png",
+                status: "done",
                 url: data.image_url,
               },
             ]);
@@ -150,18 +163,16 @@ const CreateUpdateLesson: React.FC = () => {
     }
     values.description = content;
 
-  let imageUrl: string = "";
+    let imageUrl: string = "";
 
-  
-  if (fileList.length > 0) {
-    const file = fileList[0];
-    if (file.originFileObj) {
-      imageUrl = await uploadFile(file.originFileObj as File);
+    if (fileList.length > 0) {
+      const file = fileList[0];
+      if (file.originFileObj) {
+        imageUrl = await uploadFile(file.originFileObj as File);
+      }
     }
-  }
 
-  
-  values.image_url = imageUrl || values.image_url;
+    values.image_url = imageUrl || values.image_url;
 
     setLoading(true);
     try {
@@ -189,9 +200,7 @@ const CreateUpdateLesson: React.FC = () => {
   };
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState<UploadFile[]>([
-    
-  ]);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
@@ -294,8 +303,22 @@ const CreateUpdateLesson: React.FC = () => {
               name="video_url"
               rules={[{ required: true, message: "Please input video URL!" }]}
             >
-              <Input />
+              <Input onChange={(e) => setVideoUrl(e.target.value)} />
             </Form.Item>
+
+            {isValidHttpUrl(videoUrl) && (
+              <div className="flex justify-end mb-5">
+                <iframe
+                  width="400"
+                  height="200"
+                  src={videoUrl}
+                  title="Video preview"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            )}
 
             <Form.Item label="Image URL" name="image_url">
               <Upload
@@ -335,11 +358,11 @@ const CreateUpdateLesson: React.FC = () => {
       )}
       {previewImage && (
         <Image
-          wrapperStyle={{ display: 'none' }}
+          wrapperStyle={{ display: "none" }}
           preview={{
             visible: previewOpen,
             onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(''),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
           }}
           src={previewImage}
         />
