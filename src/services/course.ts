@@ -25,7 +25,8 @@ export const createCourseByInstructor =
                 return response.data;
 
         } catch (error) {
-            return;
+            console.log("error - createCourseByInstructor: ", error)
+            return error;
         }
     }
 

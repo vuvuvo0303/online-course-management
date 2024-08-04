@@ -124,7 +124,7 @@ const AdminManageCourses: React.FC = () => {
   };
 
   const handleOkChangeStatus = async () => {
-    if (!comment) {
+    if (!comment && changeStatus === "reject") {
       return message.error("Please enter comment");
     }
     try {
@@ -406,7 +406,7 @@ const AdminManageCourses: React.FC = () => {
             ]}
           />
         </div>
-        <Form.Item label="Comment" name="comment" rules={[{ required: true, message: "Please enter comment!" }]}>
+        <Form.Item label="Comment" name="comment">
           <Input.TextArea value={comment} onChange={handleSaveComment} />
         </Form.Item>
       </Modal>

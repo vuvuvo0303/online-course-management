@@ -1,10 +1,10 @@
 import { Category, Course } from "../../../../models";
-import { API_GET_COURSE, API_UPDATE_COURSE } from "../../../../consts";
+import { API_CREATE_COURSE, API_GET_COURSE, API_UPDATE_COURSE } from "../../../../consts";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Form, Image, Input, message, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
-import { getCategories, axiosInstance, createCourseByInstructor } from "../../../../services";
+import { getCategories, axiosInstance } from "../../../../services";
 import { TinyMCEEditorComponent, LoadingComponent, CustomBreadcrumb } from "../../../../components";
 import { formItemLayout } from "../../../../layout/form"
 import type { GetProp, UploadFile, UploadProps } from "antd";
@@ -139,32 +139,34 @@ const InstructorCreateCourse: React.FC = () => {
 
       if (_id) { //update course
         try {
-          await axiosInstance.put(`${API_UPDATE_COURSE}/${_id}`, values);
+          const res = await axiosInstance.put(`${API_UPDATE_COURSE}/${_id}`, values);
+          if (res) {
+            message.success("Update Course Successfully");
+            navigate(`/instructor/manage-courses`);
+          }
         } catch (error) {
           console.log('error: ', error)
         }
-        message.success("Update Course Successfully");
-        navigate(`/instructor/manage-courses`);
       } else {
-        if(!values.content || values.content === undefined){
+        if (!values.content || values.content === undefined) {
           values.content === ""
         }
-        if(!values.video_url ||  values.content === undefined){
+        if (!values.video_url || values.content === undefined) {
           values.video_url === ""
         }
-        const res = await createCourseByInstructor(values.name, values.category_id, values.description, values.content, values.video_url, values.image_url
-          , values.price, values.discount
-        )
-        if (res) {
-          navigate(`/instructor/manage-courses`);
-        }
-        // try {
-        //   await axiosInstance.post(API_CREATE_COURSE, values);
-        // } catch (error) {
-        //   console.log('error: ', error)
-        // }
+        // const res = await createCourseByInstructor(values.name, values.category_id, values.description, values.content, values.video_url, values.image_url
+        //   , values.price, values.discount
+        // )
 
-        navigate(`/instructor/manage-courses`);
+        try {
+          const res = await axiosInstance.post(API_CREATE_COURSE, values);
+          if (res) {
+            message.success("Create Course Successfully");
+            navigate(`/instructor/manage-courses`);
+          }
+        } catch (error) {
+          console.log('error: ', error)
+        }
       }
     } catch (error) {
       // message.error("An error occurred while saving the course. Please try again.");
@@ -206,7 +208,7 @@ const InstructorCreateCourse: React.FC = () => {
             name="description">
             <Input.TextArea />
           </Form.Item>
-          { (
+          {(
             <Form.Item
               label="Content (optional)"
               name="content"

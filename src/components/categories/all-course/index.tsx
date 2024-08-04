@@ -67,7 +67,7 @@ const AllCourses = () => {
           } else if (course.is_in_cart === true && course.is_purchased === false) {
             navigate(paths.STUDENT_CART);
           } else if (course.is_in_cart === true && course.is_purchased === true) {
-            navigate(`${paths.STUDENT_STUDY_COURSE}/${course._id}`);
+            navigate(`/course/${course._id}`);
           }
         } catch (error) {
           console.error("Failed to handle course action:", error);
@@ -170,7 +170,7 @@ const AllCourses = () => {
                     className="max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden"
                     cover={
                       <div className="relative">
-                        <Link to={`/course/all-courses/${course._id}`}>
+                        <Link to={`/course/${course._id}`}>
                           <img
                             alt="course"
                             src={
@@ -190,7 +190,7 @@ const AllCourses = () => {
                     <Meta
                       className="truncate"
                       title={
-                        <Link to={`/course/all-courses/course/${course._id}`} className="hover:underline">
+                        <Link to={`course/${course._id}`} className="hover:underline">
                           {course.name}
                         </Link>
                       }
