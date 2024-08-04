@@ -202,16 +202,20 @@ const LoginPage: React.FC = () => {
                 Forgot Password
               </Link>
             </div>
-            <ButtonItem loading={loading} buttonText="Login" htmlType="submit" />
+            <ButtonItem
+              loading={loading}
+              buttonText="Login"
+              htmlType="submit"
+            />
           </Form>
           <span className="mt-4 block text-center">
-            Do you have an account?{" "}
+            Don't have an account yet?{" "}
             <strong>
               <Link
                 to={paths.REGISTER}
                 className="hover:cursor-pointer hover:text-blue-600"
               >
-                Sign up here
+                Sign up here!
               </Link>
             </strong>
           </span>

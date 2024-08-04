@@ -127,11 +127,11 @@ const RegisterPage: React.FC = () => {
             </h1>
           </div>
 
-          <span className="text-center mb-4" style={{ fontSize: "14px" }}>
+          <span className="text-center mb-2" style={{ fontSize: "15px" }}>
             Step into success with FLearn. Join us today!
           </span>
 
-          <div className="mb-6">
+          <div className="mb-3">
             <div className="flex justify-center">
               <Form
                 form={form}
@@ -151,7 +151,7 @@ const RegisterPage: React.FC = () => {
                   rules={roleRules}
                   labelCol={{ span: 24 }}
                   wrapperCol={{ span: 24 }}
-                  className="mb-5"
+                  className="mb-3"
                 >
                   <Radio.Group onChange={handleRoleChange}>
                     <Radio value={roles.STUDENT}>Student</Radio>
@@ -161,21 +161,27 @@ const RegisterPage: React.FC = () => {
 
                 {captchaVisible && <Recaptcha onVerify={setCaptchaToken} />}
 
-                <Form.Item wrapperCol={{ span: 24 }}>
-                  <ButtonItem loading={loading} buttonText="Register" htmlType="submit" onClick={handleModalOk} />
+                <Form.Item
+                  wrapperCol={{ span: 24 }}
+                  style={{ marginBottom: "0px" }}
+                >
+                  <ButtonItem
+                    loading={loading}
+                    buttonText="Register"
+                    htmlType="submit"
+                    onClick={handleModalOk}
+                  />
                 </Form.Item>
               </Form>
             </div>
-            <span className="block text-center">
-              Do you already have an account?
-            </span>
+            <span className="block text-center">Already have an account?</span>
             <span className="block text-center mt-1">
               <strong>
                 <Link
                   to={paths.LOGIN}
                   className="hover:cursor-pointer hover:text-blue-400"
                 >
-                  Back to Sign in
+                  Back to Sign In
                 </Link>
               </strong>
             </span>
@@ -212,7 +218,7 @@ const RegisterPage: React.FC = () => {
         onOk={handleModalOk}
         onCancel={handleModalCancel}
         footer={null}
-        width={800}
+        width={700}
       >
         <Form
           form={form}
@@ -234,7 +240,12 @@ const RegisterPage: React.FC = () => {
               {fileList.length >= 1 ? null : <UploadButton />}
             </Upload>
           </Form.Item>
-          <ButtonItem loading={loading} buttonText="Register" htmlType="submit" onClick={handleModalOk} />
+          <ButtonItem
+            loading={loading}
+            buttonText="Register"
+            htmlType="submit"
+            onClick={handleModalOk}
+          />
         </Form>
       </Modal>
     </div>
