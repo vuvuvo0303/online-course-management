@@ -57,8 +57,6 @@ const Lesson: React.FC = () => {
             console.log("fetchLesson: ", response);
         } catch (error) {
             setError('Failed to load lesson details.');
-        } finally {
-            setLoading(false);
         }
     };
 
