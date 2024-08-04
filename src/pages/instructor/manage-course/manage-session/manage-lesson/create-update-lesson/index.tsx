@@ -33,7 +33,7 @@ const CreateUpdateLesson: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [userId, setUserId] = useState<string>("");
   const [course_id, setCourse_id] = useState<string>("");
-  const [content, setContent] = useState<string>("Enter something here");
+  // const [content, setContent] = useState<string>("Enter something here");
   // const [des, setDes] = useState<string>("");
   const [lessonType, setLessonType] = useState<string>("video");
   useEffect(() => {
@@ -62,7 +62,7 @@ const CreateUpdateLesson: React.FC = () => {
             position_order: data.position_order,
           });
           setCourse_id(data.course_id);
-          setContent(data.description);
+          // setContent(data.content);
           setLessonType(data.lesson_type);
           if (data.image_url) {
             setFileList([
@@ -101,7 +101,10 @@ const CreateUpdateLesson: React.FC = () => {
           },
         });
         if (response.data) {
-          setCourses(response.data.pageData);
+          console.log("response: ", response)
+          setCourses(
+            response.data.pageData.filter((course: Course) => course.session_count > 0)
+          );
         }
       } catch (error) {
         message.error("Failed to fetch courses.");
@@ -142,18 +145,20 @@ const CreateUpdateLesson: React.FC = () => {
     fetchSessions();
   }, [sessionId, course_id]);
 
+
+
   const onFinish = async (values: Lessons) => {
+    console.log("values: ", values);
     if (typeof values.full_time === "string") {
       values.full_time = parseFloat(values.full_time);
     }
     if (typeof values.position_order === "string") {
       values.position_order = parseFloat(values.position_order);
     }
-    values.description = content;
+    values.image_url = values.image_url ?? "";
+    // values.description = content;
 
     let imageUrl: string = "";
-
-
     if (fileList.length > 0) {
       const file = fileList[0];
       if (file.originFileObj) {
@@ -161,9 +166,10 @@ const CreateUpdateLesson: React.FC = () => {
       }
     }
 
-
     values.image_url = imageUrl || values.image_url;
-
+    if (values.image_url === undefined) {
+      values.image_url === ""
+    }
     setLoading(true);
     try {
       if (lectureId) {
@@ -205,7 +211,9 @@ const CreateUpdateLesson: React.FC = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([
 
   ]);
-
+  if (loading) {
+    return <LoadingComponent />;
+  }
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
