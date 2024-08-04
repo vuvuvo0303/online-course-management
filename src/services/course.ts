@@ -22,7 +22,7 @@ export const createCourseByInstructor =
             }
             )
                 message.success("Create Course Successfully!")
-                return response.data;
+                return response;
 
         } catch (error) {
             console.log("error - createCourseByInstructor: ", error)
