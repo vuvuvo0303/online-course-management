@@ -62,7 +62,7 @@ const AllCourses = () => {
           if (course.is_purchased === false && course.is_in_cart === false) {
             // setLoading(true)
             await addCourseToCart(course._id);
-            fetchCourse();
+            navigate(paths.STUDENT_CART);
             // setLoading(false)
           } else if (course.is_in_cart === true && course.is_purchased === false) {
             navigate(paths.STUDENT_CART);

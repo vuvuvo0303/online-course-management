@@ -6,6 +6,7 @@ import {
   Button,
   Checkbox,
   Input,
+  message,
   Pagination,
   PaginationProps,
   Table,
@@ -169,17 +170,18 @@ const InstructorManagePurchase = () => {
   ];
 
   const handleCreatePayout = async () => {
-    setLoading(true);
-    try {
+    if (purchasesChecked.length > 0) {
+      setLoading(true);
       const res = await createPayout(instructor_id, purchasesChecked);
       console.log("res: ", res);
       if (res) {
         getPurchasesByInstructor();
         setPurchasesChecked([]);// reset array
+      } else {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-
+    }else{
+      message.error("Please select at least 1 purchase to create payout!");
     }
   };
 

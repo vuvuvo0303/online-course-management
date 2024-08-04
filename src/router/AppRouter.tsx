@@ -38,7 +38,7 @@ const Profile = lazy(() => import("../pages/profile"));
 const EditProfile = lazy(() => import("../pages/profile/editProfile/index"));
 const Cart = lazy(() => import("../pages/cart"));
 const StudentSubscription = lazy(() => import("../pages/student/subscription"));
-const StudenManagePurchase = lazy(() => import("../pages/purchase"));
+const StudentManagePurchase = lazy(() => import("../pages/purchase"));
 const Lesson = lazy(() => import("../pages/course/lesson"));
 
 // Instructor Page
@@ -116,9 +116,10 @@ const AppRouter: React.FC = () => {
         <Route path={paths.STUDENT_CHECKOUT} element={<Checkout />} />
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
         <Route path={paths.STUDENT_CHANGEPASSWORD} element={<ChangePassword />} />
-        <Route path={paths.STUDENT_PURCHASE} element={<StudenManagePurchase />} />
+        <Route path={paths.STUDENT_PURCHASE} element={<StudentManagePurchase />} />
         <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
         <Route path={paths.LESSON} element={<Lesson />} />
+        <Route path={paths.STUDENT_WITH_FIRST_LESSON} element={<Lesson />} />
         {/* Route for Instructor */}
 
         <Route
@@ -241,16 +242,27 @@ const AppRouter: React.FC = () => {
             element={canAccess([roles.INSTRUCTOR]) ? <Cart /> : <Navigate to={paths.HOME} />}
           />
           <Route
+            path={paths.INSTRUCTOR_WITH_FIRST_LESSON}
+            element={canAccess([roles.INSTRUCTOR]) ? <Lesson /> : <Navigate to={paths.HOME} />}
+          />
+          <Route
             path={paths.INSTRUCTOR_LESSON}
             element={canAccess([roles.INSTRUCTOR]) ? <Lesson /> : <Navigate to={paths.HOME} />}
           />
+
           <Route
             path={paths.INSTRUCTOR_LEARN_CHECKOUT}
             element={canAccess([roles.INSTRUCTOR]) ? <Checkout /> : <Navigate to={paths.HOME} />}
           />
-
+          <Route
+            path={paths.INSTRUCTOR_PURCHASE}
+            element={canAccess([roles.INSTRUCTOR]) ? <StudentManagePurchase /> : <Navigate to={paths.HOME} />}
+          />
+          <Route
+            path={paths.INSTRUCTOR_GET_USER_DETAIL}
+            element={canAccess([roles.INSTRUCTOR]) ? <User /> : <Navigate to={paths.HOME} />}
+          />
           <Route path="*" element={<NotFound />} />
-
         </Route>
 
         {/* Route for Admin */}

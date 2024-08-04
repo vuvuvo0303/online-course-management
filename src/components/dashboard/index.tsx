@@ -71,7 +71,7 @@ const Dashboard: React.FC = () => {
     if (dataUser.role === roles.INSTRUCTOR) {
       setItems([
         getItem("Dashboard", paths.INSTRUCTOR_DASHBOARD, <FundOutlined />),
-        getItem("Learn", "/instructor/learn", <FundOutlined />),
+       
         getItem(
           "Manage Courses",
           "/instructor/manage-courses",
@@ -104,10 +104,16 @@ const Dashboard: React.FC = () => {
           <ShoppingCartOutlined />
         ),
         getItem(
+          "My Purchases",
+          "/instructor/purchase",
+          <ShoppingCartOutlined />
+        ),
+        getItem(
           "Manage Payouts",
           "/instructor/manage-payouts",
           <OrderedListOutlined />
         ),
+        getItem("Learn", "/instructor/learn", <FundOutlined />),
         getItem("Tools", "/instructor/tools", <ToolOutlined />),
         getItem(
           "Resources",

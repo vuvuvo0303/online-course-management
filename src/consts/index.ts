@@ -292,6 +292,7 @@ export const paths = {
   STUDENT_CART: "/cart",
   STUDENT_PURCHASE: "/purchase",
   STUDENT_SUBSCRIPTION: "/subscription",
+  STUDENT_WITH_FIRST_LESSON: "course/:_id/lesson",
   /* INSTRUCTORS PATHS */
   INSTRUCTOR_DASHBOARD: "dashboard",
   INSTRUCTOR_PROFILE: "profile",
@@ -333,6 +334,7 @@ export const paths = {
     "manage-all-lectures/update-lecture/:lectureId",
   INSTRUCTOR_MANAGE_PURCHASES:
     "manage-purchases",
+    INSTRUCTOR_PURCHASE: "purchase",
   INSTRUCTOR_LEARN:
     "learn",
   INSTRUCTOR_LEARN_COURSE:
@@ -345,8 +347,10 @@ export const paths = {
     "checkout",
   INSTRUCTOR_LEARN_CHECKOUT:
     "learn/cart/checkout",
+    INSTRUCTOR_GET_USER_DETAIL: "user/:id",
   INSTRUCTOR_STUDY_COURSE: "course/lesson",
-  INSTRUCTOR_LESSON: "learn/course/lesson/:_id",
+  INSTRUCTOR_LESSON: "course/:_id/lesson/:lesson_id",
+  INSTRUCTOR_WITH_FIRST_LESSON: "course/:_id/lesson",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",

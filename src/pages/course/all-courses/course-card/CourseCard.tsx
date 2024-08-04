@@ -30,7 +30,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     } else if (course.is_in_cart === true && course.is_purchased === false) {
                         navigate(paths.INSTRUCTOR_CART);
                     } else if (course.is_in_cart === true && course.is_purchased === true) {
-                        navigate(`${paths.INSTRUCTOR_STUDY_COURSE}/${course._id}`);
+                        navigate(`/instructor/course/${course._id}/lesson`);
                     }
                 } else if (user.role === "student") {
                     if (course.is_purchased === false && course.is_in_cart === false) {

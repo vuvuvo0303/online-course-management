@@ -1,13 +1,13 @@
 import { Purchase } from "../../models";
 import { useEffect, useState } from "react";
-import { getItemsByStudent } from "../../services";
+import { getItemsByStudent, getUserFromLocalStorage } from "../../services";
 import LoadingComponent from "../../components/loading";
 import { useNavigate } from "react-router-dom";
 import { Pagination, Table, TablePaginationConfig, TableProps } from "antd";
 import { formatCurrency, formatDate } from "../../utils";
 import { PaginationProps } from "antd/lib";
 
-const StudenManagePurchase = () => {
+const StudentManagePurchase = () => {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
@@ -93,8 +93,14 @@ const StudenManagePurchase = () => {
     },
   ];
 
+  const user = getUserFromLocalStorage();
+  const userRole = user.role;
   const navigateToUser = (instructor_id: string) => {
+   if(userRole === "instructor"){
+    navigate(`/instructor/user/${instructor_id}`);
+   }else{
     navigate(`/user/${instructor_id}`);
+   }
   };
   const handleTableChange = (pagination: PaginationProps) => {
     const newPagination: { current: number; pageSize: number; total: number } = {
@@ -127,4 +133,4 @@ const StudenManagePurchase = () => {
   );
 };
 
-export default StudenManagePurchase;
+export default StudentManagePurchase;
