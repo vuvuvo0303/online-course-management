@@ -279,13 +279,12 @@ export const paths = {
   STUDENT_ENROLLMENT: "/enrollment",
   STUDENT_CHECKOUT: "/checkout",
   STUDENT_CHANGEPASSWORD: "/change-password",
-  LESSON: "/course/lesson/:_id",
+  LESSON: "/course/:_id/lesson/:lesson_id",
   STUDENT_STUDY_COURSE: "/course/lesson",
   STUDENT_CART: "/cart",
   STUDENT_PURCHASE: "/purchase",
   STUDENT_SUBSCRIPTION: "/subscription",
   /* INSTRUCTORS PATHS */
-
   INSTRUCTOR_DASHBOARD: "dashboard",
   INSTRUCTOR_PROFILE: "profile",
   INSTRUCTOR_CREATE_COURSE: "manage-courses/create-course",

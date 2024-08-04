@@ -21,7 +21,7 @@ const Lesson: React.FC = () => {
     const [activeKey, setActiveKey] = useState<string | string[]>([]);
     const [currentSessionIndex, setCurrentSessionIndex] = useState<number>(0);
     const [currentLessonIndex, setCurrentLessonIndex] = useState<number>(0);
-    const { _id } = useParams<{ _id: string }>();
+    const { _id, lesson_id } = useParams<{ _id: string, lesson_id?: string }>();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -30,8 +30,10 @@ const Lesson: React.FC = () => {
                 setLoading(true);
                 const response = await axiosInstance.get(`${API_CLIENT_GET_COURSE_DETAIL}/${_id}`);
                 setCourse(response.data);
-
-                if (response.data.session_list.length > 0 && response.data.session_list[0].lesson_list.length > 0) {
+                if (lesson_id) {
+                    console.log("lesson_id: ", lesson_id);
+                    fetchLesson(lesson_id);
+                } else if (response.data.session_list.length > 0 && response.data.session_list[0].lesson_list.length > 0) {
                     const firstLesson = response.data.session_list[0].lesson_list[0];
                     setCurrentSessionIndex(0);
                     setCurrentLessonIndex(0);
@@ -44,19 +46,18 @@ const Lesson: React.FC = () => {
                 setFirstLoad(false);
             }
         };
-
         fetchCourseDetails();
-    }, [_id]);
+    }, [_id, lesson_id]);
 
     const fetchLesson = async (lessonId: string) => {
         try {
             setLoading(true);
             const response = await axiosInstance.get(`${API_GET_LESSON}/${lessonId}`);
             setSelectedLesson(response.data);
+            console.log("fetchLesson: ", response);
+            setLoading(false);
         } catch (error) {
             setError('Failed to load lesson details.');
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -72,8 +73,9 @@ const Lesson: React.FC = () => {
     const showDrawer = () => setOpen(true);
     const onClose = () => setOpen(false);
 
-    const handleLessonClick = (lessonItem: Lessons) => {
-        fetchLesson(lessonItem._id);
+    const handleLessonClick = async (lessonItem: Lessons) => {
+        await fetchLesson(lessonItem._id);
+        navigate(`/course/${course?._id}/lesson/${lessonItem._id}`);
     };
 
     const handlePanelChange = (key: string | string[]) => {
@@ -101,7 +103,7 @@ const Lesson: React.FC = () => {
                 newLessonIndex = 0;
                 newSessionIndex += 1;
                 if (newSessionIndex >= course.session_list.length) {
-                    newSessionIndex = 0; // Or handle case when there's no more sessions
+                    newSessionIndex = 0; // Hoặc xử lý khi không còn session tiếp theo
                 }
             }
 
@@ -119,7 +121,7 @@ const Lesson: React.FC = () => {
             if (newLessonIndex < 0) {
                 newSessionIndex -= 1;
                 if (newSessionIndex < 0) {
-                    newSessionIndex = course.session_list.length - 1; // Or handle case when there's no previous session
+                    newSessionIndex = course.session_list.length - 1; // Hoặc xử lý khi không còn session trước đó
                 }
                 newLessonIndex = course.session_list[newSessionIndex].lesson_list.length - 1;
             }
@@ -254,6 +256,7 @@ const Lesson: React.FC = () => {
                 open={open}
                 width={isMobile ? '100%' : '50%'}
             >
+
                 {course && (
                     <Collapse
                         accordion
