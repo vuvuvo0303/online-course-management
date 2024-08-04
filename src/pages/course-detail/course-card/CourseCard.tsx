@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { message, Rate } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCartOutlined, HeartOutlined, FlagOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, HeartOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { addCourseToCart } from '../../../services/cart';
 import { paths } from "../../../consts";
 import { formatCurrency, formatMinute } from "../../../utils";
@@ -38,47 +38,41 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
     };
 
     return (
-        <div className="flex flex-col lg:flex-row w-full lg:h-[24rem] bg-gray shadow-md rounded-lg p-5">
-            <div className="rounded-lg overflow-hidden pt-5 sm:pb-5">
+        <div className="flex flex-col lg:flex-row w-full bg-gray-100 shadow-lg rounded-lg p-5 space-y-4 lg:space-y-0 lg:space-x-4">
+            <div className="flex-shrink-0 rounded-lg overflow-hidden">
                 <img
                     src={course.image_url}
-                    className="w-[25rem] h-[15rem] rounded-lg"
+                    className="w-full h-[15rem] object-cover rounded-lg"
                     alt={course.name}
                 />
-                <div className="flex flex-row gap-10 text-white lg:mt-[3.6rem] lg:ml-20">
-                    <a href="/enrollment" className="button save flex items-center mb-2">
+                <div className="flex space-y-2 mt-2 lg:mt-4">
+                    <a href="/enrollment" className="flex items-center text-white hover:text-gray-400">
                         <HeartOutlined className="mr-2" />
                         Save
                     </a>
-                    <button className="button report-abuse mb-2">
-                        <FlagOutlined className="mr-2" />
-                        Report abuse
-                    </button>
                 </div>
             </div>
-            <div className="pl-5 flex flex-col text-white flex-grow lg:pl-10">
-                <div className="text-3xl font-bold">{course.name}</div>
-                <div className="pt-2 pb-2 truncate w-full max-w-[200px]">
-                    {course.description.replace(/^<p>/, '').replace(/<\/p>$/, '')}
-                </div>
+            <div className="flex flex-col text-white flex-grow">
+                <h2 className="text-xl lg:text-2xl font-bold">{course.name}</h2>
+                <p className="pt-2 pb-2 truncate">{course.description.replace(/^<p>/, '').replace(/<\/p>$/, '')}</p>
                 <div className="space-y-2 flex-grow">
-                    <div className="flex items-center mb-2">
-                        <div className="mt-3">
-                            <Rate
-                                allowHalf
-                                disabled
-                                defaultValue={course.average_rating}
-                                className="custom-rate"
-                            />
+                    {course.review_count > 0 && (
+                        <div className="flex items-center mb-2">
+                            <div className="mt-1">
+                                <Rate
+                                    allowHalf
+                                    disabled
+                                    defaultValue={course.average_rating}
+                                    className="custom-rate"
+                                />
+                            </div>
+                            <span className="text-base ml-2">
+                                {course.review_count === 1
+                                    ? `(${course.review_count} review)`
+                                    : `(${course.review_count} reviews)`}
+                            </span>
                         </div>
-                        <span className="text-base mt-2 ml-2">
-                            {course.review_count === 1
-                                ? `(${course.review_count} review)`
-                                : course.review_count > 1
-                                    ? `(${course.review_count} reviews)`
-                                    : '(No reviews)'}
-                        </span>
-                    </div>
+                    )}
                     <div><strong>Category:</strong> {course.category_name}</div>
                     <div><strong>Instructor:</strong> {course.instructor_name}</div>
                     <div>
@@ -86,12 +80,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     </div>
                     {!course.is_purchased && (
                         <>
-                            <div className="flex flex-row gap-4">
-                                <div className="text-4xl">{formatCurrency(course.price_paid)}</div>
-                                <div className="text-2xl mt-[0.2rem]">
-                                    <span className="line-through">
-                                        {formatCurrency(course.price)}
-                                    </span>
+                            <div className="flex flex-row gap-4 items-center">
+                                <div className="text-xl lg:text-3xl">{formatCurrency(course.price_paid)}</div>
+                                <div className="text-sm lg:text-xl">
+                                    <span className="line-through">{formatCurrency(course.price)}</span>
                                 </div>
                             </div>
                             <div className="text-xs">{course.discount}% off</div>
@@ -100,12 +92,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     <div className="flex gap-4 mt-auto">
                         {course.is_purchased ? (
                             <Link to={`/course/lesson/${course._id}`}>
-                                <button className="bg-yellow-500 lg:mt-5 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500">
+                                <button className="bg-yellow-500 text-gray-800 p-2 rounded-md hover:bg-yellow-400">
                                     Study now
                                 </button>
                             </Link>
                         ) : (
-                            <button onClick={handleAddToCart} className="bg-yellow-500 text-gray p-2 rounded-md hover:bg-black hover:text-yellow-500" disabled={loading}>
+                            <button onClick={handleAddToCart} className="bg-yellow-500 text-gray-800 p-2 rounded-md hover:bg-yellow-400" disabled={loading}>
                                 <ShoppingCartOutlined className="mr-2" />
                                 {loading ? 'Adding...' : 'Add to Cart'}
                             </button>
@@ -114,14 +106,13 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     <div className="text-xs mt-2">30-Day Money-Back Guarantee</div>
                 </div>
             </div>
-            <div className="ml-4 flex flex-row text-white mt-4 lg:mt-0">
-                <div className="ml-[7rem] mb-[0.1rem] flex flex-row gap-4 items-end">
-                    <div>
-                        <div className="mr-3 mt-[0.1rem]">
-                            <ClockCircleOutlined className="mr-[0.2rem]" />
-                            <span>Full time to learn course: {formatMinute(course.full_time)}</span>
-                        </div>
-                    </div>
+            <div className="flex flex-col justify-between text-white">
+                <div className="flex flex-col flex-grow">
+                    {/* Other content here */}
+                </div>
+                <div className="flex items-center space-x-2 mt-4">
+                    <ClockCircleOutlined />
+                    <span>Full time: {formatMinute(course.full_time)}</span>
                 </div>
             </div>
         </div>

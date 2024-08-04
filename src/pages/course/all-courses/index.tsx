@@ -1,4 +1,3 @@
-// AllCourses.tsx
 import React, { useCallback, useEffect, useState } from "react";
 import { Input, Skeleton, Pagination, Select, Button } from "antd";
 import axiosInstance from "../../../services/axiosInstance";
@@ -81,17 +80,17 @@ const AllCourses: React.FC = () => {
 
     return (
         <div className="p-4">
-            <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 bg-slate-700 p-10 rounded-md">
+            <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 bg-slate-700 p-6 md:p-10 rounded-md">
                 <Input
                     placeholder="Search courses"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
-                    className="w-full md:w-3/5"
+                    className="w-full md:w-2/5 lg:w-3/5"
                 />
                 <CategoriesDropdown onSelect={(value) => setCategory(value)} />
                 <Select
                     placeholder="Rating"
-                    className="w-full md:w-1/5"
+                    className="w-full md:w-1/3 lg:w-1/5"
                     onChange={(value) => setRating(value)}
                 >
                     <Option value={2}>
@@ -114,18 +113,20 @@ const AllCourses: React.FC = () => {
                     Search
                 </Button>
             </div>
-            <div className="flex flex-wrap -m-2 px-[10rem] mt-10">
+            <div className="flex flex-wrap gap-4 px-4 mt-10 md:px-8 lg:px-16">
                 {loading && initialLoad ? (
-                    <div className="w-full md:w-1/2 lg:w-1/3 p-2">
-                        <Skeleton active />
-                    </div>
+                    Array.from({ length: pagination.pageSize }).map((_, index) => (
+                        <div key={index} className="w-full md:w-1/2 lg:w-1/3 p-2">
+                            <Skeleton active />
+                        </div>
+                    ))
                 ) : (
                     courses.map((course) => (
                         <CourseCard key={course._id} course={course} />
                     ))
                 )}
             </div>
-            <div className="flex justify-end py-8">
+            <div className="flex justify-center py-8">
                 <Pagination
                     total={pagination.total}
                     showTotal={(total) => `Total ${total} items`}

@@ -18,10 +18,10 @@ import {
 } from "antd";
 import { getColorPayout } from "../../../consts/index";
 import { createStyles } from "antd-style";
-import {LoadingComponent, CustomBreadcrumb} from "../../../components";
+import { LoadingComponent, CustomBreadcrumb } from "../../../components";
 import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
-import {formatCurrency, formatDate} from "../../../utils";
+import { formatCurrency, formatDate } from "../../../utils";
 
 const useStyle = createStyles(({ token }) => ({
   "my-modal-body": {
@@ -66,7 +66,7 @@ const InstructorManagePayout = () => {
 
   useEffect(() => {
     getPayoutsByInstructor();
-  }, [statusPayout, payoutNoSearch,pagination.current, pagination.pageSize]);
+  }, [statusPayout, payoutNoSearch, pagination.current, pagination.pageSize]);
 
   const getPayoutsByInstructor = async () => {
     // no loading for search
@@ -129,12 +129,6 @@ const InstructorManagePayout = () => {
       render: (status: string) => (
         <Tag color={getColorPayout(status)}>{status === "request_payout" ? "request payout" : status}</Tag>
       ),
-    },
-    {
-      title: "Balance Origin",
-      dataIndex: "balance_origin",
-      key: "balance_origin",
-      render: (balance_origin: number) => <>{formatCurrency(balance_origin)}</>,
     },
     {
       title: "Balance Instructor Paid",
@@ -250,15 +244,15 @@ const InstructorManagePayout = () => {
           onChange={handleTableChange}
         />
         <div className="flex justify-end py-8">
-        <Pagination
-          total={pagination.total}
-          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-          current={pagination.current}
-          pageSize={pagination.pageSize}
-          onChange={handlePaginationChange}
-          showSizeChanger
-        />
-      </div>
+          <Pagination
+            total={pagination.total}
+            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+            current={pagination.current}
+            pageSize={pagination.pageSize}
+            onChange={handlePaginationChange}
+            showSizeChanger
+          />
+        </div>
       </div>
     </>
   );

@@ -204,7 +204,7 @@ const InstructorCreateCourse: React.FC = () => {
           <Form.Item label="Description (optional)"
             rules={[{ required: true, message: "Please select a category!" }]}
             name="description">
-            <TextArea />
+            <Input.TextArea />
           </Form.Item>
           {!_id && (
             <Form.Item

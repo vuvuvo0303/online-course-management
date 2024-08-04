@@ -244,6 +244,7 @@ const ManageSession: React.FC = () => {
         rowKey={(record: Session) => record._id}
         pagination={false}
         onChange={handleTableChange}
+        
       />
       <div className="flex justify-end py-8">
         <Pagination

@@ -45,9 +45,13 @@ const CourseDetails: React.FC = () => {
     ];
 
     return (
-        <div className="p-4">
+        <div className="p-4 md:p-6 lg:p-8">
             <Skeleton loading={loading} active>
-                {!loading && course && <CourseCard course={course} />}
+                {!loading && course && (
+                    <div className="mb-6">
+                        <CourseCard course={course} />
+                    </div>
+                )}
             </Skeleton>
 
             {!loading && course && (
@@ -56,6 +60,7 @@ const CourseDetails: React.FC = () => {
                     activeKey={activeTabKey}
                     onChange={setActiveTabKey}
                     items={tabItems}
+                    className="w-full"
                 />
             )}
         </div>

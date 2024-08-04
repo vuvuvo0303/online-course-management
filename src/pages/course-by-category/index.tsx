@@ -79,156 +79,103 @@ const CoursesCategory = () => {
   ];
 
   return (
-    <main className={styles.courses_container}>
-      <h1 className="main_h1 w-full mt-0 mx-0 mb-4">{urlParams} Courses</h1>
-      <div className={styles.component_margin}>
-        <div className="mt-0 mx-0 mb-6">
-          <div className="max-w-full">
-            <h2 className="main_h2">Courses to get you started</h2>
-          </div>
-          <p className={styles.category_heading}>
-            Explore courses from experienced, real-world experts.
-          </p>
-          <Tabs className="mt-5" defaultActiveKey="1" items={tabsItems} />
-        </div>
+    <main className="p-4 md:p-6 lg:p-8">
+      <h1 className="text-2xl font-bold mb-4">{urlParams} Courses</h1>
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold">Courses to get you started</h2>
+        <p className="text-gray-700 mb-4">
+          Explore courses from experienced, real-world experts.
+        </p>
+        <Tabs defaultActiveKey="1" items={tabsItems} />
       </div>
 
-      <div className={styles.component_margin}>
-        <div className="mt-0 mx-0 mb-1.6rem">
-          <div className="w-full">
-            <h2 className="main_h2">Featured courses</h2>
-            <p className={styles.category_heading}>
-              Many learners enjoyed this highly rated course for its engaging content.
-            </p>
-          </div>
-        </div>
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold">Featured courses</h2>
+        <p className="text-gray-700 mb-4">
+          Many learners enjoyed this highly rated course for its engaging content.
+        </p>
         <section className="relative">
-          <div className={styles.single_course_unit}>
-            <div className=""></div>
+          <div className="w-full bg-gray-100 p-4 rounded-md">
+            {/* Featured courses content here */}
           </div>
         </section>
       </div>
 
-      <section className="mb-[5rem] mt-[2rem]">
+      <section className="mb-12">
         <List />
       </section>
 
       <section>
-        <h2 className="main_h2">All {urlParams} courses</h2>
-        <div className="mt-4">
-          <div className={styles.alert_banner}>
-            <ExclamationCircleFilled className="icon_size" />
-            <div className="flex-1 ml-5">
-              <div className="justify-center flex flex-col">
-                <p className="text-xl font-bold mt-1">
-                  Not sure? All courses have a 30-day money-back guarantee
-                </p>
-              </div>
-            </div>
-          </div>
+        <h2 className="text-xl font-semibold">All {urlParams} courses</h2>
+        <div className="mt-4 mb-6 bg-yellow-50 p-4 rounded-md flex items-center">
+          <ExclamationCircleFilled className="text-xl text-yellow-500" />
+          <p className="ml-4 text-lg font-semibold">
+            Not sure? All courses have a 30-day money-back guarantee
+          </p>
         </div>
       </section>
 
-      <section className="mb-1.5">
-        <div className="mb-2.5">
-          <div className="flex justify-between mb-4 mt-7">
-            <div className="gap-y-[.8rem] flex flex-wrap my-0 mx-[-.4rem]">
+      <section>
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className={`flex-shrink-0 ${isSidebarOpen ? 'w-full md:w-1/4' : 'hidden md:block'}`}>
+            <div className="bg-white p-4 rounded-md shadow-md">
               <button
                 type="button"
-                className={styles.filter_btn}
+                className="w-full flex items-center mb-4 p-2 bg-blue-500 text-white rounded-md"
                 onClick={toggleSidebar}
               >
                 <FilterOutlined className="text-xl" />
                 <span className="ml-2">Filter</span>
               </button>
-              <div className="my-0 mx-[.4rem] min-w-[12rem] max-w-[40rem]">
-                <div className={styles.form_control}>
-                  <div className="flex-1 relative">
-                    <select
-                      className={styles.select_container}
-                      name="sort"
-                      required
-                      id="form-group"
-                    >
-                      <option className="bg-white" value="popularity selected">
-                        Most popular
-                      </option>
-                      <option className="bg-white" value="highest-rated">
-                        Highest Rated
-                      </option>
-                      <option className="bg-white" value="newest">
-                        Newest
-                      </option>
-                    </select>
-                  </div>
-                  <label className={styles.form_label} htmlFor="form-group">
-                    <span className="flex-1 flex items-center min-w-[1px] py-0 px-[1.6rem]">
-                      <span className="block overflow-hidden overflow-ellipsis whitespace-nowrap">
-                        Sort by
-                      </span>
-                    </span>
-                  </label>
-                </div>
-              </div>
+              <form id="filter-form" aria-label="Changes will be applied when you select/deselect.">
+                <Collapse defaultActiveKey={["1", "2", "3"]} expandIconPosition="right">
+                  <Panel header="Ratings" key="1">
+                    <Radio.Group>
+                      <Radio value={4.5} className="block">
+                        <Rate disabled defaultValue={4.5} style={{ fontSize: "12px" }} /> 4.5 (1,488)
+                      </Radio>
+                      <Radio value={4.0} className="block">
+                        <Rate disabled defaultValue={4} style={{ fontSize: "12px" }} /> 4.0 (685)
+                      </Radio>
+                      <Radio value={3.5} className="block">
+                        <Rate disabled defaultValue={3.5} style={{ fontSize: "12px" }} /> 3.5 (11)
+                      </Radio>
+                      <Radio value={3.0} className="block">
+                        <Rate disabled defaultValue={3} style={{ fontSize: "12px" }} /> 3.0 (6)
+                      </Radio>
+                    </Radio.Group>
+                  </Panel>
+                  <Panel header="Video Duration" key="2">
+                    <Checkbox.Group>
+                      <Checkbox value="0-1" className="block">0-1 Hour (158)</Checkbox>
+                      <Checkbox value="1-3" className="block">1-3 Hours (336)</Checkbox>
+                      <Checkbox value="3-6" className="block">3-6 Hours (329)</Checkbox>
+                      <Checkbox value="6-17" className="block">6-17 Hours (377)</Checkbox>
+                    </Checkbox.Group>
+                  </Panel>
+                  <Panel header="Level" key="3">
+                    <Checkbox.Group>
+                      <Checkbox value="all" className="block">All Levels (697)</Checkbox>
+                      <Checkbox value="beginner" className="block">Beginner (406)</Checkbox>
+                      <Checkbox value="intermediate" className="block">Intermediate (185)</Checkbox>
+                      <Checkbox value="expert" className="block">Expert (29)</Checkbox>
+                    </Checkbox.Group>
+                  </Panel>
+                </Collapse>
+              </form>
             </div>
-            <span className={styles.item_count}>{pagination.total.toLocaleString()} results</span>
           </div>
-
-          <div className="flex w-full">
-            {isSidebarOpen && (
-              <div className="w-1/4">
-                <div className={styles.sidebar}>
-                  <form id="filter-form" aria-label="Changes will be applied when you select/deselect.">
-                    <Collapse defaultActiveKey={["1", "2", "3"]} expandIconPosition="right">
-                      <Panel header="Ratings" key="1">
-                        <Radio.Group>
-                          <Radio value={4.5}>
-                            <Rate disabled defaultValue={4.5} style={{ fontSize: "12px" }} /> 4.5 (1,488)
-                          </Radio>
-                          <Radio value={4.0}>
-                            <Rate disabled defaultValue={4} style={{ fontSize: "12px" }} /> 4.0 (685)
-                          </Radio>
-                          <Radio value={3.5}>
-                            <Rate disabled defaultValue={3.5} style={{ fontSize: "12px" }} /> 3.5 (11)
-                          </Radio>
-                          <Radio value={3.0}>
-                            <Rate disabled defaultValue={3} style={{ fontSize: "12px" }} /> 3.0 (6)
-                          </Radio>
-                        </Radio.Group>
-                      </Panel>
-                      <Panel header="Video Duration" key="2">
-                        <Checkbox.Group>
-                          <Checkbox value="0-1">0-1 Hour (158)</Checkbox>
-                          <Checkbox value="1-3">1-3 Hours (336)</Checkbox>
-                          <Checkbox value="3-6">3-6 Hours (329)</Checkbox>
-                          <Checkbox value="6-17">6-17 Hours (377)</Checkbox>
-                        </Checkbox.Group>
-                      </Panel>
-                      <Panel header="Level" key="3">
-                        <Checkbox.Group>
-                          <Checkbox value="all">All Levels (697)</Checkbox>
-                          <Checkbox value="beginner">Beginner (406)</Checkbox>
-                          <Checkbox value="intermediate">Intermediate (185)</Checkbox>
-                          <Checkbox value="expert">Expert (29)</Checkbox>
-                        </Checkbox.Group>
-                      </Panel>
-                    </Collapse>
-                  </form>
-                </div>
-              </div>
-            )}
-            <div className={isSidebarOpen ? "w-3/4" : "w-full"}>
-              <div className={`${styles.course_list} ${isSidebarOpen ? styles.course_list_sidebar_open : styles.course_list_sidebar_closed}`}>
-                {loading && initialLoad ? (
-                  <Skeleton active paragraph={{ rows: 4 }} />
-                ) : (
-                  <>
-                    {courses.map((course) => (
-                      <CourseCard key={course._id} course={course} />
-                    ))}
-                  </>
-                )}
-              </div>
+          <div className={`flex-grow ${isSidebarOpen ? 'w-3/4' : 'w-full'}`}>
+            <div className={`${styles.course_list} ${isSidebarOpen ? styles.course_list_sidebar_open : styles.course_list_sidebar_closed}`}>
+              {loading && initialLoad ? (
+                <Skeleton active paragraph={{ rows: 4 }} />
+              ) : (
+                <>
+                  {courses.map((course) => (
+                    <CourseCard key={course._id} course={course} />
+                  ))}
+                </>
+              )}
             </div>
           </div>
         </div>

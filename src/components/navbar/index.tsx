@@ -193,7 +193,7 @@ const Navbar: React.FC = () => {
 
       <div className="flex items-center flex-shrink-0 gap-5 mr-10">
         {!user && (
-          <div className="text-sm lg:text-base">
+          <div className="text-sm lg:text-base hidden md:block">
             <Link
               to={paths.TEACHING}
               className="whitespace-nowrap overflow-hidden text-ellipsis text-black-500 hover:text-blue-700"
