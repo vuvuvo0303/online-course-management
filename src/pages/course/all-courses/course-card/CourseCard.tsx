@@ -54,7 +54,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                 <img alt={course.name} src={imageUrl} className="w-full md:w-1/3 h-48 md:h-auto object-cover" />
                 <div className="w-full md:w-2/3 p-4 flex flex-col justify-between">
                     <div>
-                        <h2 className="text-xl font-semibold">{course.name}</h2>
+                        <Link to={`/course/${course._id}`}>
+                            <h2 className="text-xl font-semibold">{course.name}</h2>
+                        </Link>
                         <p className="text-gray-600 mb-2 truncate">{course.description}</p>
                         <div className="flex items-center mb-2">
                             <Rate disabled allowHalf defaultValue={course.average_rating} />
@@ -75,7 +77,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                                     {course.is_in_cart === true && course.is_purchased === false && "Go to cart"}
                                     {course.is_purchased === true && course.is_in_cart === true && "Learn now"}
                                 </Button> :
-                                <Link to={`/course/all-courses/${course._id}`}>
+                                <Link to={`/course/${course._id}`}>
                                     <Button type="primary" className="w-32 h-10"><ArrowRightOutlined />Go to course</Button>
                                 </Link>
                             }

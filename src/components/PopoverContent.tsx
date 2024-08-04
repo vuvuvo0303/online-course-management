@@ -48,9 +48,9 @@ const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
     const isEmpty = carts.cartsNew.length === 0 && carts.cartsCancel.length === 0;
 
     return (
-        <div className="">
+        <div className="w-[15rem]">
             {isEmpty ? (
-                <div className="text-center items-center py-5 mt-2 ml-[1rem] px-4 w-[19rem] rounded">
+                <div className="text-center items-center py-5 mt-2 ml-[1rem] px-4 rounded">
                     No Data
                 </div>
             ) : (
@@ -81,8 +81,8 @@ const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
                             <hr className="w-full my-4 border-gray-300" />
                         </div>
                     ))}
-                    <button className="mt-2 ml-[1rem] px-4 py-2 bg-black text-white w-[19rem] rounded">View cart</button>
-                    <div className="mt-4 pb-2 text-lg ml-[5.7rem] font-bold">Total: {formatCurrency(totalCost)}</div>
+                    <button className="mt-2 py-2 bg-black text-white w-full rounded">View cart</button>
+                    <div className="mt-4 pb-2 text-lg text-center font-bold">Total: {formatCurrency(totalCost)}</div>
                 </>
             )}
         </div>

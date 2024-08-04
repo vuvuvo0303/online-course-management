@@ -1,5 +1,4 @@
 import {
-  Button,
   Form,
   FormProps,
   Image,
@@ -26,6 +25,8 @@ import {
 import { Instructor } from "../../models";
 import { getBase64, uploadFile } from "../../utils";
 import {
+  BackButton,
+  ButtonItem,
   DescriptionFormItem,
   EmailFormItem,
   NameFormItem,
@@ -34,7 +35,6 @@ import {
   UploadButton,
   VideoFormItem,
 } from "../../components";
-import { LeftOutlined } from "@ant-design/icons";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -118,15 +118,8 @@ const RegisterPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#fffcce] to-[#1e5b53] relative">
-      <Button
-        type="link"
-        icon={<LeftOutlined />}
-        onClick={() => navigate(paths.HOME)}
-        className="absolute top-4 left-4 text-blue-500 bg-white bg-opacity-70 font-bold py-2 px-4 rounded-lg inline-flex items-center"
-      >
-        Home
-      </Button>
-      <div className="w-full md:w-1/2 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[500px] mb-[30px] mt-[30px]">
+      <BackButton path={paths.HOME} />
+      <div className="w-full md:w-7/12 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[500px] mb-[30px] mt-[30px]">
         <div className="w-1/2 flex flex-col justify-center p-4 md:p-8 bg-white rounded-lg">
           <div className="flex flex-col items-center mb-2">
             <h1 className="text-2xl md:text-3xl font-bold text-center">
@@ -134,17 +127,17 @@ const RegisterPage: React.FC = () => {
             </h1>
           </div>
 
-          <span className="text-center mb-4" style={{ fontSize: "14px" }}>
+          <span className="text-center mb-3">
             Step into success with FLearn. Join us today!
           </span>
 
-          <div className="mb-6">
+          <div className="mb-3">
             <div className="flex justify-center">
               <Form
                 form={form}
                 name="basic"
                 className="flex flex-col gap-1"
-                style={{ maxWidth: 400, overflow: "hidden" }}
+                style={{ maxWidth: 600, overflow: "hidden" }}
                 initialValues={{ remember: true, role }}
                 onFinish={onFinish}
                 autoComplete="off"
@@ -158,7 +151,7 @@ const RegisterPage: React.FC = () => {
                   rules={roleRules}
                   labelCol={{ span: 24 }}
                   wrapperCol={{ span: 24 }}
-                  className="mb-5"
+                  className="mb-3"
                 >
                   <Radio.Group onChange={handleRoleChange}>
                     <Radio value={roles.STUDENT}>Student</Radio>
@@ -168,19 +161,20 @@ const RegisterPage: React.FC = () => {
 
                 {captchaVisible && <Recaptcha onVerify={setCaptchaToken} />}
 
-                <Form.Item wrapperCol={{ span: 24 }}>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
+                <Form.Item
+                  wrapperCol={{ span: 24 }}
+                  style={{ marginBottom: "0px" }}
+                >
+                  <ButtonItem
                     loading={loading}
-                    className="mt-2 w-full shadow-xl hover:shadow-sky-600 bg-black"
-                  >
-                    Create Account
-                  </Button>
+                    buttonText="Register"
+                    htmlType="submit"
+                    onClick={handleModalOk}
+                  />
                 </Form.Item>
               </Form>
             </div>
-            <span className="mt-2 block text-center">
+            <span className="block text-center">
               Do you already have an account?
             </span>
             <span className="block text-center mt-1">
@@ -189,7 +183,7 @@ const RegisterPage: React.FC = () => {
                   to={paths.LOGIN}
                   className="hover:cursor-pointer hover:text-blue-400"
                 >
-                  Back to Sign in
+                  Back to Sign In
                 </Link>
               </strong>
             </span>
@@ -226,7 +220,7 @@ const RegisterPage: React.FC = () => {
         onOk={handleModalOk}
         onCancel={handleModalCancel}
         footer={null}
-        width={800}
+        width={700}
       >
         <Form
           form={form}
@@ -248,16 +242,12 @@ const RegisterPage: React.FC = () => {
               {fileList.length >= 1 ? null : <UploadButton />}
             </Upload>
           </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={handleModalOk}
-              className="w-full shadow-xl hover:shadow-sky-600 bg-black"
-            >
-              Save
-            </Button>
-          </Form.Item>
+          <ButtonItem
+            loading={loading}
+            buttonText="Register"
+            htmlType="submit"
+            onClick={handleModalOk}
+          />
         </Form>
       </Modal>
     </div>

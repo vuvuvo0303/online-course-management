@@ -40,7 +40,13 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       const { data } = error.response;
       console.log(error.response);
-      if(data.message !== null) {
+      if(data.message === null && data.errors && data.errors.length > 0) {
+        data.errors.forEach((error: { field: string, message: string }) => {
+          message.error(`${error.field}: ${error.message}`);
+        });
+      }
+
+      else{
         switch (error.response.status) {
           case 403: {
             if(!isTokenExpired){
@@ -74,12 +80,6 @@ axiosInstance.interceptors.response.use(
             message.error(data.message);
             break;
         }
-      }
-
-      else{
-        data.errors.forEach((error: { field: string, message: string }) => {
-          message.error(`${error.field}: ${error.message}`);
-        });
       }
 
       return Promise.reject(error.response.data);

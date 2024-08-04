@@ -4,8 +4,8 @@ export class Course {
   category_id: string;
   description: string;
   status: string;
-  video_url?: string;
-  image_url?: string;
+  video_url: string;
+  image_url: string;
   price: number;
   content: string;
   discount: number;

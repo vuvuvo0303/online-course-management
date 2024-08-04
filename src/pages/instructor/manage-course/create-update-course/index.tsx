@@ -5,9 +5,8 @@ import { Button, Form, Image, Input, message, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { getCategories, axiosInstance } from "../../../../services";
-import { LoadingComponent, CustomBreadcrumb, TinyMCEEditorComponent } from "../../../../components";
-import { formItemLayout } from "../../../../layout/form";
-
+import { TinyMCEEditorComponent, LoadingComponent, CustomBreadcrumb } from "../../../../components";
+import { formItemLayout } from "../../../../layout/form"
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { uploadFile } from "../../../../utils";
@@ -51,7 +50,6 @@ const InstructorCreateCourse: React.FC = () => {
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = (error) => reject(error);
     });
-
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -73,7 +71,6 @@ const InstructorCreateCourse: React.FC = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
-
   useEffect(() => {
     const fetchCourse = async () => {
       setLoading(true);
@@ -105,11 +102,10 @@ const InstructorCreateCourse: React.FC = () => {
           setContent(data.description);
         }
         setLoading(false);
-
       } catch (error) {
-        console.log(error)
+        console.log("Error occurred: ", error);
       }
-    }
+    };
     if (_id) {
       fetchCourse();
     }
@@ -162,21 +158,38 @@ const InstructorCreateCourse: React.FC = () => {
           imageUrl = await uploadFile(file.originFileObj as File);
         }
       }
-      values.image_url = imageUrl || values.image_url;
-  
-      // Update Course
-      if (_id) {
-        await axiosInstance.put<Course>(`${API_UPDATE_COURSE}/${_id}`, values);
-        message.success("Update New Course Successfully");
-        if (id) {
-          navigate(`/instructor/manage-courses/${_id}`);
-        } else {
-          navigate(`/instructor/manage-courses`);
+      values.image_url = imageUrl || values.image_url; // Use new image URL if uploaded, otherwise use the existing one
+
+      if (_id) { //update course
+        try {
+          const res = await axiosInstance.put(`${API_UPDATE_COURSE}/${_id}`, values);
+          if (res) {
+            message.success("Update Course Successfully");
+            navigate(`/instructor/manage-courses`);
+          }
+        } catch (error) {
+          console.log('error: ', error)
         }
       } else {
-        await axiosInstance.post(API_CREATE_COURSE, values);
-        message.success("Create Course Successfully");
-        navigate(`/instructor/manage-courses`);
+        if (!values.content || values.content === undefined) {
+          values.content === ""
+        }
+        if (!values.video_url || values.content === undefined) {
+          values.video_url === ""
+        }
+        // const res = await createCourseByInstructor(values.name, values.category_id, values.description, values.content, values.video_url, values.image_url
+        //   , values.price, values.discount
+        // )
+
+        try {
+          const res = await axiosInstance.post(API_CREATE_COURSE, values);
+          if (res) {
+            message.success("Create Course Successfully");
+            navigate(`/instructor/manage-courses`);
+          }
+        } catch (error) {
+          console.log('error: ', error)
+        }
       }
     } catch (error) {
       // message.error("An error occurred while saving the course. Please try again.");
@@ -194,8 +207,9 @@ const InstructorCreateCourse: React.FC = () => {
     <>
       <CustomBreadcrumb />
       <h1 className="text-center">{_id ? "Update Course" : "Create Course"}</h1>
-      <div className="flex justify-center items-center h-full mt-10">
-        <Form {...formItemLayout} onFinish={onFinish} form={form} variant="filled" className="w-full max-w-6xl bg-white p-8 rounded shadow">
+
+      <div>
+        <Form {...formItemLayout} onFinish={onFinish} form={form} variant="filled">
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the course name!" }]}>
             <Input />
           </Form.Item>
@@ -212,16 +226,17 @@ const InstructorCreateCourse: React.FC = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Description (optional)"
-            rules={[{ required: true, message: "Please select a category!" }]}
+          <Form.Item label="Description"
+            rules={[{ required: true, message: "Please select a description!" }]}
             name="description">
-            <TextArea />
+            <Input.TextArea />
           </Form.Item>
-          {!_id && (
+          {(
             <Form.Item
-              label="Content"
+              label="Content (optional)"
               name="content"
               rules={[{ required: false, message: "Please input course content!" }]}
+              initialValue={content}
             >
               <TinyMCEEditorComponent value={content}
                 onEditorChange={handleEditorChange}
@@ -289,7 +304,7 @@ const InstructorCreateCourse: React.FC = () => {
             <Input type="number" />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-            <Button className="float-right" type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit">
               Submit
             </Button>
           </Form.Item>

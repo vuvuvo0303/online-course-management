@@ -105,9 +105,9 @@ export const passwordRules: Rule[] = [
 ];
 
 export const nameRules: Rule[] = [
-    { required: true, message: "Please input your name!" },
-    { min: 4, message: "Name must be at least 4 characters!" },
-    { max: 20, message: "Name must be at most 20 characters!" },
+  { required: true, message: "Please input your name!" },
+  { min: 4, message: "Name must be at least 4 characters!" },
+  { max: 20, message: "Name must be at most 20 characters!" },
 ]
 
 export const roleRules: Rule[] = [
@@ -115,10 +115,10 @@ export const roleRules: Rule[] = [
 ]
 
 export const videoRules: Rule[] = [
-    {
-      required: true,
-      message: "Please input your video link!",
-    },
+  {
+    required: true,
+    message: "Please input your video link!",
+  },
 ]
 
 export const descriptionRules: Rule[] = [
@@ -136,10 +136,10 @@ export const phoneNumberRules: Rule[] = [
 ]
 
 export const avatarUrlRules: Rule[] = [
-    {
-      required: true,
-      message: "Please upload your Avatar",
-    },
+  {
+    required: true,
+    message: "Please upload your Avatar",
+  },
 ]
 
 export const commentRules: Rule[] = [
@@ -151,8 +151,8 @@ export const ratingRules: Rule[] = [
 ]
 
 export const contentRules: Rule[] = [
-    { required: true, message: "Please enter the content!" },
-    { min: 10, message: "Content must be at least 10 characters!" },
+  { required: true, message: "Please enter the content!" },
+  { min: 10, message: "Content must be at least 10 characters!" },
 ]
 
 export const colorIs_delete = (is_delete: boolean) => {
@@ -265,7 +265,7 @@ export const paths = {
   ALL_COURSES: "/course/all-courses",
   SITEMAP: "/sitemap",
   NOTFOUND: "/notfound",
-  COURSE_DETAILS: "/course/all-courses/:_id",
+  COURSE_DETAILS: "/course/:_id",
   COURSE_DETAIL: "/course/:id",
   FORGOT_PASSWORD: "/forgot-password",
   VERIFY_TOKEN: "/verify-email/:token",
@@ -279,14 +279,12 @@ export const paths = {
   STUDENT_ENROLLMENT: "/enrollment",
   STUDENT_CHECKOUT: "/checkout",
   STUDENT_CHANGEPASSWORD: "/change-password",
-  LESSON: "/course/lesson/:_id",
-  LESSON_BY_CONTENT: "/course/:_id/lesson/:_id",
+  LESSON: "/course/:_id/lesson/:lesson_id",
   STUDENT_STUDY_COURSE: "/course/lesson",
   STUDENT_CART: "/cart",
   STUDENT_PURCHASE: "/purchase",
   STUDENT_SUBSCRIPTION: "/subscription",
   /* INSTRUCTORS PATHS */
-
   INSTRUCTOR_DASHBOARD: "dashboard",
   INSTRUCTOR_PROFILE: "profile",
   INSTRUCTOR_CREATE_COURSE: "manage-courses/create-course",
@@ -327,20 +325,20 @@ export const paths = {
     "manage-all-lectures/update-lecture/:lectureId",
   INSTRUCTOR_MANAGE_PURCHASES:
     "manage-purchases",
-    INSTRUCTOR_LEARN:
+  INSTRUCTOR_LEARN:
     "learn",
-    INSTRUCTOR_LEARN_COURSE:
+  INSTRUCTOR_LEARN_COURSE:
     "learn/course/:_id",
-    INSTRUCTOR_CART:
+  INSTRUCTOR_CART:
     "cart",
-    INSTRUCTOR_LEARN_CART:
+  INSTRUCTOR_LEARN_CART:
     "learn/cart",
-    INSTRUCTOR_CHECKOUT:
+  INSTRUCTOR_CHECKOUT:
     "checkout",
-    INSTRUCTOR_LEARN_CHECKOUT:
+  INSTRUCTOR_LEARN_CHECKOUT:
     "learn/cart/checkout",
-    INSTRUCTOR_STUDY_COURSE: "course/lesson",
-    INSTRUCTOR_LESSON: "learn/course/lesson/:_id",
+  INSTRUCTOR_STUDY_COURSE: "course/lesson",
+  INSTRUCTOR_LESSON: "learn/course/lesson/:_id",
   /* ADMIN PATHS */
   ADMIN_DASHBOARD: "dashboard",
   ADMIN_CREATE_COURSE: "create-course",

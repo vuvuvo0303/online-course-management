@@ -77,12 +77,18 @@ const Navbar: React.FC = () => {
 
       if (resNew) {
         setCartsNew(resNew);
-        total += resNew.reduce((sum, cart) => sum + (cart.price || 0), 0);
+        total += resNew.reduce(
+          (sum: number, cart: Cart) => sum + (cart.price || 0),
+          0
+        );
       }
 
       if (resCancel) {
         setCartsCancel(resCancel);
-        total += resCancel.reduce((sum, cart) => sum + (cart.price || 0), 0);
+        total += resCancel.reduce(
+          (sum: number, cart: Cart) => sum + (cart.price || 0),
+          0
+        );
       }
 
       setTotalCost(total);
@@ -193,7 +199,7 @@ const Navbar: React.FC = () => {
 
       <div className="flex items-center flex-shrink-0 gap-5 mr-10">
         {!user && (
-          <div className="text-sm lg:text-base">
+          <div className="text-sm lg:text-base hidden md:block">
             <Link
               to={paths.TEACHING}
               className="whitespace-nowrap overflow-hidden text-ellipsis text-black-500 hover:text-blue-700"

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Button, Form, Input, Modal, Select, Upload, Image } from "antd";
+import { Form, Input, Modal, Select, Upload, Image } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import Login4 from "../../assets/Login4.jpg";
@@ -10,20 +10,17 @@ import {
   loginWithGoogle,
   registerWithGoogle,
 } from "../../services";
-import { getBase64, uploadFile } from "../../utils/uploadHelper/index";
+import { getBase64, uploadFile } from "../../utils";
 import type { FormInstance, GetProp, UploadFile, UploadProps } from "antd";
 import {
+  BackButton,
+  ButtonItem,
   EmailFormItem,
-  LoginButtonItem,
   PasswordFormItem,
 } from "../../components";
-import { LeftOutlined } from "@ant-design/icons";
+import { LoginFieldType } from "../../models/Auth";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-type FieldType = {
-  email: string;
-  password: string;
-};
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -42,7 +39,7 @@ const LoginPage: React.FC = () => {
   const formRef = useRef<FormInstance>(null);
   const modalFormRef = useRef<FormInstance>(null);
 
-  const onFinish = async (values: FieldType) => {
+  const onFinish = async (values: LoginFieldType) => {
     const { email, password } = values;
     setLoading(true);
     try {
@@ -169,15 +166,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#fffcce] to-[#1e5b53] relative">
-      <Button
-        type="link"
-        icon={<LeftOutlined />}
-        onClick={() => navigate(paths.HOME)}
-        className="absolute top-4 left-4 text-blue-500 bg-white bg-opacity-70 font-bold py-2 px-4 rounded-lg inline-flex items-center"
-      >
-        Home
-      </Button>
-
+      <BackButton path={paths.HOME} />
       <div className="w-full md:w-1/2 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[650px] mb-[30px]">
         <div className="w-1/2 flex items-center justify-center">
           <img
@@ -213,16 +202,20 @@ const LoginPage: React.FC = () => {
                 Forgot Password
               </Link>
             </div>
-            <LoginButtonItem loading={loading} />
+            <ButtonItem
+              loading={loading}
+              buttonText="Login"
+              htmlType="submit"
+            />
           </Form>
           <span className="mt-4 block text-center">
-            Do you have an account?{" "}
+            Don't have an account yet?{" "}
             <strong>
               <Link
                 to={paths.REGISTER}
                 className="hover:cursor-pointer hover:text-blue-600"
               >
-                Sign up here
+                Sign up here!
               </Link>
             </strong>
           </span>
@@ -256,6 +249,7 @@ const LoginPage: React.FC = () => {
             <>
               <Form.Item
                 label="Description"
+                required
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 rules={[{ required: true, message: "Please select a role" }]}

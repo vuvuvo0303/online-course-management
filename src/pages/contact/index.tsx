@@ -13,12 +13,12 @@ import {
 import styles from "./contact.module.css";
 import { Link } from "react-router-dom";
 import { paths } from "../../consts";
-import CustomBreadcrumb from "components/breadcrumb";
+import { CustomBreadcrumb } from "../../components";
 
 const Contact: React.FC = () => {
   return (
     <div>
-      <CustomBreadcrumb/>
+      <CustomBreadcrumb />
       <h1 className={styles.pageTitle}>Contact Us</h1>
 
       <div className={styles.contactContainer}>
