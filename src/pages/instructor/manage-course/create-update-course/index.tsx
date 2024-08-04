@@ -10,7 +10,6 @@ import { formItemLayout } from "../../../../layout/form"
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { uploadFile } from "../../../../utils";
-import TextArea from "antd/es/input/TextArea";
 import { RuleObject } from "antd/es/form";
 import { StoreValue } from "antd/es/form/interface";
 
@@ -19,7 +18,7 @@ type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 const InstructorCreateCourse: React.FC = () => {
   // const [des, setDes] = useState<string>("");
   const navigate = useNavigate();
-    const [videoUrl, setVideoUrl] = useState<string>('');
+  const [videoUrl, setVideoUrl] = useState<string>('');
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { _id } = useParams<{ _id: string; id: string }>();
@@ -244,30 +243,30 @@ const InstructorCreateCourse: React.FC = () => {
               />
             </Form.Item>
           )}
-         <Form.Item
-        label="Video URL"
-        name="video_url"
-        rules={[
-          { required: true, message: "Please input a video URL!" },
-          { validator: validateUrl },
-        ]}
-      >
-        <Input onChange={(e) => setVideoUrl(e.target.value)} />
-      </Form.Item>
+          <Form.Item
+            label="Video URL"
+            name="video_url"
+            rules={[
+              { required: true, message: "Please input a video URL!" },
+              { validator: validateUrl },
+            ]}
+          >
+            <Input onChange={(e) => setVideoUrl(e.target.value)} />
+          </Form.Item>
 
-      {isValidHttpUrl(videoUrl) && (
-        <div className="flex justify-end mb-5">
-          <iframe 
-            width="400" 
-            height="200" 
-            src={videoUrl} 
-            title="Video preview" 
-            frameBorder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowFullScreen 
-          />
-        </div>
-      )}
+          {isValidHttpUrl(videoUrl) && (
+            <div className="flex justify-end mb-5">
+              <iframe
+                width="400"
+                height="200"
+                src={videoUrl}
+                title="Video preview"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          )}
           {
             !_id && (
               <Form.Item label="Image (optional)" name="image_url">

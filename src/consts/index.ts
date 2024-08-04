@@ -155,6 +155,14 @@ export const contentRules: Rule[] = [
   { min: 10, message: "Content must be at least 10 characters!" },
 ]
 
+export const titleRules: Rule[] = [
+  { required: true, message: "Please input the title!" }
+]
+
+export const rejectRules: Rule[] = [
+  { required: true, message: "Please provide the reason for rejection" }
+]
+
 export const colorIs_delete = (is_delete: boolean) => {
   if (is_delete) {
     return "red";

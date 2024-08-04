@@ -70,8 +70,6 @@ const AdminManageUsers: React.FC = () => {
         current: responseUsers.data.pageInfo.pageNum,
         pageSize: responseUsers.data.pageInfo.pageSize,
       });
-    } catch (error) {
-      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -301,7 +299,7 @@ const AdminManageUsers: React.FC = () => {
       title: "Action",
       key: "action",
       width: "15%",
-      render: (record: User) => (
+      render: (_: unknown, record: User) => (
         <div>
           <EditOutlined
             className="hover:cursor-pointer text-blue-400 hover:opacity-60"
@@ -390,7 +388,7 @@ const AdminManageUsers: React.FC = () => {
       <Table
         columns={columns}
         dataSource={dataUsers}
-        rowKey={(record: User) => record._id}
+        rowKey="_id"
         pagination={false}
         onChange={handleTableChange}
         className="overflow-x-auto"

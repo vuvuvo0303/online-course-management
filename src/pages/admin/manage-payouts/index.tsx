@@ -201,7 +201,7 @@ const AdminManagePayouts: React.FC = () => {
       title: "Action",
       key: "action",
       width: "20%",
-      render: (record: Payout) => (
+      render: (_: unknown, record: Payout) => (
         <>
           {record.status === "request_payout" && (
             <div className="flex gap-2">

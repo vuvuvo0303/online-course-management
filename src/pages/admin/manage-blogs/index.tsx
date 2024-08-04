@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Form,
-  Input,
   message,
   Modal,
   Pagination,
@@ -16,7 +15,7 @@ import { Button, Image, Table } from "antd";
 import { Blog, Category } from "../../../models";
 import { axiosInstance, getCategories, getUserFromLocalStorage, deleteBlog, getBlogs } from "../../../services";
 import { API_CREATE_BLOG, API_UPDATE_BLOG, API_GET_BLOG } from "../../../consts";
-import { ContentFormItem, CustomBreadcrumb, DescriptionFormItem, LoadingComponent, UploadButton } from "../../../components";
+import { ContentFormItem, CustomBreadcrumb, DescriptionFormItem, LoadingComponent, UploadButton, TitleFormItem } from "../../../components";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { formatDate, getBase64, uploadFile } from "../../../utils";
 
@@ -128,13 +127,17 @@ const AdminManageBlogs: React.FC = () => {
     }
     const user = getUserFromLocalStorage();
     const payload = { ...values, content, user_id: user._id, image_url: avatarUrl };
-
-    if (isUpdateMode && currentBlog) {
-      await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
-      message.success("Blog updated successfully");
-    } else {
-      await axiosInstance.post(API_CREATE_BLOG, payload);
-      message.success("Blog added successfully");
+    setLoading(true);
+    try {
+      if (isUpdateMode && currentBlog) {
+        await axiosInstance.put(`${API_UPDATE_BLOG}/${currentBlog._id}`, payload);
+        message.success("Blog updated successfully");
+      } else {
+        await axiosInstance.post(API_CREATE_BLOG, payload);
+        message.success("Blog added successfully");
+      }
+    } finally {
+      setLoading(false);
     }
 
     // Xử lý sau khi submit thành công
@@ -217,7 +220,7 @@ const AdminManageBlogs: React.FC = () => {
       title: "Action",
       width: "10%",
       key: "action",
-      render: (record: Blog) => (
+      render: (_: unknown, record: Blog) => (
         <div>
           <EditOutlined
             className="hover:cursor-pointer text-blue-400 hover:opacity-60"
@@ -262,7 +265,7 @@ const AdminManageBlogs: React.FC = () => {
       <Table
         columns={columns}
         dataSource={dataBlogs}
-        rowKey={(record: Blog) => record._id}
+        rowKey="_id"
         onChange={handleTableChange}
         pagination={false}
       />
@@ -284,9 +287,7 @@ const AdminManageBlogs: React.FC = () => {
         footer={null}
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item name="name" label="Title" rules={[{ required: true, message: "Please input the blog title!" }]}>
-            <Input />
-          </Form.Item>
+          <TitleFormItem />
           <Form.Item
             name="category_id"
             label="Category"

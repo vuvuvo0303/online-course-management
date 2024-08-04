@@ -18,7 +18,7 @@ const StudenManagePurchase = () => {
     total: 0,
   });
   const getPurchasesByStudent = async () => {
-    const response = await getItemsByStudent("", "", "", "", 1, 100);
+    const response = await getItemsByStudent("", "", "", "", 1, 10);
     setPurchases(response.data.pageData);
     setPagination({
       ...pagination,
@@ -109,7 +109,7 @@ const StudenManagePurchase = () => {
   return (
     <div className="container mx-auto px-10">
       <h1 className="text-center my-10">Manage Purchased</h1>
-      <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} pagination={false} onChange={handleTableChange}/>
+      <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} pagination={false} onChange={handleTableChange} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

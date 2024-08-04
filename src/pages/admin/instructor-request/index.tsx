@@ -13,7 +13,7 @@ import {
   Tag,
   Form,
 } from "antd";
-import { roles } from "../../../consts";
+import { rejectRules, roles } from "../../../consts";
 import { Instructor } from "../../../models";
 import { getUsers } from "../../../services";
 import { SearchOutlined } from "@ant-design/icons";
@@ -214,7 +214,7 @@ const AdminInstructorRequest = () => {
       title: "Action",
       key: "action",
       width: "15%",
-      render: (_, record) => (
+      render: (_: unknown, record) => (
         <Space size="middle">
           {record.isRejected ? (
             <Tag color="red">Account rejected</Tag>
@@ -254,7 +254,7 @@ const AdminInstructorRequest = () => {
       <Table
         columns={columns}
         dataSource={dataSource}
-        rowKey={(record: Instructor) => record._id}
+        rowKey="_id"
         pagination={false}
         onChange={handleTableChange}
         className="overflow-auto"
@@ -281,7 +281,7 @@ const AdminInstructorRequest = () => {
           <Form.Item
             label="Reject Reason"
             name="rejectReason"
-            rules={[{ required: true, message: "Please provide the reason for rejection" }]}
+            rules={rejectRules}
           >
             <Input.TextArea
               rows={4}

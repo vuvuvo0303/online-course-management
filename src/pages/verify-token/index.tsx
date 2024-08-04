@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance.ts";
 import { API_RESEND_TOKEN, API_VERIFY_TOKEN, paths } from "../../consts";
 import ResponseData from '../../models/ResponseData.ts';
-import { ButtonItem, EmailFormItem } from '../../components';
+import { ButtonFormItem, EmailFormItem } from '../../components';
 
 const VerifyToken: React.FC = () => {
     const params = useParams();
@@ -67,7 +67,7 @@ const VerifyToken: React.FC = () => {
                                     <div className='mb-3'>
                                         <EmailFormItem value={email} onChange={(e) => setEmail(e.target.value)} />
                                     </div>
-                                    <ButtonItem loading={isLoadingResend} buttonText="Resend Token" htmlType="submit" />
+                                    <ButtonFormItem loading={isLoadingResend} buttonText="Resend Token" htmlType="submit" />
                                 </Form>
                             </div>
                         )}

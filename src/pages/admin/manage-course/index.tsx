@@ -58,7 +58,7 @@ const AdminManageCourses: React.FC = () => {
   };
   const fetchLog = async () => {
     setLogLoading(true);
-    const responseLogs = await getCourseLogs(courseId, keywordLogStatus, oldStatus, newStatus, 1, 100);
+    const responseLogs = await getCourseLogs(courseId, keywordLogStatus, oldStatus, newStatus, 1, 10);
     if (responseLogs) {
       setLogs(
         responseLogs.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
@@ -100,7 +100,6 @@ const AdminManageCourses: React.FC = () => {
       ...prev,
       current: 1,
     }));
-    fetchCourses();
   };
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
@@ -124,14 +123,15 @@ const AdminManageCourses: React.FC = () => {
   };
 
   const handleOkChangeStatus = async () => {
+    setLoading(true);
     if (!comment && changeStatus === "reject") {
       return message.error("Please enter comment");
     }
     try {
       await changeStatusCourse(courseId, changeStatus, comment);
       setCourses(courses.filter((course) => course._id !== courseId));
-    } catch (error) {
-      //
+    } finally {
+      setLoading(false);
     }
     setConfirmLoading(true);
     setOpenChangeStatus(false);
@@ -215,10 +215,10 @@ const AdminManageCourses: React.FC = () => {
             className="flex justify-between text-blue-500 cursor-pointer"
             onClick={() => showModalLogStatus(record._id)}
           >
-           
+
           </div>
           <div>
-          <Tag color={getColor(status)}>{status === "waiting_approve" ? "waiting approve" : status}</Tag>
+            <Tag color={getColor(status)}>{status === "waiting_approve" ? "waiting approve" : status}</Tag>
             {status === "waiting_approve" ? (
               <EditOutlined onClick={() => showModalChangeStatus(record._id)} className="text-blue-500" />
             ) : (
@@ -517,7 +517,7 @@ const AdminManageCourses: React.FC = () => {
       </Space>
       <Table
         columns={columnsCourses}
-        rowKey={(record: Course) => record._id}
+        rowKey="_id"
         dataSource={courses}
         pagination={false}
         onChange={handleTableChange}

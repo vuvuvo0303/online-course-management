@@ -12,10 +12,10 @@ import About from './about/about';
 import Cart from './cart/CartComponents';
 import Sub from './subscription/index';
 import { Course } from "../../models";
-import { getUserFromLocalStorage, fetchCoursesByClient } from '../../services'; // Ensure fetchCoursesByClient is imported
+import { getUserFromLocalStorage, fetchCoursesByClient } from '../../services';
 
 const Profile: React.FC = () => {
-  const [activeTabKey, setActiveTabKey] = useState('1');
+  const [activeTabKey, setActiveTabKey] = useState('2');
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -58,11 +58,6 @@ const Profile: React.FC = () => {
 
   const tabItems = [
     {
-      key: '1',
-      label: 'About',
-      children: <About />,
-    },
-    {
       key: '2',
       label: 'Purchased',
       children: <Cart />,
@@ -73,6 +68,14 @@ const Profile: React.FC = () => {
       children: <Sub />,
     },
   ];
+
+  if (user.role !== 'student') {
+    tabItems.unshift({
+      key: '1',
+      label: 'About',
+      children: <About />,
+    });
+  }
 
   return (
     <div className="bg-white-transparent p-8 text-black">

@@ -64,10 +64,10 @@ const Course: React.FC = () => {
                     </div>
                 </div>
                 <div className="course-actions mb-[0.1rem]">
-                    <a href="/enrollment" className="button save flex items-center">
+                    <Link to={paths.STUDENT_ENROLLMENT} className="button save flex items-center">
                         <HeartOutlined className="mr-2" />
                         Save
-                    </a>
+                    </Link>
                     <button className="button report-abuse">
                         <FlagOutlined />
                         Report abuse
