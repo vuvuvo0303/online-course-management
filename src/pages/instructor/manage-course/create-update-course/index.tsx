@@ -76,7 +76,7 @@ const InstructorCreateCourse: React.FC = () => {
               },
             ]);
           }
-          setContent(data.description);
+          setContent(data.content);
         }
         setLoading(false);
       } catch (error) {
@@ -144,6 +144,7 @@ const InstructorCreateCourse: React.FC = () => {
           console.log('error: ', error)
         }
         message.success("Update Course Successfully");
+        navigate(`/instructor/manage-courses`);
       } else {
         if(!values.content || values.content === undefined){
           values.content === ""
@@ -200,16 +201,17 @@ const InstructorCreateCourse: React.FC = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Description (optional)"
-            rules={[{ required: true, message: "Please select a category!" }]}
+          <Form.Item label="Description"
+            rules={[{ required: true, message: "Please select a description!" }]}
             name="description">
             <Input.TextArea />
           </Form.Item>
-          {!_id && (
+          { (
             <Form.Item
-              label="Content"
+              label="Content (optional)"
               name="content"
               rules={[{ required: false, message: "Please input course content!" }]}
+              initialValue={content}
             >
               <TinyMCEEditorComponent value={content}
                 onEditorChange={handleEditorChange}
@@ -217,7 +219,7 @@ const InstructorCreateCourse: React.FC = () => {
             </Form.Item>
           )}
           <Form.Item
-            label="Video URL"
+            label="Video "
             name="video_url"
             rules={[{ required: true, message: "Please input a video URL!" },
             {

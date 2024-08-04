@@ -254,12 +254,12 @@ const CreateUpdateLesson: React.FC = () => {
               <Form.Item
                 label="Course Name"
                 name="course_id"
-                rules={[{ required: true, message: "Please input name!" }]}
+                rules={[{ required: true, message: "Please select course name!" }]}
               >
                 <Select
                   onChange={handleChangeCourseId}
                   notFoundContent={loading ? <Spin size="small" /> : null}
-                  defaultValue="Choose course for this lesson"
+                  defaultValue="Select course for this lesson"
                   options={courses.map((course) => ({
                     label: course.name,
                     value: course._id,
@@ -278,7 +278,7 @@ const CreateUpdateLesson: React.FC = () => {
               <Form.Item
                 label="Session Name"
                 name="session_id"
-                rules={[{ required: true, message: "Please session name!" }]}
+                rules={[{ required: true, message: "Please select session name!" }]}
               >
                 <Select
                   notFoundContent={loading ? <Spin size="small" /> : null}
@@ -314,14 +314,14 @@ const CreateUpdateLesson: React.FC = () => {
             </Form.Item>
 
             <Form.Item
-              label="Video URL"
+              label="Video"
               name="video_url"
               rules={[{ required: true, message: "Please input Video URL!" }]}
             >
               <Input />
             </Form.Item>
 
-            <Form.Item label="Image URL" name="image_url"
+            <Form.Item label="Image " name="image_url"
               rules={lessonType === "image" ? [{ required: true, message: "Please input Image URL!" }] : []}
             >
               <Upload
