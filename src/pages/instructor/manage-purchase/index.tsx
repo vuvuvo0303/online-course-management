@@ -7,6 +7,7 @@ import {
   Button,
   Checkbox,
   Input,
+  message,
   Pagination,
   PaginationProps,
   Table,
@@ -39,7 +40,7 @@ const InstructorManagePurchase = () => {
   const [statusPurchase, setStatusPurchase] = useState<string>("new");
 
   const getPurchasesByInstructor = async () => {
-  
+
     const response = await getItemsByInstructor(purchaseNoSearch, "", "", statusPurchase, 1, 100);
     setPurchases(response.data.pageData);
     setPagination({
@@ -171,14 +172,18 @@ const InstructorManagePurchase = () => {
   ];
 
   const handleCreatePayout = async () => {
-    setLoading(true);
-    const res = await createPayout(instructor_id, purchasesChecked);
-    console.log("res: ", res);
-    if (res) {
-      getPurchasesByInstructor();
-      setPurchasesChecked([]);// reset array
+    if (purchasesChecked.length > 0) {
+      setLoading(true);
+      const res = await createPayout(instructor_id, purchasesChecked);
+      console.log("res: ", res);
+      if (res) {
+        getPurchasesByInstructor();
+        setPurchasesChecked([]);// reset array
+      } else {
+        setLoading(false);
+      }
     }else{
-      setLoading(false);
+      message.error("Please select at least 1 purchase to create payout!");
     }
   };
 
@@ -204,10 +209,10 @@ const InstructorManagePurchase = () => {
       setPurchasesChecked([]);
     } else {
       const allPurchasesChecked = purchases
-      .filter(purchase => purchase.price_paid !== 0) // Choose purchaes have price paid != 0
-      .map(purchase => ({
-        purchase_id: purchase._id,
-      }));
+        .filter(purchase => purchase.price_paid !== 0) // Choose purchaes have price paid != 0
+        .map(purchase => ({
+          purchase_id: purchase._id,
+        }));
       setPurchasesChecked(allPurchasesChecked);
     }
   };

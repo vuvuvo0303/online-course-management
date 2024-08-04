@@ -7,6 +7,7 @@ import { API_GET_LESSON, API_CLIENT_GET_COURSE_DETAIL } from "../../../consts";
 import 'tailwindcss/tailwind.css';
 import { Lessons, LessonType } from "../../../models/Lesson";
 import { Course } from "../../../models/Course";
+import { getUserFromLocalStorage } from "../../../services/auth";
 
 const { Panel } = Collapse;
 
@@ -71,10 +72,16 @@ const Lesson: React.FC = () => {
 
     const showDrawer = () => setOpen(true);
     const onClose = () => setOpen(false);
+     const user = getUserFromLocalStorage();
+     const userRole = user.role;
 
     const handleLessonClick = async (lessonItem: Lessons) => {
         await fetchLesson(lessonItem._id);
-        navigate(`/course/${course?._id}/lesson/${lessonItem._id}`);
+        if(userRole === "instructor"){
+            navigate(`/instructor/course/${course?._id}/lesson/${lessonItem._id}`);
+        }else{
+            navigate(`/course/${course?._id}/lesson/${lessonItem._id}`);
+        }
     };
 
     const handlePanelChange = (key: string | string[]) => {

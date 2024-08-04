@@ -93,7 +93,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     )}
                     <div className="flex gap-4 mt-auto">
                         {course.is_purchased || course.price_paid === 0 ? (
-                            <Link to={`/course/lesson/${course._id}`}>
+                            <Link to={`/course/${course._id}/lesson`}>
                                 <button className="bg-yellow-500 text-gray-800 p-2 rounded-md hover:bg-yellow-400">
                                     Study now
                                 </button>

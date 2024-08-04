@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import { paths } from "../../consts";
 import styles from "./checkout.module.css";
 import { Cart } from "../../models";
-import { getCarts, updateStatusCart } from '../../services';
+import { getCarts, getUserFromLocalStorage, updateStatusCart } from '../../services';
 import { useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
 import { Link } from "react-router-dom";
@@ -56,6 +56,9 @@ const Checkout: React.FC = () => {
     }
   };
 
+  const userInfo = getUserFromLocalStorage();
+  const userRole = userInfo?.role;
+
   const handleCancelPayment = async () => {
     for (const element of carts) {
       await updateStatusCart("cancel", element._id, element.cart_no);
@@ -79,7 +82,11 @@ const Checkout: React.FC = () => {
           await new Promise((resolve) => setTimeout(resolve, 2000));
           setLoading(false);
           message.success("Payment successful!");
-          navigate(paths.STUDENT_PURCHASE)
+          if(userRole === "student"){
+            navigate(paths.STUDENT_PURCHASE)
+          }else{
+            navigate("/instructor/purchase")
+          }
         } catch (error) {
           setLoading(false);
           message.error("Payment failed. Please try again later.");

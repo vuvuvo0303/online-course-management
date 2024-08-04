@@ -13,8 +13,6 @@ export const createPayout = async (instructor_id: string, transactions: Transact
         if (transactions.length > 0) {
             message.success("Create Payout Successfully!")
             return response.data;
-        } else {
-            message.error("Please select at least 1 purchase to create payout!");
         }
     } catch (error) {
         return;
