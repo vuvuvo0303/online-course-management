@@ -1,56 +1,60 @@
 import { useState, useEffect } from 'react';
-import { Tabs, Tag, Avatar, Spin, Alert } from 'antd';
+import { Tabs, Tag, Avatar, Alert, Space, Skeleton } from 'antd';
 import {
   FacebookOutlined,
   LinkedinOutlined,
   TwitterOutlined,
-  YoutubeOutlined,
-  SettingOutlined
+  YoutubeOutlined
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import About from './about/about';
 import Cart from './cart/CartComponents';
 import Sub from './subscription/index';
-import { Course } from "../../models";
-import { getUserFromLocalStorage, fetchCoursesByClient } from '../../services'; // Ensure fetchCoursesByClient is imported
+import { Course, Subscription, Review } from "../../models";
+import { paths } from "../../consts";
+import { getUserFromLocalStorage, fetchCoursesByClient, getItemsBySubscriber, getAllReviews } from '../../services';
+
+const defaultAvatarUrl = '/x1.jpg'; // Path to image in public folder
 
 const Profile: React.FC = () => {
   const [activeTabKey, setActiveTabKey] = useState('1');
   const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [dataReviews, setDataReviews] = useState<Review[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch purchased courses
-  const fetchPurchasedCourses = async () => {
+  const fetchData = async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetchCoursesByClient("", ""); // Adjust parameters if needed
-      const purchasedCourses = res.filter((course: Course) => course.is_purchased);
+      const [coursesRes, subscriptionsRes, reviewsRes] = await Promise.all([
+        fetchCoursesByClient("", ""),
+        getItemsBySubscriber("", 1, 100),
+        getAllReviews("")
+      ]);
+
+      const purchasedCourses = coursesRes.filter((course: Course) => course.is_purchased);
       setCourses(purchasedCourses);
+      setSubscriptions(subscriptionsRes);
+      setDataReviews(reviewsRes.data.pageData);
     } catch (error) {
-      console.error("Failed to fetch courses:", error);
-      setError('Failed to load courses. Please try again later.');
+      console.error("Failed to fetch data:", error);
+      setError('Failed to load data. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPurchasedCourses();
+    fetchData();
   }, []);
 
   const user = getUserFromLocalStorage();
 
-  let avatarSrc;
-
-  if (typeof user.avatar === 'string') {
-    avatarSrc = user.avatar;
-  } else if (user.avatar?.file?.originFileObj) {
-    avatarSrc = URL.createObjectURL(user.avatar.file.originFileObj);
-  } else {
-    avatarSrc = 'https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg';
-  }
+  const avatarSrc = typeof user.avatar === 'string' ? user.avatar :
+    user.avatar?.file?.originFileObj ? URL.createObjectURL(user.avatar.file.originFileObj) :
+      defaultAvatarUrl;
 
   const onChange = (key: string) => {
     setActiveTabKey(key);
@@ -74,16 +78,34 @@ const Profile: React.FC = () => {
     },
   ];
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center">
+        <Skeleton active />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Alert message={error} type="error" />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white-transparent p-8 text-black">
       <div className="profile-container flex flex-col lg:flex-row items-center justify-between">
         <div className="profile-info flex flex-col lg:flex-row items-center">
           <div className="mb-4 lg:mb-0 lg:mr-8">
-            <Avatar
-              src={avatarSrc}
-              alt={user.avatar ? 'User Avatar' : 'Default Avatar'}
-              size={120}
-            />
+            <Space>
+              <Avatar
+                src={avatarSrc ? avatarSrc : paths.AVATAR}
+                className="hover:cursor-pointer hidden md:block border border-black"
+                size={120}
+              />
+            </Space>
           </div>
           <div className='flex flex-col items-center lg:items-start'>
             <div className="text-center lg:text-left">
@@ -93,27 +115,20 @@ const Profile: React.FC = () => {
             <div className="flex flex-wrap mt-4 sm:flex-row md:flex-wrap hidden sm:flex">
               <div className="flex flex-col items-center justify-center bg-gray-800 p-4 border border-gray-600 text-center min-w-[150px]">
                 <p className="text-gray-400">Purchased</p>
-                <h3 className="text-2xl font-bold">{loading ? <Spin /> : error ? <Alert message={error} type="error" /> : courses.length}</h3>
+                <h3 className="text-2xl font-bold">{courses.length}</h3>
               </div>
               <div className="flex flex-col items-center justify-center bg-gray-800 p-4 border-t border-r border-b border-gray-600 text-center min-w-[150px]">
                 <p className="text-gray-400">My Reviews</p>
-                <h3 className="text-2xl font-bold">{loading ? <Spin /> : error ? <Alert message={error} type="error" /> : courses.length}</h3>
+                <h3 className="text-2xl font-bold">{dataReviews.length}</h3>
               </div>
               <div className="flex flex-col items-center justify-center bg-gray-800 p-4 border-t border-r border-b border-gray-600 text-center min-w-[150px]">
                 <p className="text-gray-400">Subscriptions</p>
-                <h3 className="text-2xl font-bold">{loading ? <Spin /> : error ? <Alert message={error} type="error" /> : courses.length}</h3>
-              </div>
-              <div className="flex flex-col items-center justify-center bg-gray-800 p-4 border-t border-r border-b border-gray-600 text-center min-w-[150px]">
-                <p className="text-gray-400 mt-[0.1rem]">Certificates</p>
-                <h3 className="text-2xl font-bold">{loading ? <Spin /> : error ? <Alert message={error} type="error" /> : courses.length}</h3>
+                <h3 className="text-2xl font-bold">{subscriptions.length}</h3>
               </div>
             </div>
           </div>
         </div>
         <div className="profile-actions flex flex-col items-center lg:items-end mt-4 lg:mt-0">
-          <Link to="/edit-profile">
-            <button className="border-none mb-3 lg:mr-[0.8rem] "><SettingOutlined className='mr-2' />Setting</button>
-          </Link>
           <div className="flex space-2 p-2">
             <Tag icon={<FacebookOutlined />} color="#3b5999" />
             <Tag icon={<TwitterOutlined />} color="#55acee" />

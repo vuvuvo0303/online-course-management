@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { fetchCoursesByClient } from '../../../services'; // Ensure the import is correct
 import { Course } from "../../../models";
-import { Spin, Alert, Card, Rate } from 'antd'; // Import Ant Design components
+import { Spin, Alert, Rate, Button } from 'antd'; // Import Ant Design components
 import { Link } from 'react-router-dom'; // Import Link for routing
+import { ArrowRightOutlined } from '@ant-design/icons'; // Import Ant Design icons
 
-const { Meta } = Card;
 
 const MyList = () => {
     const [courses, setCourses] = useState<Course[]>([]);
@@ -41,10 +41,10 @@ const MyList = () => {
                 <div className="flex items-center justify-between mb-6">
                     <h1 className="text-2xl font-bold text-gray-900">Courses Purchased</h1>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                <div className='gap-5'>
                     {loading ? (
                         <div className="flex justify-center items-center col-span-full min-h-[200px]">
-                            <Spin /> {/* Ant Design loading spinner */}
+                            <Spin />
                         </div>
                     ) : error ? (
                         <div className="flex justify-center items-center col-span-full min-h-[200px]">
@@ -52,41 +52,40 @@ const MyList = () => {
                         </div>
                     ) : courses.length ? (
                         courses.map((course: Course) => (
-                            <Card
-                                key={course._id} // Ensure each card has a unique key
-                                className="w-64 mx-auto shadow-lg rounded-lg overflow-hidden"
-                                cover={
-                                    <div className="relative h-48 bg-white flex items-center justify-center overflow-hidden">
-                                        <Link to={`/course/${course._id}`}>
-                                            <img
-                                                alt="course"
-                                                src={course.image_url || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'} // Fallback image
-                                                className="w-full h-full object-cover"
-                                                onError={handleImageError}
-                                            />
+                            <div key={course._id} className="flex flex-row shadow-lg rounded-lg overflow-hidden bg-gray-800 mb-5">
+                                <div className="w-1/3">
+                                    <img
+                                        alt={course.name}
+                                        src={course.image_url}
+                                        onError={handleImageError}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <div className="w-2/3 p-4 flex flex-col justify-between">
+                                    <div>
+                                        <Link to={`/course/${course._id}`} className="text-xl font-semibold">
+                                            {course.name}
                                         </Link>
-                                        <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">Best Seller</div>
+                                        <p className="text-gray-400 mb-2 truncate">{course.description}</p>
+                                        <div className="flex items-center mb-2">
+                                            <Rate disabled allowHalf defaultValue={course.average_rating} />
+                                            <span className="ml-2 text-gray-400">{course.average_rating}</span>
+                                        </div>
                                     </div>
-                                }
-                            >
-                                <Meta
-                                    title={<Link to={`/course/${course._id}`} className="hover:underline">{course.name}</Link>}
-                                    description={course.instructor_name}
-                                />
-                                <div className="mt-2">
-                                    <div className="flex items-center text-sm">
-                                        <span className="mr-1">{course.average_rating}</span>
-                                        <Rate
-                                            value={course.average_rating}
-                                            disabled
-                                        />
-                                        <span className="ml-1 text-gray-500">({course.review_count})</span>
+                                    <div className="flex justify-between items-center">
+                                        <div>
+                                            <p className="text-sm text-gray-400">Lessons: {course.lesson_count}</p>
+                                            <p className="text-sm text-gray-400">Instructor: {course.instructor_name}</p>
+                                        </div>
+                                        <Link to={`/course/lesson/${course._id}`}>
+                                            <Button type="primary" className="w-32 h-10"><ArrowRightOutlined /> Learn Now </Button>
+                                        </Link>
                                     </div>
                                 </div>
-                            </Card>
+                            </div>
                         ))
                     ) : (
-                        <p className="col-span-full text-center">No courses found.</p> // Handle empty state
+                        <p className="col-span-full text-center">No courses found.</p>
                     )}
                 </div>
             </div>

@@ -111,12 +111,6 @@ const Course: React.FC = () => {
                     <TabPane tab="Instructor" key="4" />
                 </Tabs>
             </div>
-            <div className="course-content">
-                {/* {activeTabKey === '1' && <About />}
-                {/* {activeTabKey === '2' && <Content />} */}
-                {/* {activeTabKey === '3' && <ReviewPage />}
-                // {activeTabKey === '4' && <Instructor />} */}
-            </div>
         </div>
     );
 };
