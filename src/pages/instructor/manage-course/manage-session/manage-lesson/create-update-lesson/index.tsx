@@ -20,8 +20,7 @@ import { Image, Upload } from "antd";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { getBase64, uploadFile } from "../../../../../../utils/uploadHelper/index.ts";
 import TextArea from "antd/es/input/TextArea";
-import { RuleObject } from "antd/es/form/index";
-import { StoreValue } from "antd/es/form/interface";
+
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 

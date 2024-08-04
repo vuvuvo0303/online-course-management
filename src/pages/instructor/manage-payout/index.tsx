@@ -279,7 +279,7 @@ const InstructorManagePayout = () => {
             showSizeChanger
           />
         </div>
-      </div>
+      
     </>
   );
 };
