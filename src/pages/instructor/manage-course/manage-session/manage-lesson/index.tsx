@@ -227,7 +227,7 @@ const LectureOfCourse: React.FC = () => {
       title: "Image",
       dataIndex: "image_url",
       key: "image_url",
-      render: (image_url: string) => <Image src={image_url} width={100}/>,
+      render: (image_url: string) => <Image src={image_url} width={200}/>,
     },
     {
       title: "Lesson type",

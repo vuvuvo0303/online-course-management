@@ -21,6 +21,7 @@ import type { GetProp, UploadFile, UploadProps } from "antd";
 import { getBase64, uploadFile } from "../../../../../../utils/uploadHelper/index.ts";
 import TextArea from "antd/es/input/TextArea";
 
+
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const CreateUpdateLesson: React.FC = () => {
@@ -33,9 +34,19 @@ const CreateUpdateLesson: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [userId, setUserId] = useState<string>("");
   const [course_id, setCourse_id] = useState<string>("");
-  // const [content, setContent] = useState<string>("Enter something here");
+  const [content, setContent] = useState<string>("Enter something here");
   // const [des, setDes] = useState<string>("");
-  const [lessonType, setLessonType] = useState<string>("video");
+  const [videoUrl, setVideoUrl] = useState<string>("");
+
+  const isValidHttpUrl = (string: string): boolean => {
+    let url;
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;
+    }
+    return url.protocol === "http:" || url.protocol === "https:";
+  };
   useEffect(() => {
     const user = getUserFromLocalStorage();
     setUserId(user?._id);
@@ -62,14 +73,14 @@ const CreateUpdateLesson: React.FC = () => {
             position_order: data.position_order,
           });
           setCourse_id(data.course_id);
-          // setContent(data.content);
-          setLessonType(data.lesson_type);
+          setContent(data.description);
+          setVideoUrl(data.video_url);
           if (data.image_url) {
             setFileList([
               {
-                uid: '-1',
-                name: 'image.png',
-                status: 'done',
+                uid: "-1",
+                name: "image.png",
+                status: "done",
                 url: data.image_url,
               },
             ]);
@@ -92,19 +103,16 @@ const CreateUpdateLesson: React.FC = () => {
           searchCondition: {
             keyword: "",
             category: "",
-            status: "",
+            status: "active",
             is_deleted: false,
           },
           pageInfo: {
             pageNum: 1,
-            pageSize: 100,
+            pageSize: 10,
           },
         });
         if (response.data) {
-          console.log("response: ", response)
-          setCourses(
-            response.data.pageData.filter((course: Course) => course.session_count > 0)
-          );
+          setCourses(response.data.pageData);
         }
       } catch (error) {
         message.error("Failed to fetch courses.");
@@ -145,20 +153,17 @@ const CreateUpdateLesson: React.FC = () => {
     fetchSessions();
   }, [sessionId, course_id]);
 
-
-
   const onFinish = async (values: Lessons) => {
-    console.log("values: ", values);
     if (typeof values.full_time === "string") {
       values.full_time = parseFloat(values.full_time);
     }
     if (typeof values.position_order === "string") {
       values.position_order = parseFloat(values.position_order);
     }
-    values.image_url = values.image_url ?? "";
-    // values.description = content;
+    values.description = content;
 
     let imageUrl: string = "";
+
     if (fileList.length > 0) {
       const file = fileList[0];
       if (file.originFileObj) {
@@ -167,29 +172,15 @@ const CreateUpdateLesson: React.FC = () => {
     }
 
     values.image_url = imageUrl || values.image_url;
-    if (values.image_url === undefined) {
-      values.image_url === ""
-    }
+
     setLoading(true);
     try {
       if (lectureId) {
-        try {
-          const res = await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values);
-          if (res) {
-            message.success("Update Lesson Successfully!");
-          }
-        } catch (error) {
-          console.log("error: ", error);
-        }
+        await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values);
+        message.success("Update Lesson Successfully!");
       } else {
-        try {
-          const res = await axiosInstance.post(API_CREATE_LESSON, values);
-          if (res) {
-            message.success("Create Lesson Successfully!");
-          }
-        } catch (error) {
-          console.log("error: ", error);
-        }
+        await axiosInstance.post(API_CREATE_LESSON, values);
+        message.success("Create Lecture Successfully!");
       }
       if (sessionId && courseId) {
         navigate(`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lessons`);
@@ -208,12 +199,8 @@ const CreateUpdateLesson: React.FC = () => {
   };
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState<UploadFile[]>([
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  ]);
-  if (loading) {
-    return <LoadingComponent />;
-  }
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
@@ -254,12 +241,12 @@ const CreateUpdateLesson: React.FC = () => {
               <Form.Item
                 label="Course Name"
                 name="course_id"
-                rules={[{ required: true, message: "Please select course name!" }]}
+                rules={[{ required: true, message: "Please input name!" }]}
               >
                 <Select
                   onChange={handleChangeCourseId}
                   notFoundContent={loading ? <Spin size="small" /> : null}
-                  defaultValue="Select course for this lesson"
+                  defaultValue="Choose course for this lesson"
                   options={courses.map((course) => ({
                     label: course.name,
                     value: course._id,
@@ -278,7 +265,7 @@ const CreateUpdateLesson: React.FC = () => {
               <Form.Item
                 label="Session Name"
                 name="session_id"
-                rules={[{ required: true, message: "Please select session name!" }]}
+                rules={[{ required: true, message: "Please session name!" }]}
               >
                 <Select
                   notFoundContent={loading ? <Spin size="small" /> : null}
@@ -297,7 +284,6 @@ const CreateUpdateLesson: React.FC = () => {
 
             <Form.Item label="Lesson Type" name="lesson_type">
               <Select
-                onChange={setLessonType}
                 defaultValue="video"
                 options={[
                   { label: "video", value: "video" },
@@ -307,23 +293,33 @@ const CreateUpdateLesson: React.FC = () => {
               />
             </Form.Item>
 
-            <Form.Item label="Description" name="description"
-              rules={lessonType === "text" ? [{ required: true, message: "Please input description!" }] : []}
-            >
+            <Form.Item label="Description" name="description">
               <TextArea />
             </Form.Item>
 
             <Form.Item
-              label="Video"
+              label="Video URL"
               name="video_url"
-              rules={[{ required: true, message: "Please input Video URL!" }]}
+              rules={[{ required: true, message: "Please input video URL!" }]}
             >
-              <Input />
+              <Input onChange={(e) => setVideoUrl(e.target.value)} />
             </Form.Item>
 
-            <Form.Item label="Image " name="image_url"
-              rules={lessonType === "image" ? [{ required: true, message: "Please input Image URL!" }] : []}
-            >
+            {isValidHttpUrl(videoUrl) && (
+              <div className="flex justify-end mb-5">
+                <iframe
+                  width="400"
+                  height="200"
+                  src={videoUrl}
+                  title="Video preview"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            )}
+
+            <Form.Item label="Image URL" name="image_url">
               <Upload
                 action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                 listType="picture-card"
@@ -361,11 +357,11 @@ const CreateUpdateLesson: React.FC = () => {
       )}
       {previewImage && (
         <Image
-          wrapperStyle={{ display: 'none' }}
+          wrapperStyle={{ display: "none" }}
           preview={{
             visible: previewOpen,
             onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(''),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
           }}
           src={previewImage}
         />
