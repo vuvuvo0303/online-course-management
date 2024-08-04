@@ -10,7 +10,6 @@ import { formItemLayout } from "../../../../layout/form"
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { uploadFile } from "../../../../utils";
-import TextArea from "antd/es/input/TextArea";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const InstructorCreateCourse: React.FC = () => {

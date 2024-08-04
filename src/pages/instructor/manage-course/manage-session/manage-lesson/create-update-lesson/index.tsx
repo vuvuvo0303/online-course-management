@@ -35,7 +35,7 @@ const CreateUpdateLesson: React.FC = () => {
   const [course_id, setCourse_id] = useState<string>("");
   const [content, setContent] = useState<string>("Enter something here");
   // const [des, setDes] = useState<string>("");
-
+  const [lessonType, setLessonType] = useState<string>("video");
   useEffect(() => {
     const user = getUserFromLocalStorage();
     setUserId(user?._id);
@@ -63,6 +63,7 @@ const CreateUpdateLesson: React.FC = () => {
           });
           setCourse_id(data.course_id);
           setContent(data.description);
+          setLessonType(data.lesson_type);
           if (data.image_url) {
             setFileList([
               {
@@ -91,12 +92,12 @@ const CreateUpdateLesson: React.FC = () => {
           searchCondition: {
             keyword: "",
             category: "",
-            status: "active",
+            status: "",
             is_deleted: false,
           },
           pageInfo: {
             pageNum: 1,
-            pageSize: 10,
+            pageSize: 100,
           },
         });
         if (response.data) {
@@ -150,27 +151,39 @@ const CreateUpdateLesson: React.FC = () => {
     }
     values.description = content;
 
-  let imageUrl: string = "";
+    let imageUrl: string = "";
 
-  
-  if (fileList.length > 0) {
-    const file = fileList[0];
-    if (file.originFileObj) {
-      imageUrl = await uploadFile(file.originFileObj as File);
+
+    if (fileList.length > 0) {
+      const file = fileList[0];
+      if (file.originFileObj) {
+        imageUrl = await uploadFile(file.originFileObj as File);
+      }
     }
-  }
 
-  
-  values.image_url = imageUrl || values.image_url;
+
+    values.image_url = imageUrl || values.image_url;
 
     setLoading(true);
     try {
       if (lectureId) {
-        await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values);
-        message.success("Update Lesson Successfully!");
+        try {
+          const res = await axiosInstance.put(`${API_UPDATE_LESSON}/${lectureId}`, values);
+          if (res) {
+            message.success("Update Lesson Successfully!");
+          }
+        } catch (error) {
+          console.log("error: ", error);
+        }
       } else {
-        await axiosInstance.post(API_CREATE_LESSON, values);
-        message.success("Create Lecture Successfully!");
+        try {
+          const res = await axiosInstance.post(API_CREATE_LESSON, values);
+          if (res) {
+            message.success("Create Lesson Successfully!");
+          }
+        } catch (error) {
+          console.log("error: ", error);
+        }
       }
       if (sessionId && courseId) {
         navigate(`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lessons`);
@@ -190,7 +203,7 @@ const CreateUpdateLesson: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([
-    
+
   ]);
 
   const handlePreview = async (file: UploadFile) => {
@@ -276,6 +289,7 @@ const CreateUpdateLesson: React.FC = () => {
 
             <Form.Item label="Lesson Type" name="lesson_type">
               <Select
+                onChange={setLessonType}
                 defaultValue="video"
                 options={[
                   { label: "video", value: "video" },
@@ -285,19 +299,23 @@ const CreateUpdateLesson: React.FC = () => {
               />
             </Form.Item>
 
-            <Form.Item label="Description" name="description">
+            <Form.Item label="Description" name="description"
+              rules={lessonType === "text" ? [{ required: true, message: "Please input description!" }] : []}
+            >
               <TextArea />
             </Form.Item>
 
             <Form.Item
               label="Video URL"
               name="video_url"
-              rules={[{ required: true, message: "Please input video URL!" }]}
+              rules={[{ required: true, message: "Please input Video URL!" }]}
             >
               <Input />
             </Form.Item>
 
-            <Form.Item label="Image URL" name="image_url">
+            <Form.Item label="Image URL" name="image_url"
+              rules={lessonType === "image" ? [{ required: true, message: "Please input Image URL!" }] : []}
+            >
               <Upload
                 action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                 listType="picture-card"
