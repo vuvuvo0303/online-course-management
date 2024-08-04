@@ -15,10 +15,10 @@ import { useEffect, useState } from "react";
 import { Session } from "../../../../models";
 import { Link, useParams } from "react-router-dom";
 import { API_GET_COURSE, API_GET_SESSIONS } from "../../../../consts";
-import axiosInstance from "../../../../services/axiosInstance.ts";
-import useDebounce from "../../../../hooks/useDebounce";
-import LoadingComponent from "../../../../components/loading";
-import { format } from "date-fns";
+import { axiosInstance } from "../../../../services/";
+import { useDebounce } from "../../../../hooks";
+import { LoadingComponent } from "../../../../components";
+import { formatDate } from "../../../../utils";
 const ManageSession: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -150,13 +150,13 @@ const ManageSession: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
     {
       title: "Updated Date",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      render: (updated_at: Date) => formatDate(updated_at),
     },
     {
       title: "Action",
@@ -244,7 +244,7 @@ const ManageSession: React.FC = () => {
         rowKey={(record: Session) => record._id}
         pagination={false}
         onChange={handleTableChange}
-        
+
       />
       <div className="flex justify-end py-8">
         <Pagination

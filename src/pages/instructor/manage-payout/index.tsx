@@ -66,7 +66,7 @@ const InstructorManagePayout = () => {
   useEffect(() => {
     getPayoutsByInstructor();
   }, [statusPayout, payoutNoSearch, pagination.current, pagination.pageSize]);
-  
+
 
   const getPayoutsByInstructor = async () => {
     // no loading for search
@@ -151,17 +151,17 @@ const InstructorManagePayout = () => {
     },
     ...(statusPayout === "new" || statusPayout === "rejected"
       ? [
-          {
-            title: "Action",
-            dataIndex: "status",
-            key: "action",
-            render: (_text: string, record: Payout) => (
-              <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
-                Request Payout
-              </Button>
-            ),
-          },
-        ]
+        {
+          title: "Action",
+          dataIndex: "status",
+          key: "action",
+          render: (_text: string, record: Payout) => (
+            <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
+              Request Payout
+            </Button>
+          ),
+        },
+      ]
       : []),
   ];
 
@@ -223,7 +223,7 @@ const InstructorManagePayout = () => {
         footer={null}
         classNames={classNames}
       >
-        <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
+        <Table rowKey="_id" dataSource={transactions} pagination={false} columns={columnsTransactions} />
       </Modal>
       <div className="container mx-auto px-10">
         <CustomBreadcrumb />
@@ -243,7 +243,7 @@ const InstructorManagePayout = () => {
             onChange={handleStatus}
             value={statusPayout}
             style={{ width: 200 }}
-            
+
             className="w-full md:w-34 mt-2 md:mt-0 md:ml-2"
           >
             <Select.Option value="new">New</Select.Option>
@@ -270,16 +270,16 @@ const InstructorManagePayout = () => {
             showSizeChanger
           />
         </div>
-          <Pagination
-            total={pagination.total}
-            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-            current={pagination.current}
-            pageSize={pagination.pageSize}
-            onChange={handlePaginationChange}
-            showSizeChanger
-          />
-        </div>
-      
+        <Pagination
+          total={pagination.total}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
+      </div>
+
     </>
   );
 };

@@ -2,7 +2,6 @@ import { Purchase, TransactionsPurchase } from "../../../models";
 import { useEffect, useState } from "react";
 import { getItemsByInstructor } from "../../../services";
 
-import { format } from "date-fns";
 import {
   Button,
   Checkbox,
@@ -17,13 +16,12 @@ import {
   TabsProps,
   Tag,
 } from "antd";
-import { createPayout } from "../../../services/payout";
+import { createPayout } from "../../../services";
 import { getColorPurchase } from "../../../consts";
-import LoadingComponent from "../../../components/loading";
+import { LoadingComponent, CustomBreadcrumb } from "../../../components";
 import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
-import CustomBreadcrumb from "../../../components/breadcrumb";
-import { formatCurrency } from "../../../utils";
+import { formatCurrency, formatDate } from "../../../utils";
 
 const InstructorManagePurchase = () => {
   const [searchPurchase, setSearchPurchase] = useState<string>("");
@@ -118,7 +116,7 @@ const InstructorManagePurchase = () => {
       dataIndex: "created_at",
       key: "created_at",
       width: "10%",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: string) => formatDate(created_at),
     },
   ];
 
@@ -167,7 +165,7 @@ const InstructorManagePurchase = () => {
       dataIndex: "created_at",
       key: "created_at",
       width: "10%",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: string) => formatDate(created_at),
     },
   ];
 
@@ -277,7 +275,7 @@ const InstructorManagePurchase = () => {
       <Tabs defaultActiveKey={statusPurchase} items={items} onChange={onChangeStatus} />
       {statusPurchase === "new" ? (
         <Table
-          rowKey={(record: Purchase) => record._id}
+          rowKey="_id"
           dataSource={purchases}
           columns={columns}
           onChange={handleTableChange}
@@ -285,7 +283,7 @@ const InstructorManagePurchase = () => {
         />
       ) : (
         <Table
-          rowKey={(record: Purchase) => record._id}
+          rowKey="_id"
           dataSource={purchases}
           columns={columnsNotCheckbox}
           onChange={handleTableChange}
