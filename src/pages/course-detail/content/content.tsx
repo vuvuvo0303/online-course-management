@@ -9,7 +9,7 @@ import {
 } from '@ant-design/icons';
 import { Course } from '../../../models/Course';
 import { Lessons, LessonType } from '../../../models/Lesson';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const { Panel } = Collapse;
 

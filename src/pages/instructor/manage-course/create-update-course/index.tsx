@@ -187,6 +187,7 @@ const InstructorCreateCourse: React.FC = () => {
             message.success("Create Course Successfully");
             navigate(`/instructor/manage-courses`);
           }
+          console.log(res);
         } catch (error) {
           console.log('error: ', error)
         }
@@ -208,8 +209,8 @@ const InstructorCreateCourse: React.FC = () => {
       <CustomBreadcrumb />
       <h1 className="text-center">{_id ? "Update Course" : "Create Course"}</h1>
 
-      <div>
-        <Form {...formItemLayout} onFinish={onFinish} form={form} variant="filled">
+      <div className="flex justify-center items-center h-full mt-10">
+        <Form {...formItemLayout} onFinish={onFinish} form={form} variant="filled" className="w-full max-w-6xl bg-white p-8 rounded shadow">
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the course name!" }]}>
             <Input />
           </Form.Item>
@@ -304,7 +305,7 @@ const InstructorCreateCourse: React.FC = () => {
             <Input type="number" />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-            <Button type="primary" htmlType="submit">
+            <Button className="float-right" type="primary" htmlType="submit">
               Submit
             </Button>
           </Form.Item>

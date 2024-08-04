@@ -109,7 +109,8 @@ const Lesson: React.FC = () => {
             setCurrentSessionIndex(newSessionIndex);
             setCurrentLessonIndex(newLessonIndex);
             findLesson(newSessionIndex, newLessonIndex);
-        }
+            setLoading(false)
+        }  
     };
 
     const handlePreviousLesson = () => {
