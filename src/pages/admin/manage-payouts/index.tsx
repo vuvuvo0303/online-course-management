@@ -60,14 +60,13 @@ const AdminManagePayouts: React.FC = () => {
       setLoading(true);
       await handleUpdateStatus(dataStatusPayout.id, dataStatusPayout.status, comment);
       setComment("");
+      await getPayouts();
     } else {
       message.error("Please Enter Comment!");
       return;
     }
-    setTimeout(() => {
-      setOpen(false);
-      setConfirmLoading(false);
-    }, 100);
+    setOpen(false);
+    setConfirmLoading(false);
   };
 
   const handleCancel = () => {
@@ -122,7 +121,7 @@ const AdminManagePayouts: React.FC = () => {
       pageSize: pagination.pageSize ?? 10,
       total: pagination.total ?? 0,
     });
-    await getPayouts();
+    await fetchPayouts();
   };
 
   const handlePaginationChange = (page: number, pageSize: number) => {
@@ -219,10 +218,13 @@ const AdminManagePayouts: React.FC = () => {
   }
 
   const handleUpdateStatus = async (id: string, status: string, comment: string) => {
-    const res = await updateStatusPayout(id, status, comment);
-    if (res) {
+    setLoading(true);
+    try {
+      await updateStatusPayout(id, status, comment);
       message.success(`Change Payout Status To ${status === "completed" ? "Completed" : "Rejected"} Successfully`);
-      getPayouts();
+      await fetchPayouts();
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -264,7 +266,7 @@ const AdminManagePayouts: React.FC = () => {
         // classNames={classNames}
         footer={null}
       >
-        <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
+        <Table rowKey="_id" dataSource={transactions} pagination={false} columns={columnsTransactions} />
       </Modal>
       <Modal title="Reason Reject" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
         <Form>
@@ -302,7 +304,7 @@ const AdminManagePayouts: React.FC = () => {
       </Space>
 
       <Table
-        rowKey={(record: Payout) => record._id}
+        rowKey="_id"
         columns={columns}
         dataSource={dataPayouts}
         pagination={false}
