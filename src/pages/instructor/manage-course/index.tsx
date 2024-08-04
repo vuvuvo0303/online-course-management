@@ -19,13 +19,12 @@ import { Category, Course, Log, Review } from "../../../models";
 import { API_COURSE_LOGS, API_COURSE_STATUS, API_DELETE_COURSE, API_GET_COURSES, getColor } from "../../../consts";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
-import TextArea from "antd/es/input/TextArea";
 import { useDebounce } from "../../../hooks";
-import { format } from "date-fns";
 import { getCategories } from "../../../services/category.ts";
 
 import { getAllReviews } from "../../../services/review.ts";
 import { LoadingComponent, CustomBreadcrumb } from "../../../components";
+import { formatDate } from "utils/index.ts";
 
 
 const InstructorManageCourses: React.FC = () => {
@@ -358,13 +357,13 @@ const InstructorManageCourses: React.FC = () => {
       title: "Created Date ",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
     {
       title: "Updated Date ",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (update_at: Date) => format(new Date(update_at), "dd/MM/yyyy"),
+      render: (update_at: Date) => formatDate(update_at),
     },
     {
       title: "Review",
@@ -380,9 +379,9 @@ const InstructorManageCourses: React.FC = () => {
       title: "Image",
       dataIndex: "image_url",
       key: "image_url",
-      render: (image_url: string) => <Image  src={image_url} />,
-      width: 200,
-      
+      render: (image_url: string) => <Image src={image_url} width={200} />,
+
+
     },
     {
       title: "Action",
@@ -409,7 +408,7 @@ const InstructorManageCourses: React.FC = () => {
       dataIndex: "created_at",
       key: "created_at",
       defaultSortOrder: "descend",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
     {
       title: "Name",
@@ -478,15 +477,15 @@ const InstructorManageCourses: React.FC = () => {
       title: "Created Date ",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
     {
       title: "Updated Date ",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (updated_at: Date) => formatDate(updated_at),
     },
-  
+
   ];
 
   return (
@@ -498,7 +497,7 @@ const InstructorManageCourses: React.FC = () => {
         open={openReviewModal}
         onCancel={handleCancelReviewModal}
         footer={""}
-        // onCancel={handleCancel}
+      // onCancel={handleCancel}
       >
         <Table loading={loadingTable} dataSource={reviews} columns={columnsReviews} />
       </Modal>
@@ -628,7 +627,7 @@ const InstructorManageCourses: React.FC = () => {
               />
             </Form.Item>
             <Form.Item label="Comment" name="comment">
-              <TextArea value={comment} onChange={handleSaveComment} />
+              <Input.TextArea value={comment} onChange={handleSaveComment} />
             </Form.Item>
           </div>
         </Form>

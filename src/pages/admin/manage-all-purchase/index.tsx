@@ -8,7 +8,7 @@ import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { formatCurrency, formatDate } from "../../../utils";
 import { getPurchaseForAdmin } from "../../../services";
 
-const ManageAllPurchase = () => {
+const ManageAllPurchase: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [dataSource, setDataSource] = useState<Purchase[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0 });

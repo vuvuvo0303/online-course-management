@@ -14,7 +14,7 @@ import { getBase64, uploadFile } from "../../utils";
 import type { FormInstance, GetProp, UploadFile, UploadProps } from "antd";
 import {
   BackButton,
-  ButtonItem,
+  ButtonFormItem,
   EmailFormItem,
   PasswordFormItem,
 } from "../../components";
@@ -202,7 +202,7 @@ const LoginPage: React.FC = () => {
                 Forgot Password
               </Link>
             </div>
-            <ButtonItem
+            <ButtonFormItem
               loading={loading}
               buttonText="Login"
               htmlType="submit"

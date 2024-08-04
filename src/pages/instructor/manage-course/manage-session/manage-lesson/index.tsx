@@ -12,11 +12,10 @@ import {
   API_GET_SESSIONS,
   getColorLessonType,
 } from "../../../../../consts";
-import { format } from "date-fns";
-import { Lessons } from "models/Lesson.ts";
-import LoadingComponent from "../../../../../components/loading";
-import CustomBreadcrumb from "../../../../../components/breadcrumb/index.tsx";
+import { Lessons } from "../../../../../models";
+import { LoadingComponent, CustomBreadcrumb } from "../../../../../components";
 import { PaginationProps } from "antd/lib/index";
+import { formatDate } from "../../../../../utils";
 const LectureOfCourse: React.FC = () => {
   const [data, setData] = useState<Lessons[]>([]);
   const { courseId, sessionId } = useParams<{ courseId: string; sessionId: string }>();
@@ -174,11 +173,11 @@ const LectureOfCourse: React.FC = () => {
           if (response) {
             setData(response.data.pageData);
             setPagination({
-                ...pagination,
-                total: response.data.pageInfo.totalItems,
-                current: response.data.pageInfo.pageNum,
-                pageSize: response.data.pageInfo.pageSize,
-              });
+              ...pagination,
+              total: response.data.pageInfo.totalItems,
+              current: response.data.pageInfo.pageNum,
+              pageSize: response.data.pageInfo.pageSize,
+            });
           }
         } catch (error) {
           //
@@ -188,7 +187,7 @@ const LectureOfCourse: React.FC = () => {
       };
       fetchLecture();
     }
-  }, [courseId, sessionId, keyword, session_id, course_id, debouncedSearchTerm, lessonType,pagination.pageSize, pagination.current]);
+  }, [courseId, sessionId, keyword, session_id, course_id, debouncedSearchTerm, lessonType, pagination.pageSize, pagination.current]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
@@ -227,7 +226,7 @@ const LectureOfCourse: React.FC = () => {
       title: "Image",
       dataIndex: "image_url",
       key: "image_url",
-      render: (image_url: string) => <Image src={image_url} width={100}/>,
+      render: (image_url: string) => <Image src={image_url} width={200} />,
     },
     {
       title: "Lesson type",
@@ -243,13 +242,13 @@ const LectureOfCourse: React.FC = () => {
       title: "Created Date ",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
     {
       title: "Updated Date ",
       dataIndex: "updated_at",
-      key: "updatedDate",
-      render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+      key: "updated_at",
+      render: (updated_at: Date) => formatDate(updated_at),
     },
     {
       title: "Action",
@@ -388,7 +387,7 @@ const LectureOfCourse: React.FC = () => {
             </div>
           </div>
 
-          <Table dataSource={data} columns={columns} rowKey={(record: Lessons) => record._id} pagination={false} onChange={handleTableChange}/>
+          <Table dataSource={data} columns={columns} rowKey="_id" pagination={false} onChange={handleTableChange} />
           <div className="flex justify-end py-8">
             <Pagination
               total={pagination.total}

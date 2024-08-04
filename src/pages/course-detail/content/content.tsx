@@ -20,13 +20,12 @@ interface ContentProps {
 const Content: React.FC<ContentProps> = ({ course }) => {
     const [activeKey, setActiveKey] = useState<string | string[]>([]);
     const navigate = useNavigate(); // Initialize the navigate function
-
     const renderLessonContent = (lessonItem: Lessons) => (
         <div
             key={lessonItem._id}
             className={`flex items-center mb-2 p-2 rounded cursor-pointer ${!course.is_purchased ? 'bg-gray-200' : ''}`}
             style={{ opacity: !course.is_purchased ? 0.5 : 1 }}
-            onClick={() => course.is_purchased && handleLessonClick()}
+            onClick={() => course.is_purchased && handleLessonClick(lessonItem._id)}
         >
             {(() => {
                 switch (lessonItem.lesson_type) {
@@ -48,9 +47,10 @@ const Content: React.FC<ContentProps> = ({ course }) => {
         setActiveKey(key);
     };
 
-    const handleLessonClick = () => {
+    const handleLessonClick = (lesson_id: string) => {
         // Navigate to the course page
-        navigate(`/course/lesson/${course._id}`);
+        // console.log("lesson_id:", lesson_id)
+        navigate(`/course/${course._id}/lesson/${lesson_id}`);
     };
 
     const { token } = theme.useToken();
@@ -64,7 +64,7 @@ const Content: React.FC<ContentProps> = ({ course }) => {
 
     return (
         <div className='p-8 bg-white rounded-md'>
-            <h2 className='text-black mb-4'>Course Content</h2>
+            <h2 className='text-black mb-4'>Course Contents</h2>
             <Collapse
                 accordion
                 ghost

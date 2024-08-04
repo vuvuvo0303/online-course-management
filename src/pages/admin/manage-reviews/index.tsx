@@ -3,10 +3,9 @@ import type { PaginationProps, TablePaginationConfig, TableProps } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
 import { Review } from "../../../models";
-import { format } from "date-fns";
-import CustomBreadcrumb from "../../../components/breadcrumb";
+import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { deleteReview, getAllReviews } from "../../../services";
-import LoadingComponent from "../../../components/loading";
+import { formatDate } from "../../../utils";
 const AdminManageFeedbacks: React.FC = () => {
   const [data, setData] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -22,16 +21,20 @@ const AdminManageFeedbacks: React.FC = () => {
   }, [pagination.pageSize, pagination.current]);
 
   const getReviews = useCallback(async () => {
-    const responseReview = await getAllReviews("", 0, false, false, false, pagination.current, pagination.pageSize)
-    setData(responseReview.data.pageData);
+    setLoading(true);
+    try {
+      const responseReview = await getAllReviews("", 0, false, false, false, pagination.current, pagination.pageSize)
+      setData(responseReview.data.pageData);
 
-    setPagination({
-      ...pagination,
-      total: responseReview.data.pageInfo.totalItems,
-      current: responseReview.data.pageInfo.pageNum,
-      pageSize: responseReview.data.pageInfo.pageSize,
-    });
-    setLoading(false);
+      setPagination({
+        ...pagination,
+        total: responseReview.data.pageInfo.totalItems,
+        current: responseReview.data.pageInfo.pageNum,
+        pageSize: responseReview.data.pageInfo.pageSize,
+      });
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
 
@@ -76,19 +79,19 @@ const AdminManageFeedbacks: React.FC = () => {
       title: "Created Date",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
 
     {
       title: "Updated Date",
       dataIndex: "updated_at",
-      render: (updatedDate: Date) => format(new Date(updatedDate), "dd/MM/yyyy"),
+      render: (updatedDate: Date) => formatDate(updatedDate),
       width: "10%",
     },
     {
       title: "Action",
       key: "action",
-      render: (record: Review) => (
+      render: (_: unknown, record: Review) => (
         <div>
           <Popconfirm
             title="Delete the User"
@@ -115,9 +118,9 @@ const AdminManageFeedbacks: React.FC = () => {
 
   return (
     <div>
-      <CustomBreadcrumb/>
+      <CustomBreadcrumb />
       <Table
-        rowKey={(record: Review) => record._id}
+        rowKey="_id"
         columns={columns}
         dataSource={data}
         pagination={false}

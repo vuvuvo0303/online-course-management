@@ -7,9 +7,7 @@ import { API_UPDATE_USER } from "../../../consts";
 import { formatDate, getBase64, uploadFile } from "../../../utils";
 import { UploadButton, LoadingComponent } from "../../../components";
 
-
 type FileType = Parameters<Required<UploadProps>["beforeUpload"]>[0];
-
 
 const EditProfile = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -41,12 +39,13 @@ const EditProfile = () => {
     video: "",
   });
 
-
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
       const parsedData = JSON.parse(userData);
       const dateOfBirth = formatDate(parsedData.dob);
+      const createdAt = formatDate(parsedData.created_at);
+      const updatedAt = formatDate(parsedData.updated_at);
       setUser({
         _id: parsedData._id,
         name: parsedData.name,
@@ -73,9 +72,11 @@ const EditProfile = () => {
       form.setFieldsValue({
         name: parsedData.name,
         email: parsedData.email,
-        phone: parsedData.phone_number,
+        phone_number: parsedData.phone_number,
         dob: dateOfBirth,
         avatar: parsedData.avatar,
+        created_at: createdAt,
+        updated_at: updatedAt,
       });
       if (parsedData.avatar) {
         setFileList([
@@ -113,7 +114,6 @@ const EditProfile = () => {
 
     const formattedDob = formatDate(values.dob);
 
-
     const updatedUser = {
       ...user,
       name: values.name !== undefined ? values.name : user.name,
@@ -141,7 +141,7 @@ const EditProfile = () => {
     const response = await axiosInstance.put(`${API_UPDATE_USER}/${user._id}`, updatedUser);
 
     if (response.data.email === updatedUser.email) {
-      // Cập nhật localStorage với dữ liệu mới
+      
       localStorage.setItem("user", JSON.stringify(updatedUser));
       setUser(updatedUser);
 
@@ -151,14 +151,13 @@ const EditProfile = () => {
         phone_number: updatedUser.phone_number,
         dob: formatDate(updatedUser.dob),
         avatar: updatedUser.avatar,
+        
       });
 
       message.success(`Updated ${values.name} successfully`);
     }
     setLoading(false);
   };
-
-
 
   if (loading) {
     return <LoadingComponent />;
@@ -200,8 +199,8 @@ const EditProfile = () => {
           </Row>
           <Row gutter={16}>
             <Col span={12} className="flex justify-center">
-              <Form.Item label="Phone" name="phone" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} className="w-2/3">
-                <Input className="w-full h-10" type="number" />
+              <Form.Item label="Phone" name="phone_number" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} className="w-2/3">
+                <Input className="w-full h-10" />
               </Form.Item>
             </Col>
             <Col span={12} className="flex justify-center">
@@ -213,6 +212,24 @@ const EditProfile = () => {
                 className="w-2/3"
               >
                 <Input className="w-full h-10" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12} className="flex justify-center">
+              <Form.Item label="Create Date " name="created_at" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} className="w-2/3">
+                <Input className="w-full h-10" disabled />
+              </Form.Item>
+            </Col>
+            <Col span={12} className="flex justify-center">
+              <Form.Item
+                label="Updated Date"
+                name="updated_at"
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                className="w-2/3"
+              >
+                <Input className="w-full h-10" disabled/>
               </Form.Item>
             </Col>
           </Row>
@@ -230,7 +247,7 @@ const EditProfile = () => {
             </Form.Item>
           </div>
           <div className="flex pl-28 ml-2 ">
-            <Button loading={loading} type="primary" htmlType="submit">
+            <Button className="" loading={loading} type="primary" htmlType="submit">
               Edit
             </Button>
           </div>
@@ -252,4 +269,3 @@ const EditProfile = () => {
 };
 
 export default EditProfile;
-

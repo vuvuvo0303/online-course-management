@@ -5,7 +5,7 @@ import Login from "../../../assets/Login.png";
 import { paths } from "../../../consts";
 import { getCurrentLoginUser, login } from "../../../services";
 import {
-  ButtonItem,
+  ButtonFormItem,
   EmailFormItem,
   PasswordFormItem,
 } from "../../../components";
@@ -53,7 +53,7 @@ const AdminLoginPage: React.FC = () => {
           >
             <EmailFormItem />
             <PasswordFormItem />
-            <ButtonItem loading={loading} buttonText="Login" htmlType="submit" />
+            <ButtonFormItem loading={loading} buttonText="Login" htmlType="submit" />
           </Form>
         </div>
         <div

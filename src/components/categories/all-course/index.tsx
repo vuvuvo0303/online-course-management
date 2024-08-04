@@ -67,7 +67,7 @@ const AllCourses = () => {
           } else if (course.is_in_cart === true && course.is_purchased === false) {
             navigate(paths.STUDENT_CART);
           } else if (course.is_in_cart === true && course.is_purchased === true) {
-            navigate(`${paths.STUDENT_STUDY_COURSE}/${course._id}`);
+            navigate(`/course/${course._id}`);
           }
         } catch (error) {
           console.error("Failed to handle course action:", error);

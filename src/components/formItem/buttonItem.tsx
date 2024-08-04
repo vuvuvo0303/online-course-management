@@ -1,6 +1,6 @@
 import { Button, Form } from "antd";
 
-interface ButtonItemProps {
+interface ButtonFormItemProps {
   loading: boolean;
   buttonText: string;
   htmlType: "button" | "submit" | "reset";
@@ -11,7 +11,7 @@ interface ButtonItemProps {
   onClick?: () => void;
 }
 
-const ButtonItem: React.FC<ButtonItemProps> = ({
+const ButtonFormItem: React.FC<ButtonFormItemProps> = ({
   loading,
   buttonText,
   htmlType,
@@ -40,4 +40,4 @@ const ButtonItem: React.FC<ButtonItemProps> = ({
   );
 };
 
-export default ButtonItem;
+export default ButtonFormItem;

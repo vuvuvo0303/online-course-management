@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Button, Input, Space, Table, Modal, Form, Pagination, Popconfirm, Spin, Select, message, } from "antd";
+import { Button, Input, Space, Table, Modal, Form, Pagination, Popconfirm, Select, message, } from "antd";
 import { DeleteOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons";
 import { Category } from "../../../models";
 import { axiosInstance, getCategories } from "../../../services";
@@ -94,21 +94,24 @@ const AdminManageCategories: React.FC = () => {
         updated_at: new Date().toISOString(),
       };
 
-      const response = await axiosInstance.put(`${API_UPDATE_CATEGORY}/${values._id}`, updatedCategory);
+      try {
+        const response = await axiosInstance.put(`${API_UPDATE_CATEGORY}/${values._id}`, updatedCategory);
 
-      if (response.data) {
-        setDataCategories((prevData) =>
-          prevData.map((category) =>
-            category._id === values._id
-              ? { ...category, ...response.data }
-              : category
-          )
-        );
-        setIsModalVisible(false);
-        form.resetFields();
-        message.success(`Category ${values.name} updated successfully.`);
+        if (response.data) {
+          setDataCategories((prevData) =>
+            prevData.map((category) =>
+              category._id === values._id
+                ? { ...category, ...response.data }
+                : category
+            )
+          );
+          setIsModalVisible(false);
+          form.resetFields();
+          message.success(`Category ${values.name} updated successfully.`);
+        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     },
     [dataCategories, form]
   );
@@ -190,16 +193,19 @@ const AdminManageCategories: React.FC = () => {
         parent_category_id: parentCategoryId,
       };
 
-      const response = await axiosInstance.post(API_CREATE_CATEGORY, categoryData);
-      if (response.data) {
-        const newCategory = response.data;
-        setDataCategories((prevData) => [...prevData, newCategory]);
-        form.resetFields();
-        fetchCategories();
-        message.success(`Category ${values.name} created successfully.`);
-        setIsModalVisible(false);
+      try {
+        const response = await axiosInstance.post(API_CREATE_CATEGORY, categoryData);
+        if (response.data) {
+          const newCategory = response.data;
+          setDataCategories((prevData) => [...prevData, newCategory]);
+          form.resetFields();
+          fetchCategories();
+          message.success(`Category ${values.name} created successfully.`);
+          setIsModalVisible(false);
+        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     },
     [dataCategories, form, fetchCategories]
   );
@@ -220,7 +226,6 @@ const AdminManageCategories: React.FC = () => {
       ...prev,
       current: 1,
     }));
-    fetchCategories();
   }, [fetchCategories]);
 
   if (loading) {
@@ -303,16 +308,14 @@ const AdminManageCategories: React.FC = () => {
           enterButton={<SearchOutlined className="text-white" />}
         />
       </Space>
-      <Spin spinning={loading}>
-        <Table
-          columns={columns}
-          dataSource={dataCategories}
-          rowKey={(record: Category) => record._id}
-          pagination={false}
-          onChange={handleTableChange}
-          className="overflow-auto"
-        />
-      </Spin>
+      <Table
+        columns={columns}
+        dataSource={dataCategories}
+        rowKey="_id"
+        pagination={false}
+        onChange={handleTableChange}
+        className="overflow-auto"
+      />
 
       <div className="flex justify-end py-8">
         <Pagination

@@ -11,8 +11,9 @@ import {
   Pagination,
   TablePaginationConfig,
   Tag,
+  Form,
 } from "antd";
-import { roles } from "../../../consts";
+import { rejectRules, roles } from "../../../consts";
 import { Instructor } from "../../../models";
 import { getUsers } from "../../../services";
 import { SearchOutlined } from "@ant-design/icons";
@@ -20,6 +21,7 @@ import { useDebounce } from "../../../hooks";
 import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { formatDate } from "../../../utils";
 import { reviewProfileInstructor } from "../../../services";
+import { useForm } from "antd/es/form/Form";
 
 const AdminInstructorRequest = () => {
   const [dataSource, setDataSource] = useState<Instructor[]>([]);
@@ -31,24 +33,35 @@ const AdminInstructorRequest = () => {
     pageSize: 10,
     total: 0,
   });
+  const [form] = useForm();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
   const [rejectReason, setRejectReason] = useState("");
-
   useEffect(() => {
     getInstructorRequest();
   }, [pagination.current, pagination.pageSize, debouncedSearch]);
 
   if (loading) {
-    return (<>
-      <LoadingComponent />
-    </>)
+    return (
+      <>
+        <LoadingComponent />
+      </>
+    );
   }
 
   const getInstructorRequest = async () => {
     setLoading(true);
     try {
-      const responseInstructorRequest = await getUsers(debouncedSearch, roles.INSTRUCTOR, true, false, false, pagination.current, pagination.pageSize);
+      const responseInstructorRequest = await getUsers(
+        debouncedSearch,
+        roles.INSTRUCTOR,
+        true,
+        false,
+        false,
+        pagination.current,
+        pagination.pageSize
+      );
 
       if (responseInstructorRequest.data && responseInstructorRequest.data.pageData) {
         const dataWithApprovalStatus = responseInstructorRequest.data.pageData.map((instructor: Instructor) => ({
@@ -86,6 +99,12 @@ const AdminInstructorRequest = () => {
 
   const handleReject = async () => {
     if (!selectedInstructor) return;
+
+    if (!rejectReason.trim()) {
+      message.error("Please provide the reason for rejection");
+      return;
+    }
+
     const responseReviewInstructor = await reviewProfileInstructor(selectedInstructor._id, "reject", rejectReason);
 
     if (responseReviewInstructor) {
@@ -95,8 +114,9 @@ const AdminInstructorRequest = () => {
         item._id === selectedInstructor._id ? { ...item, isRejected: true } : item
       );
       setDataSource(updatedDataSource);
+      setIsModalVisible(false);
+      form.resetFields();
     }
-    setIsModalVisible(false);
   };
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
@@ -151,14 +171,13 @@ const AdminInstructorRequest = () => {
       width: "20%",
     },
     {
-      title: 'Video',
-      dataIndex: 'video',
-      key: 'video',
-      width: '50%',
+      title: "Video",
+      dataIndex: "video",
+      key: "video",
+      width: "50%",
       render: (video) => (
-        <video  controls>
+        <video controls>
           <source src={video} type="video/mp4" />
-        
         </video>
       ),
     },
@@ -195,7 +214,7 @@ const AdminInstructorRequest = () => {
       title: "Action",
       key: "action",
       width: "15%",
-      render: (_, record) => (
+      render: (_: unknown, record) => (
         <Space size="middle">
           {record.isRejected ? (
             <Tag color="red">Account rejected</Tag>
@@ -235,7 +254,7 @@ const AdminInstructorRequest = () => {
       <Table
         columns={columns}
         dataSource={dataSource}
-        rowKey={(record: Instructor) => record._id}
+        rowKey="_id"
         pagination={false}
         onChange={handleTableChange}
         className="overflow-auto"
@@ -258,19 +277,23 @@ const AdminInstructorRequest = () => {
         okText="Reject"
         okButtonProps={{ danger: true }}
       >
-        <Input.TextArea
-          rows={4}
-          value={rejectReason}
-          onChange={(e) => setRejectReason(e.target.value)}
-          placeholder="Please provide the reason for rejection"
-        />
+        <Form form={form}>
+          <Form.Item
+            label="Reject Reason"
+            name="rejectReason"
+            rules={rejectRules}
+          >
+            <Input.TextArea
+              rows={4}
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="Please provide the reason for rejection"
+            />
+          </Form.Item>
+        </Form>
       </Modal>
     </div>
   );
 };
 
 export default AdminInstructorRequest;
-
-
-
-

@@ -26,7 +26,7 @@ import { Instructor } from "../../models";
 import { getBase64, uploadFile } from "../../utils";
 import {
   BackButton,
-  ButtonItem,
+  ButtonFormItem,
   DescriptionFormItem,
   EmailFormItem,
   NameFormItem,
@@ -35,6 +35,7 @@ import {
   UploadButton,
   VideoFormItem,
 } from "../../components";
+import ResponseData from "../../models/ResponseData.ts";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -73,12 +74,17 @@ const RegisterPage: React.FC = () => {
       values.avatar = url;
     }
 
-    await axiosInstance.post(API_REGISTER, { ...values, captchaToken });
-    message.success("Successfully registered. Navigate in 2s");
-    setTimeout(() => {
-      navigate(paths.LOGIN);
-    }, 2000);
-    setLoading(false);
+    try {
+      const response: ResponseData = await axiosInstance.post(API_REGISTER, { ...values, captchaToken });
+      message.success("Successfully registered. Please check your email to login");
+      if (response.success) {
+        setTimeout(() => {
+          navigate(paths.LOGIN);
+        }, 2000);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePreview = async (file: UploadFile) => {
@@ -165,7 +171,7 @@ const RegisterPage: React.FC = () => {
                   wrapperCol={{ span: 24 }}
                   style={{ marginBottom: "0px" }}
                 >
-                  <ButtonItem
+                  <ButtonFormItem
                     loading={loading}
                     buttonText="Register"
                     htmlType="submit"
@@ -242,7 +248,7 @@ const RegisterPage: React.FC = () => {
               {fileList.length >= 1 ? null : <UploadButton />}
             </Upload>
           </Form.Item>
-          <ButtonItem
+          <ButtonFormItem
             loading={loading}
             buttonText="Register"
             htmlType="submit"

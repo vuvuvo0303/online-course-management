@@ -19,9 +19,9 @@ import { useEffect, useState } from "react";
 import SearchTool from "../SearchTool";
 import Drawer from "../Drawer";
 import PopoverContent from "../PopoverContent";
-import { logout } from "../../services/auth";
+import { logout } from "../../services";
 import { getCarts } from "../../services";
-import { Cart } from "../../models/Cart";
+import { Cart } from "../../models";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
@@ -50,7 +50,6 @@ const Navbar: React.FC = () => {
     location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
-  const isForgotPassword = location.pathname === "/forgot-password";
 
   useEffect(() => {
     if (token) {
@@ -172,7 +171,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className="flex items-center w-full p-2">
       <div className="flex items-center gap-10">
-        {!isLoginPage && !isRegisterPage && !isForgotPassword && (
+        {!isLoginPage && !isRegisterPage && (
           <div className="md:hidden mt-1">
             <Drawer />
           </div>
@@ -189,7 +188,6 @@ const Navbar: React.FC = () => {
       </div>
 
       {!isLoginOrRegister &&
-        !isForgotPassword &&
         !isLoginPage &&
         !isRegisterPage && (
           <div className="flex-grow flex justify-center">

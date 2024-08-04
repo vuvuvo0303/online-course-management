@@ -7,7 +7,6 @@ import {
   YoutubeOutlined
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import About from './about/about';
 import Cart from './cart/CartComponents';
 import Sub from './subscription/index';
 import { Course, Subscription, Review } from "../../models";
@@ -17,7 +16,7 @@ import { getUserFromLocalStorage, fetchCoursesByClient, getItemsBySubscriber, ge
 const defaultAvatarUrl = '/x1.jpg'; // Path to image in public folder
 
 const Profile: React.FC = () => {
-  const [activeTabKey, setActiveTabKey] = useState('1');
+  const [activeTabKey, setActiveTabKey] = useState('2');
   const [courses, setCourses] = useState<Course[]>([]);
   const [dataReviews, setDataReviews] = useState<Review[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
@@ -61,11 +60,6 @@ const Profile: React.FC = () => {
   };
 
   const tabItems = [
-    {
-      key: '1',
-      label: 'About',
-      children: <About />,
-    },
     {
       key: '2',
       label: 'Purchased',

@@ -8,13 +8,13 @@ import {
   Tag,
   Button,
   Modal,
-  Tabs,
   message,
   Input,
-  TabsProps,
   TablePaginationConfig,
   PaginationProps,
   Pagination,
+  Select,
+  Space,
 } from "antd";
 import { getColorPayout } from "../../../consts/index";
 import { createStyles } from "antd-style";
@@ -22,7 +22,6 @@ import { LoadingComponent, CustomBreadcrumb } from "../../../components";
 import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
 import { formatCurrency, formatDate } from "../../../utils";
-
 const useStyle = createStyles(({ token }) => ({
   "my-modal-body": {
     background: token.blue1,
@@ -67,6 +66,7 @@ const InstructorManagePayout = () => {
   useEffect(() => {
     getPayoutsByInstructor();
   }, [statusPayout, payoutNoSearch, pagination.current, pagination.pageSize]);
+
 
   const getPayoutsByInstructor = async () => {
     // no loading for search
@@ -149,17 +149,20 @@ const InstructorManagePayout = () => {
       width: "10%",
       render: (created_at: string) => formatDate(created_at),
     },
-    ...(statusPayout === "new" || statusPayout === "rejected" ? [{
-      title: "Action",
-      dataIndex: "status",
-      key: "action",
-      render: (_text: string, record: Payout) =>
-      (
-        <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
-          Request Payout
-        </Button>
-      ),
-    }] : []),
+    ...(statusPayout === "new" || statusPayout === "rejected"
+      ? [
+        {
+          title: "Action",
+          dataIndex: "status",
+          key: "action",
+          render: (_text: string, record: Payout) => (
+            <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
+              Request Payout
+            </Button>
+          ),
+        },
+      ]
+      : []),
   ];
 
   const columnsTransactions: TableProps<Transaction>["columns"] = [
@@ -186,17 +189,6 @@ const InstructorManagePayout = () => {
     },
   ];
 
-  const items: TabsProps["items"] = [
-    { key: "new", label: "New" },
-    { key: "request_payout", label: "Request Payout" },
-    { key: "completed", label: "Completed" },
-    { key: "rejected", label: "Rejected" },
-  ];
-
-  const onChange = (key: string) => {
-    setStatusPayout(key);
-  };
-
   if (loading) {
     return <LoadingComponent />;
   }
@@ -213,6 +205,14 @@ const InstructorManagePayout = () => {
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPagination({ ...pagination, current: page, pageSize });
   };
+
+  const handleStatus = async (value: string) => {
+    setStatusPayout(value);
+    setPagination((prev) => ({
+      ...prev,
+      current: 1,
+    }));
+  };
   return (
     <>
       <Modal
@@ -223,19 +223,36 @@ const InstructorManagePayout = () => {
         footer={null}
         classNames={classNames}
       >
-        <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
+        <Table rowKey="_id" dataSource={transactions} pagination={false} columns={columnsTransactions} />
       </Modal>
       <div className="container mx-auto px-10">
         <CustomBreadcrumb />
-        <Input.Search
-          placeholder="Search By Purchase No"
-          value={searchPayout}
-          onChange={(e) => setSearchPayout(e.target.value)}
-          className="p-2"
-          style={{ width: 250 }}
-          enterButton={<SearchOutlined className="text-white" />}
-        />
-        <Tabs defaultActiveKey={statusPayout} items={items} onChange={onChange} />
+        <Space>
+          <Input.Search
+            placeholder="Search By Purchase No"
+            value={searchPayout}
+            onChange={(e) => setSearchPayout(e.target.value)}
+            className="p-2"
+            style={{ width: 250 }}
+            enterButton={<SearchOutlined className="text-white" />}
+          />
+          {/* <Tabs defaultActiveKey={statusPayout} items={items} onChange={onChange} /> */}
+          <Select
+            placeholder="Select Status"
+            optionFilterProp="children"
+            onChange={handleStatus}
+            value={statusPayout}
+            style={{ width: 200 }}
+
+            className="w-full md:w-34 mt-2 md:mt-0 md:ml-2"
+          >
+            <Select.Option value="new">New</Select.Option>
+            <Select.Option value="request_payout">Request Payout</Select.Option>
+            <Select.Option value="completed">Completed</Select.Option>
+            <Select.Option value="rejected">Rejected</Select.Option>
+          </Select>
+        </Space>
+
         <Table
           rowKey={(record: Payout) => record._id}
           dataSource={payouts}
@@ -253,7 +270,16 @@ const InstructorManagePayout = () => {
             showSizeChanger
           />
         </div>
+        <Pagination
+          total={pagination.total}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          onChange={handlePaginationChange}
+          showSizeChanger
+        />
       </div>
+
     </>
   );
 };

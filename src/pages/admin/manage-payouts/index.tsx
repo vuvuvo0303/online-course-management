@@ -31,14 +31,14 @@ const AdminManagePayouts: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
   const debouncedSearch = useDebounce(searchText, 500);
   const [statusFilter, setStatusFilter] = useState<string>("request_payout");
-  const [dataStatusPayout, setDataStatusPayout] = useState<{ id: string, status: string }>({ id: "", status: "" });
+  const [dataStatusPayout, setDataStatusPayout] = useState<{ id: string; status: string }>({ id: "", status: "" });
   const [comment, setComment] = useState<string>("");
   // modal to show reject's comment request payout
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const showModal = (id: string, status: string) => {
     setOpen(true);
-    setDataStatusPayout({ id, status })
+    setDataStatusPayout({ id, status });
   };
 
   const toggleModal = (idx: number, target: boolean, transactions?: Transaction[]) => {
@@ -53,16 +53,16 @@ const AdminManagePayouts: React.FC = () => {
 
   const handleOk = async () => {
     if (comment != "" && dataStatusPayout.status === "rejected") {
-      setLoading(true)
-      await handleUpdateStatus(dataStatusPayout.id, dataStatusPayout.status, comment)
-      setComment("")
+      setLoading(true);
+      await handleUpdateStatus(dataStatusPayout.id, dataStatusPayout.status, comment);
+      setComment("");
     } else if (dataStatusPayout.status === "completed") {
-      setLoading(true)
-      await handleUpdateStatus(dataStatusPayout.id, dataStatusPayout.status, comment)
-      setComment("")
-    }
-    else {
-      message.error("Please Enter Comment!")
+      setLoading(true);
+      await handleUpdateStatus(dataStatusPayout.id, dataStatusPayout.status, comment);
+      setComment("");
+    } else {
+      message.error("Please Enter Comment!");
+      return;
     }
     setTimeout(() => {
       setOpen(false);
@@ -81,7 +81,15 @@ const AdminManagePayouts: React.FC = () => {
   const fetchPayouts = useCallback(async () => {
     setLoading(true);
     try {
-      const responsePayouts = await getPayouts(debouncedSearch, "", statusFilter, false, false, pagination.current, pagination.pageSize);
+      const responsePayouts = await getPayouts(
+        debouncedSearch,
+        "",
+        statusFilter,
+        false,
+        false,
+        pagination.current,
+        pagination.pageSize
+      );
 
       setDataPayouts(responsePayouts.data.pageData);
       setPagination({
@@ -100,9 +108,11 @@ const AdminManagePayouts: React.FC = () => {
   }, [fetchPayouts]);
 
   if (loading) {
-    return (<>
-      <LoadingComponent />
-    </>)
+    return (
+      <>
+        <LoadingComponent />
+      </>
+    );
   }
 
   const handleTableChange = async (pagination: PaginationProps) => {
@@ -129,15 +139,15 @@ const AdminManagePayouts: React.FC = () => {
 
   const columns: TableColumnsType<Payout> = [
     {
-      title: 'Payout No',
-      dataIndex: 'transactions',
-      key: 'transactions',
-      width: '15%',
+      title: "Payout No",
+      dataIndex: "transactions",
+      key: "transactions",
+      width: "15%",
       render: (transactions: Transaction[], record: Payout) => (
         <div onClick={() => toggleModal(0, true, transactions)} className="text-blue-500 cursor-pointer">
           {record.payout_no}
         </div>
-      )
+      ),
     },
     {
       title: "Instructor Email",
@@ -146,18 +156,16 @@ const AdminManagePayouts: React.FC = () => {
       width: "15%",
     },
     {
-      title: 'Balance Origin',
-      dataIndex: 'balance_origin',
-      key: 'balance_origin',
+      title: "Balance Origin",
+      dataIndex: "balance_origin",
+      key: "balance_origin",
     },
     {
       title: "Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
       width: "15%",
-      render: (balance_instructor_paid: number) => (
-        <>{formatCurrency(balance_instructor_paid)}</>
-      ),
+      render: (balance_instructor_paid: number) => <>{formatCurrency(balance_instructor_paid)}</>,
     },
 
     {
@@ -165,7 +173,7 @@ const AdminManagePayouts: React.FC = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
       width: "15%",
-      render: (balance_instructor_received: number) => <>{formatCurrency(balance_instructor_received)}</>
+      render: (balance_instructor_received: number) => <>{formatCurrency(balance_instructor_received)}</>,
     },
     {
       title: "Status",
@@ -173,13 +181,7 @@ const AdminManagePayouts: React.FC = () => {
       key: "status",
       width: "10%",
       render: (status: string) => (
-        <Tag
-          color={
-            getColorPayout(status)
-          }
-        >
-          {status === "request_payout" ? "request payout" : status}
-        </Tag>
+        <Tag color={getColorPayout(status)}>{status === "request_payout" ? "request payout" : status}</Tag>
       ),
     },
     {
@@ -199,10 +201,9 @@ const AdminManagePayouts: React.FC = () => {
       title: "Action",
       key: "action",
       width: "20%",
-      render: (record: Payout) => (
+      render: (_: unknown, record: Payout) => (
         <>
-          {
-            (record.status === "request_payout") &&
+          {record.status === "request_payout" && (
             <div className="flex gap-2">
               <Button type="primary" onClick={() => handleUpdateStatus(record._id, "completed", "")}>
                 Completed
@@ -211,7 +212,7 @@ const AdminManagePayouts: React.FC = () => {
                 Rejected
               </Button>
             </div>
-          }
+          )}
         </>
       ),
     });
@@ -220,35 +221,35 @@ const AdminManagePayouts: React.FC = () => {
   const handleUpdateStatus = async (id: string, status: string, comment: string) => {
     const res = await updateStatusPayout(id, status, comment);
     if (res) {
-      message.success(`Change Payout Status To ${status === "completed" ? "Completed" : "Rejected"} Successfully`)
+      message.success(`Change Payout Status To ${status === "completed" ? "Completed" : "Rejected"} Successfully`);
       getPayouts();
     }
-  }
+  };
 
   const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setComment(e.target.value);
   };
 
-  const columnsTransactions: TableProps['columns'] = [
+  const columnsTransactions: TableProps["columns"] = [
     {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
     },
     {
-      title: 'Discount',
-      dataIndex: 'discount',
-      key: 'discount',
+      title: "Discount",
+      dataIndex: "discount",
+      key: "discount",
     },
     {
-      title: 'Price Paid',
-      dataIndex: 'price_paid',
-      key: 'price_paid',
+      title: "Price Paid",
+      dataIndex: "price_paid",
+      key: "price_paid",
     },
     {
-      title: 'Created Date',
-      dataIndex: 'created_at',
-      key: 'craeted_at',
+      title: "Created Date",
+      dataIndex: "created_at",
+      key: "craeted_at",
       render: (created_at: string) => formatDate(created_at),
     },
   ];
@@ -265,19 +266,16 @@ const AdminManagePayouts: React.FC = () => {
       >
         <Table dataSource={transactions} pagination={false} columns={columnsTransactions} />
       </Modal>
-      <Modal
-        title="Title"
-        open={open}
-        onOk={handleOk}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancel}
-      >
+      <Modal title="Reason Reject" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
         <Form>
-          <Form.Item label="Comment" name="Comment">
+          <Form.Item
+            label="Comment"
+            name="Comment"
+            rules={[{ required: true, message: "Please provide the reason for rejection" }]}
+          >
             <Input.TextArea value={comment} onChange={handleSaveComment} />
           </Form.Item>
         </Form>
-
       </Modal>
       <div className="flex justify-between">
         <CustomBreadcrumb homeHref="/" />
@@ -297,7 +295,6 @@ const AdminManagePayouts: React.FC = () => {
           value={statusFilter}
           className="w-full md:w-34 mt-2 md:mt-0 md:ml-2"
         >
-
           <Select.Option value="request_payout">Request Payout</Select.Option>
           <Select.Option value="completed">Completed</Select.Option>
           <Select.Option value="rejected">Rejected</Select.Option>

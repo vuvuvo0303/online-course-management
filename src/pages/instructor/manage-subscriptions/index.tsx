@@ -3,15 +3,14 @@ import {
   API_INSTRUCTOR_GET_SUBSCRIPTIONS,
   API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER,
   getColorStatusSubscribe,
-} from "../../../consts/index";
-import { format } from "date-fns";
-import { Subscription } from "models/Subscription";
+} from "../../../consts";
+import { Subscription } from "../../../models";
 import { useEffect, useState } from "react";
-import axiosInstance from "../../../services/axiosInstance";
-import useDebounce from "../../../hooks/useDebounce";
+import { axiosInstance } from "../../../services";
+import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
-import LoadingComponent from "../../../components/loading";
-import CustomBreadcrumb from "../../../components/breadcrumb";
+import { LoadingComponent, CustomBreadcrumb } from "../../../components";
+import { formatDate } from "../../../utils";
 const InstructorManageSubscriptions = () => {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [keyword, setKeyword] = useState<string>("");
@@ -43,11 +42,10 @@ const InstructorManageSubscriptions = () => {
             current: res.data.pageInfo.pageNum,
             pageSize: res.data.pageInfo.pageSize,
           });
-          setLoading(false);
         }
+      } finally {
         setLoading(false);
-      } catch (error) {
-        console.log("Error occurred: ", error);
+
       }
     };
     fetchSubscriptions();
@@ -112,13 +110,13 @@ const InstructorManageSubscriptions = () => {
       title: "Created Date ",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: Date) => formatDate(created_at),
     },
     {
       title: "Updated Date ",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (update_at: Date) => format(new Date(update_at), "dd/MM/yyyy"),
+      render: (update_at: Date) => formatDate(update_at),
     },
   ];
 
@@ -148,7 +146,7 @@ const InstructorManageSubscriptions = () => {
       <Table
         columns={columns}
         dataSource={subscriptions}
-        rowKey={(record: Subscription) => record._id}
+        rowKey="_id"
         pagination={false}
         onChange={handleTableChange}
       />

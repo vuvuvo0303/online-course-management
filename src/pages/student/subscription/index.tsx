@@ -1,12 +1,12 @@
 import { Input, message, Table, TableProps, Tag } from "antd";
 import { getColorStatusSubscribe } from "../../../consts";
-import { format } from "date-fns";
 import { Subscription } from "../../../models";
 import { useEffect, useState } from "react";
-import useDebounce from "../../../hooks/useDebounce";
+import { useDebounce } from "../../../hooks";
 import { getItemsBySubscriber, subscriptionByInstructorOrStudent } from "../../../services";
 import { SearchOutlined } from "@ant-design/icons";
-import LoadingComponent from "../../../components/loading";
+import { LoadingComponent } from "../../../components";
+import { formatDate } from "../../../utils";
 const StudentSubscription = () => {
     const [keyword, setKeyword] = useState<string>("");
     const [subscriber, setSubscriber] = useState<Subscription[]>([]);
@@ -19,9 +19,13 @@ const StudentSubscription = () => {
 
     const getSubscriber = async () => {
         setLoading(true)
-        const res = await getItemsBySubscriber(debouncedSearchTerm, 1, 100);
-        setSubscriber(res);
-        setLoading(false);
+        try {
+            const res = await getItemsBySubscriber(debouncedSearchTerm, 1, 100);
+            setSubscriber(res);
+        } finally {
+
+            setLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -68,13 +72,13 @@ const StudentSubscription = () => {
             title: 'Created At ',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+            render: (created_at: Date) => formatDate(created_at),
         },
         {
             title: 'Updated Date ',
             dataIndex: 'updated_at',
             key: 'updated_at',
-            render: (update_at: Date) => format(new Date(update_at), "dd/MM/yyyy"),
+            render: (update_at: Date) => formatDate(update_at),
         },
     ];
     return (
@@ -88,7 +92,7 @@ const StudentSubscription = () => {
                 style={{ width: 200 }}
                 enterButton={<SearchOutlined className="text-white" />}
             />
-            <Table columns={columns} dataSource={subscriber} />
+            <Table rowKey="_id" columns={columns} dataSource={subscriber} />
         </div>
     )
 }

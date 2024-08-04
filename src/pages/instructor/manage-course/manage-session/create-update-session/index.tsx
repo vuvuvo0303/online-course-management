@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Button, Form, Input, Select, message, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models";
-import { API_CREATE_SESSION, API_GET_COURSES, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
-import { axiosInstance, getUserFromLocalStorage } from "../../../../../services";
+import { API_CREATE_SESSION, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
+import { axiosInstance, getCourses, getUserFromLocalStorage } from "../../../../../services";
 import { CustomBreadcrumb, LoadingComponent, DescriptionFormItem } from "../../../../../components";
 import { formItemLayout } from "../../../../../layout/form";
 
@@ -53,22 +53,9 @@ const CreateUpdateSession = () => {
       setCourseIdUpdate(courseId)
     }
     const fetchCourses = async () => {
-      const res = await axiosInstance.post(API_GET_COURSES,
-        {
-          "searchCondition": {
-            "keyword": "",
-            "category": "",
-            "status": "",
-            "is_deleted": false
-          },
-          "pageInfo": {
-            "pageNum": 1,
-            "pageSize": 10
-          }
-        }
-      );
+      const responeCourses = await getCourses();
 
-      setCourses(res.data.pageData);
+      setCourses(responeCourses.data.pageData);
       setLoading(false)
     };
     fetchCourses();
