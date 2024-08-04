@@ -249,6 +249,7 @@ const LoginPage: React.FC = () => {
             <>
               <Form.Item
                 label="Description"
+                required
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 rules={[{ required: true, message: "Please select a role" }]}

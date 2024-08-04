@@ -119,7 +119,7 @@ const RegisterPage: React.FC = () => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#fffcce] to-[#1e5b53] relative">
       <BackButton path={paths.HOME} />
-      <div className="w-full md:w-1/2 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[500px] mb-[30px] mt-[30px]">
+      <div className="w-full md:w-7/12 flex flex-row bg-white rounded-lg shadow-lg overflow-hidden min-h-[500px] mb-[30px] mt-[30px]">
         <div className="w-1/2 flex flex-col justify-center p-4 md:p-8 bg-white rounded-lg">
           <div className="flex flex-col items-center mb-2">
             <h1 className="text-2xl md:text-3xl font-bold text-center">
@@ -127,7 +127,7 @@ const RegisterPage: React.FC = () => {
             </h1>
           </div>
 
-          <span className="text-center mb-2" style={{ fontSize: "15px" }}>
+          <span className="text-center mb-3">
             Step into success with FLearn. Join us today!
           </span>
 
@@ -137,7 +137,7 @@ const RegisterPage: React.FC = () => {
                 form={form}
                 name="basic"
                 className="flex flex-col gap-1"
-                style={{ maxWidth: 400, overflow: "hidden" }}
+                style={{ maxWidth: 600, overflow: "hidden" }}
                 initialValues={{ remember: true, role }}
                 onFinish={onFinish}
                 autoComplete="off"
@@ -174,7 +174,9 @@ const RegisterPage: React.FC = () => {
                 </Form.Item>
               </Form>
             </div>
-            <span className="block text-center">Already have an account?</span>
+            <span className="block text-center">
+              Do you already have an account?
+            </span>
             <span className="block text-center mt-1">
               <strong>
                 <Link
