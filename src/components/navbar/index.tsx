@@ -77,12 +77,18 @@ const Navbar: React.FC = () => {
 
       if (resNew) {
         setCartsNew(resNew);
-        total += resNew.reduce((sum, cart) => sum + (cart.price || 0), 0);
+        total += resNew.reduce(
+          (sum: number, cart: Cart) => sum + (cart.price || 0),
+          0
+        );
       }
 
       if (resCancel) {
         setCartsCancel(resCancel);
-        total += resCancel.reduce((sum, cart) => sum + (cart.price || 0), 0);
+        total += resCancel.reduce(
+          (sum: number, cart: Cart) => sum + (cart.price || 0),
+          0
+        );
       }
 
       setTotalCost(total);
