@@ -54,7 +54,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             </div>
             <div className="flex flex-col text-white flex-grow">
                 <h2 className="text-xl lg:text-2xl font-bold">{course.name}</h2>
-                <p className="pt-2 pb-2 truncate">{course.description.replace(/^<p>/, '').replace(/<\/p>$/, '')}</p>
+                <p className="pt-2 pb-2 truncate">
+                    {course.description.replace(/^<p>/, '').replace(/<\/p>$/, '').split(' ').slice(0, 10).join(' ')}...
+                </p>
                 <div className="space-y-2 flex-grow">
                     {course.review_count > 0 && (
                         <div className="flex items-center mb-2">
@@ -78,7 +80,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     <div>
                         <strong>Last update:</strong> {new Date(course.updated_at).toLocaleDateString('en-GB')}
                     </div>
-                    {!course.is_purchased && (
+                    {!course.is_purchased && course.price_paid !== 0 && (
                         <>
                             <div className="flex flex-row gap-4 items-center">
                                 <div className="text-xl lg:text-3xl">{formatCurrency(course.price_paid)}</div>
@@ -90,7 +92,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                         </>
                     )}
                     <div className="flex gap-4 mt-auto">
-                        {course.is_purchased ? (
+                        {course.is_purchased || course.price_paid === 0 ? (
                             <Link to={`/course/lesson/${course._id}`}>
                                 <button className="bg-yellow-500 text-gray-800 p-2 rounded-md hover:bg-yellow-400">
                                     Study now

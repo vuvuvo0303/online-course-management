@@ -8,7 +8,6 @@ import { fetchCoursesByClient } from '../../../services';
 import { Course, Category } from '../../../models';
 import './Categories.css';
 import { paths } from '../../../consts';
-import { formatCurrency } from '../../../utils';
 
 const { Meta } = Card;
 
@@ -163,7 +162,7 @@ const Categories = () => {
                                     style={{ margin: '10px' }}
                                     cover={
                                         <div className="relative h-48 bg-white flex items-center justify-center overflow-hidden">
-                                            <Link to={`/course/all-courses/${course._id}`}>
+                                            <Link to={`/course/${course._id}`}>
                                                 <img
                                                     alt="course"
                                                     src={course.image_url || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'} // Fallback image
@@ -177,7 +176,7 @@ const Categories = () => {
                                 >
                                     <Meta
                                         className="truncate"
-                                        title={<Link to={`/course/all-courses/course/${course._id}`} className="hover:underline">{course.name}</Link>}
+                                        title={<Link to={`/course/${course._id}`} className="hover:underline">{course.name}</Link>}
                                         description={course.instructor_name}
                                     />
                                     <div className="mt-2">
@@ -204,9 +203,9 @@ const Categories = () => {
             <div className="content-frame">
                 <h2>Become an Instructor</h2>
                 <img
-                    src="https://png.pngtree.com/png-vector/20190115/ourlarge/pngtree-teachers-day-cartoon-female-teacher-teacher-png-image_370554.jpg"
+                    src="https://i.pinimg.com/564x/2a/b2/1c/2ab21cc4809ff71d4c9eb07937bb5321.jpg"
                     alt="Instructor"
-                    className="instructor-image"
+                    className="instructor-image my-14"
                 />
                 <p>Top instructors from around the world teach millions of students on FLearn. We provide the tools and skills to teach what you love.</p>
                 <Link to={paths.TEACHING}>

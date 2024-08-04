@@ -265,7 +265,7 @@ export const paths = {
   ALL_COURSES: "/course/all-courses",
   SITEMAP: "/sitemap",
   NOTFOUND: "/notfound",
-  COURSE_DETAILS: "/course/all-courses/:_id",
+  COURSE_DETAILS: "/course/:_id",
   COURSE_DETAIL: "/course/:id",
   FORGOT_PASSWORD: "/forgot-password",
   VERIFY_TOKEN: "/verify-email/:token",
