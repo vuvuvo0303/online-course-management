@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, message } from "antd";
+import { Form, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../services/axiosInstance.ts";
 import { API_RESEND_TOKEN, API_VERIFY_TOKEN, paths } from "../../consts";
 import ResponseData from '../../models/ResponseData.ts';
-import { EmailFormItem } from '../../components';
+import { ButtonItem, EmailFormItem } from '../../components';
 
 const VerifyToken: React.FC = () => {
     const params = useParams();
@@ -67,16 +67,7 @@ const VerifyToken: React.FC = () => {
                                     <div className='mb-3'>
                                         <EmailFormItem value={email} onChange={(e) => setEmail(e.target.value)} />
                                     </div>
-                                    <Form.Item>
-                                        <Button
-                                            type="primary"
-                                            htmlType="submit"
-                                            loading={isLoadingResend}
-                                            className="w-full py-5 mt-3"
-                                        >
-                                            {isLoadingResend ? "Resending..." : "Resend Token"}
-                                        </Button>
-                                    </Form.Item>
+                                    <ButtonItem loading={isLoadingResend} buttonText="Resend Token" htmlType="submit" />
                                 </Form>
                             </div>
                         )}
