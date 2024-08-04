@@ -33,6 +33,7 @@ const ReviewPage: React.FC = () => {
 
     useEffect(() => {
         const fetchCourses = async () => {
+            setLoading(true)
             try {
                 const responseCourses = await getCourses("", "", "new", false, 1, 10);
                 if (responseCourses.data) {
@@ -41,8 +42,9 @@ const ReviewPage: React.FC = () => {
                         setSelectedCourse(responseCourses.data.pageData[0]._id);
                     }
                 }
-            } catch (error) {
-                console.error('Error fetching courses:', error);
+            } finally {
+                setLoading(false);
+
             }
         };
 

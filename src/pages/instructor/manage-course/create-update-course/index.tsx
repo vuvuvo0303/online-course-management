@@ -1,15 +1,15 @@
 import { Category, Course } from "../../../../models";
 import { API_CREATE_COURSE, API_GET_COURSE, API_UPDATE_COURSE } from "../../../../consts";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Form, Image, Input, message, Select, Upload } from "antd";
+import { Form, Image, Input, message, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { getCategories, axiosInstance } from "../../../../services";
-import { TinyMCEEditorComponent, LoadingComponent, CustomBreadcrumb } from "../../../../components";
+import { TinyMCEEditorComponent, LoadingComponent, CustomBreadcrumb, ButtonFormItem } from "../../../../components";
 import { formItemLayout } from "../../../../layout/form"
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { uploadFile } from "../../../../utils";
+import { getBase64, uploadFile } from "../../../../utils";
 import { RuleObject } from "antd/es/form";
 import { StoreValue } from "antd/es/form/interface";
 
@@ -41,14 +41,6 @@ const InstructorCreateCourse: React.FC = () => {
       : Promise.reject("This is not a valid video URL");
   }
 
-
-  const getBase64 = (file: FileType): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -303,11 +295,7 @@ const InstructorCreateCourse: React.FC = () => {
           ]}>
             <Input type="number" />
           </Form.Item>
-          <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-            <Button className="float-right" type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
+          <ButtonFormItem buttonText="Submit" htmlType="submit" loading={loading} />
         </Form>
         {previewImage && (
           <Image

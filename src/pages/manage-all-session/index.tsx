@@ -1,14 +1,13 @@
-import { DeleteOutlined, EditOutlined,  } from "@ant-design/icons";
-import {  Button, Input, message, Modal, Select, Table, TableProps } from "antd";
+import { DeleteOutlined, EditOutlined, } from "@ant-design/icons";
+import { Button, Input, message, Modal, Select, Table, TableProps } from "antd";
 import { useEffect, useState } from "react";
 import { Course, Session } from "../../models";
 import { Link } from "react-router-dom";
 import { axiosInstance, getUserFromLocalStorage } from "../../services";
 import { API_DELETE_SESSION, API_GET_COURSES, API_GET_SESSIONS } from "../../consts";
 import { useDebounce } from "../../hooks";
-import { format } from "date-fns";
-import LoadingComponent from "../../components/loading";
-import CustomBreadcrumb from "../../components/breadcrumb";
+import { LoadingComponent, CustomBreadcrumb } from "../../components";
+import { formatDate } from "../../utils";
 const ManageAllSession = () => {
     const [keyword, setKeyword] = useState<string>('');
     const [open, setOpen] = useState(false);
@@ -173,13 +172,13 @@ const ManageAllSession = () => {
             title: 'Created Date',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (created_at: Date) => format(new Date(created_at), "dd/MM/yyyy"),
+            render: (created_at: Date) => formatDate(new Date(created_at), "dd/MM/yyyy"),
         },
         {
             title: 'Updated Date',
             dataIndex: 'updated_at',
             key: 'updated_at',
-            render: (updated_at: Date) => format(new Date(updated_at), "dd/MM/yyyy"),
+            render: (updated_at: Date) => formatDate(new Date(updated_at), "dd/MM/yyyy"),
         },
         {
             title: 'Action',

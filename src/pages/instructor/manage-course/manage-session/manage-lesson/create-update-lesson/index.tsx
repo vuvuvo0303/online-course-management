@@ -1,25 +1,22 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Select, Spin, message } from "antd";
+import { Form, Input, Select, Spin, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import { Course, Lessons, Session } from "../../../../../../models/index.ts";
-import { axiosInstance, getUserFromLocalStorage } from "../../../../../../services";
+import { Course, Lessons, Session } from "../../../../../../models";
+import { axiosInstance, getCourses, getUserFromLocalStorage } from "../../../../../../services";
 import {
   API_CREATE_LESSON,
-  API_GET_COURSES,
   API_GET_LESSON,
   API_GET_SESSION,
   API_GET_SESSIONS,
   API_UPDATE_LESSON,
 } from "../../../../../../consts";
 import { formItemLayout } from "../../../../../../layout/form";
-import LoadingComponent from "../../../../../../components/loading";
-import CustomBreadcrumb from "../../../../../../components/breadcrumb/index.tsx";
+import { LoadingComponent, CustomBreadcrumb, NumberFormItem, ButtonFormItem } from "../../../../../../components";
 
 import { PlusOutlined } from "@ant-design/icons";
 import { Image, Upload } from "antd";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { getBase64, uploadFile } from "../../../../../../utils/uploadHelper/index.ts";
-import TextArea from "antd/es/input/TextArea";
 
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -85,8 +82,6 @@ const CreateUpdateLesson: React.FC = () => {
               },
             ]);
           }
-        } catch (error) {
-          message.error("Failed to fetch lesson data.");
         } finally {
           setLoading(false);
         }
@@ -99,23 +94,10 @@ const CreateUpdateLesson: React.FC = () => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const response = await axiosInstance.post(API_GET_COURSES, {
-          searchCondition: {
-            keyword: "",
-            category: "",
-            status: "active",
-            is_deleted: false,
-          },
-          pageInfo: {
-            pageNum: 1,
-            pageSize: 10,
-          },
-        });
-        if (response.data) {
-          setCourses(response.data.pageData);
+        const responseCourses = await getCourses("", "", "active");
+        if (responseCourses.data) {
+          setCourses(responseCourses.data.pageData);
         }
-      } catch (error) {
-        message.error("Failed to fetch courses.");
       } finally {
         setLoading(false);
       }
@@ -144,8 +126,6 @@ const CreateUpdateLesson: React.FC = () => {
           });
           setSessions(response.data.pageData);
         }
-      } catch (error) {
-        message.error("Failed to fetch sessions.");
       } finally {
         setLoading(false);
       }
@@ -187,8 +167,6 @@ const CreateUpdateLesson: React.FC = () => {
       } else {
         navigate(`/instructor/manage-all-lessons`);
       }
-    } catch (error) {
-      message.error("Failed to save the lesson.");
     } finally {
       setLoading(false);
     }
@@ -294,7 +272,7 @@ const CreateUpdateLesson: React.FC = () => {
             </Form.Item>
 
             <Form.Item label="Description" name="description">
-              <TextArea />
+              <Input.TextArea />
             </Form.Item>
 
             <Form.Item
@@ -331,27 +309,10 @@ const CreateUpdateLesson: React.FC = () => {
               </Upload>
             </Form.Item>
 
-            <Form.Item
-              label="Full Time"
-              name="full_time"
-              rules={[{ required: true, message: "Please input a number!" }]}
-            >
-              <Input type="number" />
-            </Form.Item>
+            <NumberFormItem label="Full Time" name="full_time" requiredMessage="Please input a number for time!" />
+            <NumberFormItem label="Position Order" name="position_order" requiredMessage="Please input a number for postition order!" />
 
-            <Form.Item
-              label="Position Order"
-              name="position_order"
-              rules={[{ required: true, message: "Please input a number!" }]}
-            >
-              <Input type="number" />
-            </Form.Item>
-
-            <Form.Item wrapperCol={{ span: 24, offset: 6 }}>
-              <Button className="float-right" type="primary" htmlType="submit" loading={loading}>
-                Submit
-              </Button>
-            </Form.Item>
+            <ButtonFormItem loading={loading} buttonText="Submit" htmlType="submit" />
           </Form>
         </div>
       )}

@@ -2,10 +2,9 @@ import { Purchase } from "../../models";
 import { useEffect, useState } from "react";
 import { getItemsByStudent } from "../../services";
 import LoadingComponent from "../../components/loading";
-import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Pagination, Table, TablePaginationConfig, TableProps } from "antd";
-import { formatCurrency } from "../../utils";
+import { formatCurrency, formatDate } from "../../utils";
 import { PaginationProps } from "antd/lib";
 
 const StudenManagePurchase = () => {
@@ -18,15 +17,19 @@ const StudenManagePurchase = () => {
     total: 0,
   });
   const getPurchasesByStudent = async () => {
-    const response = await getItemsByStudent("", "", "", "", 1, 10);
-    setPurchases(response.data.pageData);
-    setPagination({
-      ...pagination,
-      total: response.data.pageInfo.totalItems,
-      current: response.data.pageInfo.pageNum,
-      pageSize: response.data.pageInfo.pageSize,
-    });
-    setLoading(false);
+    setLoading(true);
+    try {
+      const response = await getItemsByStudent("", "", "", "", 1, 10);
+      setPurchases(response.data.pageData);
+      setPagination({
+        ...pagination,
+        total: response.data.pageInfo.totalItems,
+        current: response.data.pageInfo.pageNum,
+        pageSize: response.data.pageInfo.pageSize,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -86,7 +89,7 @@ const StudenManagePurchase = () => {
       dataIndex: "created_at",
       key: "created_at",
       width: "10%",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: string) => formatDate(created_at),
     },
   ];
 
@@ -109,7 +112,7 @@ const StudenManagePurchase = () => {
   return (
     <div className="container mx-auto px-10">
       <h1 className="text-center my-10">Manage Purchased</h1>
-      <Table rowKey={(record: Purchase) => record._id} dataSource={purchases} columns={columns} pagination={false} onChange={handleTableChange} />
+      <Table rowKey="_id" dataSource={purchases} columns={columns} pagination={false} onChange={handleTableChange} />
       <div className="flex justify-end py-8">
         <Pagination
           total={pagination.total}

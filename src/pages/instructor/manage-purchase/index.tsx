@@ -2,7 +2,6 @@ import { Purchase, TransactionsPurchase } from "../../../models";
 import { useEffect, useState } from "react";
 import { getItemsByInstructor } from "../../../services";
 
-import { format } from "date-fns";
 import {
   Button,
   Checkbox,
@@ -16,13 +15,12 @@ import {
   TabsProps,
   Tag,
 } from "antd";
-import { createPayout } from "../../../services/payout";
+import { createPayout } from "../../../services";
 import { getColorPurchase } from "../../../consts";
-import LoadingComponent from "../../../components/loading";
+import { LoadingComponent, CustomBreadcrumb } from "../../../components";
 import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
-import CustomBreadcrumb from "../../../components/breadcrumb";
-import { formatCurrency } from "../../../utils";
+import { formatCurrency, formatDate } from "../../../utils";
 
 const InstructorManagePurchase = () => {
   const [searchPurchase, setSearchPurchase] = useState<string>("");
@@ -39,7 +37,7 @@ const InstructorManagePurchase = () => {
   const [statusPurchase, setStatusPurchase] = useState<string>("new");
 
   const getPurchasesByInstructor = async () => {
-  
+
     const response = await getItemsByInstructor(purchaseNoSearch, "", "", statusPurchase, 1, 100);
     setPurchases(response.data.pageData);
     setPagination({
@@ -117,7 +115,7 @@ const InstructorManagePurchase = () => {
       dataIndex: "created_at",
       key: "created_at",
       width: "10%",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: string) => formatDate(created_at),
     },
   ];
 
@@ -166,19 +164,22 @@ const InstructorManagePurchase = () => {
       dataIndex: "created_at",
       key: "created_at",
       width: "10%",
-      render: (created_at: string) => format(new Date(created_at), "dd/MM/yyyy"),
+      render: (created_at: string) => formatDate(created_at),
     },
   ];
 
   const handleCreatePayout = async () => {
     setLoading(true);
-    const res = await createPayout(instructor_id, purchasesChecked);
-    console.log("res: ", res);
-    if (res) {
-      getPurchasesByInstructor();
-      setPurchasesChecked([]);// reset array
-    }else{
+    try {
+      const res = await createPayout(instructor_id, purchasesChecked);
+      console.log("res: ", res);
+      if (res) {
+        getPurchasesByInstructor();
+        setPurchasesChecked([]);// reset array
+      }
+    } finally {
       setLoading(false);
+
     }
   };
 
@@ -204,10 +205,10 @@ const InstructorManagePurchase = () => {
       setPurchasesChecked([]);
     } else {
       const allPurchasesChecked = purchases
-      .filter(purchase => purchase.price_paid !== 0) // Choose purchaes have price paid != 0
-      .map(purchase => ({
-        purchase_id: purchase._id,
-      }));
+        .filter(purchase => purchase.price_paid !== 0) // Choose purchaes have price paid != 0
+        .map(purchase => ({
+          purchase_id: purchase._id,
+        }));
       setPurchasesChecked(allPurchasesChecked);
     }
   };
@@ -272,7 +273,7 @@ const InstructorManagePurchase = () => {
       <Tabs defaultActiveKey={statusPurchase} items={items} onChange={onChangeStatus} />
       {statusPurchase === "new" ? (
         <Table
-          rowKey={(record: Purchase) => record._id}
+          rowKey="_id"
           dataSource={purchases}
           columns={columns}
           onChange={handleTableChange}
@@ -280,7 +281,7 @@ const InstructorManagePurchase = () => {
         />
       ) : (
         <Table
-          rowKey={(record: Purchase) => record._id}
+          rowKey="_id"
           dataSource={purchases}
           columns={columnsNotCheckbox}
           onChange={handleTableChange}
