@@ -170,7 +170,7 @@ const AllCourses = () => {
                     className="max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden"
                     cover={
                       <div className="relative">
-                        <Link to={`/course/all-courses/${course._id}`}>
+                        <Link to={`/course/${course._id}`}>
                           <img
                             alt="course"
                             src={
@@ -190,7 +190,7 @@ const AllCourses = () => {
                     <Meta
                       className="truncate"
                       title={
-                        <Link to={`/course/all-courses/course/${course._id}`} className="hover:underline">
+                        <Link to={`course/${course._id}`} className="hover:underline">
                           {course.name}
                         </Link>
                       }
