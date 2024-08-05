@@ -172,11 +172,16 @@ const InstructorManagePurchase = () => {
   const handleCreatePayout = async () => {
     if (purchasesChecked.length > 0) {
       setLoading(true);
-      const res = await createPayout(instructor_id, purchasesChecked);
-      if (res) {
-        getPurchasesByInstructor();
-        setPurchasesChecked([]);// reset array
-      } else {
+      try {
+        const res = await createPayout(instructor_id, purchasesChecked);
+        if (res) {
+          getPurchasesByInstructor();
+          setPurchasesChecked([]);// reset array
+        } else {
+          setLoading(false);
+        }
+      }
+      finally {
         setLoading(false);
       }
     } else {
