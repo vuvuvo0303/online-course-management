@@ -167,7 +167,7 @@ const AllCourses = () => {
                   overlayStyle={{ textAlign: "center" }}
                 >
                   <Card
-                    className="max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden"
+                    className="max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden h-[20rem]"
                     cover={
                       <div className="relative">
                         <Link to={`/course/${course._id}`}>
@@ -204,7 +204,13 @@ const AllCourses = () => {
                           onChange={(value) => handleRatingChange(index, value)}
                           disabled
                         />
-                        <span className="ml-2 text-gray-500">({course.review_count})</span>
+                        <span className="text-sm ml-2">
+                          {course.review_count === 0
+                            ? ""
+                            : course.review_count === 1
+                              ? `(${course.review_count} review)`
+                              : `(${course.review_count} reviews)`}
+                        </span>
                       </div>
                       <div className="flex items-baseline mt-2">
                         <div className="text-2xl text-gray-500 font-bold">

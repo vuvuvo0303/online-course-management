@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Badge } from "antd";
+import { Card, Badge, Skeleton } from "antd";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
@@ -48,7 +48,7 @@ const TeacherCategories: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <p>Loading...</p>; // Hiển thị trạng thái loading
+    return <Skeleton active></Skeleton>; // Hiển thị trạng thái loading
   }
 
   return (
@@ -84,10 +84,10 @@ const TeacherCategories: React.FC = () => {
                 </div>
                 <div className="mt-4">
                   <p className="text-gray-600 text-sm">
-                  <span className="font-bold"> Subscribed Date:</span>  {formatDate(teacher.created_at)}
+                    <span className="font-bold"> Subscribed Date:</span>  {formatDate(teacher.created_at)}
                   </p>
                   <p className="text-gray-600 text-sm">
-                  <span className="font-bold" >Update Subscribed Date:</span>   {formatDate(teacher.updated_at)}
+                    <span className="font-bold" >Update Subscribed Date:</span>   {formatDate(teacher.updated_at)}
                   </p>
                 </div>
               </Card>

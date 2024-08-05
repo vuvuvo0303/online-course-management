@@ -72,14 +72,14 @@ const Lesson: React.FC = () => {
 
     const showDrawer = () => setOpen(true);
     const onClose = () => setOpen(false);
-     const user = getUserFromLocalStorage();
-     const userRole = user.role;
+    const user = getUserFromLocalStorage();
+    const userRole = user.role;
 
     const handleLessonClick = async (lessonItem: Lessons) => {
         await fetchLesson(lessonItem._id);
-        if(userRole === "instructor"){
+        if (userRole === "instructor") {
             navigate(`/instructor/course/${course?._id}/lesson/${lessonItem._id}`);
-        }else{
+        } else {
             navigate(`/course/${course?._id}/lesson/${lessonItem._id}`);
         }
     };
@@ -117,7 +117,7 @@ const Lesson: React.FC = () => {
             setCurrentLessonIndex(newLessonIndex);
             findLesson(newSessionIndex, newLessonIndex);
             setLoading(false)
-        }  
+        }
     };
 
     const handlePreviousLesson = () => {
@@ -223,7 +223,7 @@ const Lesson: React.FC = () => {
                 </div>
                 {!isMobile && (
                     <div className="w-1/4 p-5 bg-white overflow-auto border-l border-gray-300" style={{ height: 'calc(100vh - 112px)' }}>
-                        <Spin spinning={loading}>
+                        <Skeleton loading={loading} active>
                             {course && (
                                 <>
                                     <h1 className="text-xl font-semibold mb-4">Course Content</h1>
@@ -244,7 +244,7 @@ const Lesson: React.FC = () => {
                                     </Collapse>
                                 </>
                             )}
-                        </Spin>
+                        </Skeleton>
                     </div>
                 )}
             </div>

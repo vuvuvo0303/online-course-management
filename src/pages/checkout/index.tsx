@@ -82,9 +82,9 @@ const Checkout: React.FC = () => {
           await new Promise((resolve) => setTimeout(resolve, 2000));
           setLoading(false);
           message.success("Payment successful!");
-          if(userRole === "student"){
+          if (userRole === "student") {
             navigate(paths.STUDENT_PURCHASE)
-          }else{
+          } else {
             navigate("/instructor/purchase")
           }
         } catch (error) {
@@ -184,7 +184,7 @@ const Checkout: React.FC = () => {
                     <div style={{ minWidth: "768px" }}>
                       <Row className='border my-5' gutter={10}>
                         <Col span={6}>
-                          <img src={cart.course_image} />
+                          <img src={cart.course_image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'} />
                         </Col>
                         <Col className='' span={6}>
                           <p className='mt-5 font-bold '>{cart.course_name}</p>

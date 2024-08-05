@@ -56,14 +56,14 @@ const MyList = () => {
                                 <div className="w-1/3">
                                     <img
                                         alt={course.name}
-                                        src={course.image_url}
+                                        src={course.image_url || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'}
                                         onError={handleImageError}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-[12rem] object-cover"
                                     />
                                 </div>
                                 <div className="w-2/3 p-4 flex flex-col justify-between">
                                     <div>
-                                        <Link to={`/course/${course._id}`} className="text-xl font-semibold">
+                                        <Link to={`/course/${course._id}/lesson`} className="text-xl font-semibold">
                                             {course.name}
                                         </Link>
                                         <p className="text-gray-400 mb-2 truncate">{course.description}</p>
@@ -77,7 +77,7 @@ const MyList = () => {
                                             <p className="text-sm text-gray-400">Lessons: {course.lesson_count}</p>
                                             <p className="text-sm text-gray-400">Instructor: {course.instructor_name}</p>
                                         </div>
-                                        <Link to={`/course/lesson/${course._id}`}>
+                                        <Link to={`/course/${course._id}/lesson`}>
                                             <Button type="primary" className="w-32 h-10"><ArrowRightOutlined /> Learn Now </Button>
                                         </Link>
                                     </div>

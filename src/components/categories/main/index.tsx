@@ -187,7 +187,13 @@ const Categories = () => {
                                                 onChange={(value) => handleRatingChange(index, value)}
                                                 disabled
                                             />
-                                            <span className="ml-1 text-gray-500">({course.review_count})</span>
+                                            <span className="text-sm ml-2">
+                                                {course.review_count === 0
+                                                    ? ""
+                                                    : course.review_count === 1
+                                                        ? `(${course.review_count} review)`
+                                                        : `(${course.review_count} reviews)`}
+                                            </span>
                                         </div>
                                         <div className="flexCenter items-baseline mt-2">
                                             <div className="text-2xl text-gray-500 font-bold">{course.price_paid.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</div>

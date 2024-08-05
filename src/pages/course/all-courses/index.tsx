@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Input, Skeleton, Pagination, Select, Button } from "antd";
+import { Input, Skeleton, Pagination, Button } from "antd";
 import axiosInstance from "../../../services/axiosInstance";
 import { API_CLIENT_GET_COURSES } from "../../../consts";
 import CourseCard from "./course-card/CourseCard";
 import { Course } from "../../../models/Course";
-import CategoriesDropdown from "./dropdown/CategoriesDropdown";
-import RatingOption from "./dropdown/RatingOption"; // Import the RatingOption component
 
-const { Option } = Select;
+
+
 
 const AllCourses: React.FC = () => {
     const [courses, setCourses] = useState<Course[]>([]);
@@ -19,8 +18,8 @@ const AllCourses: React.FC = () => {
         pageSize: 10,
         total: 0,
     });
-    const [category, setCategory] = useState<string | undefined>(undefined);
-    const [rating, setRating] = useState<number | undefined>(undefined);
+
+
 
     const fetchCourses = useCallback(async () => {
         setLoading(true);
@@ -30,9 +29,7 @@ const AllCourses: React.FC = () => {
                     role: "all",
                     status: true,
                     is_deleted: false,
-                    keyword: searchText,
-                    category: category,
-                    rating: rating,
+                    keyword: searchText
                 },
                 pageInfo: {
                     pageNum: pagination.current,
@@ -55,7 +52,7 @@ const AllCourses: React.FC = () => {
             setLoading(false);
             setInitialLoad(false);
         }
-    }, [searchText, category, rating, pagination.current, pagination.pageSize]);
+    }, [searchText, pagination.current, pagination.pageSize]);
 
     useEffect(() => {
         fetchCourses();
@@ -85,30 +82,11 @@ const AllCourses: React.FC = () => {
                     placeholder="Search courses"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
-                    className="w-full md:w-2/5 lg:w-3/5"
+                    className="w-full md:w-2/5 lg:w-3/4"
                 />
-                <CategoriesDropdown onSelect={(value) => setCategory(value)} />
-                <Select
-                    placeholder="Rating"
-                    className="w-full md:w-1/3 lg:w-1/5"
-                    onChange={(value) => setRating(value)}
-                >
-                    <Option value={2}>
-                        <RatingOption value={2} label="3.5 Stars" />
-                    </Option>
-                    <Option value={3}>
-                        <RatingOption value={3} label="4 Stars" />
-                    </Option>
-                    <Option value={4}>
-                        <RatingOption value={4} label="4.5 Stars" />
-                    </Option>
-                    <Option value={5}>
-                        <RatingOption value={5} label="5 Stars" />
-                    </Option>
-                </Select>
                 <Button
                     onClick={handleSearch}
-                    className="bg-orange-500 text-white py-2 px-4 rounded-md w-full md:w-1/5"
+                    className="bg-orange-500 text-white py-2 px-4 rounded-md w-full md:w-1/4"
                 >
                     Search
                 </Button>

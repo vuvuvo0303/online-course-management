@@ -9,7 +9,7 @@ import {
 import { Link } from 'react-router-dom';
 import Cart from './cart/CartComponents';
 import Sub from './subscription/index';
-import { Course, Subscription, Review } from "../../models";
+import { Course, Subscription } from "../../models";
 import { paths } from "../../consts";
 import { getUserFromLocalStorage, fetchCoursesByClient, getItemsBySubscriber, getAllReviews } from '../../services';
 
@@ -18,7 +18,6 @@ const defaultAvatarUrl = '/x1.jpg'; // Path to image in public folder
 const Profile: React.FC = () => {
   const [activeTabKey, setActiveTabKey] = useState('2');
   const [courses, setCourses] = useState<Course[]>([]);
-  const [dataReviews, setDataReviews] = useState<Review[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +26,7 @@ const Profile: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const [coursesRes, subscriptionsRes, reviewsRes] = await Promise.all([
+      const [coursesRes, subscriptionsRes] = await Promise.all([
         fetchCoursesByClient("", ""),
         getItemsBySubscriber("", 1, 100),
         getAllReviews("")
@@ -36,7 +35,6 @@ const Profile: React.FC = () => {
       const purchasedCourses = coursesRes.filter((course: Course) => course.is_purchased);
       setCourses(purchasedCourses);
       setSubscriptions(subscriptionsRes);
-      setDataReviews(reviewsRes.data.pageData);
     } catch (error) {
       console.error("Failed to fetch data:", error);
       setError('Failed to load data. Please try again later.');
@@ -110,10 +108,6 @@ const Profile: React.FC = () => {
               <div className="flex flex-col items-center justify-center bg-gray-800 p-4 border border-gray-600 text-center min-w-[150px]">
                 <p className="text-gray-400">Purchased</p>
                 <h3 className="text-2xl font-bold">{courses.length}</h3>
-              </div>
-              <div className="flex flex-col items-center justify-center bg-gray-800 p-4 border-t border-r border-b border-gray-600 text-center min-w-[150px]">
-                <p className="text-gray-400">My Reviews</p>
-                <h3 className="text-2xl font-bold">{dataReviews.length}</h3>
               </div>
               <div className="flex flex-col items-center justify-center bg-gray-800 p-4 border-t border-r border-b border-gray-600 text-center min-w-[150px]">
                 <p className="text-gray-400">Subscriptions</p>

@@ -148,7 +148,7 @@ const User = () => {
                                 onClick={handlePlayVideo}
                                 style={{ fontSize: '24px' }}
                             />
-                            <span className="ml-2 text-blue-500 cursor-pointer" onClick={handlePlayVideo}>Video Demo</span>
+                            <span className="ml-2 text-blue-500 cursor-pointer" onClick={handlePlayVideo}>Instructor Demo</span>
                         </div>
                         <div className="overflow-hidden relative w-full mt-4">
                             <p className="whitespace-pre-line text-sm text-gray-800">

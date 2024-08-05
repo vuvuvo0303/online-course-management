@@ -37,13 +37,20 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         }
     };
 
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        const target = e.target as HTMLImageElement;
+        target.onerror = null; // Prevent infinite loop if fallback also fails
+        target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'; // Fallback image
+    };
+
     return (
         <div className="flex flex-col lg:flex-row w-full bg-gray-100 shadow-lg rounded-lg p-5 space-y-4 lg:space-y-0 lg:space-x-4">
             <div className="flex-shrink-0 rounded-lg overflow-hidden">
                 <img
-                    src={course.image_url}
-                    className="w-full h-[15rem] object-cover rounded-lg"
                     alt={course.name}
+                    src={course.image_url || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'}
+                    className="w-[25rem] h-[15rem] object-cover rounded-lg"
+                    onError={handleImageError}
                 />
                 <div className="flex space-y-2 mt-2 lg:mt-4">
                     <a href="/enrollment" className="flex items-center text-white hover:text-gray-400">
