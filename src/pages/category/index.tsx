@@ -68,14 +68,16 @@ const NameCategory: React.FC = () => {
         }));
         fetchCategories();
     };
-
+    const handleSearchText= (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+      };
     return (
         <div className="p-4">
             <div className="flex justify-end mb-4">
                 <Input.Search
                     placeholder="Search by Name"
                     value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
+                    onChange={handleSearchText}
                     onSearch={handleSearch}
                     style={{ width: 200 }}
                     enterButton={<SearchOutlined />}

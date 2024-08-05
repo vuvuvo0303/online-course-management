@@ -6,7 +6,6 @@ import {
   message,
   Modal,
   Pagination,
-  Select,
   Table,
   TablePaginationConfig,
   TableProps,
@@ -40,7 +39,6 @@ const ManageSession: React.FC = () => {
     setSelectedSessionID(sessionId);
     setOpen(true);
   };
-  const [is_deleted, setIs_deleted] = useState<boolean>(false);
 
   const handleOk = async () => {
     if (selectedSessionID) {
@@ -85,7 +83,7 @@ const ManageSession: React.FC = () => {
             keyword: debouncedSearchTerm,
             course_id: courseId,
             is_position_order: false,
-            is_deleted: is_deleted,
+            is_deleted: false,
           },
           pageInfo: {
             pageNum: 1,
@@ -111,7 +109,7 @@ const ManageSession: React.FC = () => {
     if (courseId) {
       fetchSession();
     }
-  }, [courseId, keyword, is_deleted, debouncedSearchTerm, pagination.current, pagination.pageSize]);
+  }, [courseId, keyword, debouncedSearchTerm, pagination.current, pagination.pageSize]);
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
   };
@@ -183,9 +181,6 @@ const ManageSession: React.FC = () => {
   if (error) {
     return <div>{error}</div>;
   }
-  const handleChange = (value: boolean) => {
-    setIs_deleted(value);
-  };
 
   return (
     <div>
@@ -204,23 +199,8 @@ const ManageSession: React.FC = () => {
         </Breadcrumb.Item>
       </Breadcrumb>
 
-      {/* filter session by true false */}
       <div className="grid grid-cols-2">
         <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-10">
-          <Select
-            defaultValue={is_deleted}
-            onChange={handleChange}
-            style={{ width: 200 }}
-            className="mt-10"
-            options={[
-              {
-                options: [
-                  { label: <span>Deleted</span>, value: true },
-                  { label: <span>Existing</span>, value: false },
-                ],
-              },
-            ]}
-          />
           <Input
             placeholder="Search"
             value={keyword}

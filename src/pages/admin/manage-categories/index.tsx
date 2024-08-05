@@ -289,6 +289,9 @@ const AdminManageCategories: React.FC = () => {
       ),
     },
   ];
+  const handleSearchText= (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
   return (
     <div>
       <div className="flex justify-between items-center ">
@@ -302,7 +305,7 @@ const AdminManageCategories: React.FC = () => {
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={handleSearchText}
           onSearch={handleSearch}
           style={{ width: 200 }}
           enterButton={<SearchOutlined className="text-white" />}
@@ -343,9 +346,7 @@ const AdminManageCategories: React.FC = () => {
           labelCol={{ span: 24 }}
           validateTrigger={validateOnOpen ? "onSubmit" : "onChange"}
         >
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
-            <Input />
-          </Form.Item>
+          <NameFormItem />
           <Form.Item label="Parent Category" name="parent_category_id" rules={[{ required: false }]}>
             <Select placeholder="Select parent category">
               {parentCategories.map((category) => (

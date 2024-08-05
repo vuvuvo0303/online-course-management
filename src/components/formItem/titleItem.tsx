@@ -4,7 +4,7 @@ import { titleRules } from "../../consts"
 const TitleFormItem: React.FC = () => {
     return (
         <Form.Item name="name" label="Title" rules={titleRules}>
-            <Input />
+            <Input placeholder="Enter Title" />
         </Form.Item>
     )
 }

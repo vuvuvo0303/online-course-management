@@ -338,6 +338,9 @@ const AdminManageUsers: React.FC = () => {
       ),
     },
   ];
+  const handleSearchText= (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
 
   return (
     <div>
@@ -356,7 +359,7 @@ const AdminManageUsers: React.FC = () => {
         <Input.Search
           placeholder="Search By Name and Email"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={handleSearchText}
           className="w-full md:w-48"
           enterButton={<SearchOutlined className="text-white" />}
         />
@@ -422,7 +425,7 @@ const AdminManageUsers: React.FC = () => {
               name="role"
               rules={roleRules}
             >
-              <Radio.Group onChange={(e) => handleRoleChangeModal(e.target.value)}>
+              <Radio.Group onChange={()=>handleRoleChangeModal}>
                 <Radio value="student">Student</Radio>
                 <Radio value="instructor">Instructor</Radio>
                 <Radio value="admin">Admin</Radio>

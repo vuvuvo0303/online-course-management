@@ -213,6 +213,9 @@ const InstructorManagePayout = () => {
       current: 1,
     }));
   };
+  const handleSearchPayout = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchPayout(e.target.value);
+  };
   return (
     <>
       <Modal
@@ -231,7 +234,7 @@ const InstructorManagePayout = () => {
           <Input.Search
             placeholder="Search By Purchase No"
             value={searchPayout}
-            onChange={(e) => setSearchPayout(e.target.value)}
+            onChange={handleSearchPayout}
             className="p-2"
             style={{ width: 250 }}
             enterButton={<SearchOutlined className="text-white" />}
