@@ -4,13 +4,9 @@ import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import { BreadcrumbItemType, BreadcrumbSeparatorType } from "antd/lib/breadcrumb/Breadcrumb";
 
-interface CustomBreadcrumbProps {
-    homeHref?: string;
-}
+interface CustomBreadcrumbProps {}
 
-const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = ({
-    homeHref = "/dashboard",
-}) => {
+const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = () => {
     const location = useLocation();
     const pathnames = location.pathname.split("/").filter((item) => item);
 
