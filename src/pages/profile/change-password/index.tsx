@@ -11,7 +11,6 @@ interface ValuesChangePassword {
 }
 
 const ChangePassword = () => {
-  const [form] = Form.useForm();
   const [validations, setValidations] = useState({
     oldPassword: false,
     newPassword: {
@@ -20,6 +19,7 @@ const ChangePassword = () => {
     confirmPassword: false,
   });
   const [loading, setLoading] = useState(false);
+  const [formKey, setFormKey] = useState(0);
 
   const validateOldPassword = (password: string) => {
     setValidations((prev) => ({
@@ -56,7 +56,9 @@ const ChangePassword = () => {
     setLoading(true);
     try {
       await changePassword(values);
-      form.resetFields();
+      setFormKey((prevKey) => prevKey + 1); // Force form to re-render
+    } catch (error) {
+      console.error("Password change failed:", error);
     } finally {
       setLoading(false);
     }
@@ -73,6 +75,7 @@ const ChangePassword = () => {
           </div>
           <div className="flex justify-center">
             <Form
+              key={formKey}
               name="change_password"
               onFinish={onFinish}
               layout="vertical"

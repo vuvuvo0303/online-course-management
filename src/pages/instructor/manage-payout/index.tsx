@@ -270,14 +270,6 @@ const InstructorManagePayout = () => {
             showSizeChanger
           />
         </div>
-        <Pagination
-          total={pagination.total}
-          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-          current={pagination.current}
-          pageSize={pagination.pageSize}
-          onChange={handlePaginationChange}
-          showSizeChanger
-        />
       </div>
 
     </>

@@ -156,9 +156,6 @@ const EditProfile = () => {
         });
 
         message.success(`Updated ${values.name} successfully`);
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000)
       }
     } finally {
       setLoading(false);
