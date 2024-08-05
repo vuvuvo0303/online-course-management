@@ -91,9 +91,8 @@ const InstructorCreateCourse: React.FC = () => {
 
           setContent(data.description);
         }
+      } finally {
         setLoading(false);
-      } catch (error) {
-        console.log("Error occurred: ", error);
       }
     };
     if (_id) {
@@ -107,9 +106,9 @@ const InstructorCreateCourse: React.FC = () => {
         const responseCategories = await getCategories();
         const categories = responseCategories.data.pageData;
         setCategories(categories);
+      } finally {
         setLoading(false);
-      } catch (error) {
-        console.log("Error fetching categories: ", error);
+
       }
     };
     fetchData();
@@ -130,7 +129,6 @@ const InstructorCreateCourse: React.FC = () => {
   }
 
   const onFinish = async (values: Course) => {
-    console.log("values: ", values);
     setLoading(true);
     try {
       if (typeof values.price === "string") {
@@ -178,7 +176,6 @@ const InstructorCreateCourse: React.FC = () => {
             message.success("Create Course Successfully");
             navigate(`/instructor/manage-courses`);
           }
-          console.log(res);
         } catch (error) {
           console.log("error: ", error);
         }

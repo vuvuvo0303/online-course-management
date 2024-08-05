@@ -63,12 +63,11 @@ const CreateUpdateSession = () => {
 
 
   const onFinish = async (values: Session) => {
-    console.log("values: ", values);
-    // setLoading(true);
+    setLoading(true);
     // update session component for manage sessions and manage all sessions
     if (sessionId) {
       try {
-        const res = await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`,
+        await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`,
           {
             "name": values.name,
             "course_id": courseIdUpdate,
@@ -76,10 +75,9 @@ const CreateUpdateSession = () => {
             "position_order": 3
           }
         )
-        console.log("check update: ", res);
         message.success("Update Session Successfully!")
       } catch (error) {
-        //
+        setLoading(false);
       }
       if (courseId) {
         // redirect to manage session 
@@ -111,8 +109,8 @@ const CreateUpdateSession = () => {
           // redirect to manage all session
           navigate(`/instructor/manage-all-sessions`);
         }
-      } catch (error) {
-        //
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -136,7 +134,7 @@ const CreateUpdateSession = () => {
               <Input />
             </Form.Item>
             <Form.Item label="Description" name="description">
-              <TextArea/>
+              <TextArea />
             </Form.Item>
             {
               //  create and update session in manage all session

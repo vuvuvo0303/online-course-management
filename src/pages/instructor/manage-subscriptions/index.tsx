@@ -72,7 +72,6 @@ const InstructorManageSubscriptions = () => {
       setSelectedTab(key);
       setApiLink(API_INSTRUCTOR_OR_STUDENT_GET_SUBSCRIBER);
     }
-    console.log("selectedTab", selectedTab);
   };
 
   const items: TabsProps["items"] = [
