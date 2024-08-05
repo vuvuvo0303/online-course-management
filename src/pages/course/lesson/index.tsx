@@ -56,6 +56,7 @@ const Lesson: React.FC = () => {
             const response = await axiosInstance.get(`${API_GET_LESSON}/${lessonId}`);
             setSelectedLesson(response.data);
             console.log("fetchLesson: ", response);
+            setLoading(false);
         } catch (error) {
             setError('Failed to load lesson details.');
         }

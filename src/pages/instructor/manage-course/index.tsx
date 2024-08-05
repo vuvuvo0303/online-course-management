@@ -24,7 +24,7 @@ import { getCategories } from "../../../services/category.ts";
 
 import { getAllReviews } from "../../../services/review.ts";
 import { LoadingComponent, CustomBreadcrumb } from "../../../components";
-import { formatDate } from "utils/index.ts";
+import { formatDate } from "../../../utils/index.ts";
 
 
 const InstructorManageCourses: React.FC = () => {

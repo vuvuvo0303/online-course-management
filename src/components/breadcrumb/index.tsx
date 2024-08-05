@@ -58,8 +58,8 @@ const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = ({
                     <Link to={currentPath}>{title}</Link>
                 ),
             };
-        }).filter(item => item !== null),
-    ];
+        }),
+    ].filter(item => item !== null); // Lọc bỏ các giá trị null
 
     return (
         <Breadcrumb className="py-2" items={breadcrumbItems} />
