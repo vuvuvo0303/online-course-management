@@ -94,23 +94,25 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     )}
                     <div className="flex gap-4 mt-auto">
                         {course.is_purchased || course.price_paid === 0 ? (
-                            <div className="flex flex-row items-center gap-2">
+                            <div>
                                 <Link to={`/course/${course._id}/lesson`}>
                                     <button className="bg-yellow-500 text-gray-800 p-2 rounded-md w-[6rem] hover:bg-yellow-400 text-black-100">
                                         Study now
                                     </button>
                                 </Link>
+                            </div>
+                        ) : (
+                            <div className='flex flex-row items-center gap-2'>
+                                <button onClick={handleAddToCart} className="bg-yellow-500 text-gray-800 p-2 rounded-md hover:bg-yellow-400" disabled={loading}>
+                                    <ShoppingCartOutlined className="mr-2" />
+                                    {loading ? 'Adding...' : 'Add to Cart'}
+                                </button>
                                 <Link to="/enrollment">
-                                    <button className="bg-yellow-500 text-gray-800 w-[6rem] p-2 rounded-md hover:bg-yellow-400 text-black-100">
+                                    <button className="bg-yellow-500 text-gray-800 w-[6rem] p-2 rounded-md hover:bg-yellow-400">
                                         Save
                                     </button>
                                 </Link>
                             </div>
-                        ) : (
-                            <button onClick={handleAddToCart} className="bg-yellow-500 text-gray-800 p-2 rounded-md hover:bg-yellow-400" disabled={loading}>
-                                <ShoppingCartOutlined className="mr-2" />
-                                {loading ? 'Adding...' : 'Add to Cart'}
-                            </button>
                         )}
                     </div>
                     <div className="text-xs mt-2">30-Day Money-Back Guarantee</div>
