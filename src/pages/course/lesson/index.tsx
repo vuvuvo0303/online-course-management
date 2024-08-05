@@ -73,14 +73,14 @@ const Lesson: React.FC = () => {
 
     const showDrawer = () => setOpen(true);
     const onClose = () => setOpen(false);
-     const user = getUserFromLocalStorage();
-     const userRole = user.role;
+    const user = getUserFromLocalStorage();
+    const userRole = user.role;
 
     const handleLessonClick = async (lessonItem: Lessons) => {
         await fetchLesson(lessonItem._id);
-        if(userRole === "instructor"){
+        if (userRole === "instructor") {
             navigate(`/instructor/course/${course?._id}/lesson/${lessonItem._id}`);
-        }else{
+        } else {
             navigate(`/course/${course?._id}/lesson/${lessonItem._id}`);
         }
     };
@@ -118,7 +118,7 @@ const Lesson: React.FC = () => {
             setCurrentLessonIndex(newLessonIndex);
             findLesson(newSessionIndex, newLessonIndex);
             setLoading(false)
-        }  
+        }
     };
 
     const handlePreviousLesson = () => {
@@ -140,7 +140,9 @@ const Lesson: React.FC = () => {
         }
     };
 
-    const renderLessonContent = (lessonItem: Lessons) => (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const renderLessonContent = (lessonItem) => (
         <div key={lessonItem._id} className="flex items-center mb-2 cursor-pointer p-2 rounded" onClick={() => handleLessonClick(lessonItem)}>
             {(() => {
                 switch (lessonItem.lesson_type) {
