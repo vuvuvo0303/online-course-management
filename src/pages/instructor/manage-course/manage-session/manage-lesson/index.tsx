@@ -258,7 +258,7 @@ const LectureOfCourse: React.FC = () => {
         <>
           {courseId && sessionId ? (
             <Link
-              to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lectures/edit-lecture/${_id}`}
+              to={`/instructor/manage-courses/${courseId}/manage-sessions/${sessionId}/manage-lessons/update-lesson/${_id}`}
             >
               <EditOutlined className="text-blue-500 m-2" />
             </Link>

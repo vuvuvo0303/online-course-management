@@ -60,14 +60,23 @@ const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = () => {
             currentPath += `/${value}`;
 
             // Tạo liên kết cho các mục breadcrumb
-            const isLast = index === pathnames.length - 1;
+            const a = pathnames.length - 1 ;
+            console.log("a: ", a)
+            let isLast;
+            if(!isNaN(Number(pathnames[a])) || pathnames[a].match(/^[0-9a-fA-F]{24}$/) ){
+                 isLast = index === pathnames.length - 2;
+            }else{
+                isLast = index === pathnames.length - 1;
+            }
+          
             const title = formatTitle(value);
-
+            console.log("pathnames: ", pathnames)
+            console.log("currentPath: ", currentPath)
             return {
                 title: isLast ? (
                     title
                 ) : (
-                    <Link to={currentPath}>{title}</Link>
+                    <Link  to={currentPath}>{title}</Link>
                 ),
             };
         }).filter((item) => item !== null) as Array<Partial<BreadcrumbItemType & BreadcrumbSeparatorType>>,
