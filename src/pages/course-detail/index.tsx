@@ -24,11 +24,7 @@ const CourseDetails: React.FC = () => {
                 const courseData = response.data;
                 if (courseData && courseData._id) {
                     setCourse(courseData);
-                } else {
-                    // console.error('Course data is incomplete or not found.');
                 }
-            } catch (error) {
-                // console.error("Error fetching course details:", error);
             } finally {
                 setLoading(false);
             }

@@ -20,11 +20,9 @@ import { API_COURSE_LOGS, API_COURSE_STATUS, API_DELETE_COURSE, API_GET_COURSES,
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { useDebounce } from "../../../hooks";
-import { getCategories } from "../../../services/category.ts";
-
-import { getAllReviews } from "../../../services/review.ts";
+import { getCategories, getAllReviews } from "../../../services";
 import { LoadingComponent, CustomBreadcrumb } from "../../../components";
-import { formatDate } from "utils/index.ts";
+import { formatDate } from "../../../utils";
 
 
 const InstructorManageCourses: React.FC = () => {
