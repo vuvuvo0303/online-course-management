@@ -105,6 +105,10 @@ const ManageAllPurchase: React.FC = () => {
 
   ];
 
+  const handleSearchPurchase = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchPurchase(e.target.value);
+  };
+
   return (
     <div>
       <CustomBreadcrumb />
@@ -113,7 +117,7 @@ const ManageAllPurchase: React.FC = () => {
           <Input.Search
             placeholder="Search By Purchase No"
             value={searchPurchase}
-            onChange={(e) => setSearchPurchase(e.target.value)}
+            onChange={handleSearchPurchase}
             className="p-2 "
             style={{ width: 250 }}
             enterButton={<SearchOutlined className="text-white" />}

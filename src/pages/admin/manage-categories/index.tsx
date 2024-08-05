@@ -289,6 +289,9 @@ const AdminManageCategories: React.FC = () => {
       ),
     },
   ];
+  const handleSearchText= (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
   return (
     <div>
       <div className="flex justify-between items-center ">
@@ -302,7 +305,7 @@ const AdminManageCategories: React.FC = () => {
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={handleSearchText}
           onSearch={handleSearch}
           style={{ width: 200 }}
           enterButton={<SearchOutlined className="text-white" />}

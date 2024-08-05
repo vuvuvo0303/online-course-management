@@ -324,7 +324,9 @@ const AdminManageCourses: React.FC = () => {
     { label: <span>active</span>, value: "active" },
     { label: <span>inactive</span>, value: "inactive" },
   ];
-
+  const handleSearchText= (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
   return (
     <div className="container mx-auto p-4">
       <Modal
@@ -482,7 +484,7 @@ const AdminManageCourses: React.FC = () => {
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={handleSearchText}
           onSearch={handleSearch}
           className="w-full md:w-48"
           enterButton={<SearchOutlined className="text-white" />}

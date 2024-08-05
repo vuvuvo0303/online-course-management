@@ -96,7 +96,9 @@ const Checkout: React.FC = () => {
       <LoadingComponent />
     </>)
   }
-
+  const handlePaymentMethod= (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPaymentMethod(e.target.value);
+  };
 
   return (
     <div className={styles.checkoutContainer}>
@@ -212,7 +214,7 @@ const Checkout: React.FC = () => {
                 </h2>
                 <Radio.Group
                   options={paymentMethods}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  onChange={()=>handlePaymentMethod}
                   value={paymentMethod}
                   className={styles.radioGroup}
                 />
