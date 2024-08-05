@@ -74,14 +74,16 @@ const AllCourses: React.FC = () => {
         }));
         fetchCourses();
     };
-
+    const handleSearchText= (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+      };
     return (
         <div className="p-4">
             <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 bg-slate-700 p-6 md:p-10 rounded-md">
                 <Input
                     placeholder="Search courses"
                     value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
+                    onChange={handleSearchText}
                     className="w-full md:w-2/5 lg:w-3/4"
                 />
                 <Button

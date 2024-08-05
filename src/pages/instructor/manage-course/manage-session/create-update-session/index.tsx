@@ -55,7 +55,6 @@ const CreateUpdateSession = () => {
     }
     const fetchCourses = async () => {
       const responeCourses = await getCourses();
-
       setCourses(responeCourses.data.pageData);
       setLoading(false)
     };

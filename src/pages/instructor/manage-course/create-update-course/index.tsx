@@ -194,7 +194,9 @@ const InstructorCreateCourse: React.FC = () => {
   const handleEditorChange = (value: string) => {
     setContent(value);
   };
-
+  const handleSetVideoUrl = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setVideoUrl(e.target.value);
+  };
   return (
     <>
       <CustomBreadcrumb />
@@ -243,7 +245,7 @@ const InstructorCreateCourse: React.FC = () => {
               { validator: validateUrl },
             ]}
           >
-            <Input onChange={(e) => setVideoUrl(e.target.value)} />
+            <Input onChange={handleSetVideoUrl} />
           </Form.Item>
 
           {isValidHttpUrl(videoUrl) && (

@@ -25,7 +25,9 @@ const ForgotPassword: React.FC = () => {
             setLoading(false);
         }
     };
-
+    const handleSetEmail= (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value);
+      };
     return (
         <div className='w-full'>
             <main className={styles.forgot_container}>
@@ -48,7 +50,7 @@ const ForgotPassword: React.FC = () => {
                                             type="email"
                                             name='email'
                                             value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            onChange={handleSetEmail}
                                             minLength={7}
                                             maxLength={64}
                                             required

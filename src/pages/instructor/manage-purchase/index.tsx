@@ -246,6 +246,11 @@ const InstructorManagePurchase = () => {
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPagination({ ...pagination, current: page, pageSize });
   };
+
+  const handleSearchPurchase = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchPurchase(e.target.value);
+  };
+
   return (
     <div className="container mx-auto px-10">
       <CustomBreadcrumb />
@@ -253,7 +258,7 @@ const InstructorManagePurchase = () => {
         <Input.Search
           placeholder="Search By Purchase No"
           value={searchPurchase}
-          onChange={(e) => setSearchPurchase(e.target.value)}
+          onChange={handleSearchPurchase}
           className=" "
           style={{ width: 250 }}
           enterButton={<SearchOutlined className="text-white" />}
