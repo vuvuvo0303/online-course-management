@@ -4,8 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models";
 import { API_CREATE_SESSION, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
 import { axiosInstance, getCourses, getUserFromLocalStorage } from "../../../../../services";
-import { CustomBreadcrumb, LoadingComponent, DescriptionFormItem } from "../../../../../components";
+import { CustomBreadcrumb, LoadingComponent } from "../../../../../components";
 import { formItemLayout } from "../../../../../layout/form";
+import TextArea from "antd/lib/input/TextArea";
 
 const CreateUpdateSession = () => {
 
@@ -135,7 +136,9 @@ const CreateUpdateSession = () => {
             <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Please input title!' }]}>
               <Input />
             </Form.Item>
-            <DescriptionFormItem />
+            <Form.Item label="Description" name="description">
+              <TextArea/>
+            </Form.Item>
             {
               //  create and update session in manage all session
               !courseId &&

@@ -56,6 +56,7 @@ const Lesson: React.FC = () => {
             const response = await axiosInstance.get(`${API_GET_LESSON}/${lessonId}`);
             setSelectedLesson(response.data);
             console.log("fetchLesson: ", response);
+            setLoading(false);
         } catch (error) {
             setError('Failed to load lesson details.');
         }
@@ -139,7 +140,9 @@ const Lesson: React.FC = () => {
         }
     };
 
-    const renderLessonContent = (lessonItem: Lessons) => (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const renderLessonContent = (lessonItem) => (
         <div key={lessonItem._id} className="flex items-center mb-2 cursor-pointer p-2 rounded" onClick={() => handleLessonClick(lessonItem)}>
             {(() => {
                 switch (lessonItem.lesson_type) {

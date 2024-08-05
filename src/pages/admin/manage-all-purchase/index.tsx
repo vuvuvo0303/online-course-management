@@ -5,7 +5,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useDebounce } from "../../../hooks";
 import { Purchase } from "../../../models";
 import { CustomBreadcrumb, LoadingComponent } from "../../../components";
-import { formatCurrency, formatDate } from "../../../utils";
+import { formatCurrency, formatDate, renderPurchaseStatus } from "../../../utils";
 import { getPurchaseForAdmin } from "../../../services";
 
 const ManageAllPurchase: React.FC = () => {
@@ -93,7 +93,7 @@ const ManageAllPurchase: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: string) => <Tag color={getColorPurchase(status)}>{status}</Tag>,
+      render: (status: string) => <Tag color={getColorPurchase(status)}>{renderPurchaseStatus(status)}</Tag>,
     },
     {
       title: "Created Date",

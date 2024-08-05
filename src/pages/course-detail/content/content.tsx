@@ -8,7 +8,7 @@ import {
     CaretRightOutlined
 } from '@ant-design/icons';
 import { Course } from '../../../models/Course';
-import { Lessons, LessonType } from '../../../models/Lesson';
+import { LessonType } from '../../../models/Lesson';
 import { useNavigate } from 'react-router-dom';
 
 const { Panel } = Collapse;
@@ -20,7 +20,9 @@ interface ContentProps {
 const Content: React.FC<ContentProps> = ({ course }) => {
     const [activeKey, setActiveKey] = useState<string | string[]>([]);
     const navigate = useNavigate(); // Initialize the navigate function
-    const renderLessonContent = (lessonItem: Lessons) => (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const renderLessonContent = (lessonItem) => (
         <div
             key={lessonItem._id}
             className={`flex items-center mb-2 p-2 rounded cursor-pointer ${!course.is_purchased ? 'bg-gray-200' : ''}`}

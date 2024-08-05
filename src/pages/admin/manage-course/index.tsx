@@ -23,7 +23,7 @@ import { Course, Log } from "../../../models";
 import { useDebounce } from "../../../hooks";
 import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { changeStatusCourse, getCourseLogs, getCourses } from "../../../services";
-import { formatCurrency, formatDate } from "../../../utils";
+import { formatCurrency, formatDate, renderCourseStatus } from "../../../utils";
 const AdminManageCourses: React.FC = () => {
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
   const [changeStatus, setChangeStatus] = useState<string>("");
@@ -162,7 +162,7 @@ const AdminManageCourses: React.FC = () => {
       render: (old_status: string) => (
         <>
           <div className="flex justify-between">
-            <Tag color={getColor(old_status)}>{old_status === "waiting_approve" ? "waiting approve" : old_status}</Tag>
+            <Tag color={getColor(old_status)}>{renderCourseStatus(old_status)}</Tag>
             <ArrowRightOutlined style={{ color: "purple" }} />
           </div>
         </>
@@ -175,7 +175,7 @@ const AdminManageCourses: React.FC = () => {
       key: "new_status",
       render: (new_status: string) => (
         <>
-          <Tag color={getColor(new_status)}>{new_status === "waiting_approve" ? "waiting approve" : new_status}</Tag>
+          <Tag color={getColor(new_status)}>{renderCourseStatus(new_status)}</Tag>
         </>
       ),
     },
@@ -218,7 +218,7 @@ const AdminManageCourses: React.FC = () => {
 
           </div>
           <div>
-            <Tag color={getColor(status)}>{status === "waiting_approve" ? "waiting approve" : status}</Tag>
+            <Tag color={getColor(status)}>{renderCourseStatus(status)}</Tag>
             {status === "waiting_approve" ? (
               <EditOutlined onClick={() => showModalChangeStatus(record._id)} className="text-blue-500" />
             ) : (
@@ -284,7 +284,7 @@ const AdminManageCourses: React.FC = () => {
   };
   const handleStatusChange = (value: string) => {
     setStatus(value);
-    setSelectedStatus(value || "All Statuses");
+    setSelectedStatus(value || "All Status");
     setPagination((prev) => ({
       ...prev,
       current: 1,

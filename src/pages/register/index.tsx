@@ -14,7 +14,6 @@ import { useState, useEffect } from "react";
 import Register1 from "../../assets/Register1.jpg";
 import { useForm } from "antd/es/form/Form";
 import { axiosInstance } from "../../services";
-import Recaptcha from "../register/reCaptcha.tsx";
 import {
   API_REGISTER,
   avatarUrlRules,
@@ -42,7 +41,7 @@ type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [captchaVisible, setCaptchaVisible] = useState<boolean>(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  // const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [role, setRole] = useState<string>(roles.STUDENT);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -62,11 +61,11 @@ const RegisterPage: React.FC = () => {
     }
 
     setLoading(true);
-    if (!captchaToken) {
-      message.error("Please complete the CAPTCHA");
-      setLoading(false);
-      return;
-    }
+    // if (!captchaToken) {
+    //   message.error("Please complete the CAPTCHA");
+    //   setLoading(false);
+    //   return;
+    // }
 
     if (values.role === roles.INSTRUCTOR && fileList.length > 0) {
       const file = fileList[0].originFileObj as FileType;
@@ -75,7 +74,7 @@ const RegisterPage: React.FC = () => {
     }
 
     try {
-      const response: ResponseData = await axiosInstance.post(API_REGISTER, { ...values, captchaToken });
+      const response: ResponseData = await axiosInstance.post(API_REGISTER, { ...values });
       message.success("Successfully registered. Please check your email to login");
       if (response.success) {
         setTimeout(() => {
@@ -165,7 +164,7 @@ const RegisterPage: React.FC = () => {
                   </Radio.Group>
                 </Form.Item>
 
-                {captchaVisible && <Recaptcha onVerify={setCaptchaToken} />}
+                {/* {captchaVisible && <Recaptcha onVerify={setCaptchaToken} />} */}
 
                 <Form.Item
                   wrapperCol={{ span: 24 }}

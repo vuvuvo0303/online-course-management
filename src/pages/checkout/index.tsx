@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Radio, Input, Form, Row, Col, message } from "antd";
-import { ToastContainer } from "react-toastify";
 
 import { paths } from "../../consts";
 import styles from "./checkout.module.css";
@@ -9,8 +8,7 @@ import { getCarts, getUserFromLocalStorage, updateStatusCart } from '../../servi
 import { useNavigate } from "react-router-dom";
 import { User } from "../../models/User";
 import { Link } from "react-router-dom";
-import CustomButton from "../../components/CustomButton";
-import LoadingComponent from "../../components/loading";
+import { CustomButton, EmailFormItem, LoadingComponent } from "../../components";
 import { formatCurrency } from "../../utils";
 const Checkout: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -25,12 +23,14 @@ const Checkout: React.FC = () => {
     { label: "PayPal", value: "paypal" },
     { label: "Bank Transfer", value: "bank_transfer" },
   ];
+  const userInfo = getUserFromLocalStorage();
 
   const navigate = useNavigate();
   useEffect(() => {
+    setUser(userInfo);
     getCart();
-    loadUserFromLocalStorage();
   }, []);
+
 
   const getCart = async () => {
     setLoading(true)
@@ -49,14 +49,8 @@ const Checkout: React.FC = () => {
     }
   }
 
-  const loadUserFromLocalStorage = () => {
-    const userString = localStorage.getItem("user");
-    if (userString) {
-      setUser(JSON.parse(userString));
-    }
-  };
 
-  const userInfo = getUserFromLocalStorage();
+
   const userRole = userInfo?.role;
 
   const handleCancelPayment = async () => {
@@ -87,7 +81,7 @@ const Checkout: React.FC = () => {
           } else {
             navigate("/instructor/purchase")
           }
-        } catch (error) {
+        } finally {
           setLoading(false);
           message.error("Payment failed. Please try again later.");
         }
@@ -110,7 +104,6 @@ const Checkout: React.FC = () => {
         <h1 className={`${styles.title} font-playfair`}>Checkout</h1>
         <div className={styles.paymentDetails}>
           <div className={styles.paymentDetailsContent}>
-            <ToastContainer />
             <h2 className={`${styles.sectionTitle}`}>
               <strong>Billing Details</strong>
             </h2>
@@ -270,18 +263,7 @@ const Checkout: React.FC = () => {
                       </>
                     )}
                     {paymentMethod === "paypal" && (
-                      <Form.Item
-                        name="paypalEmail"
-                        label="PayPal Email"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your PayPal email!",
-                          },
-                        ]}
-                      >
-                        <Input placeholder="example@paypal.com" />
-                      </Form.Item>
+                      <EmailFormItem />
                     )}
                     {paymentMethod === "bank_transfer" && (
                       <>

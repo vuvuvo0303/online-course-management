@@ -20,11 +20,9 @@ import { API_COURSE_LOGS, API_COURSE_STATUS, API_DELETE_COURSE, API_GET_COURSES,
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { useDebounce } from "../../../hooks";
-import { getCategories } from "../../../services/category.ts";
-
-import { getAllReviews } from "../../../services/review.ts";
+import { getCategories, getAllReviews } from "../../../services";
 import { LoadingComponent, CustomBreadcrumb } from "../../../components";
-import { formatDate } from "utils/index.ts";
+import { formatDate, renderCourseStatus } from "../../../utils";
 
 
 const InstructorManageCourses: React.FC = () => {
@@ -339,7 +337,6 @@ const InstructorManageCourses: React.FC = () => {
       key: "status",
       render: (status: string, record: Course) => (
         <>
-          {/* {(status !== "waiting_approve" && status !== "reject") && */}
           <Tag
             color={getColor(status)}
             onClick={() => {
@@ -347,7 +344,7 @@ const InstructorManageCourses: React.FC = () => {
             }}
             className="text-blue-500 cursor-pointer"
           >
-            {status === "waiting_approve" ? "waiting approve" : status}
+            {renderCourseStatus(status)}
           </Tag>
           {/* } */}
         </>

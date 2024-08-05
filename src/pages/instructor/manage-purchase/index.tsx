@@ -21,7 +21,7 @@ import { getColorPurchase } from "../../../consts";
 import { LoadingComponent, CustomBreadcrumb } from "../../../components";
 import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
-import { formatCurrency, formatDate } from "../../../utils";
+import { formatCurrency, formatDate, renderPurchaseStatus } from "../../../utils";
 
 const InstructorManagePurchase = () => {
   const [searchPurchase, setSearchPurchase] = useState<string>("");
@@ -101,7 +101,7 @@ const InstructorManagePurchase = () => {
       key: "status",
       render: (status: string) => (
         <>
-          <Tag color={getColorPurchase(status)}>{status === "request_paid" ? "request paid" : status}</Tag>
+          <Tag color={getColorPurchase(status)}>{renderPurchaseStatus(status)}</Tag>
         </>
       ),
     },
@@ -150,7 +150,7 @@ const InstructorManagePurchase = () => {
       key: "status",
       render: (status: string) => (
         <>
-          <Tag color={getColorPurchase(status)}>{status === "request_paid" ? "request paid" : status}</Tag>
+          <Tag color={getColorPurchase(status)}>{renderPurchaseStatus(status)}</Tag>
         </>
       ),
     },
@@ -180,7 +180,7 @@ const InstructorManagePurchase = () => {
       } else {
         setLoading(false);
       }
-    }else{
+    } else {
       message.error("Please select at least 1 purchase to create payout!");
     }
   };

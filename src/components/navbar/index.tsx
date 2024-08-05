@@ -33,6 +33,7 @@ const Navbar: React.FC = () => {
     fullName: string | null;
     email: string | null;
     avatarUrl: string | null;
+    googleId?: string
   }>({
     role: null,
     fullName: null,
@@ -45,6 +46,7 @@ const Navbar: React.FC = () => {
 
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
+  const userData = user ? JSON.parse(user) : "";
 
   const isLoginOrRegister =
     location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
@@ -56,12 +58,12 @@ const Navbar: React.FC = () => {
       getCart();
     }
     if (user) {
-      const userData = JSON.parse(user);
       setDataUser({
         role: userData.role,
         fullName: userData.name,
         email: userData.email,
         avatarUrl: userData.avatar,
+        googleId: userData.google_id,
       });
     }
   }, [token, user]);
@@ -133,28 +135,24 @@ const Navbar: React.FC = () => {
     },
     {
       label: (
-        <Link className="text-lg" to={paths.STUDENT_SUBSCRIPTION}>
-          Subscription
-        </Link>
-      ),
-      key: "3",
-    },
-    {
-      label: (
         <Link className="text-lg" to={paths.STUDENT_PURCHASE}>
           Purchase
         </Link>
       ),
-      key: "4",
+      key: "3",
     },
-    {
-      label: (
-        <Link className="text-lg" to={paths.STUDENT_CHANGEPASSWORD}>
-          Change Password
-        </Link>
-      ),
-      key: "5",
-    },
+    ...(dataUser.googleId
+      ? []
+      : [
+        {
+          label: (
+            <Link className="text-lg" to={paths.STUDENT_CHANGEPASSWORD}>
+              Change Password
+            </Link>
+          ),
+          key: "4",
+        },
+      ]),
     {
       label: (
         <p
@@ -164,7 +162,7 @@ const Navbar: React.FC = () => {
           Logout
         </p>
       ),
-      key: "6",
+      key: "5",
     },
   ];
 

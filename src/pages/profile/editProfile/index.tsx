@@ -138,25 +138,28 @@ const EditProfile = () => {
       updated_at: new Date().toISOString(),
     };
 
-    const response = await axiosInstance.put(`${API_UPDATE_USER}/${user._id}`, updatedUser);
+    try {
+      const response = await axiosInstance.put(`${API_UPDATE_USER}/${user._id}`, updatedUser);
 
-    if (response.data.email === updatedUser.email) {
-      
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      setUser(updatedUser);
+      if (response.data.email === updatedUser.email) {
 
-      form.setFieldsValue({
-        name: updatedUser.name,
-        email: updatedUser.email,
-        phone_number: updatedUser.phone_number,
-        dob: formatDate(updatedUser.dob),
-        avatar: updatedUser.avatar,
-        
-      });
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setUser(updatedUser);
 
-      message.success(`Updated ${values.name} successfully`);
+        form.setFieldsValue({
+          name: updatedUser.name,
+          email: updatedUser.email,
+          phone_number: updatedUser.phone_number,
+          dob: formatDate(updatedUser.dob),
+          avatar: updatedUser.avatar,
+
+        });
+
+        message.success(`Updated ${values.name} successfully`);
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   if (loading) {
@@ -229,7 +232,7 @@ const EditProfile = () => {
                 wrapperCol={{ span: 24 }}
                 className="w-2/3"
               >
-                <Input className="w-full h-10" disabled/>
+                <Input className="w-full h-10" disabled />
               </Form.Item>
             </Col>
           </Row>
