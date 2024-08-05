@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, message, Skeleton } from 'antd';
+import { message, Skeleton } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Instructor } from '../../../models'; // Import the Course type
 import { axiosInstance, getUserDetail, subscriptionByInstructorOrStudent } from '../../../services';
@@ -58,16 +58,16 @@ const Info = () => {
                     <>
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-2xl font-bold">{upperCaseFirstLetter(dataInstructor?.role)}</h2>
-                            <Button
-                                type={subscribed ? "default" : "primary"}
+                            <button
+                                className={`px-4 py-2 rounded text-white font-semibold ${subscribed ? 'bg-red-500' : 'bg-blue-500'}`}
                                 onClick={handleClick}
                             >
-                                {subscribed ? "Subscribed" : (
+                                {subscribed ? "UnSubscribed" : (
                                     <>
                                         <PlusCircleOutlined className='mr-1' /> Subscribe
                                     </>
                                 )}
-                            </Button>
+                            </button>
                         </div>
                         <div className="flex items-center mb-4">
                             <img

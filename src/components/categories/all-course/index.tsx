@@ -181,9 +181,11 @@ const AllCourses = () => {
                             onError={handleImageError}
                           />
                         </Link>
-                        <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">
-                          Best Seller
-                        </div>
+                        {course.review_count >= 5 && (
+                          <div className="absolute top-2 left-2 bg-yellow-300 text-xs px-2 py-1 rounded">
+                            Best Seller
+                          </div>
+                        )}
                       </div>
                     }
                   >
@@ -216,9 +218,11 @@ const AllCourses = () => {
                         <div className="text-2xl text-gray-500 font-bold">
                           {formatCurrency(course.price_paid)}
                         </div>
-                        <div className="text-xl text-gray-500 ml-2 line-through">
-                          {formatCurrency(course.price)}
-                        </div>
+                        {course.price !== course.price_paid && (
+                          <div className="text-xl text-gray-500 ml-2 line-through">
+                            {formatCurrency(course.price)}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </Card>

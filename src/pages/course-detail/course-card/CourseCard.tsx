@@ -85,11 +85,15 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                         <>
                             <div className="flex flex-row gap-4 items-center">
                                 <div className="text-xl lg:text-3xl">{formatCurrency(course.price_paid)}</div>
-                                <div className="text-sm lg:text-xl">
-                                    <span className="line-through">{formatCurrency(course.price)}</span>
-                                </div>
+                                {course.discount > 0 && (
+                                    <div className="text-sm lg:text-xl">
+                                        <span className="line-through">{formatCurrency(course.price)}</span>
+                                    </div>
+                                )}
                             </div>
-                            <div className="text-xs">{course.discount}% off</div>
+                            {course.discount > 0 && (
+                                <div className="text-xs">{course.discount}% off</div>
+                            )}
                         </>
                     )}
                     <div className="flex gap-4 mt-auto">

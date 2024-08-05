@@ -17,10 +17,10 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -32,7 +32,7 @@ axiosInstance.interceptors.response.use(
   (response) => {
     console.log(response);
     if (response.status === 200 || response.status === 201) {
-        return response.data;
+      return response.data;
     }
     return response;
   },
@@ -40,16 +40,16 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       const { data } = error.response;
       console.log(error.response);
-      if(data.message === null && data.errors && data.errors.length > 0) {
+      if (data.message === null && data.errors && data.errors.length > 0) {
         data.errors.forEach((error: { field: string, message: string }) => {
           message.error(`${error.field}: ${error.message}`);
         });
       }
 
-      else{
+      else {
         switch (error.response.status) {
           case 403: {
-            if(!isTokenExpired){
+            if (!isTokenExpired) {
               isTokenExpired = true
               message.error(data.message);
               const user = getUserFromLocalStorage();
