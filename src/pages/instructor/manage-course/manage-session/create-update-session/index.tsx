@@ -129,7 +129,7 @@ const CreateUpdateSession = () => {
           <CustomBreadcrumb />
 
           <h1 className="text-center mb-8">{sessionId ? "Update Session" : "Create Session"}</h1>
-          <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
+          <Form  onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
             <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Please input title!' }]}>
               <Input />
             </Form.Item>

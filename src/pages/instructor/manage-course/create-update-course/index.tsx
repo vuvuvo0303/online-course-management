@@ -195,17 +195,18 @@ const InstructorCreateCourse: React.FC = () => {
     setVideoUrl(e.target.value);
   };
   return (
-    <>
-      <CustomBreadcrumb />
-      <h1 className="text-center">{_id ? "Update Course" : "Create Course"}</h1>
+    <div className="flex justify-center items-center h-full mt-10">
 
-      <div className="flex justify-center items-center h-full mt-10">
+
+      <div className="w-full max-w-6xl bg-white p-8 rounded shadow">
+        <CustomBreadcrumb />
+        <h1 className="text-center">{_id ? "Update Course" : "Create Course"}</h1>
         <Form
           {...formItemLayout}
           onFinish={onFinish}
           form={form}
-          variant="filled"
-          className="w-full max-w-6xl bg-white p-8 rounded shadow"
+          
+          // className="w-full max-w-6xl bg-white p-8 "
         >
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the course name!" }]}>
             <Input />
@@ -314,7 +315,7 @@ const InstructorCreateCourse: React.FC = () => {
           />
         )}
       </div>
-    </>
+    </div>
   );
 };
 
