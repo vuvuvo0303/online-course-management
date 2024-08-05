@@ -1,6 +1,5 @@
-import { DeleteOutlined, EditOutlined, HomeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
-  Breadcrumb,
   Button,
   Input,
   message,
@@ -16,7 +15,7 @@ import { Link, useParams } from "react-router-dom";
 import { API_GET_COURSE, API_GET_SESSIONS } from "../../../../consts";
 import { axiosInstance } from "../../../../services/";
 import { useDebounce } from "../../../../hooks";
-import { LoadingComponent } from "../../../../components";
+import { CustomBreadcrumb, LoadingComponent } from "../../../../components";
 import { formatDate } from "../../../../utils";
 const ManageSession: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -52,7 +51,7 @@ const ManageSession: React.FC = () => {
         setTimeout(() => {
           setOpen(false);
           setConfirmLoading(false);
-        }, 2000);
+        }, 1000);
       }
     } else {
       setOpen(false);
@@ -62,12 +61,13 @@ const ManageSession: React.FC = () => {
     setKeyword(e.target.value);
   };
   const handleDelete = async (sessionId: string) => {
+    setLoading(true);
     try {
       await axiosInstance.delete(`${API_GET_COURSE}/${sessionId}`);
       setSessions(sessions.filter((session) => session._id !== sessionId));
       message.success(`Delete Session Successfully!`);
-    } catch (error) {
-      //
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -187,7 +187,7 @@ const ManageSession: React.FC = () => {
       <Modal title="Confirm Delete" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
         <p>{modalText}</p>
       </Modal>
-      <Breadcrumb>
+      {/* <Breadcrumb>
         <Breadcrumb.Item href="/instructor/dashboard">
           <HomeOutlined />
         </Breadcrumb.Item>
@@ -197,7 +197,8 @@ const ManageSession: React.FC = () => {
         <Breadcrumb.Item>
           <span>Manage Sessions</span>
         </Breadcrumb.Item>
-      </Breadcrumb>
+      </Breadcrumb> */}
+      <CustomBreadcrumb/>
 
       <div className="grid grid-cols-2">
         <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-10">

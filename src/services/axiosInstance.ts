@@ -57,7 +57,12 @@ axiosInstance.interceptors.response.use(
                 if (user.role === roles.ADMIN) {
                   window.location.href = paths.ADMIN_LOGIN;
                 } else {
-                  window.location.href = paths.LOGIN;
+                  if(data.message === "Your account has been locked. Please contact admin via mail to activate!" ){
+                    return;
+                  }
+                  else{
+                    window.location.href = paths.LOGIN;
+                  }
                 }
                 localStorage.clear();
                 isTokenExpired = false;

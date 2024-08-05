@@ -16,11 +16,11 @@ import {
   Tag,
 } from "antd";
 import { Category, Course, Log, Review } from "../../../models";
-import { API_COURSE_LOGS, API_COURSE_STATUS, API_DELETE_COURSE, API_GET_COURSES, getColor } from "../../../consts";
+import { API_COURSE_STATUS, API_DELETE_COURSE, getColor } from "../../../consts";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../services/axiosInstance.ts";
 import { useDebounce } from "../../../hooks";
-import { getCategories, getAllReviews } from "../../../services";
+import { getCategories, getAllReviews, getCourses, getCourseLogs } from "../../../services";
 import { LoadingComponent, CustomBreadcrumb } from "../../../components";
 import { formatDate, renderCourseStatus } from "../../../utils";
 
@@ -92,31 +92,18 @@ const InstructorManageCourses: React.FC = () => {
 
   //show log status modal
   const fetchLog = async () => {
+    setLogLoading(true);
     try {
-      setLogLoading(true);
-      const response = await axiosInstance.post(API_COURSE_LOGS, {
-        searchCondition: {
-          course_id: courseId,
-          keyword: keywordLogStatus,
-          old_status: oldStatus,
-          new_status: newStatus,
-          is_deleted: false,
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 100,
-        },
-      });
-      if (response) {
+      const responseLogs = await getCourseLogs(courseId, keywordLogStatus, oldStatus, newStatus, 1, 10);
+      if (responseLogs) {
         setLogs(
-          response.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
+          responseLogs.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
             return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
           })
         );
-        setLogLoading(false);
       }
-    } catch (error) {
-      //
+    } finally {
+      setLogLoading(false);
     }
   };
 
@@ -211,29 +198,16 @@ const InstructorManageCourses: React.FC = () => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const response = await axiosInstance.post(API_GET_COURSES, {
-          searchCondition: {
-            keyword: debouncedSearchTerm,
-            category_id: cateId,
-            status: status,
-            is_deleted: false,
-          },
-          pageInfo: {
-            pageNum: pagination.current,
-            pageSize: pagination.pageSize,
-          },
-        });
-        if (response.data) {
-          setCourses(response.data.pageData || response.data);
+        const responseCourses = await getCourses(debouncedSearchTerm, cateId, status, false, pagination.current, pagination.pageSize);
+        if (responseCourses.data) {
+          setCourses(responseCourses.data.pageData || responseCourses.data);
           setPagination((prev) => ({
             ...prev,
-            total: response.data.pageInfo?.totalItems || response.data.length,
-            current: response.data.pageInfo?.pageNum || 1,
-            pageSize: response.data.pageInfo?.pageSize || response.data.length,
+            total: responseCourses.data.pageInfo?.totalItems || responseCourses.data.length,
+            current: responseCourses.data.pageInfo?.pageNum || 1,
+            pageSize: responseCourses.data.pageInfo?.pageSize || responseCourses.data.length,
           }));
         }
-      } catch (error) {
-        //
       } finally {
         setLoading(false);
       }
@@ -372,7 +346,7 @@ const InstructorManageCourses: React.FC = () => {
       title: "Image",
       dataIndex: "image_url",
       key: "image_url",
-      render: (image_url: string) => <Image src={image_url} height={150} width={150}  />,
+      render: (image_url: string) => <Image src={image_url} height={150} width={150} />,
 
 
     },
@@ -429,7 +403,7 @@ const InstructorManageCourses: React.FC = () => {
       key: "new_status",
       render: (new_status: string) => (
         <>
-          <Tag color={getColor(new_status)}>{new_status === "waiting_approve" ? "waiting approve" : new_status}</Tag>
+          <Tag color={getColor(new_status)}>{renderCourseStatus(new_status)}</Tag>
         </>
       ),
     },

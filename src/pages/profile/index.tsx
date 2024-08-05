@@ -35,9 +35,6 @@ const Profile: React.FC = () => {
       const purchasedCourses = coursesRes.filter((course: Course) => course.is_purchased);
       setCourses(purchasedCourses);
       setSubscriptions(subscriptionsRes);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-      setError('Failed to load data. Please try again later.');
     } finally {
       setLoading(false);
     }

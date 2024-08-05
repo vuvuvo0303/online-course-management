@@ -96,11 +96,11 @@ const StudentManagePurchase = () => {
   const user = getUserFromLocalStorage();
   const userRole = user.role;
   const navigateToUser = (instructor_id: string) => {
-   if(userRole === "instructor"){
-    navigate(`/instructor/user/${instructor_id}`);
-   }else{
-    navigate(`/user/${instructor_id}`);
-   }
+    if (userRole === "instructor") {
+      navigate(`/instructor/user/${instructor_id}`);
+    } else {
+      navigate(`/user/${instructor_id}`);
+    }
   };
   const handleTableChange = (pagination: PaginationProps) => {
     const newPagination: { current: number; pageSize: number; total: number } = {

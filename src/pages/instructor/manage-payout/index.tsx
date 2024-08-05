@@ -69,6 +69,7 @@ const InstructorManagePayout = () => {
 
 
   const getPayoutsByInstructor = async () => {
+    setLoading(true);
     // no loading for search
     if (payoutNoSearch != "") {
       const response = await getPayouts(payoutNoSearch, "", statusPayout, true, false, 1, 10);
@@ -95,9 +96,14 @@ const InstructorManagePayout = () => {
 
   const handleRequestPayout = async (payout_id: string, status: string, comment: string) => {
     setLoading(true);
-    await updateStatusPayout(payout_id, status, comment);
-    message.success(`Send Request Successfully!`);
-    getPayoutsByInstructor();
+    try {
+      await updateStatusPayout(payout_id, status, comment);
+      message.success(`Send Request Successfully!`);
+      getPayoutsByInstructor();
+    } finally {
+      setLoading(false);
+
+    }
   };
 
   const toggleModal = (idx: number, target: boolean, transactions?: Transaction[]) => {

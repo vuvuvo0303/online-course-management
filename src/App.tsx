@@ -13,8 +13,8 @@ function App() {
     location.pathname.includes("/instructor") ||
     location.pathname.includes(paths.LOGIN) ||
     location.pathname.includes(paths.REGISTER) ||
-    location.pathname.includes('/course/lesson') ||
-    location.pathname.includes('verify-email')
+    location.pathname.includes('verify-email') ||
+    location.pathname.includes('course') && location.pathname.includes('lesson')
 
   const clientId = config.GOOGLE_CLIENT_ID;
   return (

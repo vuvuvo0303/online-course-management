@@ -19,7 +19,7 @@ import {
 import { DeleteOutlined, EditOutlined, SearchOutlined, UserAddOutlined } from "@ant-design/icons";
 import type { GetProp, TableColumnsType, TablePaginationConfig, UploadFile, UploadProps } from "antd";
 import { User, UserRole } from "../../../models/User.ts";
-import { PaginationProps } from "antd";
+
 import { API_CHANGE_ROLE, API_CREATE_USER, API_UPDATE_USER, roleRules } from "../../../consts";
 import ResponseData from "../../../models/ResponseData.ts";
 import { useDebounce } from "../../../hooks";

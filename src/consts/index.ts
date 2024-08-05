@@ -309,7 +309,7 @@ export const paths = {
   INSTRUCTOR_CREATE_LECTURE:
     "manage-courses/:courseId/manage-sessions/:sessionId/manage-lessons/create-lesson",
   INSTRUCTOR_UPDATE_LECTURE:
-    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lectures/edit-lecture/:lectureId",
+    "manage-courses/:courseId/manage-sessions/:sessionId/manage-lessons/update-lesson/:lectureId",
   INSTRUCTOR_DELETE_LECTURE: "delete-lecture/:lectureId",
   INSTRUCTOR_LECTURES_OF_COURSE:
     "manage-courses/:courseId/manage-sessions/:sessionId/manage-lessons",
