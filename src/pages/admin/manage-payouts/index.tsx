@@ -280,7 +280,7 @@ const AdminManagePayouts: React.FC = () => {
         </Form>
       </Modal>
       <div className="flex justify-between">
-        <CustomBreadcrumb homeHref="/" />
+        <CustomBreadcrumb />
       </div>
       <Space className="flex flex-wrap mb-4">
         <Input.Search
