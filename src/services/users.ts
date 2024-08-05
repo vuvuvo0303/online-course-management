@@ -67,6 +67,7 @@ export const changePassword = async (values: ValuesChangePassword) => {
     old_password: values.oldPassword,
     new_password: values.newPassword,
   });
+  console.log(values);
   if (response.success) {
     message.success("Change password successfully");
   }
