@@ -2,6 +2,7 @@ import { Breadcrumb } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import React from "react";
 import { useLocation, Link } from "react-router-dom";
+import { BreadcrumbItemType, BreadcrumbSeparatorType } from "antd/lib/breadcrumb/Breadcrumb";
 
 interface CustomBreadcrumbProps {
     homeHref?: string;
@@ -14,7 +15,16 @@ const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = ({
     const pathnames = location.pathname.split("/").filter((item) => item);
 
     // Xác định vai trò dựa trên đường dẫn
-    const isInstructorOrAdmin = pathnames.includes("instructor") || pathnames.includes("admin");
+    const isInstructor = pathnames.includes("instructor");
+    const isAdmin = pathnames.includes("admin");
+
+    // Nếu là admin hoặc instructor thì homeHref sẽ được xác định theo vai trò
+    let finalHomeHref = "/";
+    if (isAdmin) {
+        finalHomeHref = "/admin/dashboard";
+    } else if (isInstructor) {
+        finalHomeHref = "/instructor/dashboard";
+    }
 
     // Format các phần breadcrumb
     const formatTitle = (title: string) => {
@@ -23,17 +33,23 @@ const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = ({
 
     let currentPath = "";
 
+    // Tạo mảng breadcrumbItems và loại bỏ các phần tử null ngay trong quá trình tạo mảng
     const breadcrumbItems = [
         {
             title: (
-                <Link to={homeHref}>
+                <Link to={finalHomeHref}>
                     <HomeOutlined />
                 </Link>
             ),
         },
         ...pathnames.map((value, index) => {
             // Bỏ qua các phần breadcrumb nếu vai trò là instructor hoặc admin
-            if (isInstructorOrAdmin && (value === "instructor" || value === "admin")) {
+            if (isInstructor && value === "instructor") {
+                currentPath += `/${value}`;
+                return null;
+            }
+
+            if (isAdmin && value === "admin") {
                 currentPath += `/${value}`;
                 return null;
             }
@@ -58,8 +74,8 @@ const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = ({
                     <Link to={currentPath}>{title}</Link>
                 ),
             };
-        }),
-    ].filter(item => item !== null); // Lọc bỏ các giá trị null
+        }).filter((item) => item !== null) as Array<Partial<BreadcrumbItemType & BreadcrumbSeparatorType>>,
+    ];
 
     return (
         <Breadcrumb className="py-2" items={breadcrumbItems} />
