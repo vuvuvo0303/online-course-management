@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { paths, roles } from "../consts";
-import { getUserFromLocalStorage } from "../services/auth";
+import { getUserFromLocalStorage } from "../services";
 
 const useRoleRedirect = () => {
   const user = getUserFromLocalStorage();
@@ -13,7 +13,13 @@ const useRoleRedirect = () => {
     if (user.role) {
       redirectBasedOnRole();
     }
+    if(user.google_id){
+      if(location.pathname.includes(paths.STUDENT_CHANGEPASSWORD)){
+        navigate(paths.LOGIN)
+      }
+    }
   }, [user.role, location.pathname]);
+  
 
   const redirectBasedOnRole = () => {
     const path = location.pathname;
