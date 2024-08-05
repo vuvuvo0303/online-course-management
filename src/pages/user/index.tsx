@@ -108,6 +108,10 @@ const User = () => {
         setIsModalVisible(false);
     };
 
+    const buttonStyle = subcribe === "Subscribe"
+        ? "bg-blue-500 text-white"
+        : "bg-red-500 text-white";
+
     return (
         <div className="relative mt-10 max-w-screen-lg w-full mx-auto px-4 sm:px-6 lg:px-8">
             {loading ? (
@@ -116,10 +120,10 @@ const User = () => {
                 <>
                     <div className="relative mb-4">
                         <Button
-                            className="absolute top-0 right-0 mt-4 mr-4 subcribe_custom_button"
+                            className={`absolute top-0 right-0 mt-4 mr-4 ${buttonStyle}`}
                             onClick={handleSubcribe}
                         >
-                            <PlusCircleOutlined />{subcribe}
+                            <PlusCircleOutlined /> {subcribe}
                         </Button>
                     </div>
                     <div className="flex flex-col items-start mt-6 sm:mt-10">

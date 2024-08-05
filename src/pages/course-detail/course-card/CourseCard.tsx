@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { message, Rate } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCartOutlined, HeartOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { addCourseToCart } from '../../../services/cart';
 import { paths } from "../../../consts";
 import { formatCurrency, formatMinute } from "../../../utils";
@@ -52,12 +52,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     className="w-[25rem] h-[15rem] object-cover rounded-lg"
                     onError={handleImageError}
                 />
-                <div className="flex space-y-2 mt-2 lg:mt-4">
-                    <a href="/enrollment" className="flex items-center text-white hover:text-gray-400">
-                        <HeartOutlined className="mr-2" />
-                        Save
-                    </a>
-                </div>
             </div>
             <div className="flex flex-col text-white flex-grow">
                 <h2 className="text-xl lg:text-2xl font-bold">{course.name}</h2>
@@ -100,11 +94,18 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     )}
                     <div className="flex gap-4 mt-auto">
                         {course.is_purchased || course.price_paid === 0 ? (
-                            <Link to={`/course/${course._id}/lesson`}>
-                                <button className="bg-yellow-500 text-gray-800 p-2 rounded-md hover:bg-yellow-400">
-                                    Study now
-                                </button>
-                            </Link>
+                            <div className="flex flex-row items-center gap-2">
+                                <Link to={`/course/${course._id}/lesson`}>
+                                    <button className="bg-yellow-500 text-gray-800 p-2 rounded-md w-[6rem] hover:bg-yellow-400 text-black-100">
+                                        Study now
+                                    </button>
+                                </Link>
+                                <Link to="/enrollment">
+                                    <button className="bg-yellow-500 text-gray-800 w-[6rem] p-2 rounded-md hover:bg-yellow-400 text-black-100">
+                                        Save
+                                    </button>
+                                </Link>
+                            </div>
                         ) : (
                             <button onClick={handleAddToCart} className="bg-yellow-500 text-gray-800 p-2 rounded-md hover:bg-yellow-400" disabled={loading}>
                                 <ShoppingCartOutlined className="mr-2" />
