@@ -37,7 +37,6 @@ const Checkout = lazy(() => import("../pages/checkout"));
 const Profile = lazy(() => import("../pages/profile"));
 const EditProfile = lazy(() => import("../pages/profile/editProfile/index"));
 const Cart = lazy(() => import("../pages/cart"));
-const StudentSubscription = lazy(() => import("../pages/student/subscription"));
 const StudentManagePurchase = lazy(() => import("../pages/purchase"));
 const Lesson = lazy(() => import("../pages/course/lesson"));
 
@@ -117,7 +116,6 @@ const AppRouter: React.FC = () => {
         <Route path={paths.STUDENT_ENROLLMENT} element={<Enrollment />} />
         <Route path={paths.STUDENT_CHANGEPASSWORD} element={<ChangePassword />} />
         <Route path={paths.STUDENT_PURCHASE} element={<StudentManagePurchase />} />
-        <Route path={paths.STUDENT_SUBSCRIPTION} element={<StudentSubscription />} />
         <Route path={paths.LESSON} element={<Lesson />} />
         <Route path={paths.STUDENT_WITH_FIRST_LESSON} element={<Lesson />} />
         {/* Route for Instructor */}

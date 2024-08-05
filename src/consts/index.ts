@@ -291,7 +291,6 @@ export const paths = {
   STUDENT_STUDY_COURSE: "/course/lesson",
   STUDENT_CART: "/cart",
   STUDENT_PURCHASE: "/purchase",
-  STUDENT_SUBSCRIPTION: "/subscription",
   STUDENT_WITH_FIRST_LESSON: "course/:_id/lesson",
   /* INSTRUCTORS PATHS */
   INSTRUCTOR_DASHBOARD: "dashboard",
