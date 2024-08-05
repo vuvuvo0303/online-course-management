@@ -21,7 +21,7 @@ import { Payout, Transaction } from "../../../models";
 import { useDebounce } from "../../../hooks";
 import { CustomBreadcrumb, LoadingComponent } from "../../../components";
 import { getPayouts, updateStatusPayout } from "../../../services";
-import { formatCurrency, formatDate } from "../../../utils";
+import { formatCurrency, formatDate, renderPayoutStatus } from "../../../utils";
 
 const AdminManagePayouts: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -158,6 +158,7 @@ const AdminManagePayouts: React.FC = () => {
       title: "Balance Origin",
       dataIndex: "balance_origin",
       key: "balance_origin",
+      render: (balance_origin: number) => <>{formatCurrency(balance_origin)}</>
     },
     {
       title: "Instructor Paid",
@@ -180,7 +181,7 @@ const AdminManagePayouts: React.FC = () => {
       key: "status",
       width: "10%",
       render: (status: string) => (
-        <Tag color={getColorPayout(status)}>{status === "request_payout" ? "request payout" : status}</Tag>
+        <Tag color={getColorPayout(status)}>{renderPayoutStatus(status)}</Tag>
       ),
     },
     {

@@ -21,7 +21,7 @@ import { createStyles } from "antd-style";
 import { LoadingComponent, CustomBreadcrumb } from "../../../components";
 import { useDebounce } from "../../../hooks";
 import { SearchOutlined } from "@ant-design/icons";
-import { formatCurrency, formatDate } from "../../../utils";
+import { formatCurrency, formatDate, renderPayoutStatus } from "../../../utils";
 const useStyle = createStyles(({ token }) => ({
   "my-modal-body": {
     background: token.blue1,
@@ -127,7 +127,7 @@ const InstructorManagePayout = () => {
       dataIndex: "status",
       key: "status",
       render: (status: string) => (
-        <Tag color={getColorPayout(status)}>{status === "request_payout" ? "request payout" : status}</Tag>
+        <Tag color={getColorPayout(status)}>{renderPayoutStatus(status)}</Tag>
       ),
     },
     {

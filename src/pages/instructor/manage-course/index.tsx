@@ -22,7 +22,7 @@ import axiosInstance from "../../../services/axiosInstance.ts";
 import { useDebounce } from "../../../hooks";
 import { getCategories, getAllReviews } from "../../../services";
 import { LoadingComponent, CustomBreadcrumb } from "../../../components";
-import { formatDate } from "../../../utils/index.ts";
+import { formatDate, renderCourseStatus } from "../../../utils";
 
 
 const InstructorManageCourses: React.FC = () => {
@@ -337,7 +337,6 @@ const InstructorManageCourses: React.FC = () => {
       key: "status",
       render: (status: string, record: Course) => (
         <>
-          {/* {(status !== "waiting_approve" && status !== "reject") && */}
           <Tag
             color={getColor(status)}
             onClick={() => {
@@ -345,7 +344,7 @@ const InstructorManageCourses: React.FC = () => {
             }}
             className="text-blue-500 cursor-pointer"
           >
-            {status === "waiting_approve" ? "waiting approve" : status}
+            {renderCourseStatus(status)}
           </Tag>
           {/* } */}
         </>
