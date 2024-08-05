@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input } from "antd";
 import { changePassword } from "../../../services/users";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import changepass from "../../../assets/changepass.png";
+import { ButtonFormItem } from "../../../components/formItem";
 
 interface ValuesChangePassword {
   oldPassword: string;
@@ -10,6 +11,7 @@ interface ValuesChangePassword {
 }
 
 const ChangePassword = () => {
+  const [form] = Form.useForm();
   const [validations, setValidations] = useState({
     oldPassword: false,
     newPassword: {
@@ -17,6 +19,7 @@ const ChangePassword = () => {
     },
     confirmPassword: false,
   });
+  const [loading, setLoading] = useState(false);
 
   const validateOldPassword = (password: string) => {
     setValidations((prev) => ({
@@ -49,8 +52,14 @@ const ChangePassword = () => {
     }));
   };
 
-  const onFinish = (values: ValuesChangePassword) => {
-    changePassword(values);
+  const onFinish = async (values: ValuesChangePassword) => {
+    setLoading(true);
+    try {
+      await changePassword(values);
+      form.resetFields();
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -130,11 +139,10 @@ const ChangePassword = () => {
               <div className="pb-5 flex flex-col">
                 <div className="flex items-center gap-3">
                   <span
-                    className={`p-1 inline-block rounded-full ${
-                      validations.newPassword.minLength
-                        ? "bg-green-400"
-                        : "bg-stone-400"
-                    }`}
+                    className={`p-1 inline-block rounded-full ${validations.newPassword.minLength
+                      ? "bg-green-400"
+                      : "bg-stone-400"
+                      }`}
                   ></span>
                   <span
                     className={
@@ -186,19 +194,7 @@ const ChangePassword = () => {
                   className="h-12"
                 />
               </Form.Item>
-              <Form.Item>
-                <div className="mt-6">
-                  <Button
-                    style={{ color: "white" }}
-                    type="primary"
-                    htmlType="submit"
-                    block
-                    className="h-12"
-                  >
-                    Change Password
-                  </Button>
-                </div>
-              </Form.Item>
+              <ButtonFormItem loading={loading} buttonText="Change Password" htmlType="submit" />
             </Form>
           </div>
         </div>
