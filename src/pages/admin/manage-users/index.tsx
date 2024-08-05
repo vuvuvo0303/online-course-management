@@ -143,7 +143,6 @@ const AdminManageUsers: React.FC = () => {
   };
   const handlePaginationChange = async (page: number, pageSize: number) => {
     setPagination({ ...pagination, current: page, pageSize });
-    await fetchUsers();
   };
   const handleAddClick = () => {
     setModalMode("Add");

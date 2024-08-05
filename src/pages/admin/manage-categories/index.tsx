@@ -343,9 +343,7 @@ const AdminManageCategories: React.FC = () => {
           labelCol={{ span: 24 }}
           validateTrigger={validateOnOpen ? "onSubmit" : "onChange"}
         >
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the name!" }]}>
-            <Input />
-          </Form.Item>
+          <NameFormItem />
           <Form.Item label="Parent Category" name="parent_category_id" rules={[{ required: false }]}>
             <Select placeholder="Select parent category">
               {parentCategories.map((category) => (

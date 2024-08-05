@@ -58,13 +58,17 @@ const AdminManageCourses: React.FC = () => {
   };
   const fetchLog = async () => {
     setLogLoading(true);
-    const responseLogs = await getCourseLogs(courseId, keywordLogStatus, oldStatus, newStatus, 1, 10);
-    if (responseLogs) {
-      setLogs(
-        responseLogs.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-        })
-      );
+    try {
+      const responseLogs = await getCourseLogs(courseId, keywordLogStatus, oldStatus, newStatus, 1, 10);
+      if (responseLogs) {
+        setLogs(
+          responseLogs.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          })
+        );
+      }
+    }
+    finally {
       setLogLoading(false);
     }
   };
@@ -89,11 +93,11 @@ const AdminManageCourses: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [categoryId, pagination.current, pagination.pageSize, searchText, status, debouncedSearchTerm]);
+  }, [pagination.current, pagination.pageSize, searchText, status, debouncedSearchTerm]);
 
   useEffect(() => {
     fetchCourses();
-  }, [categoryId, pagination.current, pagination.pageSize, status, searchText, debouncedSearchTerm]);
+  }, [pagination.current, pagination.pageSize, status, searchText, debouncedSearchTerm]);
 
   const handleSearch = () => {
     setPagination((prev) => ({
