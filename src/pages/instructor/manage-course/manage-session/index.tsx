@@ -51,7 +51,7 @@ const ManageSession: React.FC = () => {
         setTimeout(() => {
           setOpen(false);
           setConfirmLoading(false);
-        }, 2000);
+        }, 1000);
       }
     } else {
       setOpen(false);
@@ -61,12 +61,13 @@ const ManageSession: React.FC = () => {
     setKeyword(e.target.value);
   };
   const handleDelete = async (sessionId: string) => {
+    setLoading(true);
     try {
       await axiosInstance.delete(`${API_GET_COURSE}/${sessionId}`);
       setSessions(sessions.filter((session) => session._id !== sessionId));
       message.success(`Delete Session Successfully!`);
-    } catch (error) {
-      //
+    } finally {
+      setLoading(false);
     }
   };
 

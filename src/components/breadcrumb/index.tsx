@@ -1,8 +1,8 @@
 import { Breadcrumb } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
-import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import { BreadcrumbItemType, BreadcrumbSeparatorType } from "antd/lib/breadcrumb/Breadcrumb";
+import { paths } from "../../consts";
 
 interface CustomBreadcrumbProps { }
 
@@ -15,11 +15,11 @@ const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = () => {
     const isAdmin = pathnames.includes("admin");
 
     // Nếu là admin hoặc instructor thì homeHref sẽ được xác định theo vai trò
-    let finalHomeHref = "/";
+    let finalHomeHref = paths.HOME;
     if (isAdmin) {
-        finalHomeHref = "/admin/dashboard";
+        finalHomeHref = paths.ADMIN_HOME;
     } else if (isInstructor) {
-        finalHomeHref = "/instructor/dashboard";
+        finalHomeHref = paths.INSTRUCTOR_HOME;
     }
 
     // Format các phần breadcrumb
