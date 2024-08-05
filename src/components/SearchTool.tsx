@@ -69,7 +69,7 @@ const SearchTool: React.FC = () => {
                     dataSource={courses}
                     renderItem={(course) => (
                         <List.Item key={course._id} className="flex justify-between items-center">
-                            <Link to={`/course/all-courses/course/${course._id}`} className="flex-1">
+                            <Link to={`/course/${course._id}`} className="flex-1">
                                 <CourseCard
                                     image={course.image_url}
                                     title={course.name}
@@ -79,7 +79,7 @@ const SearchTool: React.FC = () => {
                                 />
                             </Link>
                             <div className='flex flex-col gap-2 items-end'>
-                                <Link to={`/course/all-courses/course/${course._id}`}>
+                                <Link to={`/course/${course._id}`}>
                                     <Button
                                         type="primary"
                                         className="ml-2 text-xs px-2 py-1"
