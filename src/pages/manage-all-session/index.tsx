@@ -15,7 +15,6 @@ const ManageAllSession = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [courses, setCourses] = useState<Course[]>([]);
     const [course_id, setCourse_id] = useState<string>('');
-    const [is_deleted, setIs_deleted] = useState<boolean>(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [role, setRole] = useState<string>('');
     const [userId, setUserId] = useState<string>('');
@@ -64,11 +63,6 @@ const ManageAllSession = () => {
         setUserId(user?._id)
     }, []);
 
-
-    const handleChange = (value: boolean) => {
-        setIs_deleted(value);
-    };
-
     //fetch courses
     useEffect(() => {
         const fetchCourses = async () => {
@@ -107,7 +101,7 @@ const ManageAllSession = () => {
                         "keyword": debouncedSearchTerm,
                         "course_id": course_id,
                         "is_position_order": true,
-                        "is_deleted": is_deleted
+                        "is_deleted": false
                     },
                     "pageInfo": {
                         "pageNum": 1,
@@ -129,7 +123,7 @@ const ManageAllSession = () => {
             }
         };
         fetchSession();
-    }, [userId, role, is_deleted, keyword, debouncedSearchTerm, course_id]);
+    }, [userId, role, keyword, debouncedSearchTerm, course_id]);
 
 
     if (loading) {
@@ -219,23 +213,8 @@ const ManageAllSession = () => {
             </Modal>
 
             <CustomBreadcrumb />
-            {/* filter session by true false */}
             <div className="grid grid-cols-2">
                 <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-10">
-                    <Select
-                        defaultValue={is_deleted}
-                        onChange={handleChange}
-                        style={{ width: 200 }}
-                        className="mt-10"
-                        options={[
-                            {
-                                options: [
-                                    { label: <span>Deleted</span>, value: true },
-                                    { label: <span>Existing</span>, value: false },
-                                ],
-                            },
-                        ]}
-                    />
                     {/* filter session by course */}
                     <Select
                         defaultValue="All Courses"

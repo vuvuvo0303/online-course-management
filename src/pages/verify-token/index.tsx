@@ -50,7 +50,9 @@ const VerifyToken: React.FC = () => {
         }
         setIsLoadingResend(false);
     };
-
+    const handleSetEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value);
+      };
     return (
         <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: 'url(/l2.jpg)' }}>
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
@@ -65,7 +67,7 @@ const VerifyToken: React.FC = () => {
                                 <p className="text-red-500 mb-3">Your token has expired. Do you want to resend a new token?</p>
                                 <Form layout="vertical" onFinish={handleResendToken} className="w-full">
                                     <div className='mb-3'>
-                                        <EmailFormItem value={email} onChange={(e) => setEmail(e.target.value)} />
+                                        <EmailFormItem value={email} onChange={handleSetEmail} />
                                     </div>
                                     <ButtonFormItem loading={isLoadingResend} buttonText="Resend Token" htmlType="submit" />
                                 </Form>

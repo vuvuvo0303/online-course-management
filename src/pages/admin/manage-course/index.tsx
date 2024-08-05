@@ -58,13 +58,17 @@ const AdminManageCourses: React.FC = () => {
   };
   const fetchLog = async () => {
     setLogLoading(true);
-    const responseLogs = await getCourseLogs(courseId, keywordLogStatus, oldStatus, newStatus, 1, 10);
-    if (responseLogs) {
-      setLogs(
-        responseLogs.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-        })
-      );
+    try {
+      const responseLogs = await getCourseLogs(courseId, keywordLogStatus, oldStatus, newStatus, 1, 10);
+      if (responseLogs) {
+        setLogs(
+          responseLogs.data.pageData.sort((a: { created_at: string }, b: { created_at: string }) => {
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          })
+        );
+      }
+    }
+    finally {
       setLogLoading(false);
     }
   };
@@ -89,11 +93,11 @@ const AdminManageCourses: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [categoryId, pagination.current, pagination.pageSize, searchText, status, debouncedSearchTerm]);
+  }, [pagination.current, pagination.pageSize, searchText, status, debouncedSearchTerm]);
 
   useEffect(() => {
     fetchCourses();
-  }, [categoryId, pagination.current, pagination.pageSize, status, searchText, debouncedSearchTerm]);
+  }, [pagination.current, pagination.pageSize, status, searchText, debouncedSearchTerm]);
 
   const handleSearch = () => {
     setPagination((prev) => ({
@@ -320,7 +324,9 @@ const AdminManageCourses: React.FC = () => {
     { label: <span>active</span>, value: "active" },
     { label: <span>inactive</span>, value: "inactive" },
   ];
-
+  const handleSearchText= (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
   return (
     <div className="container mx-auto p-4">
       <Modal
@@ -478,7 +484,7 @@ const AdminManageCourses: React.FC = () => {
         <Input.Search
           placeholder="Search By Name"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={handleSearchText}
           onSearch={handleSearch}
           className="w-full md:w-48"
           enterButton={<SearchOutlined className="text-white" />}

@@ -232,7 +232,9 @@ const AdminManagePayouts: React.FC = () => {
   const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setComment(e.target.value);
   };
-
+  const handleSearchText= (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
   const columnsTransactions: TableProps["columns"] = [
     {
       title: "Price",
@@ -287,7 +289,7 @@ const AdminManagePayouts: React.FC = () => {
         <Input.Search
           placeholder="Search By Payout No"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={handleSearchText}
           className="w-full md:w-50"
           enterButton={<SearchOutlined className="text-white" />}
         />

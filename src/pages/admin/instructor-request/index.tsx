@@ -239,14 +239,19 @@ const AdminInstructorRequest = () => {
       ),
     },
   ];
-
+  const handleSearchText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+  const handleRejectReason = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRejectReason(e.target.value);
+  };
   return (
     <div>
       <CustomBreadcrumb />
       <Input.Search
         placeholder="Search By Name"
         value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
+        onChange={handleSearchText}
         className="p-2 mb-4"
         style={{ width: 200 }}
         enterButton={<SearchOutlined className="text-white" />}
@@ -286,7 +291,7 @@ const AdminInstructorRequest = () => {
             <Input.TextArea
               rows={4}
               value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
+              onChange={()=>handleRejectReason}
               placeholder="Please provide the reason for rejection"
             />
           </Form.Item>

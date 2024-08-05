@@ -17,7 +17,7 @@ import {
   message,
 } from "antd";
 import { DeleteOutlined, EditOutlined, SearchOutlined, UserAddOutlined } from "@ant-design/icons";
-import type { GetProp, TableColumnsType, UploadFile, UploadProps } from "antd";
+import type { GetProp, TableColumnsType, TablePaginationConfig, UploadFile, UploadProps } from "antd";
 import { User, UserRole } from "../../../models/User.ts";
 import { PaginationProps } from "antd";
 import { API_CHANGE_ROLE, API_CREATE_USER, API_UPDATE_USER, roleRules } from "../../../consts";
@@ -38,11 +38,8 @@ const AdminManageUsers: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
+  const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0 });
+
   const [formData, setFormData] = useState<Partial<User>>({});
 
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
@@ -128,22 +125,20 @@ const AdminManageUsers: React.FC = () => {
   };
 
 
-  const handleTableChange = (pagination: PaginationProps) => {
-    const newPagination: { current: number; pageSize: number; total: number } =
-    {
-      current: pagination.current ?? 1,
-      pageSize: pagination.pageSize ?? 10,
-      total: pagination.total ?? 0,
-    };
-
-    setPagination(newPagination);
-  };
+  
   const handleRoleChangeModal = (value: string) => {
     setRoleForModal(value);
   };
-  const handlePaginationChange = async (page: number, pageSize: number) => {
-    setPagination({ ...pagination, current: page, pageSize });
-    await fetchUsers();
+  const handlePaginationChange = (page: number, pageSize?: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize || 10,
+    }));
+  };
+
+  const handleTableChange = (pagination: TablePaginationConfig) => {
+    setPagination(pagination);
   };
   const handleAddClick = () => {
     setModalMode("Add");
@@ -343,6 +338,9 @@ const AdminManageUsers: React.FC = () => {
       ),
     },
   ];
+  const handleSearchText= (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
 
   return (
     <div>
@@ -361,7 +359,7 @@ const AdminManageUsers: React.FC = () => {
         <Input.Search
           placeholder="Search By Name and Email"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={handleSearchText}
           className="w-full md:w-48"
           enterButton={<SearchOutlined className="text-white" />}
         />
@@ -427,7 +425,7 @@ const AdminManageUsers: React.FC = () => {
               name="role"
               rules={roleRules}
             >
-              <Radio.Group onChange={(e) => handleRoleChangeModal(e.target.value)}>
+              <Radio.Group onChange={()=>handleRoleChangeModal}>
                 <Radio value="student">Student</Radio>
                 <Radio value="instructor">Instructor</Radio>
                 <Radio value="admin">Admin</Radio>

@@ -2,7 +2,6 @@ import {
   Form,
   FormProps,
   Image,
-  Modal,
   message,
   Radio,
   RadioChangeEvent,
@@ -40,13 +39,10 @@ type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [captchaVisible, setCaptchaVisible] = useState<boolean>(false);
-  // const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [role, setRole] = useState<string>(roles.STUDENT);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const [form] = useForm();
 
@@ -55,17 +51,7 @@ const RegisterPage: React.FC = () => {
   }, [role, form]);
 
   const onFinish: FormProps<Instructor>["onFinish"] = async (values) => {
-    if (!captchaVisible) {
-      setCaptchaVisible(true);
-      return;
-    }
-
     setLoading(true);
-    // if (!captchaToken) {
-    //   message.error("Please complete the CAPTCHA");
-    //   setLoading(false);
-    //   return;
-    // }
 
     if (values.role === roles.INSTRUCTOR && fileList.length > 0) {
       const file = fileList[0].originFileObj as FileType;
@@ -99,26 +85,7 @@ const RegisterPage: React.FC = () => {
     setFileList(newFileList);
 
   const handleRoleChange = (e: RadioChangeEvent) => {
-    const selectedRole = e.target.value;
-    setRole(selectedRole);
-    if (selectedRole === roles.INSTRUCTOR) {
-      setModalVisible(true);
-    } else {
-      setModalVisible(false);
-    }
-  };
-
-  const handleModalOk = async () => {
-    try {
-      await form.validateFields();
-      setModalVisible(false);
-    } catch (error) {
-      message.error("Please complete all required fields.");
-    }
-  };
-
-  const handleModalCancel = () => {
-    setModalVisible(false);
+    setRole(e.target.value);
   };
 
   return (
@@ -164,18 +131,30 @@ const RegisterPage: React.FC = () => {
                   </Radio.Group>
                 </Form.Item>
 
-                {/* {captchaVisible && <Recaptcha onVerify={setCaptchaToken} />} */}
+                {role === roles.INSTRUCTOR && (
+                  <>
+                    <VideoFormItem />
+                    <DescriptionFormItem />
+                    <PhoneNumberFormItem />
+                    <Form.Item name="avatarUrl" label="Image" rules={avatarUrlRules} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+                      <Upload
+                        action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                        listType="picture-card"
+                        fileList={fileList}
+                        onPreview={handlePreview}
+                        onChange={handleChange}
+                      >
+                        {fileList.length >= 1 ? null : <UploadButton />}
+                      </Upload>
+                    </Form.Item>
+                  </>
+                )}
 
                 <Form.Item
                   wrapperCol={{ span: 24 }}
                   style={{ marginBottom: "0px" }}
                 >
-                  <ButtonFormItem
-                    loading={loading}
-                    buttonText="Register"
-                    htmlType="submit"
-                    onClick={handleModalOk}
-                  />
+                  <ButtonFormItem loading={loading} buttonText="Register" htmlType="submit" />
                 </Form.Item>
               </Form>
             </div>
@@ -218,43 +197,6 @@ const RegisterPage: React.FC = () => {
           />
         </div>
       </div>
-
-      <Modal
-        title="Instructor Details"
-        visible={modalVisible}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
-        footer={null}
-        width={700}
-      >
-        <Form
-          form={form}
-          name="instructorDetails"
-          className="flex flex-col gap-4"
-          initialValues={{ remember: true }}
-        >
-          <VideoFormItem />
-          <DescriptionFormItem />
-          <PhoneNumberFormItem />
-          <Form.Item name="avatarUrl" rules={avatarUrlRules}>
-            <Upload
-              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-              listType="picture-card"
-              fileList={fileList}
-              onPreview={handlePreview}
-              onChange={handleChange}
-            >
-              {fileList.length >= 1 ? null : <UploadButton />}
-            </Upload>
-          </Form.Item>
-          <ButtonFormItem
-            loading={loading}
-            buttonText="Register"
-            htmlType="submit"
-            onClick={handleModalOk}
-          />
-        </Form>
-      </Modal>
     </div>
   );
 };

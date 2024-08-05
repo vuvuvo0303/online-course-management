@@ -18,7 +18,6 @@ import { Image, Upload } from "antd";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { getBase64, uploadFile } from "../../../../../../utils/uploadHelper/index.ts";
 
-
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const CreateUpdateLesson: React.FC = () => {
@@ -94,10 +93,12 @@ const CreateUpdateLesson: React.FC = () => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const responseCourses = await getCourses("", "", "active");
+        const responseCourses = await getCourses("", "", "");
         if (responseCourses.data) {
-          setCourses(responseCourses.data.pageData);
+
+          setCourses(responseCourses.data.pageData.filter((course: Course) => course.session_count > 0));
         }
+        console.log("a: ", courses)
       } finally {
         setLoading(false);
       }
@@ -196,6 +197,11 @@ const CreateUpdateLesson: React.FC = () => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
+
+  const handleSetVideoUrl = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setVideoUrl(e.target.value);
+  };
+  
   return (
     <div className="flex justify-center items-center h-full mt-10">
       {loading ? (
@@ -280,7 +286,7 @@ const CreateUpdateLesson: React.FC = () => {
               name="video_url"
               rules={[{ required: true, message: "Please input video URL!" }]}
             >
-              <Input onChange={(e) => setVideoUrl(e.target.value)} />
+              <Input onChange={handleSetVideoUrl} />
             </Form.Item>
 
             {isValidHttpUrl(videoUrl) && (
@@ -305,12 +311,16 @@ const CreateUpdateLesson: React.FC = () => {
                 onPreview={handlePreview}
                 onChange={handleChange}
               >
-                {fileList.length >= 8 ? null : uploadButton}
+                {fileList.length >= 1 ? null : uploadButton}
               </Upload>
             </Form.Item>
 
             <NumberFormItem label="Full Time" name="full_time" requiredMessage="Please input a number for time!" />
-            <NumberFormItem label="Position Order" name="position_order" requiredMessage="Please input a number for postition order!" />
+            <NumberFormItem
+              label="Position Order"
+              name="position_order"
+              requiredMessage="Please input a number for postition order!"
+            />
 
             <ButtonFormItem loading={loading} buttonText="Submit" htmlType="submit" />
           </Form>

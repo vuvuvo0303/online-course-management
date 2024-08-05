@@ -303,7 +303,7 @@ const AdminManageBlogs: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="image_url"
-            label="Image URL"
+            label="Image"
             rules={[{ required: true, message: "Please input the image URL!" }]}
           >
             <Upload

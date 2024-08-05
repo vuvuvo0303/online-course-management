@@ -50,7 +50,7 @@ const InstructorManageCourses: React.FC = () => {
   const [comment, setComment] = useState<string>("");
   //status for filter course by status
   const [status, setStatus] = useState<string>("");
-  const [isDelete, setIsDelete] = useState<boolean>(false);
+
   //status for change status
   const [changeStatus, setChangeStatus] = useState<string>("new");
   const [cateId, setCateId] = useState<string>("");
@@ -209,13 +209,14 @@ const InstructorManageCourses: React.FC = () => {
   //fetch courses
   useEffect(() => {
     const fetchCourses = async () => {
+      setLoading(true);
       try {
         const response = await axiosInstance.post(API_GET_COURSES, {
           searchCondition: {
             keyword: debouncedSearchTerm,
             category_id: cateId,
             status: status,
-            is_deleted: isDelete,
+            is_deleted: false,
           },
           pageInfo: {
             pageNum: pagination.current,
@@ -238,7 +239,7 @@ const InstructorManageCourses: React.FC = () => {
       }
     };
     fetchCourses();
-  }, [status, cateId, debouncedSearchTerm, isDelete, pagination.current, pagination.pageSize]);
+  }, [status, cateId, debouncedSearchTerm, pagination.current, pagination.pageSize]);
 
   if (loading) {
     return (
@@ -266,12 +267,7 @@ const InstructorManageCourses: React.FC = () => {
   const handleChange = (value: string) => {
     setStatus(value);
   };
-  //setStatus for filter course by status
-  const handleChangeIsDelete = (value: boolean) => {
-    setLoading(true);
-    setIsDelete(value);
-    setLoading(false);
-  };
+
   // set status for chang status
   const handleChangeStatus = async (value: string) => {
     setChangeStatus(value);
@@ -376,7 +372,7 @@ const InstructorManageCourses: React.FC = () => {
       title: "Image",
       dataIndex: "image_url",
       key: "image_url",
-      render: (image_url: string) => <Image src={image_url} width={200} />,
+      render: (image_url: string) => <Image src={image_url} height={150} width={150}  />,
 
 
     },
@@ -661,20 +657,6 @@ const InstructorManageCourses: React.FC = () => {
                     { label: <span>Reject</span>, value: "reject" },
                     { label: <span>Active</span>, value: "active" },
                     { label: <span>Inactive</span>, value: "inactive" },
-                  ],
-                },
-              ]}
-            />
-            {/* filter course by isDelete */}
-            <Select
-              defaultValue={false}
-              className="w-full md:w-32 mt-2 md:mt-0 md:ml-2"
-              onChange={handleChangeIsDelete}
-              options={[
-                {
-                  options: [
-                    { label: <span>Existing</span>, value: false },
-                    { label: <span>Deleted</span>, value: true },
                   ],
                 },
               ]}
