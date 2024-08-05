@@ -232,12 +232,7 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
-          width={230}
-        >
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}width={230}>
           <div className="demo-logo-vertical" />
           <Menu
             className="py-4 bg-white-50 h-full "

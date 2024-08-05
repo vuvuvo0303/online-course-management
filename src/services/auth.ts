@@ -46,6 +46,8 @@ export async function login(email: string, password: string){
       } else {
         message.error("Invalid user role");
       }
+    }else{
+      return;
     }
 }
 
@@ -60,7 +62,14 @@ export const loginWithGoogle = async (googleId: string, navigate: ReturnType<typ
     message.success("Login successfully");
     navigate(paths.HOME);
   } catch (error) {
-    setIsModalVisible(true);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    if(error.message === "Your account has been locked. Please contact admin via mail to activate!"){
+      return;
+    }
+    else{
+      setIsModalVisible(true);
+    }
   }
 };
 

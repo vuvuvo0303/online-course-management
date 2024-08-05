@@ -173,7 +173,6 @@ const InstructorManagePurchase = () => {
     if (purchasesChecked.length > 0) {
       setLoading(true);
       const res = await createPayout(instructor_id, purchasesChecked);
-      console.log("res: ", res);
       if (res) {
         getPurchasesByInstructor();
         setPurchasesChecked([]);// reset array
@@ -198,7 +197,6 @@ const InstructorManagePurchase = () => {
       newArray.push({ purchase_id: purchase._id });
     }
     setPurchasesChecked(newArray);
-    console.log("purchasesChecked:", purchasesChecked)
   };
 
   const handleCheckAllPurchased = () => {

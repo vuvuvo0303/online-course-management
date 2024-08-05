@@ -18,7 +18,6 @@ import { Image, Upload } from "antd";
 import type { GetProp, UploadFile, UploadProps } from "antd";
 import { getBase64, uploadFile } from "../../../../../../utils/uploadHelper/index.ts";
 
-
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const CreateUpdateLesson: React.FC = () => {
@@ -312,12 +311,16 @@ const CreateUpdateLesson: React.FC = () => {
                 onPreview={handlePreview}
                 onChange={handleChange}
               >
-                {fileList.length >= 8 ? null : uploadButton}
+                {fileList.length >= 1 ? null : uploadButton}
               </Upload>
             </Form.Item>
 
             <NumberFormItem label="Full Time" name="full_time" requiredMessage="Please input a number for time!" />
-            <NumberFormItem label="Position Order" name="position_order" requiredMessage="Please input a number for postition order!" />
+            <NumberFormItem
+              label="Position Order"
+              name="position_order"
+              requiredMessage="Please input a number for postition order!"
+            />
 
             <ButtonFormItem loading={loading} buttonText="Submit" htmlType="submit" />
           </Form>

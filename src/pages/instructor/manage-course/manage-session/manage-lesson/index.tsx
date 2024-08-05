@@ -1,5 +1,17 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Image, Input, message, Modal, Pagination, Select, Table, TablePaginationConfig, TableProps, Tag } from "antd";
+import {
+  Button,
+  Image,
+  Input,
+  message,
+  Modal,
+  Pagination,
+  Select,
+  Table,
+  TablePaginationConfig,
+  TableProps,
+  Tag,
+} from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models/index.ts";
@@ -187,7 +199,17 @@ const LectureOfCourse: React.FC = () => {
       };
       fetchLecture();
     }
-  }, [courseId, sessionId, keyword, session_id, course_id, debouncedSearchTerm, lessonType, pagination.pageSize, pagination.current]);
+  }, [
+    courseId,
+    sessionId,
+    keyword,
+    session_id,
+    course_id,
+    debouncedSearchTerm,
+    lessonType,
+    pagination.pageSize,
+    pagination.current,
+  ]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
@@ -226,7 +248,7 @@ const LectureOfCourse: React.FC = () => {
       title: "Image",
       dataIndex: "image_url",
       key: "image_url",
-      render: (image_url: string) => <Image src={image_url} width={200} />,
+      render: (image_url: string) => <Image src={image_url} height={150} width={150} />,
     },
     {
       title: "Lesson type",
