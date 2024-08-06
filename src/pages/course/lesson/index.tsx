@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Collapse, Button, Drawer, Spin, Skeleton, theme } from "antd";
 import { PlayCircleOutlined, FileWordOutlined, PictureOutlined, CaretRightOutlined, LoadingOutlined } from "@ant-design/icons";
 import axiosInstance from "../../../services/axiosInstance";
@@ -113,14 +113,17 @@ const Lesson: React.FC = () => {
                 newLessonIndex = 0;
                 newSessionIndex += 1;
                 if (newSessionIndex >= course.session_list.length) {
-                    newSessionIndex = 0; // Hoặc xử lý khi không còn session tiếp theo
+                    newSessionIndex = 0;
                 }
             }
 
             setCurrentSessionIndex(newSessionIndex);
             setCurrentLessonIndex(newLessonIndex);
+            const newLesson = course.session_list[newSessionIndex].lesson_list[newLessonIndex];
+            setSelectedLessonId(newLesson._id);
+            setActiveKey(newSessionIndex.toString()); // Update activeKey to open the corresponding panel
             findLesson(newSessionIndex, newLessonIndex);
-            setLoading(false)
+            setLoading(false);
         }
     };
 
@@ -132,13 +135,16 @@ const Lesson: React.FC = () => {
             if (newLessonIndex < 0) {
                 newSessionIndex -= 1;
                 if (newSessionIndex < 0) {
-                    newSessionIndex = course.session_list.length - 1; // Hoặc xử lý khi không còn session trước đó
+                    newSessionIndex = course.session_list.length - 1;
                 }
                 newLessonIndex = course.session_list[newSessionIndex].lesson_list.length - 1;
             }
 
             setCurrentSessionIndex(newSessionIndex);
             setCurrentLessonIndex(newLessonIndex);
+            const newLesson = course.session_list[newSessionIndex].lesson_list[newLessonIndex];
+            setSelectedLessonId(newLesson._id);
+            setActiveKey(newSessionIndex.toString()); // Update activeKey to open the corresponding panel
             findLesson(newSessionIndex, newLessonIndex);
         }
     };
@@ -202,9 +208,11 @@ const Lesson: React.FC = () => {
     return (
         <div className="min-h-screen flex flex-col bg-white">
             <div className="w-full bg-white p-4 flex items-center fixed top-0 z-10 shadow-md">
-                <Button type="default" onClick={() => navigate(-1)}>
-                    {'<'}
-                </Button>
+                <Link to={`/course/${course?._id}`}>
+                    <Button type="default">
+                        {'<'}
+                    </Button>
+                </Link>
                 <h1 className="text-[1.1rem] font-bold ml-[2rem]">{course?.name}</h1>
                 {isMobile && <Button type="primary" onClick={showDrawer} className="left-[160px]">Course Content</Button>}
             </div>
@@ -245,7 +253,7 @@ const Lesson: React.FC = () => {
                                         style={{ background: token.colorBgContainer }}
                                     >
                                         {course.session_list.map((session, sessionIndex) => (
-                                            <Panel header={session.name} key={sessionIndex} style={panelStyle}>
+                                            <Panel header={session.name} key={sessionIndex.toString()} style={panelStyle}>
                                                 {session.lesson_list.map(lesson => renderLessonContent(lesson))}
                                             </Panel>
                                         ))}
@@ -280,9 +288,10 @@ const Lesson: React.FC = () => {
                         onChange={handlePanelChange}
                         bordered={false}
                         expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+                        style={{ background: token.colorBgContainer }}
                     >
                         {course.session_list.map((session, sessionIndex) => (
-                            <Panel header={session.name} key={sessionIndex} style={panelStyle}>
+                            <Panel header={session.name} key={sessionIndex.toString()} style={panelStyle}>
                                 {session.lesson_list.map(lesson => renderLessonContent(lesson))}
                             </Panel>
                         ))}

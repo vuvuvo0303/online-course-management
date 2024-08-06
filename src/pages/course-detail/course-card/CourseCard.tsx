@@ -27,13 +27,20 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             try {
                 await addCourseToCart(course._id);
                 navigate(paths.STUDENT_CART);
-                // message.success('Course added to cart!');
             } catch (error) {
-                // message.error('Failed to add course to cart. Please try again.');
-                // Optionally navigate back or handle the error UI-wise
+                // Handle error appropriately
             } finally {
                 setLoading(false);
             }
+        }
+    };
+
+    const handleStudyNowClick = () => {
+        if (!user) {
+            navigate(paths.LOGIN);
+            message.info('Please login to start studying.');
+        } else {
+            navigate(`/course/${course._id}/lesson`);
         }
     };
 
@@ -42,6 +49,21 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         target.onerror = null; // Prevent infinite loop if fallback also fails
         target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'; // Fallback image
     };
+
+    const handSaveCourseToLocalStorage = (courseId: string) => {
+        // Retrieve the current list from localStorage, or create an empty array if none exists
+        const courseInWishList = JSON.parse(localStorage.getItem("courseInWishList") || "[]");
+        // Check if the courseId already exists in the list
+        if (!courseInWishList.includes(courseId)) {
+            // If not, add the courseId to the list
+            courseInWishList.push(courseId);
+            // Save the updated list back to localStorage
+            localStorage.setItem("courseInWishList", JSON.stringify(courseInWishList));
+        }
+    };
+    
+    
+    
 
     return (
         <div className="flex flex-col lg:flex-row w-full bg-gray-100 shadow-lg rounded-lg p-5 space-y-4 lg:space-y-0 lg:space-x-4">
@@ -99,11 +121,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     <div className="flex gap-4 mt-auto">
                         {course.is_purchased || course.price_paid === 0 ? (
                             <div>
-                                <Link to={`/course/${course._id}/lesson`}>
-                                    <button className="bg-yellow-500 text-gray-800 p-2 rounded-md w-[6rem] hover:bg-yellow-400 text-black-100">
-                                        Study now
-                                    </button>
-                                </Link>
+                                <button
+                                    onClick={handleStudyNowClick}
+                                    className="bg-yellow-500 text-gray-800 p-2 rounded-md w-[6rem] hover:bg-yellow-400 text-black-100"
+                                >
+                                    Study now
+                                </button>
                             </div>
                         ) : (
                             <div className='flex flex-row items-center gap-2'>
@@ -111,11 +134,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                                     <ShoppingCartOutlined className="mr-2" />
                                     {loading ? 'Adding...' : 'Add to Cart'}
                                 </button>
-                                <Link to="/enrollment">
-                                    <button className="bg-yellow-500 text-gray-800 w-[6rem] p-2 rounded-md hover:bg-yellow-400">
+                                <button onClick={()=>handSaveCourseToLocalStorage(course._id)} className="bg-yellow-500 text-gray-800 w-[6rem] p-2 rounded-md hover:bg-yellow-400">
                                         Save
                                     </button>
-                                </Link>
                             </div>
                         )}
                     </div>
