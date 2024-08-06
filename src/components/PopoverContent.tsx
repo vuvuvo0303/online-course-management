@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Cart } from "../models";
+import { Cart, Course } from "../models";
 import { getCarts } from "../services";
 import { formatCurrency } from "../utils";
 
 interface PopoverContentProps {
-    cartsNew: Cart[];
-    cartsCancel: Cart[];
+    cartsNew?: Cart[];
+    cartsCancel?: Cart[];
     totalCost: number;
+    courses?: Course[];
 }
 
 const CourseCard = ({ image, title, author, price }: { image: string; title: string; author: string; price: string }) => {
@@ -26,7 +27,7 @@ const CourseCard = ({ image, title, author, price }: { image: string; title: str
 const PopoverContent: React.FC<PopoverContentProps> = ({ totalCost = 0 }) => {
     const [loading, setLoading] = useState(true);
     const [carts, setCarts] = useState<{ cartsNew: Cart[], cartsCancel: Cart[] }>({ cartsNew: [], cartsCancel: [] });
-
+    // const [courses, setCourses] = useState<Course[]>([]);
     useEffect(() => {
         const fetchCarts = async () => {
             const cartsNewResponse = await getCarts('new');

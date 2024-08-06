@@ -43,6 +43,21 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'; // Fallback image
     };
 
+    const handSaveCourseToLocalStorage = (courseId: string) => {
+        // Retrieve the current list from localStorage, or create an empty array if none exists
+        const courseInWishList = JSON.parse(localStorage.getItem("courseInWishList") || "[]");
+        // Check if the courseId already exists in the list
+        if (!courseInWishList.includes(courseId)) {
+            // If not, add the courseId to the list
+            courseInWishList.push(courseId);
+            // Save the updated list back to localStorage
+            localStorage.setItem("courseInWishList", JSON.stringify(courseInWishList));
+        }
+    };
+    
+    
+    
+
     return (
         <div className="flex flex-col lg:flex-row w-full bg-gray-100 shadow-lg rounded-lg p-5 space-y-4 lg:space-y-0 lg:space-x-4">
             <div className="flex-shrink-0 rounded-lg overflow-hidden">
@@ -111,11 +126,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                                     <ShoppingCartOutlined className="mr-2" />
                                     {loading ? 'Adding...' : 'Add to Cart'}
                                 </button>
-                                <Link to="/enrollment">
-                                    <button className="bg-yellow-500 text-gray-800 w-[6rem] p-2 rounded-md hover:bg-yellow-400">
+                                <button onClick={()=>handSaveCourseToLocalStorage(course._id)} className="bg-yellow-500 text-gray-800 w-[6rem] p-2 rounded-md hover:bg-yellow-400">
                                         Save
                                     </button>
-                                </Link>
                             </div>
                         )}
                     </div>
