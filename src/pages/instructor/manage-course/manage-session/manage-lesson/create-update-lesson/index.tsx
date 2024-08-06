@@ -25,6 +25,7 @@ const CreateUpdateLesson: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const [lessonType, setLessonType] = useState<string>('video');
   const [courses, setCourses] = useState<Course[]>([]);
   const [session, setSession] = useState<Session | null>();
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -71,6 +72,7 @@ const CreateUpdateLesson: React.FC = () => {
           setCourse_id(data.course_id);
           setContent(data.description);
           setVideoUrl(data.video_url);
+          setLessonType(data.lesson_type)
           if (data.image_url) {
             setFileList([
               {
@@ -201,7 +203,11 @@ const CreateUpdateLesson: React.FC = () => {
   const handleSetVideoUrl = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setVideoUrl(e.target.value);
   };
-  
+
+  const onchangeLessonType=(type: string)=>{
+    console.log("type");
+    setLessonType(type)
+  }
   return (
     <div className="flex justify-center items-center h-full mt-10">
       {loading ? (
@@ -268,6 +274,7 @@ const CreateUpdateLesson: React.FC = () => {
 
             <Form.Item label="Lesson Type" name="lesson_type">
               <Select
+              onChange={onchangeLessonType}
                 defaultValue="video"
                 options={[
                   { label: "video", value: "video" },
@@ -277,14 +284,16 @@ const CreateUpdateLesson: React.FC = () => {
               />
             </Form.Item>
 
-            <Form.Item label="Description" name="description">
+            <Form.Item label="Description" name="description"
+             rules={lessonType === "text" ? [{ required: true, message: "Please input description!" }]:[]}
+            >
               <Input.TextArea />
             </Form.Item>
 
             <Form.Item
               label="Video URL"
               name="video_url"
-              rules={[{ required: true, message: "Please input video URL!" }]}
+              rules={lessonType === "video" ? [{ required: true, message: "Please input video URL!" }]:[]}
             >
               <Input onChange={handleSetVideoUrl} />
             </Form.Item>
@@ -303,7 +312,9 @@ const CreateUpdateLesson: React.FC = () => {
               </div>
             )}
 
-            <Form.Item label="Image URL" name="image_url">
+            <Form.Item label="Image URL" name="image_url"
+            rules={lessonType === "image" ? [{ required: true, message: "Please input image URL!" }]:[]}
+            >
               <Upload
                 action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                 listType="picture-card"

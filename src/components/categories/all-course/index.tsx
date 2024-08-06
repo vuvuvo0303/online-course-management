@@ -64,6 +64,8 @@ const AllCourses = () => {
             navigate(`/course/${course._id}`);
           } else if (course.is_purchased === false && course.is_in_cart === false) {
             await addCourseToCart(course._id);
+            navigate(paths.STUDENT_CART);
+            window.location.reload();
           } else if (course.is_in_cart === true && course.is_purchased === false) {
             navigate(paths.STUDENT_CART);
           } else if (course.is_in_cart === true && course.is_purchased === true) {

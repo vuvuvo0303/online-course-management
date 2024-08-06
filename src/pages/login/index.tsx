@@ -300,7 +300,7 @@ const LoginPage: React.FC = () => {
                   }}
                 >
                   {fileList.length < 1 && !uploading && <div>Upload</div>}
-                  {uploading && <div>Uploading...</div>}
+                  {uploading && <div>Upload</div>}
                 </Upload>
 
                 {additionalFields.video && (

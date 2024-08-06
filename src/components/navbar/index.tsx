@@ -21,7 +21,8 @@ import Drawer from "../Drawer";
 import PopoverContent from "../PopoverContent";
 import { logout } from "../../services";
 import { getCarts } from "../../services";
-import { Cart } from "../../models";
+import { Cart, Course } from "../../models";
+import { getCourseDetailByStudent } from "../../services/client";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
@@ -52,10 +53,11 @@ const Navbar: React.FC = () => {
     location.pathname === paths.LOGIN || location.pathname === paths.REGISTER;
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
-
+  const [courses, setCourses] = useState<Course[]>([]);
   useEffect(() => {
     if (token) {
       getCart();
+      getCoursesFromLocalStorage();
     }
     if (user) {
       setDataUser({
@@ -98,7 +100,12 @@ const Navbar: React.FC = () => {
       console.error("Error fetching cart data:", error);
     }
   };
-
+  const getCoursesFromLocalStorage = async () => {
+    const courseIds = JSON.parse(localStorage.getItem("courseInWishList") || "[]");
+    const getCourseDetail = courseIds.map((courseId: string) => getCourseDetailByStudent(courseId));
+    const courseDetails = await Promise.all(getCourseDetail);
+    setCourses(courseDetails);
+  }
   const dropdownItems: MenuProps["items"] = [
     {
       label: (
@@ -211,8 +218,7 @@ const Navbar: React.FC = () => {
               content={
                 <PopoverContent
                   totalCost={totalCost}
-                  cartsNew={cartsNew}
-                  cartsCancel={cartsCancel}
+                  courses={courses}
                 />
               }
               overlayInnerStyle={{ padding: 0 }}

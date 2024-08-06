@@ -102,3 +102,4 @@ const Content: React.FC<ContentProps> = ({ course }) => {
 };
 
 export default Content;
+

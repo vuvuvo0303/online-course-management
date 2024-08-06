@@ -17,20 +17,31 @@ import {
   message,
 } from "antd";
 import { DeleteOutlined, EditOutlined, SearchOutlined, UserAddOutlined } from "@ant-design/icons";
-import type { GetProp, TableColumnsType, TablePaginationConfig, UploadFile, UploadProps } from "antd";
+import type { GetProp, RadioChangeEvent, TableColumnsType, TablePaginationConfig, UploadFile, UploadProps } from "antd";
 import { User, UserRole } from "../../../models/User.ts";
 
-import { API_CHANGE_ROLE, API_CREATE_USER, API_UPDATE_USER, roleRules } from "../../../consts";
+import { API_CHANGE_ROLE, API_CREATE_USER, API_UPDATE_USER, roleRules, roles } from "../../../consts";
 import ResponseData from "../../../models/ResponseData.ts";
 import { useDebounce } from "../../../hooks";
-import { CustomBreadcrumb, DescriptionFormItem, EmailFormItem, LoadingComponent, NameFormItem, PasswordFormItem, PhoneNumberFormItem, UploadButton } from "../../../components";
+import {
+  CustomBreadcrumb,
+  DescriptionFormItem,
+  EmailFormItem,
+  LoadingComponent,
+  NameFormItem,
+  PasswordFormItem,
+  PhoneNumberFormItem,
+  UploadButton,
+  VideoFormItem,
+} from "../../../components";
 import { axiosInstance, changeStatusUser, changeUserRole, deleteUser, getUsers } from "../../../services";
 import { formatDate, getBase64, uploadFile } from "../../../utils";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const AdminManageUsers: React.FC = () => {
   const [dataUsers, setDataUsers] = useState<User[]>([]);
-  const [roleForModal, setRoleForModal] = useState<string>("");
+  const [role, setRole] = useState<string>(roles.STUDENT);
+
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -45,12 +56,13 @@ const AdminManageUsers: React.FC = () => {
   const [modalMode, setModalMode] = useState<"Add" | "Edit">("Add");
   const [selectedRole, setSelectedRole] = useState<string>("All");
   const [selectedStatus, setSelectedStatus] = useState<string>("true");
+  const [selectedVerify, setSelectedVerify] = useState<string>("true");
 
   const debouncedSearch = useDebounce(searchText, 500);
 
   useEffect(() => {
     fetchUsers();
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch,selectedVerify]);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -59,7 +71,19 @@ const AdminManageUsers: React.FC = () => {
       if (selectedStatus === "true") {
         statusValue = true;
       }
-      const responseUsers = await getUsers(debouncedSearch, selectedRole === "All" ? undefined : selectedRole.toLowerCase(), statusValue, true, false, pagination.current, pagination.pageSize);
+      let verifyValue: boolean | undefined = false;
+      if (selectedVerify === "true") {
+        verifyValue = true;
+      }
+      const responseUsers = await getUsers(
+        debouncedSearch,
+        selectedRole === "All" ? undefined : selectedRole.toLowerCase(),
+        statusValue,
+        verifyValue,
+        false,
+        pagination.current,
+        pagination.pageSize
+      );
       setDataUsers(responseUsers.data.pageData);
       setPagination({
         ...pagination,
@@ -70,7 +94,7 @@ const AdminManageUsers: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText, debouncedSearch]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText, debouncedSearch,selectedVerify]);
 
   const handleAddNewUser = useCallback(
     async (values: User) => {
@@ -85,6 +109,7 @@ const AdminManageUsers: React.FC = () => {
         const userData = { ...values, avatar: avatarUrl };
 
         const response = await axiosInstance.post(API_CREATE_USER, userData);
+        console.log("sauadd", response.data);
 
         const newUser = response.data.data;
         setDataUsers((prevData) => [...prevData, newUser]);
@@ -95,7 +120,7 @@ const AdminManageUsers: React.FC = () => {
         fetchUsers();
         setFileList([]);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     },
     [fetchUsers, form]
@@ -114,20 +139,16 @@ const AdminManageUsers: React.FC = () => {
 
   const handleRoleChange = async (value: UserRole, userId: string) => {
     await changeUserRole(userId, value);
-    setDataUsers((prevData: User[]) =>
-      prevData.map((user) => (user._id === userId ? { ...user, role: value } : user))
-    );
+    setDataUsers((prevData: User[]) => prevData.map((user) => (user._id === userId ? { ...user, role: value } : user)));
   };
 
   const handleUserStatus = (userId: string, status: boolean) => {
     const updateData = dataUsers.map((user) => (user._id === userId ? { ...user, status: status } : user));
     setDataUsers(updateData);
+    fetchUsers();
   };
-
-
-  
-  const handleRoleChangeModal = (value: string) => {
-    setRoleForModal(value);
+  const handleRoleChangeModal = (e: RadioChangeEvent) => {
+    setRole(e.target.value);
   };
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPagination((prev) => ({
@@ -171,7 +192,22 @@ const AdminManageUsers: React.FC = () => {
       }
 
       setDataUsers((prevData) =>
-        prevData.map((user) => (user._id === formData._id ? { ...user, ...updatedUser, role: values.role } : user))
+        prevData.map((user) =>
+          user._id === formData._id
+            ? {
+                ...user,
+                ...updatedUser,
+                role: values.role,
+                ...(values.role === roles.INSTRUCTOR
+                  ? {
+                      phone_number: values.phone_number,
+                      description: values.description,
+                      video_url: values.video,
+                    }
+                  : {}),
+              }
+            : user
+        )
       );
 
       message.success("Updated user successfully");
@@ -181,16 +217,27 @@ const AdminManageUsers: React.FC = () => {
     }
     setLoading(false);
   };
-
   if (loading) {
-    return (<>
-      <LoadingComponent />
-    </>)
+    return (
+      <>
+        <LoadingComponent />
+      </>
+    );
   }
   const onFinish = (values: User) => {
     if (modalMode === "Edit") {
       if (formData._id) {
-        handleEditUser({ ...formData, ...values });
+        handleEditUser({
+          ...formData,
+          ...values,
+          ...(formData.role === roles.INSTRUCTOR
+            ? {
+                phone_number: values.phone_number,
+                description: values.description,
+                video_url: values.video,
+              }
+            : {}),
+        });
       }
     } else {
       handleAddNewUser(values);
@@ -198,10 +245,15 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleRolefilter = (value: string) => {
     setSelectedRole(value);
+    
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
   };
+  const handleVerify = (value: string) => {
+    setSelectedVerify(value);
+  };
+
 
   const columns: TableColumnsType<User> = [
     {
@@ -272,7 +324,10 @@ const AdminManageUsers: React.FC = () => {
       dataIndex: "status",
       width: "10%",
       render: (status: boolean, record: User) => (
-        <Switch defaultChecked={status} onChange={(checked) => changeStatusUser(checked, record._id, handleUserStatus)} />
+        <Switch
+          defaultChecked={status}
+          onChange={(checked) => changeStatusUser(checked, record._id, handleUserStatus)}
+        />
       ),
     },
     {
@@ -310,14 +365,14 @@ const AdminManageUsers: React.FC = () => {
               setFileList(
                 avatarUrl
                   ? [
-                    {
-                      uid: "-1",
-                      name: "avatar.png",
-                      status: "done",
-                      url: avatarUrl,
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    } as UploadFile<any>,
-                  ]
+                      {
+                        uid: "-1",
+                        name: "avatar.png",
+                        status: "done",
+                        url: avatarUrl,
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      } as UploadFile<any>,
+                    ]
                   : []
               );
             }}
@@ -338,7 +393,7 @@ const AdminManageUsers: React.FC = () => {
       ),
     },
   ];
-  const handleSearchText= (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchText = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
 
@@ -348,10 +403,16 @@ const AdminManageUsers: React.FC = () => {
         <CustomBreadcrumb />
 
         <div className="mt-3 md:mt-0">
-          <Button type="primary" className="py-2" onClick={() => {
-            handleAddClick();
-            form.resetFields();
-          }}><UserAddOutlined /> Add New User</Button>
+          <Button
+            type="primary"
+            className="py-2"
+            onClick={() => {
+              handleAddClick();
+              form.resetFields();
+            }}
+          >
+            <UserAddOutlined /> Add New User
+          </Button>
         </div>
       </div>
 
@@ -360,7 +421,7 @@ const AdminManageUsers: React.FC = () => {
           placeholder="Search By Name and Email"
           value={searchText}
           onChange={handleSearchText}
-          className="w-full md:w-48"
+          className="w-full md:w-64"
           enterButton={<SearchOutlined className="text-white" />}
         />
 
@@ -381,12 +442,16 @@ const AdminManageUsers: React.FC = () => {
           <Select.Option value="true">Active</Select.Option>
           <Select.Option value="false">Inactive</Select.Option>
         </Select>
+        <Select value={selectedVerify} onChange={handleVerify} className="w-full md:w-32 mt-2 md:mt-0 md:ml-2">
+          <Select.Option value="true">Verified</Select.Option>
+          <Select.Option value="false">Not verified</Select.Option>
+        </Select>
       </Space>
 
       <Table
         columns={columns}
         dataSource={dataUsers}
-        rowKey="_id"
+        rowKey={(record: User) => record?._id || "unknown"}
         pagination={false}
         onChange={handleTableChange}
         className="overflow-x-auto"
@@ -411,37 +476,38 @@ const AdminManageUsers: React.FC = () => {
       >
         <Form form={form} onFinish={onFinish} layout="vertical">
           <NameFormItem />
-          {modalMode === "Add" && (
-            <EmailFormItem />
-          )}
+          {modalMode === "Add" && <EmailFormItem />}
           {modalMode === "Add" && (
             <div className="mt-3">
               <PasswordFormItem />
             </div>
           )}
           {modalMode === "Add" && (
-            <Form.Item
-              label="Role"
-              name="role"
-              rules={roleRules}
-            >
-              <Radio.Group onChange={()=>handleRoleChangeModal}>
-                <Radio value="student">Student</Radio>
-                <Radio value="instructor">Instructor</Radio>
-                <Radio value="admin">Admin</Radio>
+            <Form.Item name="role" rules={roleRules} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} className="mb-3">
+              <Radio.Group onChange={handleRoleChangeModal}>
+                <Radio value={roles.STUDENT}>Student</Radio>
+                <Radio value={roles.INSTRUCTOR}>Instructor</Radio>
+                <Radio value={roles.ADMIN}>Admin</Radio>
               </Radio.Group>
             </Form.Item>
           )}
 
-          {roleForModal === "instructor" && (
+          {role === roles.INSTRUCTOR && (
             <>
-              <Form.Item name="video" label="Video" rules={[{ required: true, message: "Please upload a video" }]}>
-                <Input />
-              </Form.Item>
-              <PhoneNumberFormItem />
+              <VideoFormItem />
               <DescriptionFormItem />
+              <PhoneNumberFormItem />
             </>
           )}
+
+          {modalMode === "Edit" && formData.role === roles.INSTRUCTOR && (
+            <>
+              <VideoFormItem />
+              <DescriptionFormItem />
+              <PhoneNumberFormItem />
+            </>
+          )}
+
           <Form.Item label="Avatar" name="avatar">
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
@@ -458,24 +524,21 @@ const AdminManageUsers: React.FC = () => {
               {modalMode === "Add" ? "Submit" : "Edit"}
             </Button>
           </Form.Item>
-
         </Form>
       </Modal>
 
-      {
-        previewImage && (
-          <Image
-            wrapperStyle={{ display: "none" }}
-            preview={{
-              visible: previewOpen,
-              onVisibleChange: (visible) => setPreviewOpen(visible),
-              afterOpenChange: (visible) => !visible && setPreviewImage(""),
-            }}
-            src={previewImage}
-          />
-        )
-      }
-    </div >
+      {previewImage && (
+        <Image
+          wrapperStyle={{ display: "none" }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
+          }}
+          src={previewImage}
+        />
+      )}
+    </div>
   );
 };
 
