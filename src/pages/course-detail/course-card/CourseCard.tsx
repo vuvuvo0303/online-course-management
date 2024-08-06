@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { message, Rate } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ShoppingCartOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { addCourseToCart } from '../../../services/cart';
 import { paths } from "../../../consts";
@@ -61,9 +61,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             localStorage.setItem("courseInWishList", JSON.stringify(courseInWishList));
         }
     };
-    
-    
-    
+
+
+
 
     return (
         <div className="flex flex-col lg:flex-row w-full bg-gray-100 shadow-lg rounded-lg p-5 space-y-4 lg:space-y-0 lg:space-x-4">
@@ -134,9 +134,9 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                                     <ShoppingCartOutlined className="mr-2" />
                                     {loading ? 'Adding...' : 'Add to Cart'}
                                 </button>
-                                <button onClick={()=>handSaveCourseToLocalStorage(course._id)} className="bg-yellow-500 text-gray-800 w-[6rem] p-2 rounded-md hover:bg-yellow-400">
-                                        Save
-                                    </button>
+                                <button onClick={() => handSaveCourseToLocalStorage(course._id)} className="bg-yellow-500 text-gray-800 w-[6rem] p-2 rounded-md hover:bg-yellow-400">
+                                    Save
+                                </button>
                             </div>
                         )}
                     </div>
