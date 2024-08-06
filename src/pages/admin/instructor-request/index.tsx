@@ -38,16 +38,19 @@ const AdminInstructorRequest = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
   const [rejectReason, setRejectReason] = useState("");
+
   useEffect(() => {
     getInstructorRequest();
   }, [pagination.current, pagination.pageSize, debouncedSearch]);
 
+  useEffect(() => {
+    if (isModalVisible) {
+      form.setFieldsValue({ rejectReason }); 
+    }
+  }, [isModalVisible, rejectReason, form]);
+
   if (loading) {
-    return (
-      <>
-        <LoadingComponent />
-      </>
-    );
+    return <LoadingComponent />;
   }
 
   const getInstructorRequest = async () => {
@@ -62,32 +65,42 @@ const AdminInstructorRequest = () => {
         pagination.current,
         pagination.pageSize
       );
-
+  
       if (responseInstructorRequest.data && responseInstructorRequest.data.pageData) {
+        // Map dữ liệu và thêm trạng thái phê duyệt
         const dataWithApprovalStatus = responseInstructorRequest.data.pageData.map((instructor: Instructor) => ({
           ...instructor,
           isApproved: instructor.is_verified,
           isRejected: false,
         }));
-
-        setDataSource(dataWithApprovalStatus);
+  
+        // Sắp xếp dữ liệu theo ngày tạo
+        const sortedUsers = dataWithApprovalStatus.sort((a: Instructor, b: Instructor) => {
+          const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          return dateB - dateA;
+        });
+  
+        // Cập nhật state
+        setDataSource(sortedUsers);
         setPagination((prev) => ({
           ...prev,
-          total: responseInstructorRequest.data.pageInfo?.totalItems || responseInstructorRequest.data.length,
+          total: responseInstructorRequest.data.pageInfo?.totalItems || responseInstructorRequest.data.pageData.length,
           current: responseInstructorRequest.data.pageInfo?.pageNum || 1,
-          pageSize: responseInstructorRequest.data.pageInfo?.pageSize || responseInstructorRequest.data.length,
+          pageSize: responseInstructorRequest.data.pageInfo?.pageSize || responseInstructorRequest.data.pageData.length,
         }));
       }
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleApprove = async (record: Instructor) => {
     const responseProfileInstructor = await reviewProfileInstructor(record._id, "approve", "");
 
     if (responseProfileInstructor) {
-      message.success("Email is send successfully.");
+      message.success("Email is sent successfully.");
 
       const updatedDataSource = dataSource.map((item) =>
         item._id === record._id ? { ...item, isApproved: true } : item
@@ -100,22 +113,34 @@ const AdminInstructorRequest = () => {
   const handleReject = async () => {
     if (!selectedInstructor) return;
 
-    if (!rejectReason.trim()) {
+    const trimmedRejectReason = rejectReason.trim();
+  
+
+    if (!trimmedRejectReason) {
       message.error("Please provide the reason for rejection");
       return;
     }
 
-    const responseReviewInstructor = await reviewProfileInstructor(selectedInstructor._id, "reject", rejectReason);
-
-    if (responseReviewInstructor) {
-      message.success("Instructor rejected successfully");
-
-      const updatedDataSource = dataSource.map((item) =>
-        item._id === selectedInstructor._id ? { ...item, isRejected: true } : item
+    try {
+      const responseReviewInstructor = await reviewProfileInstructor(
+        selectedInstructor._id,
+        "reject",
+        trimmedRejectReason
       );
-      setDataSource(updatedDataSource);
-      setIsModalVisible(false);
-      form.resetFields();
+
+      if (responseReviewInstructor) {
+        message.success("Instructor rejected successfully");
+
+        const updatedDataSource = dataSource.map((item) =>
+          item._id === selectedInstructor._id ? { ...item, isRejected: true } : item
+        );
+        setDataSource(updatedDataSource);
+        setIsModalVisible(false);
+        setRejectReason(""); 
+        form.resetFields(); 
+      }
+    } catch (error) {
+      message.error("Failed to reject the instructor. Please try again.");
     }
   };
 
@@ -138,6 +163,8 @@ const AdminInstructorRequest = () => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setRejectReason(""); 
+    form.resetFields(); 
   };
 
   const columns: TableProps<Instructor>["columns"] = [
@@ -175,10 +202,15 @@ const AdminInstructorRequest = () => {
       dataIndex: "video",
       key: "video",
       width: "50%",
+      
       render: (video) => (
-        <video controls>
-          <source src={video} type="video/mp4" />
-        </video>
+        <iframe
+        src={video}
+        style={{ width: "100%", height: "auto" }}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      ></iframe>
       ),
     },
     {
@@ -214,7 +246,7 @@ const AdminInstructorRequest = () => {
       title: "Action",
       key: "action",
       width: "15%",
-      render: (_: unknown, record) => (
+      render: (_, record) => (
         <Space size="middle">
           {record.isRejected ? (
             <Tag color="red">Account rejected</Tag>
@@ -239,19 +271,14 @@ const AdminInstructorRequest = () => {
       ),
     },
   ];
-  const handleSearchText = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
-  const handleRejectReason = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRejectReason(e.target.value);
-  };
+
   return (
     <div>
       <CustomBreadcrumb />
       <Input.Search
         placeholder="Search By Name"
         value={searchText}
-        onChange={handleSearchText}
+        onChange={(e) => setSearchText(e.target.value)}
         className="p-2 mb-4"
         style={{ width: 200 }}
         enterButton={<SearchOutlined className="text-white" />}
@@ -259,7 +286,7 @@ const AdminInstructorRequest = () => {
       <Table
         columns={columns}
         dataSource={dataSource}
-        rowKey="_id"
+        rowKey={(record: Instructor) => record._id}
         pagination={false}
         onChange={handleTableChange}
         className="overflow-auto"
@@ -274,26 +301,26 @@ const AdminInstructorRequest = () => {
           showSizeChanger
         />
       </div>
-      <Modal
-        title="Reject Instructor"
-        open={isModalVisible}
-        onOk={handleReject}
-        onCancel={handleCancel}
-        okText="Reject"
-        okButtonProps={{ danger: true }}
-      >
-        <Form form={form}>
-          <Form.Item
-            label="Reject Reason"
-            name="rejectReason"
-            rules={rejectRules}
-          >
+      <Modal title="Reject Instructor" open={isModalVisible} onCancel={handleCancel} footer={null}>
+        <Form form={form} onFinish={handleReject}>
+          <Form.Item label="Reject Reason" name="rejectReason" rules={rejectRules}>
             <Input.TextArea
               rows={4}
               value={rejectReason}
-              onChange={()=>handleRejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
               placeholder="Please provide the reason for rejection"
             />
+          </Form.Item>
+
+          <Form.Item >
+            <Space className="gap-2">
+              <Button key="back" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit" danger>
+                Reject
+              </Button>
+            </Space>
           </Form.Item>
         </Form>
       </Modal>

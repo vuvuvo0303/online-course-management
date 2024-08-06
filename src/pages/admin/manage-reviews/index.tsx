@@ -94,8 +94,8 @@ const AdminManageFeedbacks: React.FC = () => {
       render: (_: unknown, record: Review) => (
         <div>
           <Popconfirm
-            title="Delete the User"
-            description="Are you sure to delete this User?"
+            title="Delete the Review"
+            description="Are you sure to delete this Review?"
             onConfirm={() => deleteReview(record._id, record.reviewer_name, record.course_name, getReviews)}
             okText="Yes"
             cancelText="No"

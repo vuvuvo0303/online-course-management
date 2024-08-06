@@ -21,7 +21,7 @@ const ManageAllPurchase: React.FC = () => {
   }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
 
   const fetchPurchases = useCallback(async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const responsePurchases = await getPurchaseForAdmin(purchaseNoSearch, "", "", status, false, pagination.current, pagination.pageSize);
 
@@ -38,14 +38,12 @@ const ManageAllPurchase: React.FC = () => {
         setDataSource([]);
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }, [pagination.current, pagination.pageSize, purchaseNoSearch, status]);
 
   if (loading) {
-    return (<>
-      <LoadingComponent />
-    </>)
+    return <LoadingComponent />;
   }
 
   const handlePaginationChange = (page: number, pageSize?: number) => {
@@ -59,8 +57,13 @@ const ManageAllPurchase: React.FC = () => {
   const handleTableChange = (pagination: TablePaginationConfig) => {
     setPagination(pagination);
   };
-  const handleChangeStatus = async (value: string) => {
+
+  const handleChangeStatus = (value: string) => {
     setStatus(value);
+    setPagination((prev) => ({
+      ...prev,
+      current: 1, // Reset to page 1 when filter status changes
+    }));
   };
 
   const columns: TableProps<Purchase>["columns"] = [
@@ -79,15 +82,13 @@ const ManageAllPurchase: React.FC = () => {
     {
       title: "Students Name",
       dataIndex: "student_name",
-      key: "student__name",
+      key: "student_name",
     },
     {
       title: "Price Paid",
       dataIndex: "price_paid",
       key: "price_paid",
-      render: (price_paid: number) => {
-        return formatCurrency(price_paid);
-      },
+      render: (price_paid: number) => formatCurrency(price_paid),
     },
     {
       title: "Status",
@@ -102,11 +103,14 @@ const ManageAllPurchase: React.FC = () => {
       render: (created_at: string) => formatDate(created_at),
       width: "10%",
     },
-
   ];
 
   const handleSearchPurchase = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPurchase(e.target.value);
+    setPagination((prev) => ({
+      ...prev,
+      current: 1, // Reset to page 1 when search term changes
+    }));
   };
 
   return (
@@ -118,7 +122,7 @@ const ManageAllPurchase: React.FC = () => {
             placeholder="Search By Purchase No"
             value={searchPurchase}
             onChange={handleSearchPurchase}
-            className="p-2 "
+            className="p-2"
             style={{ width: 250 }}
             enterButton={<SearchOutlined className="text-white" />}
           />
@@ -139,10 +143,8 @@ const ManageAllPurchase: React.FC = () => {
       <Table
         columns={columns}
         dataSource={dataSource}
-
         pagination={false}
         onChange={handleTableChange}
-
         rowKey="_id"
       />
       <div className="flex justify-end py-8">

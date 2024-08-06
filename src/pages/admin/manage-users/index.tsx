@@ -84,7 +84,14 @@ const AdminManageUsers: React.FC = () => {
         pagination.current,
         pagination.pageSize
       );
-      setDataUsers(responseUsers.data.pageData);
+      const sortedUsers = responseUsers.data.pageData.sort((a: User, b: User) => {
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return dateB - dateA;
+      });
+  
+  
+      setDataUsers(sortedUsers);
       setPagination({
         ...pagination,
         total: responseUsers.data.pageInfo.totalItems,
