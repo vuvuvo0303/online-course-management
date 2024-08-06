@@ -78,26 +78,46 @@ const AdminManageCourses: React.FC = () => {
     }
   }, [courseId, oldStatus, newStatus, keywordLogStatus, setLogLoading, setLogs]);
   const fetchCourses = useCallback(async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const responseCourses = await getCourses(debouncedSearchTerm, categoryId, status, false, pagination.current, pagination.pageSize);
+      const responseCourses = await getCourses(
+        debouncedSearchTerm,
+        categoryId,
+        status,
+        false,
+        pagination.current,
+        pagination.pageSize
+      );
+  
       if (responseCourses.data) {
-        setCourses(responseCourses.data.pageData || responseCourses.data);
+        // Sắp xếp khóa học theo ngày tạo (hoặc trường khác nếu bạn muốn)
+        const sortedCourses = responseCourses.data.pageData
+          ? responseCourses.data.pageData.sort((a: Course, b: Course) => {
+              const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+              const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+              return dateB - dateA; // Sắp xếp giảm dần theo ngày tạo
+            })
+          : responseCourses.data;
+  
+        setCourses(sortedCourses);
+        
         setPagination((prev) => ({
           ...prev,
           total: responseCourses.data.pageInfo?.totalItems || responseCourses.data.length,
           current: responseCourses.data.pageInfo?.pageNum || 1,
-          pageSize: responseCourses.data.pageInfo?.pageSize || responseCourses.data.length,
+          pageSize: responseCourses.data.pageInfo?.pageSize || prev.pageSize,
         }));
       }
     } finally {
       setLoading(false);
     }
-  }, [pagination.current, pagination.pageSize, searchText, status, debouncedSearchTerm]);
+
+  
+  }, [pagination.current, pagination.pageSize, searchText, status, debouncedSearchTerm,categoryId]);
 
   useEffect(() => {
     fetchCourses();
-  }, [pagination.current, pagination.pageSize, status, searchText, debouncedSearchTerm]);
+  }, [pagination.current, pagination.pageSize, status, searchText, debouncedSearchTerm,categoryId]);
 
   const handleSearch = () => {
     setPagination((prev) => ({
@@ -286,6 +306,7 @@ const AdminManageCourses: React.FC = () => {
       current: 1,
     }));
   };
+  
   const handleStatusChange = (value: string) => {
     setStatus(value);
     setSelectedStatus(value || "All Status");
@@ -454,9 +475,9 @@ const AdminManageCourses: React.FC = () => {
               <span className="text-base font-bold">Lesson: </span>
               {selectedCourse.lesson_count}
             </div>
-            <div>
+            <div className="flex flex-col">
               <span className="text-base font-bold">Thumbnail: </span>
-              <Image src={selectedCourse.image_url} alt={selectedCourse.name} style={{ width: "100%" }} />
+              <Image src={selectedCourse.image_url} alt={selectedCourse.name}height={250} width={200} />
             </div>
             <div className="flex gap-2 items-center">
               <span className="text-base font-bold">Course Video:</span>
@@ -490,7 +511,7 @@ const AdminManageCourses: React.FC = () => {
           enterButton={<SearchOutlined className="text-white" />}
         />
         <Select
-          showSearch
+          
           placeholder="Select Category"
           optionFilterProp="children"
           onChange={handleCategoryChange}
@@ -505,7 +526,7 @@ const AdminManageCourses: React.FC = () => {
         </Select>
 
         <Select
-          showSearch
+          
           placeholder="Select Status"
           optionFilterProp="children"
           onChange={handleStatusChange}
