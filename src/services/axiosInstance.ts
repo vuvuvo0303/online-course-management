@@ -54,16 +54,17 @@ axiosInstance.interceptors.response.use(
               message.error(data.message);
               const user = getUserFromLocalStorage();
               setTimeout(() => {
-                if (user.role === roles.ADMIN) {
-                  window.location.href = paths.ADMIN_LOGIN;
-                } else {
-                  if(data.message === "Your account has been locked. Please contact admin via mail to activate!" ){
-                    return;
+                if(user){
+                  if (user.role === roles.ADMIN) {
+                    window.location.href = paths.ADMIN_LOGIN;
                   }
-                  else{
-                    window.location.href = paths.LOGIN;
-                  }
+                    else{
+                      window.location.href = paths.LOGIN;
+                    }
+                }else{
+                  return;
                 }
+                
                 localStorage.clear();
                 isTokenExpired = false;
               }, 1300);
@@ -94,5 +95,6 @@ axiosInstance.interceptors.response.use(
     }
   }
 );
+
 
 export default axiosInstance
