@@ -27,13 +27,20 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
             try {
                 await addCourseToCart(course._id);
                 navigate(paths.STUDENT_CART);
-                // message.success('Course added to cart!');
             } catch (error) {
-                // message.error('Failed to add course to cart. Please try again.');
-                // Optionally navigate back or handle the error UI-wise
+                // Handle error appropriately
             } finally {
                 setLoading(false);
             }
+        }
+    };
+
+    const handleStudyNowClick = () => {
+        if (!user) {
+            navigate(paths.LOGIN);
+            message.info('Please login to start studying.');
+        } else {
+            navigate(`/course/${course._id}/lesson`);
         }
     };
 
@@ -99,11 +106,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     <div className="flex gap-4 mt-auto">
                         {course.is_purchased || course.price_paid === 0 ? (
                             <div>
-                                <Link to={`/course/${course._id}/lesson`}>
-                                    <button className="bg-yellow-500 text-gray-800 p-2 rounded-md w-[6rem] hover:bg-yellow-400 text-black-100">
-                                        Study now
-                                    </button>
-                                </Link>
+                                <button
+                                    onClick={handleStudyNowClick}
+                                    className="bg-yellow-500 text-gray-800 p-2 rounded-md w-[6rem] hover:bg-yellow-400 text-black-100"
+                                >
+                                    Study now
+                                </button>
                             </div>
                         ) : (
                             <div className='flex flex-row items-center gap-2'>

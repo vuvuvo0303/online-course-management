@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, Popover, Button, Rate, Skeleton } from "antd";
+import { Card, Popover, Button, Rate, Skeleton, message } from "antd";
 import Carousel from "react-multi-carousel";
 import { Link, useNavigate } from "react-router-dom";
 import { paths } from "../../../consts/index";
@@ -56,11 +56,13 @@ const AllCourses = () => {
     // Add course and go to cart
     const handleGoToCourse = async (course: Course) => {
       if (!user || user.role !== 'student') {
+        message.info('Please log in before adding to cart or studying.');
         navigate(paths.LOGIN);
       } else {
         try {
-          if (course.is_purchased === false && course.is_in_cart === false) {
-            // setLoading(true)
+          if (course.price_paid === 0) {
+            navigate(`/course/${course._id}`);
+          } else if (course.is_purchased === false && course.is_in_cart === false) {
             await addCourseToCart(course._id);
           } else if (course.is_in_cart === true && course.is_purchased === false) {
             navigate(paths.STUDENT_CART);
@@ -107,9 +109,11 @@ const AllCourses = () => {
               lineHeight: "normal", // Reset line height if necessary
             }}
           >
-            {course.is_purchased === false && course.is_in_cart === false && "Add to cart"}
-            {course.is_in_cart === true && course.is_purchased === false && "Go to cart"}
-            {course.is_purchased === true && course.is_in_cart === true && "Learn now"}
+            {course.price_paid === 0 ? "Learn now" :
+              course.is_purchased === false && course.is_in_cart === false ? "Add to cart" :
+                course.is_in_cart === true && course.is_purchased === false ? "Go to cart" :
+                  "Learn now"
+            }
           </Button>
           <Link to={paths.STUDENT_ENROLLMENT} className="ml-4 mt-[0.4rem]">
             <HeartOutlined className="text-black text-2xl" />
