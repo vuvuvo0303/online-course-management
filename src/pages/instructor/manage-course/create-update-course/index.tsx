@@ -91,9 +91,8 @@ const InstructorCreateCourse: React.FC = () => {
 
           setContent(data.description);
         }
+      } finally {
         setLoading(false);
-      } catch (error) {
-        console.log("Error occurred: ", error);
       }
     };
     if (_id) {
@@ -107,9 +106,9 @@ const InstructorCreateCourse: React.FC = () => {
         const responseCategories = await getCategories();
         const categories = responseCategories.data.pageData;
         setCategories(categories);
+      } finally {
         setLoading(false);
-      } catch (error) {
-        console.log("Error fetching categories: ", error);
+
       }
     };
     fetchData();
@@ -130,7 +129,6 @@ const InstructorCreateCourse: React.FC = () => {
   }
 
   const onFinish = async (values: Course) => {
-    console.log("values: ", values);
     setLoading(true);
     try {
       if (typeof values.price === "string") {
@@ -178,7 +176,6 @@ const InstructorCreateCourse: React.FC = () => {
             message.success("Create Course Successfully");
             navigate(`/instructor/manage-courses`);
           }
-          console.log(res);
         } catch (error) {
           console.log("error: ", error);
         }
@@ -198,17 +195,18 @@ const InstructorCreateCourse: React.FC = () => {
     setVideoUrl(e.target.value);
   };
   return (
-    <>
-      <CustomBreadcrumb />
-      <h1 className="text-center">{_id ? "Update Course" : "Create Course"}</h1>
+    <div className="flex justify-center items-center h-full mt-10">
 
-      <div className="flex justify-center items-center h-full mt-10">
+
+      <div className="w-full max-w-6xl bg-white p-8 rounded shadow">
+        <CustomBreadcrumb />
+        <h1 className="text-center">{_id ? "Update Course" : "Create Course"}</h1>
         <Form
           {...formItemLayout}
           onFinish={onFinish}
           form={form}
-          variant="filled"
-          className="w-full max-w-6xl bg-white p-8 rounded shadow"
+          
+          // className="w-full max-w-6xl bg-white p-8 "
         >
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the course name!" }]}>
             <Input />
@@ -317,7 +315,7 @@ const InstructorCreateCourse: React.FC = () => {
           />
         )}
       </div>
-    </>
+    </div>
   );
 };
 

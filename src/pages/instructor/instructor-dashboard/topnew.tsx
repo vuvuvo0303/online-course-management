@@ -2,9 +2,6 @@ import { Image, Tabs, TabsProps } from "antd";
 import { Link } from "react-router-dom";
 
 const TopNews = () => {
-  const onChange = (key: string) => {
-    console.log(key);
-  };
 
   const items: TabsProps["items"] = [
     {
@@ -35,7 +32,7 @@ const TopNews = () => {
               us to advance your career!
             </span>
             <div className="mt-4 flex justify-end">
-            <Link to ={""}> <span className="text-blue-500 hover:cursor-pointer">See more</span></Link>
+              <Link to={""}> <span className="text-blue-500 hover:cursor-pointer">See more</span></Link>
             </div>
           </div>
         </div>
@@ -62,7 +59,7 @@ const TopNews = () => {
               by aligning with industry demand for front-end developers.
             </span>
             <div className="mt-4 flex justify-end">
-            <Link to ={""}> <span className="text-blue-500 hover:cursor-pointer">See more</span></Link>
+              <Link to={""}> <span className="text-blue-500 hover:cursor-pointer">See more</span></Link>
             </div>
           </div>
         </div>
@@ -91,7 +88,7 @@ const TopNews = () => {
               essential for diverse careers in fields such as education, journalism, and public service.
             </span>
             <div className="mt-4 flex justify-end">
-              <Link to ={""}> <span className="text-blue-500 hover:cursor-pointer">See more</span></Link>
+              <Link to={""}> <span className="text-blue-500 hover:cursor-pointer">See more</span></Link>
             </div>
           </div>
         </div>
@@ -100,7 +97,7 @@ const TopNews = () => {
   ];
   return (
     <div>
-      <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+      <Tabs defaultActiveKey="1" items={items} />
     </div>
   );
 };

@@ -1,10 +1,10 @@
 import { Breadcrumb } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
-import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import { BreadcrumbItemType, BreadcrumbSeparatorType } from "antd/lib/breadcrumb/Breadcrumb";
+import { paths } from "../../consts";
 
-interface CustomBreadcrumbProps {}
+interface CustomBreadcrumbProps { }
 
 const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = () => {
     const location = useLocation();
@@ -15,11 +15,11 @@ const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = () => {
     const isAdmin = pathnames.includes("admin");
 
     // Nếu là admin hoặc instructor thì homeHref sẽ được xác định theo vai trò
-    let finalHomeHref = "/";
+    let finalHomeHref = paths.HOME;
     if (isAdmin) {
-        finalHomeHref = "/admin/dashboard";
+        finalHomeHref = paths.ADMIN_HOME;
     } else if (isInstructor) {
-        finalHomeHref = "/instructor/dashboard";
+        finalHomeHref = paths.INSTRUCTOR_HOME;
     }
 
     // Format các phần breadcrumb
@@ -60,9 +60,15 @@ const CustomBreadcrumb: React.FC<CustomBreadcrumbProps> = () => {
             currentPath += `/${value}`;
 
             // Tạo liên kết cho các mục breadcrumb
-            const isLast = index === pathnames.length - 1;
-            const title = formatTitle(value);
+            const a = pathnames.length - 1;
+            let isLast;
+            if (!isNaN(Number(pathnames[a])) || pathnames[a].match(/^[0-9a-fA-F]{24}$/)) {
+                isLast = index === pathnames.length - 2;
+            } else {
+                isLast = index === pathnames.length - 1;
+            }
 
+            const title = formatTitle(value);
             return {
                 title: isLast ? (
                     title

@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Blog } from '../../../models/Blog';
-import { Spin, Alert } from 'antd';
+import { Blog } from '../../../models';
+import { Alert, Skeleton } from 'antd';
 import styles from "./blogDetail.module.css"
 import { ShareAltOutlined } from '@ant-design/icons';
 import axiosInstance from '../../../services/axiosInstance';
 import { API_CLIENT_GET_BLOG, paths } from '../../../consts';
-import { format } from 'date-fns';
-import CustomBreadcrumb from '../../../components/breadcrumb';
+import { CustomBreadcrumb } from '../../../components';
 import parse from 'html-react-parser';
+import { formatDate } from '../../../utils';
 
 const BlogDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -28,9 +28,9 @@ const BlogDetail: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-screen">
-                <Spin tip="Loading..." />
-            </div>
+            <>
+                <Skeleton active />
+            </>
         );
     }
 
@@ -85,7 +85,7 @@ const BlogDetail: React.FC = () => {
                 <footer className='mb-6'>
                     <p className='mt-0 mb-4'>
                         <em>Page Last Updated: </em>
-                        <span className='font-normal'> {format(blog.updated_at, "dd/MM/yyyy")}</span>
+                        <span className='font-normal'> {formatDate(blog.updated_at)}</span>
                     </p>
                 </footer>
             </div>

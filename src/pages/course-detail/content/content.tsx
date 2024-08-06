@@ -50,8 +50,6 @@ const Content: React.FC<ContentProps> = ({ course }) => {
     };
 
     const handleLessonClick = (lesson_id: string) => {
-        // Navigate to the course page
-        // console.log("lesson_id:", lesson_id)
         navigate(`/course/${course._id}/lesson/${lesson_id}`);
     };
 
@@ -104,3 +102,4 @@ const Content: React.FC<ContentProps> = ({ course }) => {
 };
 
 export default Content;
+

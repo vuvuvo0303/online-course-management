@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Collapse, Button, Drawer, Spin, Skeleton, theme } from "antd";
-import { PlayCircleOutlined, FileWordOutlined, PictureOutlined, CaretRightOutlined } from "@ant-design/icons";
+import { PlayCircleOutlined, FileWordOutlined, PictureOutlined, CaretRightOutlined, LoadingOutlined } from "@ant-design/icons";
 import axiosInstance from "../../../services/axiosInstance";
 import { API_GET_LESSON, API_CLIENT_GET_COURSE_DETAIL } from "../../../consts";
 import 'tailwindcss/tailwind.css';
@@ -22,6 +22,7 @@ const Lesson: React.FC = () => {
     const [activeKey, setActiveKey] = useState<string | string[]>([]);
     const [currentSessionIndex, setCurrentSessionIndex] = useState<number>(0);
     const [currentLessonIndex, setCurrentLessonIndex] = useState<number>(0);
+    const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
     const { _id, lesson_id } = useParams<{ _id: string, lesson_id?: string }>();
     const navigate = useNavigate();
 
@@ -77,6 +78,7 @@ const Lesson: React.FC = () => {
     const userRole = user.role;
 
     const handleLessonClick = async (lessonItem: Lessons) => {
+        setSelectedLessonId(lessonItem._id); // Update selected lesson ID
         await fetchLesson(lessonItem._id);
         if (userRole === "instructor") {
             navigate(`/instructor/course/${course?._id}/lesson/${lessonItem._id}`);
@@ -84,6 +86,7 @@ const Lesson: React.FC = () => {
             navigate(`/course/${course?._id}/lesson/${lessonItem._id}`);
         }
     };
+
 
     const handlePanelChange = (key: string | string[]) => {
         setActiveKey(key);
@@ -143,7 +146,9 @@ const Lesson: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     const renderLessonContent = (lessonItem) => (
-        <div key={lessonItem._id} className="flex items-center mb-2 cursor-pointer p-2 rounded" onClick={() => handleLessonClick(lessonItem)}>
+        <div key={lessonItem._id}
+            className={`flex items-center mb-2 cursor-pointer p-2 rounded ${selectedLessonId === lessonItem._id ? 'text-blue-500 font-bold' : ''}`}
+            onClick={() => handleLessonClick(lessonItem)}>
             {(() => {
                 switch (lessonItem.lesson_type) {
                     case LessonType.video:
@@ -156,7 +161,7 @@ const Lesson: React.FC = () => {
                         return null;
                 }
             })()}
-            <p className="ml-2">{lessonItem.name}</p>
+            <p className={`ml-2 ${selectedLessonId === lessonItem._id ? 'text-blue-500 font-bold' : ''}`}>{lessonItem.name}</p>
         </div>
     );
 
@@ -211,7 +216,7 @@ const Lesson: React.FC = () => {
                                 {renderSelectedLesson()}
                             </Skeleton>
                         ) : (
-                            <Spin spinning={loading}>
+                            <Spin indicator={<LoadingOutlined spin />} size="large">
                                 {renderSelectedLesson()}
                             </Spin>
                         )

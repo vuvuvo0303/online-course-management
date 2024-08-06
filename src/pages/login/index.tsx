@@ -150,7 +150,6 @@ const LoginPage: React.FC = () => {
 
   const beforeUpload = (file: File) => {
     console.log(file);
-
     return false;
   };
 

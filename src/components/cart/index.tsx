@@ -32,6 +32,7 @@ const CartComponents: React.FC<CartComponentsProps> = ({ cartsNew, cartsCancel, 
                                                 <img
                                                     src={cartsNew.course_image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'}
                                                     alt="Course"
+                                                    className="w-[50rem] h-[10rem]"
                                                     onError={handleImageError}
                                                 />
                                             </Col>
@@ -70,6 +71,7 @@ const CartComponents: React.FC<CartComponentsProps> = ({ cartsNew, cartsCancel, 
                                         <img
                                             src={cartsCancel?.course_image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'}
                                             alt="Course"
+                                            className="w-[50rem] h-[10rem]"
                                             onError={handleImageError}
                                         />
                                     </Col>
