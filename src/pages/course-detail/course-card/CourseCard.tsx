@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { message, Rate } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { ShoppingCartOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { addCourseToCart } from '../../../services/cart';
 import { paths } from "../../../consts";
