@@ -1,5 +1,5 @@
 import { PlaySquareOutlined, TeamOutlined } from "@ant-design/icons";
-import { Badge, Card, Col, Row } from "antd";
+import { Badge, Card, Col, Modal, Row, Table } from "antd";
 import { Link } from "react-router-dom";
 import TopSelling from "./top3selling";
 import TopNews from "./topnew";
@@ -8,11 +8,13 @@ import { useEffect, useState, useCallback } from "react";
 import { paths } from "../../../consts";
 import { getUserFromLocalStorage, getCourses, getUserDetail } from "../../../services";
 import CustomBreadcrumb from "../../../components/breadcrumb";
-import { formatCurrency } from "../../../utils";
-
+import { formatCurrency, formatDate } from "../../../utils";
+import { Transaction } from "../../../models";
+import { TableProps } from "antd/lib";
 const InstructorDashboard: React.FC = () => {
   const [numCourses, setNumCourses] = useState(0);
   const [numBalance, setNumBalance] = useState(0);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const user = getUserFromLocalStorage();
   useEffect(() => {
 
@@ -20,15 +22,59 @@ const InstructorDashboard: React.FC = () => {
   }, [])
 
   const fetchData = useCallback(async () => {
+  
     const courses = await getCourses();
     const userInfo = await getUserDetail(user._id);
     const totalCourses = courses.data.pageInfo.totalItems
     const balanceTotal = userInfo.data.balance_total;
+    const transactionsOFInstructor = userInfo.data.transactions;
     setNumCourses(totalCourses);
     setNumBalance(balanceTotal);
+    setTransactions(transactionsOFInstructor)
   }, [numBalance, numCourses])
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const columnsTransactions: TableProps<Transaction>["columns"] = [
+    {
+      title: "Payout No",
+      dataIndex: "payout_no",
+      key: "payout_no",
+    },
+    {
+      title: "Payout Amount",
+      dataIndex: "payout_amount",
+      key: "payout_amount ",
+    },
+    {
+      title: "Created Date",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (created_at: string) => formatDate(created_at),
+    },
+  ];
   return (
+    
     <div>
+      <Modal title="Transaction"
+       open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
+       footer={""}
+       width={900}
+       >
+     <Table rowKey="_id" dataSource={transactions}  columns={columnsTransactions} />
+      </Modal>
       <CustomBreadcrumb/>
       <div className="flex justify-between drop-shadow-xl gap-3">
         <Badge.Ribbon text="Flearn" color="blue">
@@ -65,7 +111,7 @@ const InstructorDashboard: React.FC = () => {
           <Card title="Total Revenue" bordered={false} style={{ width: 300 }}>
             <div className="flex justify-between items-center px-1">
               <div className="flex justify-center gap-2">
-                <h1>{formatCurrency(numBalance)}</h1>
+                <h1  onClick={showModal} className="text-blue-500 cursor-pointer">{formatCurrency(numBalance)}</h1>
               </div>
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoA2JPklNgATSUB4vGt1RofKes7gQsE5zw7Q&s"
