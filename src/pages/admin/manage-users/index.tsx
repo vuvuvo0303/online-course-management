@@ -245,7 +245,7 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleRolefilter = (value: string) => {
     setSelectedRole(value);
-    fetchUsers();
+    
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
