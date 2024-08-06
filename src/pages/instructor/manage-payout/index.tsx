@@ -67,7 +67,6 @@ const InstructorManagePayout = () => {
     getPayoutsByInstructor();
   }, [statusPayout, payoutNoSearch, pagination.current, pagination.pageSize]);
 
-
   const getPayoutsByInstructor = async () => {
     // no loading for search
     if (payoutNoSearch != "") {
@@ -126,9 +125,7 @@ const InstructorManagePayout = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: string) => (
-        <Tag color={getColorPayout(status)}>{renderPayoutStatus(status)}</Tag>
-      ),
+      render: (status: string) => <Tag color={getColorPayout(status)}>{renderPayoutStatus(status)}</Tag>,
     },
     {
       title: "Balance Instructor Paid",
@@ -151,17 +148,17 @@ const InstructorManagePayout = () => {
     },
     ...(statusPayout === "new" || statusPayout === "rejected"
       ? [
-        {
-          title: "Action",
-          dataIndex: "status",
-          key: "action",
-          render: (_text: string, record: Payout) => (
-            <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
-              Request Payout
-            </Button>
-          ),
-        },
-      ]
+          {
+            title: "Action",
+            dataIndex: "status",
+            key: "action",
+            render: (_text: string, record: Payout) => (
+              <Button onClick={() => handleRequestPayout(record._id, "request_payout", "")} type="primary">
+                Request Payout
+              </Button>
+            ),
+          },
+        ]
       : []),
   ];
 
@@ -246,7 +243,6 @@ const InstructorManagePayout = () => {
             onChange={handleStatus}
             value={statusPayout}
             style={{ width: 200 }}
-
             className="w-full md:w-34 mt-2 md:mt-0 md:ml-2"
           >
             <Select.Option value="new">New</Select.Option>
@@ -274,7 +270,6 @@ const InstructorManagePayout = () => {
           />
         </div>
       </div>
-
     </>
   );
 };
