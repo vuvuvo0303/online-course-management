@@ -34,7 +34,7 @@ export const getSessions =
                 "searchCondition": {
                     "keyword": keyword,
                     "course_id": course_id,
-                    "is_position_order": true,
+                    "is_position_order": false,
                     "is_deleted": false
                 },
                 "pageInfo": {

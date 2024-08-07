@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getColorPayout } from "../../../consts";
 import {
   Button,
@@ -232,7 +232,7 @@ const AdminManagePayouts: React.FC = () => {
   const handleSaveComment = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setComment(e.target.value);
   };
-  const handleSearchText= (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchText = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
   const columnsTransactions: TableProps["columns"] = [
