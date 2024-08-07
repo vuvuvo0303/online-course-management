@@ -156,6 +156,12 @@ const LectureOfCourse: React.FC = () => {
           });
           if (response) {
             setData(response.data.pageData);
+            setPagination({
+              ...pagination,
+              total: response.data.pageInfo.totalItems,
+              current: response.data.pageInfo.pageNum,
+              pageSize: response.data.pageInfo.pageSize,
+            });
           }
         } catch (error) {
           //
