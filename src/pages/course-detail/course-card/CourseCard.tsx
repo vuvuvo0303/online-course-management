@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { message, Rate } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCartOutlined, ClockCircleOutlined } from '@ant-design/icons';
-import { addCourseToCart } from '../../../services/cart';
+import { addCourseToCart, getUserFromLocalStorage } from '../../../services';
 import { paths } from "../../../consts";
 import { formatCurrency, formatMinute } from "../../../utils";
 import { Course } from "../../../models";
@@ -15,7 +15,7 @@ interface CourseCardProps {
 
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
     const navigate = useNavigate();
-    const user = localStorage.getItem("user");
+    const user = getUserFromLocalStorage();
     const [loading, setLoading] = useState(false);
 
     const handleAddToCart = async () => {
@@ -51,20 +51,22 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
     };
 
     const handSaveCourseToLocalStorage = (courseId: string) => {
-        // Retrieve the current list from localStorage, or create an empty array if none exists
-        const courseInWishList = JSON.parse(localStorage.getItem("courseInWishList") || "[]");
-        if(courseInWishList){
-            message.info("The course is on the wishlist")
-        }
-        // Check if the courseId already exists in the list
-        if (!courseInWishList.includes(courseId)) {
-            // If not, add the courseId to the list
-            courseInWishList.push(courseId);
-            // Save the updated list back to localStorage
-            localStorage.setItem("courseInWishList", JSON.stringify(courseInWishList));
-            message.success("Save Course To Wishlist Successfully!")
+        if (!user) {
+            navigate(paths.LOGIN);
+            message.info('Please login before saving items to your wishlist.');
+        } else {
+            const courseInWishList = JSON.parse(localStorage.getItem("courseInWishList") || "[]");
+
+            if (courseInWishList.includes(courseId)) {
+                message.info("The course is already in the wishlist.");
+            } else {
+                courseInWishList.push(courseId);
+                localStorage.setItem("courseInWishList", JSON.stringify(courseInWishList));
+                message.success("Save Course To Wishlist Successfully!");
+            }
         }
     };
+
 
 
 

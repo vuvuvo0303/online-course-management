@@ -21,7 +21,6 @@ const ManageSession: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState("");
   const [open, setOpen] = useState(false);
@@ -99,8 +98,6 @@ const ManageSession: React.FC = () => {
             pageSize: response.data.pageInfo?.pageSize || response.data.length,
           }));
         }
-      } catch (error) {
-        setError(error + "");
       } finally {
         setLoading(false);
       }
@@ -177,9 +174,6 @@ const ManageSession: React.FC = () => {
         <LoadingComponent />
       </>
     );
-  }
-  if (error) {
-    return <div>{error}</div>;
   }
 
   return (

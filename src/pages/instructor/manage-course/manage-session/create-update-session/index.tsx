@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { Button, Form, Input, Select, message, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models";
-import { API_CREATE_SESSION, API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
-import { axiosInstance, getCourses, getUserFromLocalStorage } from "../../../../../services";
+import { API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
+import { axiosInstance, createSession, getCourses, getUserFromLocalStorage } from "../../../../../services";
 import { CustomBreadcrumb, LoadingComponent } from "../../../../../components";
 import { formItemLayout } from "../../../../../layout/form";
-import TextArea from "antd/lib/input/TextArea";
 
 const CreateUpdateSession = () => {
 
@@ -90,17 +89,7 @@ const CreateUpdateSession = () => {
       // create session component for manage sessions and manage all sessions
       try {
         // manage course -> manage session
-        // if (courseId) {
-        //   setCourseIdUpdate(courseId)
-        // }else{     // manage-all-session
-        //   setCourseIdUpdate(values.course_id)
-        // }
-        await axiosInstance.post(`${API_CREATE_SESSION}`, {
-          "name": values.name,
-          "course_id": courseIdUpdate,
-          "description": values.description,
-          "position_order": 1
-        });
+        await createSession(values.name, courseIdUpdate, values.description, 1);
         message.success("Create Session Successfully!")
         if (courseId) {
           // redirect to manage session 
@@ -129,12 +118,12 @@ const CreateUpdateSession = () => {
           <CustomBreadcrumb />
 
           <h1 className="text-center mb-8">{sessionId ? "Update Session" : "Create Session"}</h1>
-          <Form  onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
+          <Form onFinish={onFinish} form={form} {...formItemLayout} initialValues={{}}>
             <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Please input title!' }]}>
               <Input />
             </Form.Item>
             <Form.Item label="Description" name="description">
-              <TextArea />
+              <Input.TextArea />
             </Form.Item>
             {
               //  create and update session in manage all session

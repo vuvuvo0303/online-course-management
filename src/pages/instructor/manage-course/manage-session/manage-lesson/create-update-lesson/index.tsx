@@ -2,21 +2,19 @@ import { useEffect, useState } from "react";
 import { Form, Input, Select, Spin, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Lessons, Session } from "../../../../../../models";
-import { axiosInstance, getCourses, getUserFromLocalStorage } from "../../../../../../services";
+import { axiosInstance, getCourses, getSessions, getUserFromLocalStorage } from "../../../../../../services";
 import {
   API_CREATE_LESSON,
   API_GET_LESSON,
   API_GET_SESSION,
-  API_GET_SESSIONS,
   API_UPDATE_LESSON,
 } from "../../../../../../consts";
 import { formItemLayout } from "../../../../../../layout/form";
-import { LoadingComponent, CustomBreadcrumb, NumberFormItem, ButtonFormItem } from "../../../../../../components";
+import { LoadingComponent, CustomBreadcrumb, NumberFormItem, ButtonFormItem, UploadButton } from "../../../../../../components";
 
-import { PlusOutlined } from "@ant-design/icons";
 import { Image, Upload } from "antd";
 import type { GetProp, UploadFile, UploadProps } from "antd";
-import { getBase64, uploadFile } from "../../../../../../utils/uploadHelper/index.ts";
+import { getBase64, uploadFile, validHttpUrl } from "../../../../../../utils";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -35,15 +33,6 @@ const CreateUpdateLesson: React.FC = () => {
   // const [des, setDes] = useState<string>("");
   const [videoUrl, setVideoUrl] = useState<string>("");
 
-  const isValidHttpUrl = (string: string): boolean => {
-    let url;
-    try {
-      url = new URL(string);
-    } catch (_) {
-      return false;
-    }
-    return url.protocol === "http:" || url.protocol === "https:";
-  };
   useEffect(() => {
     const user = getUserFromLocalStorage();
     setUserId(user?._id);
@@ -100,7 +89,6 @@ const CreateUpdateLesson: React.FC = () => {
 
           setCourses(responseCourses.data.pageData.filter((course: Course) => course.session_count > 0));
         }
-        console.log("a: ", courses)
       } finally {
         setLoading(false);
       }
@@ -115,19 +103,8 @@ const CreateUpdateLesson: React.FC = () => {
           const response = await axiosInstance.get(`${API_GET_SESSION}/${sessionId}`);
           setSession(response.data);
         } else if (course_id) {
-          const response = await axiosInstance.post(API_GET_SESSIONS, {
-            searchCondition: {
-              keyword: "",
-              course_id: course_id,
-              is_position_order: false,
-              is_deleted: false,
-            },
-            pageInfo: {
-              pageNum: 1,
-              pageSize: 10,
-            },
-          });
-          setSessions(response.data.pageData);
+          const responseSessions = await getSessions("", course_id, 1, 10);
+          setSessions(responseSessions.data.pageData);
         }
       } finally {
         setLoading(false);
@@ -193,18 +170,12 @@ const CreateUpdateLesson: React.FC = () => {
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
 
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
 
   const handleSetVideoUrl = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setVideoUrl(e.target.value);
   };
 
-  const onchangeLessonType=(type: string)=>{
+  const onchangeLessonType = (type: string) => {
     console.log("type");
     setLessonType(type)
   }
@@ -274,7 +245,7 @@ const CreateUpdateLesson: React.FC = () => {
 
             <Form.Item label="Lesson Type" name="lesson_type">
               <Select
-              onChange={onchangeLessonType}
+                onChange={onchangeLessonType}
                 defaultValue="video"
                 options={[
                   { label: "video", value: "video" },
@@ -285,7 +256,7 @@ const CreateUpdateLesson: React.FC = () => {
             </Form.Item>
 
             <Form.Item label="Description" name="description"
-             rules={lessonType === "text" ? [{ required: true, message: "Please input description!" }]:[]}
+              rules={lessonType === "text" ? [{ required: true, message: "Please input description!" }] : []}
             >
               <Input.TextArea />
             </Form.Item>
@@ -293,12 +264,12 @@ const CreateUpdateLesson: React.FC = () => {
             <Form.Item
               label="Video URL"
               name="video_url"
-              rules={lessonType === "video" ? [{ required: true, message: "Please input video URL!" }]:[]}
+              rules={lessonType === "video" ? [{ required: true, message: "Please input video URL!" }] : []}
             >
               <Input onChange={handleSetVideoUrl} />
             </Form.Item>
 
-            {isValidHttpUrl(videoUrl) && (
+            {validHttpUrl(videoUrl) && (
               <div className="flex justify-end mb-5">
                 <iframe
                   width="400"
@@ -313,7 +284,7 @@ const CreateUpdateLesson: React.FC = () => {
             )}
 
             <Form.Item label="Image URL" name="image_url"
-            rules={lessonType === "image" ? [{ required: true, message: "Please input image URL!" }]:[]}
+              rules={lessonType === "image" ? [{ required: true, message: "Please input image URL!" }] : []}
             >
               <Upload
                 action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
@@ -322,7 +293,7 @@ const CreateUpdateLesson: React.FC = () => {
                 onPreview={handlePreview}
                 onChange={handleChange}
               >
-                {fileList.length >= 1 ? null : uploadButton}
+                {fileList.length >= 1 ? null : <UploadButton />}
               </Upload>
             </Form.Item>
 

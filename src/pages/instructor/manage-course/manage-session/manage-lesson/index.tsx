@@ -15,11 +15,10 @@ import {
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models/index.ts";
-import axiosInstance from "../../../../../services/axiosInstance.ts";
+import { axiosInstance, getCourses } from "../../../../../services/";
 import { useDebounce } from "../../../../../hooks";
 import {
   API_GET_LESSONS,
-  API_GET_COURSES,
   API_DELETE_LESSON,
   API_GET_SESSIONS,
   getColorLessonType,
@@ -111,20 +110,9 @@ const LectureOfCourse: React.FC = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axiosInstance.post(API_GET_COURSES, {
-        searchCondition: {
-          keyword: "",
-          category: "",
-          status: "",
-          is_deleted: false,
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 100,
-        },
-      });
-      if (response) {
-        setCourses(response.data.pageData);
+      const responseCourses = await getCourses();
+      if (responseCourses) {
+        setCourses(responseCourses.data.pageData);
       }
     } catch (error) {
       //
@@ -174,6 +162,7 @@ const LectureOfCourse: React.FC = () => {
       //Manage all lecture
       const fetchLecture = async () => {
         try {
+          //const response = await getLessons(debouncedSearchTerm, course_id, session_id, lessonType, 1, 100);
           const response = await axiosInstance.post(API_GET_LESSONS, {
             searchCondition: {
               keyword: debouncedSearchTerm,
@@ -188,6 +177,7 @@ const LectureOfCourse: React.FC = () => {
               pageSize: 100,
             },
           });
+          console.log(response);
           if (response) {
             setData(response.data.pageData);
             setPagination({

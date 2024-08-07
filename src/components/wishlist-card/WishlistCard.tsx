@@ -1,6 +1,7 @@
 import { HeartFilled, StarFilled } from "@ant-design/icons"
 import styles from './wishlistCard.module.css'
-import { Course } from "../../models/Course"
+import { Course } from "../../models"
+import { formatCurrency, formatMinute } from '../../utils/formatHelper';
 interface WishListCardProps {
     course: Course;
 }
@@ -39,19 +40,19 @@ const WishListCard: React.FC<WishListCardProps> = ({ course }) => {
                         </div>
                         <div className={`mb-[.4rem] lg:block flex flex-nowrap items-center`}>
                             <div className={styles.course_details_container}>
-                                <span>{Math.round(course.full_time / 60)} total hours</span>
+                                <span>{formatMinute(course.full_time)} total hours</span>
 
                             </div>
                             <div className="mb-[.4rem]">
                                 <div className={styles.base_price_container}>
                                     <div className={styles.base_price_text}>
-                                        <span>{course.price_paid}</span>
+                                        <span>{formatCurrency(course.price_paid)}</span>
                                     </div>
                                     <div className={styles.discount_price_container}>
                                         <div>
                                             <span>
                                                 <s>
-                                                    <span>₫{course.price}</span>
+                                                    <span>{formatCurrency(course.price)}</span>
                                                 </s>
                                             </span>
                                         </div>

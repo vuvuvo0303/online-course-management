@@ -1,22 +1,19 @@
 import { SearchOutlined } from "@ant-design/icons";
 import styles from "./enrollment.module.css";
 import WishListCard from "../../components/wishlist-card/WishlistCard";
-import { Course } from "../../models/Course";
+import { Course } from "../../models";
 import { useEffect, useState } from "react";
-import { getCourseDetailByStudent } from "../../services/client";
+import { getCoursesFromLocalStorage } from "../../utils";
 
 const WishList = () => {
   const [courses, setCourses] = useState<Course[]>([]);
 
-  const getCoursesFromLocalStorage = async () => {
-    const courseIds = JSON.parse(localStorage.getItem("courseInWishList") || "[]");
-    const getCourseDetail = courseIds.map((courseId: string) => getCourseDetailByStudent(courseId));
-    const courseDetails = await Promise.all(getCourseDetail);
-    setCourses(courseDetails);
+  const fetchData = async () => {
+    const courseDetails = await getCoursesFromLocalStorage();
+    setCourses(courseDetails)
   }
-
   useEffect(() => {
-    getCoursesFromLocalStorage();
+    fetchData();
   }, [])
 
   return (
@@ -55,6 +52,7 @@ const WishList = () => {
           {
             courses.map((course => (
               <WishListCard
+                key={course._id}
                 course={course}
               />
             )))

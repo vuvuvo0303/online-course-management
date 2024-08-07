@@ -5,13 +5,10 @@ import { Form, Image, Input, message, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { getCategories, axiosInstance } from "../../../../services";
-import { TinyMCEEditorComponent, LoadingComponent, CustomBreadcrumb, ButtonFormItem } from "../../../../components";
+import { TinyMCEEditorComponent, LoadingComponent, CustomBreadcrumb, ButtonFormItem, UploadButton } from "../../../../components";
 import { formItemLayout } from "../../../../layout/form";
 import type { GetProp, UploadFile, UploadProps } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-import { getBase64, uploadFile } from "../../../../utils";
-import { RuleObject } from "antd/es/form";
-import { StoreValue } from "antd/es/form/interface";
+import { getBase64, uploadFile, validateUrl, validHttpUrl } from "../../../../utils";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -25,20 +22,6 @@ const InstructorCreateCourse: React.FC = () => {
   const [form] = useForm();
   const token = localStorage.getItem("token");
   const [content, setContent] = useState<string>("Enter something here");
-  const ValidHttpUrl = (string: string): boolean => {
-    let url;
-    try {
-      url = new URL(string);
-    } catch (_) {
-      return false;
-    }
-    return url.protocol === "http:" || url.protocol === "https:";
-  };
-
-  const validateUrl = (_: RuleObject, value: StoreValue): Promise<void> => {
-    return ValidHttpUrl(value as string) ? Promise.resolve() : Promise.reject("This is not a valid video URL");
-  };
-
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -53,13 +36,6 @@ const InstructorCreateCourse: React.FC = () => {
   };
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => setFileList(newFileList);
-
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
   useEffect(() => {
     const fetchCourse = async () => {
       setLoading(true);
@@ -118,16 +94,6 @@ const InstructorCreateCourse: React.FC = () => {
     return <LoadingComponent />;
   }
 
-  function isValidHttpUrl(string: string) {
-    let url;
-    try {
-      url = new URL(string);
-    } catch (_) {
-      return false;
-    }
-    return url.protocol === "http:" || url.protocol === "https:";
-  }
-
   const onFinish = async (values: Course) => {
     setLoading(true);
     try {
@@ -180,9 +146,6 @@ const InstructorCreateCourse: React.FC = () => {
           console.log("error: ", error);
         }
       }
-    } catch (error) {
-      // message.error("An error occurred while saving the course. Please try again.");
-      console.error("Error saving course: ", error);
     } finally {
       setLoading(false);
     }
@@ -205,8 +168,8 @@ const InstructorCreateCourse: React.FC = () => {
           {...formItemLayout}
           onFinish={onFinish}
           form={form}
-          
-          // className="w-full max-w-6xl bg-white p-8 "
+
+        // className="w-full max-w-6xl bg-white p-8 "
         >
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input the course name!" }]}>
             <Input />
@@ -249,7 +212,7 @@ const InstructorCreateCourse: React.FC = () => {
             <Input onChange={handleSetVideoUrl} />
           </Form.Item>
 
-          {isValidHttpUrl(videoUrl) && (
+          {validHttpUrl(videoUrl) && (
             <div className="flex justify-end mb-5">
               <iframe
                 width="400"
@@ -270,7 +233,7 @@ const InstructorCreateCourse: React.FC = () => {
               onPreview={handlePreview}
               onChange={handleChange}
             >
-              {fileList.length >= 1 ? null : uploadButton}
+              {fileList.length >= 1 ? null : <UploadButton />}
             </Upload>
           </Form.Item>
           <Form.Item
