@@ -38,7 +38,7 @@ const About: React.FC<AboutProps> = ({ courseId }) => {
 
     return (
         <div className="p-6 bg-white rounded-md shadow-md">
-            <h2 className="text-2xl font-bold mb-4">Course Content</h2>
+            <h2 className="text-2xl font-bold mb-4">Course Description</h2>
             <p className="text-gray-700">{parse(course.content)}</p>
         </div>
     );

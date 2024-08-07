@@ -136,5 +136,9 @@ export const logout = ( navigate: ReturnType<typeof useNavigate>) => {
     navigate(paths.HOME);
   }
   message.info("You logout from the system");
+  const courseInWishList = localStorage.getItem("courseInWishList");
   localStorage.clear();
+  if (courseInWishList) {
+    localStorage.setItem("courseInWishList", courseInWishList);
+  }
 };

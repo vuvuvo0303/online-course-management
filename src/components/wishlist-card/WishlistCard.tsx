@@ -5,7 +5,6 @@ interface WishListCardProps {
     course: Course;
 }
 const WishListCard: React.FC<WishListCardProps> = ({ course }) => {
-    console.log(" course: ", course);
     return (
         <div className={styles.course_card}>
             <div className='relative'>
@@ -20,14 +19,14 @@ const WishListCard: React.FC<WishListCardProps> = ({ course }) => {
                         <div>
                             <h3 className={styles.course_card_title}>
                                 <a className={styles.link_to_course} href="https://www.udemy.com/course/the-complete-web-development-bootcamp/">
-                                {course.name}
+                                    {course.name}
                                 </a>
                             </h3>
                         </div>
                     </div>
                     <div className={styles.course_card_author}>
                         <div className={styles.instructor_name}>
-                         {course.description}
+                            {course.description}
                         </div>
                     </div>
                     <div className={`${styles.description_container} md:mr-10 lg:mr-0`}>
@@ -40,8 +39,8 @@ const WishListCard: React.FC<WishListCardProps> = ({ course }) => {
                         </div>
                         <div className={`mb-[.4rem] lg:block flex flex-nowrap items-center`}>
                             <div className={styles.course_details_container}>
-                            <span>{Math.round(course.full_time / 60)} total hours</span>
-                
+                                <span>{Math.round(course.full_time / 60)} total hours</span>
+
                             </div>
                             <div className="mb-[.4rem]">
                                 <div className={styles.base_price_container}>
