@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Radio, Input, Form, Row, Col, message } from "antd";
-
+import { RadioChangeEvent } from "antd/es/radio"; // Import kiểu cho sự kiện thay đổi Radio
 import { paths } from "../../consts";
 import styles from "./checkout.module.css";
 import { Cart } from "../../models";
@@ -10,6 +10,7 @@ import { User } from "../../models/User";
 import { Link } from "react-router-dom";
 import { CustomButton, EmailFormItem, LoadingComponent } from "../../components";
 import { formatCurrency } from "../../utils";
+
 const Checkout: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
@@ -24,16 +25,15 @@ const Checkout: React.FC = () => {
     { label: "Bank Transfer", value: "bank_transfer" },
   ];
   const userInfo = getUserFromLocalStorage();
-
   const navigate = useNavigate();
+
   useEffect(() => {
     setUser(userInfo);
     getCart();
   }, []);
 
-
   const getCart = async () => {
-    setLoading(true)
+    setLoading(true);
     const res = await getCarts("waiting_paid");
     if (res) {
       let total = 0;
@@ -41,15 +41,13 @@ const Checkout: React.FC = () => {
       setCarts(res);
       for (let index = 0; index < res.length; index++) {
         total += res[index].price_paid;
-        totalCost += res[index].price
+        totalCost += res[index].price;
       }
       setTotalPrice(total);
       setTotalCost(totalCost);
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
-
+  };
 
   const userRole = userInfo?.role;
 
@@ -57,9 +55,10 @@ const Checkout: React.FC = () => {
     for (const element of carts) {
       await updateStatusCart("cancel", element._id, element.cart_no);
     }
-    message.success("Cancel Checkout Successfully")
-    navigate(paths.STUDENT_CART)
-  }
+    message.success("Cancel Checkout Successfully");
+    navigate(paths.STUDENT_CART);
+  };
+
   const handlePayment = async () => {
     if (!paymentMethod) {
       message.error("Please select a payment method.");
@@ -74,16 +73,16 @@ const Checkout: React.FC = () => {
             await updateStatusCart("completed", element._id, element.cart_no);
           }
           await new Promise((resolve) => setTimeout(resolve, 2000));
-          setLoading(false);
           message.success("Payment successful!");
           if (userRole === "student") {
-            navigate(paths.STUDENT_PURCHASE)
+            navigate(paths.STUDENT_PURCHASE);
           } else {
-            navigate("/instructor/purchase")
+            navigate("/instructor/purchase");
           }
+        } catch (error) {
+          message.error("Payment failed. Please try again later.");
         } finally {
           setLoading(false);
-          message.error("Payment failed. Please try again later.");
         }
       })
       .catch((info) => {
@@ -92,11 +91,15 @@ const Checkout: React.FC = () => {
   };
 
   if (loading) {
-    return (<>
-      <LoadingComponent />
-    </>)
+    return (
+      <>
+        <LoadingComponent />
+      </>
+    );
   }
-  const handlePaymentMethod= (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handlePaymentMethod = (e: RadioChangeEvent) => {
+    console.log("Selected payment method: ", e.target.value);
     setPaymentMethod(e.target.value);
   };
 
@@ -123,107 +126,97 @@ const Checkout: React.FC = () => {
                   </p>
                   <p className={styles.detailValue}>{user && user.email}</p>
                 </div>
-                {
-                  // payment && 
-                  (
-                    <>
-                      <div className={styles.detailItem}>
-                        <p className={styles.detailLabel}>
-                          <strong>Date:</strong>
-                        </p>
-                        <p className={styles.detailValue}>
-                          22/07/2024
-                          {/* { format(new Date(payment.createdDate), "dd/MM/yyyy")} */}
-                        </p>
-                      </div>
-                      <div className={styles.detailItem}>
-                        <p className={styles.detailLabel}>
-                          <strong>Total Price:</strong>
-                        </p>
-                        <p className={styles.detailValue}>{formatCurrency(totalPrice)}</p>
-                      </div>
-                    </>
-
-                  )}
+                <>
+                  <div className={styles.detailItem}>
+                    <p className={styles.detailLabel}>
+                      <strong>Date:</strong>
+                    </p>
+                    <p className={styles.detailValue}>22/07/2024</p>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <p className={styles.detailLabel}>
+                      <strong>Total Price:</strong>
+                    </p>
+                    <p className={styles.detailValue}>{formatCurrency(totalPrice)}</p>
+                  </div>
+                </>
               </div>
             </div>
-            <div >
-              {
-                carts.length > 0 ?
-                  (
-                    // <Row className='border p-5 mt-10' gutter={10}>
-                    //   <Col className='font-bold text-center' span={6}>Course</Col>
-                    //   <Col span={6}></Col>
-                    //   <Col className='font-bold' span={6}>Discount</Col>
-                    //   <Col className='font-bold' span={6}>
-                    //     <p>Total</p>
-                    //   </Col>
-                    // </Row>
-                    <></>
-                  )
-                  : (
-                    <>
-                      <div className={styles.empty_cart_container}>
-                        <img width={200} height={200} alt='empty-cart-display' src='https://s.udemycdn.com/browse_components/flyout/empty-shopping-cart-v2-2x.jpg' />
-                        <p className='text-lg mb-4'>You must check in at least 1 course in the cart before click on checkout</p>
-                        <Link to={paths.HOME}>
-                          <CustomButton handleClick={handlePayment} title='Keep Shopping' containerStyles='bg-purple-500' />
-                        </Link>
-                      </div>
-                    </>
-                  )
-              }
-              {
-                carts.map((cart) => {
-                  return (
-                    <div style={{ minWidth: "768px" }}>
-                      <Row className='border my-5' gutter={10}>
-                        <Col span={6}>
-                          <img src={cart.course_image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'} />
-                        </Col>
-                        <Col className='' span={6}>
-                          <p className='mt-5 font-bold '>{cart.course_name}</p>
-                          <p className='mt-2'><span className='font-bold'>Cart no:</span>{cart.cart_no}</p>
-
-                        </Col>
-                        <Col span={6}>
-                          <p className='pt-12'>{formatCurrency(cart.price)}</p>
-                          <p>Discount: {cart.discount}%</p>
-                        </Col>
-
-                        <Col span={6}>
-                          <Row>
-                            <Col span={12}>
-                              <p className='pt-12'>Total:</p>
-                              <p >{formatCurrency(cart.price_paid)}</p>
-                            </Col>
-                          </Row>
-                        </Col>
-                      </Row>
-
-                    </div>
-                  )
-                })
-              }
-
+            <div>
+              {carts.length > 0 ? (
+                <></>
+              ) : (
+                <div className={styles.empty_cart_container}>
+                  <img
+                    width={200}
+                    height={200}
+                    alt="empty-cart-display"
+                    src="https://s.udemycdn.com/browse_components/flyout/empty-shopping-cart-v2-2x.jpg"
+                  />
+                  <p className="text-lg mb-4">
+                    You must check in at least 1 course in the cart before click on
+                    checkout
+                  </p>
+                  <Link to={paths.HOME}>
+                    <CustomButton
+                      handleClick={handlePayment}
+                      title="Keep Shopping"
+                      containerStyles="bg-purple-500"
+                    />
+                  </Link>
+                </div>
+              )}
+              {carts.map((cart) => {
+                return (
+                  <div style={{ minWidth: "768px" }} key={cart._id}>
+                    <Row className="border my-5" gutter={10}>
+                      <Col span={6}>
+                        <img
+                          style={{ height:"160px", width:"192px" }}
+                          src={
+                            cart.course_image ||
+                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s"
+                          }
+                          alt={cart.course_name}
+                        />
+                      </Col>
+                      <Col className="" span={6}>
+                        <p className="mt-5 font-bold ">{cart.course_name}</p>
+                        <p className="mt-2">
+                          <span className="font-bold">Cart no:</span>
+                          {cart.cart_no}
+                        </p>
+                      </Col>
+                      <Col span={6}>
+                        <p className="pt-12">{formatCurrency(cart.price)}</p>
+                        <p>Discount: {cart.discount}%</p>
+                      </Col>
+                      <Col span={6}>
+                        <Row>
+                          <Col span={12}>
+                            <p className="pt-12">Total:</p>
+                            <p>{formatCurrency(cart.price_paid)}</p>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  </div>
+                );
+              })}
             </div>
-            {carts.length > 0 &&
+            {carts.length > 0 && (
               <div className={styles.paymentMethod}>
                 <h2 className={styles.sectionTitle}>
                   <strong>Payment Method</strong>
                 </h2>
                 <Radio.Group
                   options={paymentMethods}
-                  onChange={()=>handlePaymentMethod}
+                  onChange={handlePaymentMethod}
                   value={paymentMethod}
                   className={styles.radioGroup}
                 />
                 {paymentMethod && (
-                  <Form
-                    form={form}
-                    layout="vertical"
-                    className={styles.paymentForm}
-                  >
+                  <Form form={form} layout="vertical" className={styles.paymentForm}>
                     {paymentMethod === "credit_card" && (
                       <>
                         <Form.Item
@@ -264,9 +257,7 @@ const Checkout: React.FC = () => {
                         </Form.Item>
                       </>
                     )}
-                    {paymentMethod === "paypal" && (
-                      <EmailFormItem />
-                    )}
+                    {paymentMethod === "paypal" && <EmailFormItem />}
                     {paymentMethod === "bank_transfer" && (
                       <>
                         <Form.Item
@@ -310,40 +301,16 @@ const Checkout: React.FC = () => {
                   </Form>
                 )}
               </div>
-            }
-            {/* {course && (
-              <div>
-                <h2 className={styles.sectionTitle}>
-                  <strong>Order Details</strong>
-                </h2>
-                <div className={styles.courseDetails}>
-                  <div className={styles.courseImage}>
-                    <img src={courseImage} />
-                  </div>
-                  <div className={styles.description}>
-                    <p>
-                      <strong>Course Name:</strong>
-                    </p>
-                    <p>
-                      <strong>Description:</strong>
-                    </p>
-                    <p>
-                      <strong>Price:</strong> 0
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )} */}
+            )}
           </div>
         </div>
       </div>
       <div className={styles.summary}>
-        {
-          carts.length > 0 &&
+        {carts.length > 0 && (
           <div onClick={handleCancelPayment} className="float-right mt-10 mr-10 text-purple-500 cursor-pointer">
             Cancel
           </div>
-        }
+        )}
         <h2 className={styles.summaryTitle}>
           <strong>Summary</strong>
         </h2>
@@ -374,21 +341,20 @@ const Checkout: React.FC = () => {
             .
           </p>
 
-          <div >
-            {carts.length > 0 ?
-              (
-                <>
-                  <div className="mt-10">
-                    <CustomButton handleClick={handlePayment} title='Complete Checkout' containerStyles='bg-purple-500' />
-                  </div>
-                </>
-              ) :
-              (
-                <>
-                </>
-              )}
+          <div>
+            {carts.length > 0 ? (
+              <div className="mt-10">
+                <CustomButton
+                  handleClick={handlePayment}
+                  title="Complete Checkout"
+                  containerStyles="bg-purple-500"
+                />
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
-        </div>{" "}
+        </div>
       </div>
     </div>
   );

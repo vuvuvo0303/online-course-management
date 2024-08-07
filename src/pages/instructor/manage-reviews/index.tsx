@@ -108,7 +108,7 @@ const ReviewPage: React.FC = () => {
     return (
         <div className="flex flex-col p-4 bg-white min-h-screen text-black space-y-4 sm:flex-row sm:space-x-4 w-full">
             <div className="bg-white-transparent p-4 rounded-md w-full sm:w-1/2 lg:ml-[3rem] lg:mt-[1rem] lg:h-[20rem]">
-                <h2 className="text-xl mb-4">Student Feedback</h2>
+                <h2 className="text-xl mb-4">Average Rating</h2>
                 <div className="flex items-center mb-4">
                     <span className="text-3xl mr-2">4.6</span>
                     <Rate allowHalf defaultValue={4.5} disabled />
@@ -206,3 +206,5 @@ const ReviewPage: React.FC = () => {
 };
 
 export default ReviewPage;
+
+

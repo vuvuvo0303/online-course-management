@@ -62,7 +62,7 @@ const AdminManageUsers: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch,selectedVerify]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, debouncedSearch, selectedVerify]);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -89,8 +89,8 @@ const AdminManageUsers: React.FC = () => {
         const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
         return dateB - dateA;
       });
-  
-  
+
+
       setDataUsers(sortedUsers);
       setPagination({
         ...pagination,
@@ -101,7 +101,7 @@ const AdminManageUsers: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText, debouncedSearch,selectedVerify]);
+  }, [pagination.current, pagination.pageSize, selectedRole, selectedStatus, searchText, debouncedSearch, selectedVerify]);
 
   const handleAddNewUser = useCallback(
     async (values: User) => {
@@ -202,17 +202,17 @@ const AdminManageUsers: React.FC = () => {
         prevData.map((user) =>
           user._id === formData._id
             ? {
-                ...user,
-                ...updatedUser,
-                role: values.role,
-                ...(values.role === roles.INSTRUCTOR
-                  ? {
-                      phone_number: values.phone_number,
-                      description: values.description,
-                      video_url: values.video,
-                    }
-                  : {}),
-              }
+              ...user,
+              ...updatedUser,
+              role: values.role,
+              ...(values.role === roles.INSTRUCTOR
+                ? {
+                  phone_number: values.phone_number,
+                  description: values.description,
+                  video_url: values.video,
+                }
+                : {}),
+            }
             : user
         )
       );
@@ -224,13 +224,7 @@ const AdminManageUsers: React.FC = () => {
     }
     setLoading(false);
   };
-  if (loading) {
-    return (
-      <>
-        <LoadingComponent />
-      </>
-    );
-  }
+
   const onFinish = (values: User) => {
     if (modalMode === "Edit") {
       if (formData._id) {
@@ -239,10 +233,10 @@ const AdminManageUsers: React.FC = () => {
           ...values,
           ...(formData.role === roles.INSTRUCTOR
             ? {
-                phone_number: values.phone_number,
-                description: values.description,
-                video_url: values.video,
-              }
+              phone_number: values.phone_number,
+              description: values.description,
+              video_url: values.video,
+            }
             : {}),
         });
       }
@@ -252,7 +246,7 @@ const AdminManageUsers: React.FC = () => {
   };
   const handleRolefilter = (value: string) => {
     setSelectedRole(value);
-    
+
   };
   const handleStatus = (value: string) => {
     setSelectedStatus(value);
@@ -372,14 +366,14 @@ const AdminManageUsers: React.FC = () => {
               setFileList(
                 avatarUrl
                   ? [
-                      {
-                        uid: "-1",
-                        name: "avatar.png",
-                        status: "done",
-                        url: avatarUrl,
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      } as UploadFile<any>,
-                    ]
+                    {
+                      uid: "-1",
+                      name: "avatar.png",
+                      status: "done",
+                      url: avatarUrl,
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    } as UploadFile<any>,
+                  ]
                   : []
               );
             }}
@@ -403,6 +397,14 @@ const AdminManageUsers: React.FC = () => {
   const handleSearchText = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
+
+  if (loading) {
+    return (
+      <>
+        <LoadingComponent />
+      </>
+    );
+  }
 
   return (
     <div>

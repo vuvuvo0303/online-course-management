@@ -4,6 +4,7 @@ import axiosInstance from "../../../services/axiosInstance";
 import { API_CLIENT_GET_COURSES } from "../../../consts";
 import CourseCard from "./course-card/CourseCard";
 import { Course } from "../../../models/Course";
+import { getUserFromLocalStorage } from "../../../services/auth";
 
 
 
@@ -19,7 +20,8 @@ const AllCourses: React.FC = () => {
         total: 0,
     });
 
-
+    const user = getUserFromLocalStorage();
+    const userId = user._id;
 
     const fetchCourses = useCallback(async () => {
         setLoading(true);
@@ -36,9 +38,13 @@ const AllCourses: React.FC = () => {
                     pageSize: pagination.pageSize,
                 },
             });
-
-            if (response.data) {
-                setCourses(response.data.pageData || []);
+    
+            if (response.data && Array.isArray(response.data.pageData)) {
+                // Lọc các khóa học, bỏ qua khóa học của chính người dùng nếu cần
+                setCourses(response.data.pageData.filter((course: Course) => course.instructor_id !== userId) || []);
+                console.log("courses", courses);
+    
+                // Cập nhật thông tin phân trang
                 setPagination((prev) => ({
                     ...prev,
                     total: response.data.pageInfo?.totalItems || response.data.length,
@@ -53,9 +59,11 @@ const AllCourses: React.FC = () => {
             setInitialLoad(false);
         }
     }, [searchText, pagination.current, pagination.pageSize]);
+    
 
     useEffect(() => {
         fetchCourses();
+        
     }, [fetchCourses]);
 
     const handleSearch = () => {
@@ -79,6 +87,7 @@ const AllCourses: React.FC = () => {
       };
     return (
         <div className="p-4">
+
             <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 bg-slate-700 p-6 md:p-10 rounded-md">
                 <Input
                     placeholder="Search courses"
