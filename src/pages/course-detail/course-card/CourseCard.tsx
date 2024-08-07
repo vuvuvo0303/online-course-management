@@ -53,12 +53,16 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
     const handSaveCourseToLocalStorage = (courseId: string) => {
         // Retrieve the current list from localStorage, or create an empty array if none exists
         const courseInWishList = JSON.parse(localStorage.getItem("courseInWishList") || "[]");
+        if(courseInWishList){
+            message.info("The course is on the wishlist")
+        }
         // Check if the courseId already exists in the list
         if (!courseInWishList.includes(courseId)) {
             // If not, add the courseId to the list
             courseInWishList.push(courseId);
             // Save the updated list back to localStorage
             localStorage.setItem("courseInWishList", JSON.stringify(courseInWishList));
+            message.success("Save Course To Wishlist Successfully!")
         }
     };
 
