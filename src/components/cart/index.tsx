@@ -30,7 +30,7 @@ const CartComponents: React.FC<CartComponentsProps> = ({ cartsNew, cartsCancel, 
                                             </Col>
                                             <Col span={20}>
                                                 <img
-                                                    style={{ maxHeight:"160px" }}
+                                                    style={{ height:"160px", width:"192px" }}
                                                     src={cartsNew.course_image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'}
                                                     alt="Course"
                                                     className="w-[50rem] h-[10rem]"

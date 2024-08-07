@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Radio, Input, Form, Row, Col, message } from "antd";
+import { RadioChangeEvent } from "antd/es/radio"; // Import kiểu cho sự kiện thay đổi Radio
 import { paths } from "../../consts";
 import styles from "./checkout.module.css";
 import { Cart } from "../../models";
@@ -97,7 +98,7 @@ const Checkout: React.FC = () => {
     );
   }
 
-  const handlePaymentMethod = (e: any) => {
+  const handlePaymentMethod = (e: RadioChangeEvent) => {
     console.log("Selected payment method: ", e.target.value);
     setPaymentMethod(e.target.value);
   };
@@ -171,7 +172,7 @@ const Checkout: React.FC = () => {
                     <Row className="border my-5" gutter={10}>
                       <Col span={6}>
                         <img
-                          style={{ maxHeight: "160px" }}
+                          style={{ height:"160px", width:"192px" }}
                           src={
                             cart.course_image ||
                             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s"
