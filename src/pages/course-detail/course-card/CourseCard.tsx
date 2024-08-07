@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ShoppingCartOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { addCourseToCart, getUserFromLocalStorage } from '../../../services';
 import { paths } from "../../../consts";
-import { formatCurrency, formatMinute } from "../../../utils";
+import { formatCurrency, formatDate, formatMinute, handSaveCourseToLocalStorage } from "../../../utils";
 import { Course } from "../../../models";
 import './card.module.css';
 
@@ -50,22 +50,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         target.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'; // Fallback image
     };
 
-    const handSaveCourseToLocalStorage = (courseId: string) => {
-        if (!user) {
-            navigate(paths.LOGIN);
-            message.info('Please login before saving items to your wishlist.');
-        } else {
-            const courseInWishList = JSON.parse(localStorage.getItem("courseInWishList") || "[]");
 
-            if (courseInWishList.includes(courseId)) {
-                message.info("The course is already in the wishlist.");
-            } else {
-                courseInWishList.push(courseId);
-                localStorage.setItem("courseInWishList", JSON.stringify(courseInWishList));
-                message.success("Save Course To Wishlist Successfully!");
-            }
-        }
-    };
 
 
 
@@ -107,7 +92,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                     <div><strong>Category:</strong> {course.category_name}</div>
                     <div><strong>Instructor:</strong> {course.instructor_name}</div>
                     <div>
-                        <strong>Last update:</strong> {new Date(course.updated_at).toLocaleDateString('en-GB')}
+                        <strong>Last update:</strong> {formatDate(course.updated_at)}
                     </div>
                     {!course.is_purchased && course.price_paid !== 0 && (
                         <>
@@ -140,7 +125,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                                     <ShoppingCartOutlined className="mr-2" />
                                     {loading ? 'Adding...' : 'Add to Cart'}
                                 </button>
-                                <button onClick={() => handSaveCourseToLocalStorage(course._id)} className="bg-yellow-500 text-gray-800 w-[6rem] p-2 rounded-md hover:bg-yellow-400">
+                                <button onClick={() => handSaveCourseToLocalStorage(course._id, user, navigate)} className="bg-yellow-500 text-gray-800 w-[6rem] p-2 rounded-md hover:bg-yellow-400">
                                     Save
                                 </button>
                             </div>

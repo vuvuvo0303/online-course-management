@@ -47,10 +47,8 @@ const ManageSession: React.FC = () => {
       } catch (error) {
         setModalText("Error occurred: " + error);
       } finally {
-        setTimeout(() => {
-          setOpen(false);
-          setConfirmLoading(false);
-        }, 1000);
+        setOpen(false);
+        setConfirmLoading(false);
       }
     } else {
       setOpen(false);
