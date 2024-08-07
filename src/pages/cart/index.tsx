@@ -228,12 +228,16 @@ const CartPage: React.FC = () => {
                    <>
                     <div className={styles.total_price_label}>Total:</div>
                     <div className={styles.base_price_heading}>
-                      <span>₫{totalMoney}</span>
+                      <span>{totalMoney.toLocaleString("vi-VN",{style:"currency",
+                        currency:"VND"
+                      })}</span>
                     </div>
                     <div className={styles.discount_price_checkout}>
                       <div>
                         <s>
-                          <span>₫{totalCost}</span>
+                          <span>{totalCost.toLocaleString("vi-VN",{style:"currency",
+                        currency:"VND"
+                      })}</span>
                         </s>
                       </div>
                     </div>

@@ -179,7 +179,7 @@ const Checkout: React.FC = () => {
                     <div style={{ minWidth: "768px" }}>
                       <Row className='border my-5' gutter={10}>
                         <Col span={6}>
-                          <img src={cart.course_image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'} />
+                          <img style={{maxHeight: "160px"}} src={cart.course_image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJy_JSAysO8hrX0Qab6AAqOnQ3LwOGojayow&s'} />
                         </Col>
                         <Col className='' span={6}>
                           <p className='mt-5 font-bold '>{cart.course_name}</p>
