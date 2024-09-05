@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Button, Form, Input, Select, message, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course, Session } from "../../../../../models";
-import { API_GET_SESSION, API_UPDATE_SESSION } from "../../../../../consts";
-import { axiosInstance, createSession, getCourses, getUserFromLocalStorage } from "../../../../../services";
+import { API_GET_SESSION } from "../../../../../consts";
+import { axiosInstance, createSession, getCourses, getUserFromLocalStorage, updateSession } from "../../../../../services";
 import { CustomBreadcrumb, LoadingComponent } from "../../../../../components";
 import { formItemLayout } from "../../../../../layout/form";
 
@@ -66,14 +66,7 @@ const CreateUpdateSession = () => {
     // update session component for manage sessions and manage all sessions
     if (sessionId) {
       try {
-        await axiosInstance.put(`${API_UPDATE_SESSION}/${sessionId}`,
-          {
-            "name": values.name,
-            "course_id": courseIdUpdate,
-            "description": values.description,
-            "position_order": 3
-          }
-        )
+        await updateSession(sessionId, values.name, courseIdUpdate, values.description, 3);
         message.success("Update Session Successfully!")
       } catch (error) {
         setLoading(false);

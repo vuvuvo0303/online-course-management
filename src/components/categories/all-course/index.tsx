@@ -41,8 +41,6 @@ const AllCourses = () => {
     try {
       const res = await fetchCoursesByClient("", "");
       setCourses(res);
-    } catch (error) {
-      console.error("Failed to fetch courses:", error);
     } finally {
       setLoading(false);
     }
@@ -91,6 +89,12 @@ const AllCourses = () => {
                 <p className="text-black text-[1rem] mb-2 truncate">Description: {course.description}</p>
               </div>
               <div>
+                <p className="text-black text-[1rem] mb-2 truncate">{course.session_count} session</p>
+              </div>
+              <div>
+                <p className="text-black text-[1rem] mb-2 truncate">{course.lesson_count} lesson</p>
+              </div>
+              <div>
                 <p className="text-black text-[1rem] mb-2 truncate">Price: {formatCurrency(course.price)}</p>
               </div>
             </div>
@@ -98,8 +102,8 @@ const AllCourses = () => {
         />
         <div className="flex items-center ml-[4rem]">
           <Button
-            type="default"
-            onClick={() => handleGoToCourse(course)}
+              type="default"
+              onClick={() => handleGoToCourse(course)}
             style={{
               backgroundColor: "#A020F0",
               borderColor: "#A020F0",
@@ -235,5 +239,4 @@ const AllCourses = () => {
     </div>
   );
 };
-
 export default AllCourses;
